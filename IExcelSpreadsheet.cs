@@ -14,9 +14,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
 
     internal class ExcelSpreadsheet : IExcelSpreadsheet
     {
-        public ExcelSpreadsheet(WorksheetPart worksheetPart)
+        public ExcelSpreadsheet(WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle)
         {
             this.worksheetPart = worksheetPart;
+            this.documentStyle = documentStyle;
         }
 
         public void MergeCells(int fromRow, int fromCol, int toRow, int toCol)
@@ -36,7 +37,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
                     RowIndex = new UInt32Value((uint)rowIndex)
                 };
             worksheetPart.Worksheet.GetFirstChild<SheetData>().AppendChild(row);
-            return new ExcelRow(row);
+            return new ExcelRow(row, documentStyle);
         }
 
         private static MergeCells CreateMergeCellsWorksheetPart(Worksheet worksheet)
@@ -67,5 +68,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
         }
 
         private readonly WorksheetPart worksheetPart;
+        private readonly IExcelDocumentStyle documentStyle;
     }
 }

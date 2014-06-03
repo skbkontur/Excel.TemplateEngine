@@ -23,6 +23,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             documentMemoryStream = new MemoryStream();
             documentMemoryStream.Write(template, 0, template.Length);
             spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true);
+
+            documentStyle = new ExcelDocumentStyle(spreadsheetDocument.WorkbookPart.WorkbookStylesPart.Stylesheet);
         }
 
         public void Dispose()
@@ -46,17 +48,19 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
                 worksheetPart = (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(sheetId);
                 worksheetsCache.Add(sheetId, worksheetPart);
             }
-            return new ExcelSpreadsheet(worksheetPart);
+            return new ExcelSpreadsheet(worksheetPart, documentStyle);
         }
 
         private void Flush()
         {
             foreach(var worksheetPart in worksheetsCache.Values)
                 worksheetPart.Worksheet.Save();
+            documentStyle.Save();
         }
 
         private readonly IDictionary<string, WorksheetPart> worksheetsCache;
         private readonly MemoryStream documentMemoryStream;
         private readonly SpreadsheetDocument spreadsheetDocument;
+        private readonly IExcelDocumentStyle documentStyle;
     }
 }
