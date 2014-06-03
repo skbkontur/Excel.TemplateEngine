@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="ExcelDocumentFactory.cs" />
     <Compile Include="IExcelDocument.cs" />
+    <Compile Include="IExcelSpreadsheet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,16 +1,19 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator
 {
-    public interface IExcelDocument
+    public interface IExcelDocument : IDisposable
     {
         byte[] GetDocumentBytes();
+        IExcelSpreadsheet GetSpreadsheet(int index);
     }
 
-    internal class ExcelDocument : IExcelDocument, IDisposable
+    internal class ExcelDocument : IExcelDocument
     {
         public ExcelDocument(byte[] template)
         {
@@ -28,6 +31,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
         public byte[] GetDocumentBytes()
         {
             return documentMemoryStream.ToArray();
+        }
+
+        public IExcelSpreadsheet GetSpreadsheet(int index)
+        {
+            var sheet = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index);
+            var worksheetPart = (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(sheet.Id.Value);
+            return new ExcelSpreadsheet(worksheetPart);
         }
 
         private readonly MemoryStream documentMemoryStream;
