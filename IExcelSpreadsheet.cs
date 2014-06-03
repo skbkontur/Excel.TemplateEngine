@@ -1,6 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -9,6 +9,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
     public interface IExcelSpreadsheet
     {
         void MergeCells(int fromRow, int fromCol, int toRow, int toCol);
+        IExcelRow CreateRow(int rowIndex);
     }
 
     internal class ExcelSpreadsheet : IExcelSpreadsheet
@@ -24,9 +25,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             var mergeCells = worksheet.GetFirstChild<MergeCells>() ?? CreateMergeCellsWorksheetPart(worksheet);
             mergeCells.AppendChild(new MergeCell
                 {
-                    Reference = string.Format("{0}{1}:{2}{3}", ToRowIndex(fromCol), fromRow, ToRowIndex(toCol), toRow)
+                    Reference = string.Format("{0}{1}:{2}{3}", IndexHelpers.ToColumnName(fromCol), fromRow, IndexHelpers.ToColumnName(toCol), toRow)
                 });
-            worksheet.Save();
+        }
+
+        public IExcelRow CreateRow(int rowIndex)
+        {
+            var row = new Row
+                {
+                    RowIndex = new UInt32Value((uint)rowIndex)
+                };
+            worksheetPart.Worksheet.GetFirstChild<SheetData>().AppendChild(row);
+            return new ExcelRow(row);
         }
 
         private static MergeCells CreateMergeCellsWorksheetPart(Worksheet worksheet)
@@ -54,13 +64,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             else
                 worksheet.InsertAfter(mergeCells, worksheet.Elements<SheetData>().First());
             return mergeCells;
-        }
-
-        private string ToRowIndex(int fromCol)
-        {
-            if(fromCol > 0 && fromCol <= 26)
-                return "" + (char)(fromCol + 'A' - 1);
-            throw new Exception();
         }
 
         private readonly WorksheetPart worksheetPart;

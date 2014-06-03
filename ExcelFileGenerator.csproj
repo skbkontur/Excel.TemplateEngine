@@ -44,8 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExcelDocumentFactory.cs" />
+    <Compile Include="IExcelCell.cs" />
     <Compile Include="IExcelDocument.cs" />
+    <Compile Include="IExcelRow.cs" />
     <Compile Include="IExcelSpreadsheet.cs" />
+    <Compile Include="IndexHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
