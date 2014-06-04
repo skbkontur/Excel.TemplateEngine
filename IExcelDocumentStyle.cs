@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -9,6 +9,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
     {
         void Save();
         uint CreateNumericTableStyle(int precision);
+        uint SaveStyle(ExcelCellStyle style);
     }
 
     internal class ExcelDocumentStyle : IExcelDocumentStyle
@@ -16,6 +17,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
         public ExcelDocumentStyle(Stylesheet stylesheet)
         {
             this.stylesheet = stylesheet;
+            numberingFormats = new ExcelDocumentNumberingFormats(stylesheet);
         }
 
         public void Save()
@@ -25,18 +27,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
 
         public uint CreateNumericTableStyle(int precision)
         {
-            var formatCode = "0." + string.Join("", Enumerable.Repeat("0", precision));
-            if(stylesheet.NumberingFormats == null)
-            {
-                var numberingFormats = new NumberingFormats {Count = new UInt32Value(0u)};
-                stylesheet.InsertAt(numberingFormats, 0);
-            }
-            var numberFormatId = ++stylesheet.NumberingFormats.Count;
-            stylesheet.NumberingFormats.AppendChild(new NumberingFormat
-                {
-                    FormatCode = new StringValue(formatCode),
-                    NumberFormatId = numberFormatId
-                });
+            var numberFormatId = numberingFormats.AddFormat(new ExcelCellNumberingFormat {Precision = precision});
             var styleFormatId = stylesheet.CellFormats.Count.Value;
             stylesheet.CellFormats.Count++;
             stylesheet.CellFormats.AppendChild(new CellFormat
@@ -51,6 +42,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             return styleFormatId;
         }
 
+        public uint SaveStyle(ExcelCellStyle style)
+        {
+            throw new NotImplementedException();
+        }
+
         private readonly Stylesheet stylesheet;
+        private readonly ExcelDocumentNumberingFormats numberingFormats;
     }
 }

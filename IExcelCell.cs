@@ -9,6 +9,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
     {
         void SetStringValue(string value);
         void SetNumericValue(double value, int precision);
+        void SetStyle(ExcelCellStyle style);
     }
 
     internal class ExcelCell : IExcelCell
@@ -30,6 +31,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             cell.CellValue = new CellValue(value.ToString(CultureInfo.InvariantCulture));
             cell.DataType = new EnumValue<CellValues>(CellValues.Number);
             cell.StyleIndex = documentStyle.CreateNumericTableStyle(precision);
+        }
+
+        public void SetStyle(ExcelCellStyle style)
+        {
+            cell.StyleIndex = documentStyle.SaveStyle(style);
         }
 
         private readonly Cell cell;
