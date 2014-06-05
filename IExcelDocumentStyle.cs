@@ -17,6 +17,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             this.stylesheet = stylesheet;
             numberingFormats = new ExcelDocumentNumberingFormats(stylesheet);
             fillStyles = new ExcelDocumentFillStyles(stylesheet);
+            bordersStyles = new ExcelDocumentBordersStyles(stylesheet);
         }
 
         public void Save()
@@ -44,6 +45,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
         public uint SaveStyle(ExcelCellStyle style)
         {
             var fillId = fillStyles.AddStyle(style.FillStyle);
+            var borderId = bordersStyles.AddStyle(style.BordersStyle);
             var styleFormatId = stylesheet.CellFormats.Count.Value;
             stylesheet.CellFormats.Count++;
             stylesheet.CellFormats.AppendChild(new CellFormat
@@ -52,8 +54,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
                     FormatId = 0,
                     FontId = 0,
                     FillId = fillId,
-                    BorderId = 0,
-                    ApplyFill = fillId == 0 ? null : new BooleanValue(true)
+                    BorderId = borderId,
+                    ApplyFill = fillId == 0 ? null : new BooleanValue(true),
+                    ApplyBorder = borderId == 0 ? null : new BooleanValue(true)
                 });
             return styleFormatId;
         }
@@ -61,5 +64,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
         private readonly Stylesheet stylesheet;
         private readonly ExcelDocumentNumberingFormats numberingFormats;
         private readonly ExcelDocumentFillStyles fillStyles;
+        private readonly ExcelDocumentBordersStyles bordersStyles;
     }
 }
