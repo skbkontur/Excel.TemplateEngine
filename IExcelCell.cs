@@ -8,7 +8,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
     public interface IExcelCell
     {
         void SetStringValue(string value);
-        void SetNumericValue(double value, int precision);
+        void SetNumericValue(double value);
         void SetStyle(ExcelCellStyle style);
     }
 
@@ -26,11 +26,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             cell.DataType = new EnumValue<CellValues>(CellValues.String);
         }
 
-        public void SetNumericValue(double value, int precision)
+        public void SetNumericValue(double value)
         {
             cell.CellValue = new CellValue(value.ToString(CultureInfo.InvariantCulture));
             cell.DataType = new EnumValue<CellValues>(CellValues.Number);
-            cell.StyleIndex = documentStyle.CreateNumericTableStyle(precision);
         }
 
         public void SetStyle(ExcelCellStyle style)

@@ -6,7 +6,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
     internal interface IExcelDocumentStyle
     {
         void Save();
-        uint CreateNumericTableStyle(int precision);
         uint SaveStyle(ExcelCellStyle style);
     }
 
@@ -25,9 +24,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             stylesheet.Save();
         }
 
-        public uint CreateNumericTableStyle(int precision)
+        public uint SaveStyle(ExcelCellStyle style)
         {
-            var numberFormatId = numberingFormats.AddFormat(new ExcelCellNumberingFormat {Precision = precision});
+            var fillId = fillStyles.AddStyle(style.FillStyle);
+            var borderId = bordersStyles.AddStyle(style.BordersStyle);
+            var numberFormatId = numberingFormats.AddFormat(style.NumberingFormat);
             var styleFormatId = stylesheet.CellFormats.Count.Value;
             stylesheet.CellFormats.Count++;
             stylesheet.CellFormats.AppendChild(new CellFormat
@@ -35,28 +36,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
                     NumberFormatId = numberFormatId,
                     FormatId = 0,
                     FontId = 0,
-                    FillId = 0,
-                    BorderId = 0,
-                    ApplyNumberFormat = new BooleanValue(true)
-                });
-            return styleFormatId;
-        }
-
-        public uint SaveStyle(ExcelCellStyle style)
-        {
-            var fillId = fillStyles.AddStyle(style.FillStyle);
-            var borderId = bordersStyles.AddStyle(style.BordersStyle);
-            var styleFormatId = stylesheet.CellFormats.Count.Value;
-            stylesheet.CellFormats.Count++;
-            stylesheet.CellFormats.AppendChild(new CellFormat
-                {
-                    NumberFormatId = 0,
-                    FormatId = 0,
-                    FontId = 0,
                     FillId = fillId,
                     BorderId = borderId,
                     ApplyFill = fillId == 0 ? null : new BooleanValue(true),
-                    ApplyBorder = borderId == 0 ? null : new BooleanValue(true)
+                    ApplyBorder = borderId == 0 ? null : new BooleanValue(true),
+                    ApplyNumberFormat = numberFormatId == 0 ? null : new BooleanValue(true)
                 });
             return styleFormatId;
         }
