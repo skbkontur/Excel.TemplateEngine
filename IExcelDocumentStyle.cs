@@ -1,6 +1,4 @@
-﻿using System;
-
-using DocumentFormat.OpenXml;
+﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator
@@ -18,6 +16,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
         {
             this.stylesheet = stylesheet;
             numberingFormats = new ExcelDocumentNumberingFormats(stylesheet);
+            fillStyles = new ExcelDocumentFillStyles(stylesheet);
         }
 
         public void Save()
@@ -44,10 +43,23 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
 
         public uint SaveStyle(ExcelCellStyle style)
         {
-            throw new NotImplementedException();
+            var fillId = fillStyles.AddStyle(style.FillStyle);
+            var styleFormatId = stylesheet.CellFormats.Count.Value;
+            stylesheet.CellFormats.Count++;
+            stylesheet.CellFormats.AppendChild(new CellFormat
+                {
+                    NumberFormatId = 0,
+                    FormatId = 0,
+                    FontId = 0,
+                    FillId = fillId,
+                    BorderId = 0,
+                    ApplyFill = fillId == 0 ? null : new BooleanValue(true)
+                });
+            return styleFormatId;
         }
 
         private readonly Stylesheet stylesheet;
         private readonly ExcelDocumentNumberingFormats numberingFormats;
+        private readonly ExcelDocumentFillStyles fillStyles;
     }
 }

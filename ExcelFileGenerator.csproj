@@ -43,6 +43,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IExcelDocumentFillStyles.cs" />
     <Compile Include="ExcelCellStyle.cs" />
     <Compile Include="ExcelDocumentFactory.cs" />
     <Compile Include="IExcelCell.cs" />
