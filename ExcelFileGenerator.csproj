@@ -47,6 +47,8 @@
     <Compile Include="CacheItems\BorderCacheItem.cs" />
     <Compile Include="CacheItems\ColorCacheItem.cs" />
     <Compile Include="CacheItems\FillStyleCacheItem.cs" />
+    <Compile Include="CacheItems\SharedStringCacheItem.cs" />
+    <Compile Include="FormattedStringValue.cs" />
     <Compile Include="IExcelDocumentBordersStyles.cs" />
     <Compile Include="IExcelDocumentFillStyles.cs" />
     <Compile Include="ExcelCellStyle.cs" />
@@ -59,6 +61,7 @@
     <Compile Include="IExcelSpreadsheet.cs" />
     <Compile Include="IndexHelpers.cs" />
     <Compile Include="CacheItems\NumberingFormatCacheItem.cs" />
+    <Compile Include="ISharedStringsCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

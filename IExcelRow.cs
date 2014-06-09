@@ -9,10 +9,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
 
     internal class ExcelRow : IExcelRow
     {
-        public ExcelRow(Row row, IExcelDocumentStyle documentStyle)
+        public ExcelRow(Row row, IExcelDocumentStyle documentStyle, ISharedStringsCache sharedStringsCache)
         {
             this.row = row;
             this.documentStyle = documentStyle;
+            this.sharedStringsCache = sharedStringsCache;
         }
 
         public IExcelCell CreateCell(int index)
@@ -22,10 +23,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
                     CellReference = IndexHelpers.ToColumnName(index) + row.RowIndex
                 };
             row.AppendChild(cell);
-            return new ExcelCell(cell, documentStyle);
+            return new ExcelCell(cell, documentStyle, sharedStringsCache);
         }
 
         private readonly Row row;
         private readonly IExcelDocumentStyle documentStyle;
+        private readonly ISharedStringsCache sharedStringsCache;
     }
 }

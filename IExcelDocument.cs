@@ -25,6 +25,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true);
 
             documentStyle = new ExcelDocumentStyle(spreadsheetDocument.WorkbookPart.WorkbookStylesPart.Stylesheet);
+            sharedStringsCache = new SharedStringsCache(spreadsheetDocument.WorkbookPart.SharedStringTablePart.SharedStringTable);
         }
 
         public void Dispose()
@@ -48,7 +49,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
                 worksheetPart = (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(sheetId);
                 worksheetsCache.Add(sheetId, worksheetPart);
             }
-            return new ExcelSpreadsheet(worksheetPart, documentStyle);
+            return new ExcelSpreadsheet(worksheetPart, documentStyle, sharedStringsCache);
         }
 
         private void Flush()
@@ -56,11 +57,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             foreach(var worksheetPart in worksheetsCache.Values)
                 worksheetPart.Worksheet.Save();
             documentStyle.Save();
+            sharedStringsCache.Save();
         }
 
         private readonly IDictionary<string, WorksheetPart> worksheetsCache;
         private readonly MemoryStream documentMemoryStream;
         private readonly SpreadsheetDocument spreadsheetDocument;
         private readonly IExcelDocumentStyle documentStyle;
+        private readonly ISharedStringsCache sharedStringsCache;
     }
 }
