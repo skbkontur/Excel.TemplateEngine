@@ -47,6 +47,7 @@
     <Compile Include="CacheItems\BorderCacheItem.cs" />
     <Compile Include="CacheItems\ColorCacheItem.cs" />
     <Compile Include="CacheItems\FillStyleCacheItem.cs" />
+    <Compile Include="CacheItems\FontStyleCacheItem.cs" />
     <Compile Include="CacheItems\SharedStringCacheItem.cs" />
     <Compile Include="FormattedStringValue.cs" />
     <Compile Include="IExcelDocumentBordersStyles.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="IExcelDocument.cs" />
     <Compile Include="IExcelDocumentNumberingFormats.cs" />
     <Compile Include="IExcelDocumentStyle.cs" />
+    <Compile Include="IExcelDocumentFontStyles.cs" />
     <Compile Include="IExcelRow.cs" />
     <Compile Include="IExcelSpreadsheet.cs" />
     <Compile Include="IndexHelpers.cs" />

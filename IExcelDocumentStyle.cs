@@ -19,6 +19,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             numberingFormats = new ExcelDocumentNumberingFormats(stylesheet);
             fillStyles = new ExcelDocumentFillStyles(stylesheet);
             bordersStyles = new ExcelDocumentBordersStyles(stylesheet);
+            fontStyles = new ExcelDocumentFontStyles(stylesheet);
         }
 
         public void Save()
@@ -29,6 +30,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
         public uint SaveStyle(ExcelCellStyle style)
         {
             var fillId = fillStyles.AddStyle(style.FillStyle);
+            var fontId = fontStyles.AddFont(style.FontStyle);
             var borderId = bordersStyles.AddStyle(style.BordersStyle);
             var numberFormatId = numberingFormats.AddFormat(style.NumberingFormat);
             var styleFormatId = stylesheet.CellFormats.Count.Value;
@@ -37,7 +39,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             stylesheet.CellFormats.AppendChild(new CellFormat
                 {
                     FormatId = 0,
-                    FontId = 0,
+                    FontId = fontId,
                     NumberFormatId = numberFormatId,
                     FillId = fillId,
                     BorderId = borderId,
@@ -45,7 +47,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
                     ApplyFill = fillId == 0 ? null : new BooleanValue(true),
                     ApplyBorder = borderId == 0 ? null : new BooleanValue(true),
                     ApplyNumberFormat = numberFormatId == 0 ? null : new BooleanValue(true),
-                    ApplyAlignment = alignment == null ? null : new BooleanValue(true)
+                    ApplyAlignment = alignment == null ? null : new BooleanValue(true),
+                    ApplyFont = fontId == null ? null : new BooleanValue(true)
                 });
             return styleFormatId;
         }
@@ -105,5 +108,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
         private readonly ExcelDocumentNumberingFormats numberingFormats;
         private readonly ExcelDocumentFillStyles fillStyles;
         private readonly ExcelDocumentBordersStyles bordersStyles;
+        private readonly IExcelDocumentFontStyles fontStyles;
     }
 }

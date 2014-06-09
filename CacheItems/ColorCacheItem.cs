@@ -1,6 +1,7 @@
 ﻿using System;
 
 using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.CacheItems
 {
@@ -41,7 +42,17 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.CacheItems
             }
         }
 
-        public HexBinaryValue GetRGBString()
+        public Color ToColor()
+        {
+            return new Color {Rgb = GetRGBString()};
+        }
+
+        public ForegroundColor ToForegroundColor()
+        {
+            return new ForegroundColor {Rgb = GetRGBString()};
+        }
+
+        private HexBinaryValue GetRGBString()
         {
             return new HexBinaryValue {Value = string.Format("{0:X2}{1:X2}{2:X2}{3:X2}", Alpha, Red, Green, Blue)};
         }

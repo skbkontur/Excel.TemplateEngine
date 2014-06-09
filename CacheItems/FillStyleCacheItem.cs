@@ -1,6 +1,6 @@
 ﻿using System;
 
-using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.CacheItems
 {
@@ -29,9 +29,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.CacheItems
             return Color.GetHashCode();
         }
 
-        public HexBinaryValue GetRGBString()
+        public ForegroundColor ToForegroundColor()
         {
-            return Color.GetRGBString();
+            return Color.ToForegroundColor();
         }
 
         private ColorCacheItem Color { get; set; }

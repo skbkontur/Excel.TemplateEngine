@@ -41,7 +41,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             result = stylesheet.Fills.Count;
             stylesheet.Fills.AppendChild(new Fill
                 {
-                    PatternFill = new PatternFill(new ForegroundColor {Rgb = cacheItem.GetRGBString()})
+                    PatternFill = new PatternFill(cacheItem.ToForegroundColor())
                         {
                             PatternType = new EnumValue<PatternValues>(PatternValues.Solid)
                         }

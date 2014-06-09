@@ -80,7 +80,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.CacheItems
                     Text = new Text(value),
                     RunProperties = color == null
                                         ? null
-                                        : new RunProperties(new Color {Rgb = color.GetRGBString()})
+                                        : new RunProperties(color.ToColor())
                 };
         }
 

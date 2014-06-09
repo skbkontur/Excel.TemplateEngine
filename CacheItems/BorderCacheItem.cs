@@ -38,10 +38,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.CacheItems
 
         public Color GetColor()
         {
-            return Color == null ? null : new Color
-                {
-                    Rgb = Color.GetRGBString()
-                };
+            return Color == null ? null : Color.ToColor();
         }
 
         public EnumValue<BorderStyleValues> GetStyle()
