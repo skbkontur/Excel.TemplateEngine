@@ -18,7 +18,7 @@
     {
         Default,
         Top,
-        Middle,
+        Center,
         Bottom
     }
 
