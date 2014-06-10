@@ -1,6 +1,8 @@
 ﻿using System;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.CacheItems
+using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+
+namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 {
     public class NumberingFormatCacheItem : IEquatable<NumberingFormatCacheItem>
     {

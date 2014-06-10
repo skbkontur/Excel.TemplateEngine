@@ -3,7 +3,9 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.CacheItems
+using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+
+namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 {
     public class BorderCacheItem : IEquatable<BorderCacheItem>
     {

@@ -3,16 +3,12 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator
-{
-    public interface IExcelCell
-    {
-        void SetStringValue(string value);
-        void SetNumericValue(double value);
-        void SetStyle(ExcelCellStyle style);
-        void SetFormattedStringValue(FormattedStringValue value);
-    }
+using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
+using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
+namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
+{
     internal class ExcelCell : IExcelCell
     {
         public ExcelCell(Cell cell, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings)

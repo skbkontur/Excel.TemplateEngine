@@ -1,12 +1,10 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator
-{
-    public interface IExcelRow
-    {
-        IExcelCell CreateCell(int index);
-    }
+using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
+using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
+namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
+{
     internal class ExcelRow : IExcelRow
     {
         public ExcelRow(Row row, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings)

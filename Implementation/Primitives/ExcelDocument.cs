@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator
-{
-    public interface IExcelDocument : IDisposable
-    {
-        byte[] GetDocumentBytes();
-        IExcelSpreadsheet GetSpreadsheet(int index);
-        string GetSpreadsheetName(int index);
-    }
+using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
+using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
+namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
+{
     internal class ExcelDocument : IExcelDocument
     {
         public ExcelDocument(byte[] template)

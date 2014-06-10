@@ -1,4 +1,4 @@
-﻿namespace SKBKontur.Catalogue.ExcelFileGenerator
+﻿namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation
 {
     internal static class IndexHelpers
     {

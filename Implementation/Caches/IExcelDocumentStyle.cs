@@ -3,7 +3,9 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator
+using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+
+namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 {
     internal interface IExcelDocumentStyle
     {

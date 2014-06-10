@@ -2,9 +2,10 @@
 
 using DocumentFormat.OpenXml.Spreadsheet;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.CacheItems;
+using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator
+namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 {
     internal interface IExcelSharedStrings
     {

@@ -1,4 +1,7 @@
-﻿namespace SKBKontur.Catalogue.ExcelFileGenerator
+﻿using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives;
+using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+
+namespace SKBKontur.Catalogue.ExcelFileGenerator
 {
     public static class ExcelDocumentFactory
     {

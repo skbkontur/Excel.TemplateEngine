@@ -4,15 +4,11 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator
-{
-    public interface IExcelSpreadsheet
-    {
-        void MergeCells(int fromRow, int fromCol, int toRow, int toCol);
-        IExcelRow CreateRow(int rowIndex);
-        void CreateHyperlink(int row, int col, int toSpreadsheet, int toRow, int toCol);
-    }
+using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
+using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
+namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
+{
     internal class ExcelSpreadsheet : IExcelSpreadsheet
     {
         public ExcelSpreadsheet(WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings, IExcelDocument document)
