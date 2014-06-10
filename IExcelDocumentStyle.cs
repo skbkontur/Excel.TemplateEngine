@@ -48,7 +48,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
                     ApplyBorder = borderId == 0 ? null : new BooleanValue(true),
                     ApplyNumberFormat = numberFormatId == 0 ? null : new BooleanValue(true),
                     ApplyAlignment = alignment == null ? null : new BooleanValue(true),
-                    ApplyFont = fontId == null ? null : new BooleanValue(true)
+                    ApplyFont = fontId == 0 ? null : new BooleanValue(true)
                 });
             return styleFormatId;
         }
