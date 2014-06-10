@@ -40,7 +40,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public void SetStyle(ExcelCellStyle style)
         {
-            cell.StyleIndex = documentStyle.SaveStyle(style);
+            cell.StyleIndex = documentStyle.AddStyle(style);
         }
 
         public void SetFormattedStringValue(FormattedStringValue value)

@@ -11,15 +11,15 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
     {
         public BorderCacheItem(ExcelCellBorderStyle borderStyle)
         {
-            BorderType = borderStyle.BorderType;
-            Color = new ColorCacheItem(borderStyle.Color);
+            borderType = borderStyle.BorderType;
+            color = new ColorCacheItem(borderStyle.Color);
         }
 
         public bool Equals(BorderCacheItem other)
         {
             if(ReferenceEquals(null, other)) return false;
             if(ReferenceEquals(this, other)) return true;
-            return BorderType == other.BorderType && Equals(Color, other.Color);
+            return borderType == other.borderType && Equals(color, other.color);
         }
 
         public override bool Equals(object obj)
@@ -34,18 +34,27 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
         {
             unchecked
             {
-                return ((int)BorderType * 397) ^ (Color != null ? Color.GetHashCode() : 0);
+                return ((int)borderType * 397) ^ (color != null ? color.GetHashCode() : 0);
             }
         }
 
-        public Color GetColor()
+        public T ToBorder<T>() where T : BorderPropertiesType, new()
         {
-            return Color == null ? null : Color.ToColor();
+            return new T
+                {
+                    Style = GetStyle(),
+                    Color = GetColor()
+                };
         }
 
-        public EnumValue<BorderStyleValues> GetStyle()
+        private Color GetColor()
         {
-            switch(BorderType)
+            return color == null ? null : color.ToColor<Color>();
+        }
+
+        private EnumValue<BorderStyleValues> GetStyle()
+        {
+            switch(borderType)
             {
             case ExcelBorderType.None:
                 return new EnumValue<BorderStyleValues>(BorderStyleValues.None);
@@ -56,11 +65,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
             case ExcelBorderType.Double:
                 return new EnumValue<BorderStyleValues>(BorderStyleValues.Double);
             default:
-                throw new Exception(string.Format("Unknown border type: {0}", BorderType));
+                throw new Exception(string.Format("Unknown border type: {0}", borderType));
             }
         }
 
-        private ExcelBorderType BorderType { get; set; }
-        private ColorCacheItem Color { get; set; }
+        private readonly ExcelBorderType borderType;
+        private readonly ColorCacheItem color;
     }
 }

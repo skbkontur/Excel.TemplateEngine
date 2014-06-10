@@ -11,7 +11,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
     internal class ExcelSpreadsheet : IExcelSpreadsheet
     {
-        public ExcelSpreadsheet(WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings, IExcelDocument document)
+        public ExcelSpreadsheet(WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings, IExcelDocumentMeta document)
         {
             worksheet = worksheetPart.Worksheet;
             this.documentStyle = documentStyle;
@@ -24,7 +24,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             var mergeCells = worksheet.GetFirstChild<MergeCells>() ?? CreateMergeCellsWorksheetPart();
             mergeCells.AppendChild(new MergeCell
                 {
-                    Reference = string.Format("{0}{1}:{2}{3}", IndexHelpers.ToColumnName(fromCol), fromRow, IndexHelpers.ToColumnName(toCol), toRow)
+                    Reference = string.Format("{0}:{1}", IndexHelpers.ToCellName(fromRow, fromCol), IndexHelpers.ToCellName(toRow, toCol))
                 });
         }
 
@@ -111,6 +111,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private readonly IExcelDocumentStyle documentStyle;
         private readonly IExcelSharedStrings excelSharedStrings;
         private readonly Worksheet worksheet;
-        private readonly IExcelDocument document;
+        private readonly IExcelDocumentMeta document;
     }
 }

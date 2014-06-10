@@ -47,10 +47,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
         {
             return new Border
                 {
-                    LeftBorder = LeftBorder == null ? null : new LeftBorder {Color = LeftBorder.GetColor(), Style = LeftBorder.GetStyle()},
-                    RightBorder = RightBorder == null ? null : new RightBorder {Color = RightBorder.GetColor(), Style = RightBorder.GetStyle()},
-                    TopBorder = TopBorder == null ? null : new TopBorder {Color = TopBorder.GetColor(), Style = TopBorder.GetStyle()},
-                    BottomBorder = BottomBorder == null ? null : new BottomBorder {Color = BottomBorder.GetColor(), Style = BottomBorder.GetStyle()}
+                    LeftBorder = LeftBorder == null ? null : LeftBorder.ToBorder<LeftBorder>(),
+                    RightBorder = RightBorder == null ? null : RightBorder.ToBorder<RightBorder>(),
+                    TopBorder = TopBorder == null ? null : TopBorder.ToBorder<TopBorder>(),
+                    BottomBorder = BottomBorder == null ? null : BottomBorder.ToBorder<BottomBorder>()
                 };
         }
 

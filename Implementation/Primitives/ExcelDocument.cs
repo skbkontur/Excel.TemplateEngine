@@ -10,7 +10,7 @@ using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
-    internal class ExcelDocument : IExcelDocument
+    internal class ExcelDocument : IExcelDocument, IExcelDocumentMeta
     {
         public ExcelDocument(byte[] template)
         {

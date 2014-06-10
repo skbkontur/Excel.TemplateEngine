@@ -48,6 +48,7 @@
     <Compile Include="Implementation\CacheItems\ColorCacheItem.cs" />
     <Compile Include="Implementation\CacheItems\FillStyleCacheItem.cs" />
     <Compile Include="Implementation\CacheItems\FontStyleCacheItem.cs" />
+    <Compile Include="Implementation\CacheItems\FormattedStringValueBlockCacheItem.cs" />
     <Compile Include="Implementation\CacheItems\SharedStringCacheItem.cs" />
     <Compile Include="DataTypes\ExcelBorderType.cs" />
     <Compile Include="DataTypes\ExcelCellAlignment.cs" />
@@ -61,6 +62,12 @@
     <Compile Include="DataTypes\ExcelHorizontalAlignment.cs" />
     <Compile Include="DataTypes\ExcelVerticalAlignment.cs" />
     <Compile Include="DataTypes\FormattedStringValueBlock.cs" />
+    <Compile Include="Implementation\Caches\ExcelDocumentBordersStyles.cs" />
+    <Compile Include="Implementation\Caches\ExcelDocumentFillStyles.cs" />
+    <Compile Include="Implementation\Caches\ExcelDocumentFontStyles.cs" />
+    <Compile Include="Implementation\Caches\ExcelDocumentNumberingFormats.cs" />
+    <Compile Include="Implementation\Caches\ExcelDocumentStyle.cs" />
+    <Compile Include="Implementation\Caches\ExcelSharedStrings.cs" />
     <Compile Include="Implementation\Primitives\ExcelSpreadsheet.cs" />
     <Compile Include="Implementation\Primitives\ExcelRow.cs" />
     <Compile Include="Implementation\Primitives\ExcelCell.cs" />
@@ -75,6 +82,7 @@
     <Compile Include="Implementation\Caches\IExcelDocumentNumberingFormats.cs" />
     <Compile Include="Implementation\Caches\IExcelDocumentStyle.cs" />
     <Compile Include="Implementation\Caches\IExcelDocumentFontStyles.cs" />
+    <Compile Include="Implementation\Primitives\IExcelDocumentMeta.cs" />
     <Compile Include="Interfaces\IExcelRow.cs" />
     <Compile Include="Interfaces\IExcelSpreadsheet.cs" />
     <Compile Include="Implementation\IndexHelpers.cs" />

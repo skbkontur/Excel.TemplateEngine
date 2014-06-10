@@ -6,6 +6,5 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
     {
         byte[] GetDocumentBytes();
         IExcelSpreadsheet GetSpreadsheet(int index);
-        string GetSpreadsheetName(int index);
     }
 }

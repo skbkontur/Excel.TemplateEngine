@@ -44,14 +44,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
             }
         }
 
-        public Color ToColor()
+        public T ToColor<T>() where T : ColorType, new()
         {
-            return new Color {Rgb = GetRGBString()};
-        }
-
-        public ForegroundColor ToForegroundColor()
-        {
-            return new ForegroundColor {Rgb = GetRGBString()};
+            return new T {Rgb = GetRGBString()};
         }
 
         private HexBinaryValue GetRGBString()

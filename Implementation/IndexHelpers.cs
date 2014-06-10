@@ -7,7 +7,12 @@
             return string.Format("{0}{1}", ToColumnName(columnIndex), rowIndex);
         }
 
-        public static string ToColumnName(int columnIndex)
+        public static string ToCellName(uint rowIndex, int columnIndex)
+        {
+            return ToCellName((int)rowIndex, columnIndex);
+        }
+
+        private static string ToColumnName(int columnIndex)
         {
             columnIndex -= 1;
             var prefixIndex = columnIndex / 26;

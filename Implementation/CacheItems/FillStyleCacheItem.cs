@@ -1,5 +1,6 @@
 ﻿using System;
 
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
@@ -31,9 +32,15 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
             return Color.GetHashCode();
         }
 
-        public ForegroundColor ToForegroundColor()
+        public Fill ToFill()
         {
-            return Color.ToForegroundColor();
+            return new Fill
+                {
+                    PatternFill = new PatternFill(Color.ToColor<ForegroundColor>())
+                        {
+                            PatternType = new EnumValue<PatternValues>(PatternValues.Solid)
+                        }
+                };
         }
 
         private ColorCacheItem Color { get; set; }
