@@ -15,11 +15,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
 
     internal class ExcelCell : IExcelCell
     {
-        public ExcelCell(Cell cell, IExcelDocumentStyle documentStyle, ISharedStringsCache sharedStringsCache)
+        public ExcelCell(Cell cell, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings)
         {
             this.cell = cell;
             this.documentStyle = documentStyle;
-            this.sharedStringsCache = sharedStringsCache;
+            this.excelSharedStrings = excelSharedStrings;
         }
 
         public void SetStringValue(string value)
@@ -41,13 +41,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
 
         public void SetFormattedStringValue(FormattedStringValue value)
         {
-            var index = sharedStringsCache.AddSharedString(value);
+            var index = excelSharedStrings.AddSharedString(value);
             cell.CellValue = new CellValue(index.ToString(CultureInfo.InvariantCulture));
             cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
         }
 
         private readonly Cell cell;
         private readonly IExcelDocumentStyle documentStyle;
-        private readonly ISharedStringsCache sharedStringsCache;
+        private readonly IExcelSharedStrings excelSharedStrings;
     }
 }

@@ -6,15 +6,15 @@ using SKBKontur.Catalogue.ExcelFileGenerator.CacheItems;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator
 {
-    internal interface ISharedStringsCache
+    internal interface IExcelSharedStrings
     {
         uint AddSharedString(FormattedStringValue value);
         void Save();
     }
 
-    internal class SharedStringsCache : ISharedStringsCache
+    internal class ExcelSharedStrings : IExcelSharedStrings
     {
-        public SharedStringsCache(SharedStringTable sharedStringTable)
+        public ExcelSharedStrings(SharedStringTable sharedStringTable)
         {
             this.sharedStringTable = sharedStringTable;
             cache = new Dictionary<SharedStringCacheItem, uint>();
