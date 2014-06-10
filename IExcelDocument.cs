@@ -12,6 +12,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
     {
         byte[] GetDocumentBytes();
         IExcelSpreadsheet GetSpreadsheet(int index);
+        string GetSpreadsheetName(int index);
     }
 
     internal class ExcelDocument : IExcelDocument
@@ -49,7 +50,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
                 worksheetPart = (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(sheetId);
                 worksheetsCache.Add(sheetId, worksheetPart);
             }
-            return new ExcelSpreadsheet(worksheetPart, documentStyle, excelSharedStrings);
+            return new ExcelSpreadsheet(worksheetPart, documentStyle, excelSharedStrings, this);
+        }
+
+        public string GetSpreadsheetName(int index)
+        {
+            return ((Sheet)spreadsheetDocument.WorkbookPart.Workbook.Sheets.ChildElements[index]).Name;
         }
 
         private void Flush()

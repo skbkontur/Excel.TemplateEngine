@@ -2,6 +2,11 @@
 {
     internal static class IndexHelpers
     {
+        public static string ToCellName(int rowIndex, int columnIndex)
+        {
+            return string.Format("{0}{1}", ToColumnName(columnIndex), rowIndex);
+        }
+
         public static string ToColumnName(int columnIndex)
         {
             columnIndex -= 1;
