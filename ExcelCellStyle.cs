@@ -20,6 +20,7 @@
     {
         public ExcelHorizontalAlignment HorizontalAlignment { get; set; }
         public ExcelVerticalAlignment VerticalAlignment { get; set; }
+        public bool WrapText { get; set; }
     }
 
     public enum ExcelVerticalAlignment

@@ -94,13 +94,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             default:
                 throw new Exception(string.Format("Unknown vertical alignment: {0}", cellAlignment.VerticalAlignment));
             }
-            if(horizontalAlignment == null && verticalAlignment == null)
+            if(horizontalAlignment == null && verticalAlignment == null && !cellAlignment.WrapText)
                 return null;
 
             return new Alignment
                 {
                     Horizontal = horizontalAlignment,
-                    Vertical = verticalAlignment
+                    Vertical = verticalAlignment,
+                    WrapText = cellAlignment.WrapText ? new BooleanValue(true) : null
                 };
         }
 

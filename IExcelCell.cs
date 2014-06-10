@@ -24,8 +24,16 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
 
         public void SetStringValue(string value)
         {
-            cell.CellValue = new CellValue(value);
-            cell.DataType = new EnumValue<CellValues>(CellValues.String);
+            SetFormattedStringValue(new FormattedStringValue
+                {
+                    Blocks = new[]
+                        {
+                            new FormattedStringValueBlock
+                                {
+                                    Value = value
+                                }
+                        }
+                });
         }
 
         public void SetNumericValue(double value)
