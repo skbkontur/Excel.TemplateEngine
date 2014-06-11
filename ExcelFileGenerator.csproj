@@ -62,6 +62,8 @@
     <Compile Include="DataTypes\ExcelHorizontalAlignment.cs" />
     <Compile Include="DataTypes\ExcelVerticalAlignment.cs" />
     <Compile Include="DataTypes\FormattedStringValueBlock.cs" />
+    <Compile Include="Implementation\Caches\AlignmentCacheItem.cs" />
+    <Compile Include="Implementation\Caches\CellStyleCacheItem.cs" />
     <Compile Include="Implementation\Caches\ExcelDocumentBordersStyles.cs" />
     <Compile Include="Implementation\Caches\ExcelDocumentFillStyles.cs" />
     <Compile Include="Implementation\Caches\ExcelDocumentFontStyles.cs" />

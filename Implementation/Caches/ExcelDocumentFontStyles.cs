@@ -35,6 +35,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             result = stylesheet.Fonts.Count;
             stylesheet.Fonts.AppendChild(cacheItem.ToFont());
             stylesheet.Fonts.Count++;
+            cache.Add(cacheItem, result);
             return result;
         }
 

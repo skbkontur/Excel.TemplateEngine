@@ -37,6 +37,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             result = stylesheet.Fills.Count;
             stylesheet.Fills.AppendChild(cacheItem.ToFill());
             stylesheet.Fills.Count++;
+            cache.Add(cacheItem, result);
             return result;
         }
 
