@@ -48,6 +48,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return new ExcelSpreadsheet(worksheetPart, documentStyle, excelSharedStrings, this);
         }
 
+        public void SetPivotTableSource(int tableIndex, int fromRow, int fromColumn, int toRow, int toColumn)
+        {
+            var worksheetSource = spreadsheetDocument.WorkbookPart.PivotTableCacheDefinitionParts.ElementAt(tableIndex).PivotCacheDefinition.CacheSource.GetFirstChild<WorksheetSource>();
+            worksheetSource.Reference = string.Format("{0}:{1}", IndexHelpers.ToCellName(fromRow, fromColumn), IndexHelpers.ToCellName(toRow, toColumn));
+        }
+
         public string GetSpreadsheetName(int index)
         {
             return ((Sheet)spreadsheetDocument.WorkbookPart.Workbook.Sheets.ChildElements[index]).Name;
@@ -59,6 +65,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 worksheetPart.Worksheet.Save();
             documentStyle.Save();
             excelSharedStrings.Save();
+            foreach(var pivotTableCacheDefinitionPart in spreadsheetDocument.WorkbookPart.PivotTableCacheDefinitionParts)
+                pivotTableCacheDefinitionPart.PivotCacheDefinition.Save();
         }
 
         private readonly IDictionary<string, WorksheetPart> worksheetsCache;
