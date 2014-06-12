@@ -4,9 +4,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
 {
     public interface IExcelCell
     {
-        void SetNumericValue(double value);
-        void SetStringValue(string value);
-        void SetFormattedStringValue(FormattedStringValue value);
-        void SetStyle(ExcelCellStyle style);
+        IExcelCell SetNumericValue(double value);
+        IExcelCell SetStringValue(string value);
+        IExcelCell SetFormattedStringValue(FormattedStringValue value);
+        IExcelCell SetStyle(ExcelCellStyle style);
     }
 }

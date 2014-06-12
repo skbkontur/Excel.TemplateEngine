@@ -18,9 +18,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             this.excelSharedStrings = excelSharedStrings;
         }
 
-        public void SetStringValue(string value)
+        public IExcelCell SetStringValue(string value)
         {
-            SetFormattedStringValue(new FormattedStringValue
+            return SetFormattedStringValue(new FormattedStringValue
                 {
                     Blocks = new[]
                         {
@@ -32,22 +32,25 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 });
         }
 
-        public void SetNumericValue(double value)
+        public IExcelCell SetNumericValue(double value)
         {
             cell.CellValue = new CellValue(value.ToString(CultureInfo.InvariantCulture));
             cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+            return this;
         }
 
-        public void SetStyle(ExcelCellStyle style)
+        public IExcelCell SetStyle(ExcelCellStyle style)
         {
             cell.StyleIndex = documentStyle.AddStyle(style);
+            return this;
         }
 
-        public void SetFormattedStringValue(FormattedStringValue value)
+        public IExcelCell SetFormattedStringValue(FormattedStringValue value)
         {
             var index = excelSharedStrings.AddSharedString(value);
             cell.CellValue = new CellValue(index.ToString(CultureInfo.InvariantCulture));
             cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+            return this;
         }
 
         private readonly Cell cell;
