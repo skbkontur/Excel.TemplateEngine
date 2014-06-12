@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
@@ -22,6 +23,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 };
             row.AppendChild(cell);
             return new ExcelCell(cell, documentStyle, excelSharedStrings);
+        }
+
+        public void SetHeight(double value)
+        {
+            row.Height = value;
+            row.CustomHeight = new BooleanValue(true);
         }
 
         private readonly Row row;
