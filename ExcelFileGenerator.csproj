@@ -95,7 +95,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetDir)$(TargetName).dll $(SolutionDir)..\Assemblies\Temp\
-copy $(TargetDir)$(TargetName).pdb $(SolutionDir)..\Assemblies\Temp\</PostBuildEvent>
+copy $(TargetDir)$(TargetName).pdb $(SolutionDir)..\Assemblies\Temp\
+copy $(SolutionDir)..\Assemblies\DocumentFormat.OpenXml.dll $(SolutionDir)..\Assemblies\Temp\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
