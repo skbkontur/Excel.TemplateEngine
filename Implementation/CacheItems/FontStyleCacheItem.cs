@@ -13,13 +13,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
             size = style.Size;
             color = style.Color == null ? null : new ColorCacheItem(style.Color);
             underlined = style.Underlined;
+            bold = style.Bold;
         }
 
         public bool Equals(FontStyleCacheItem other)
         {
             if(ReferenceEquals(null, other)) return false;
             if(ReferenceEquals(this, other)) return true;
-            return Equals(color, other.color) && size == other.size && underlined.Equals(other.underlined);
+            return Equals(color, other.color) && size == other.size && underlined.Equals(other.underlined) && bold.Equals(other.bold);
         }
 
         public override bool Equals(object obj)
@@ -37,6 +38,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
                 var hashCode = (color != null ? color.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ size.GetHashCode();
                 hashCode = (hashCode * 397) ^ underlined.GetHashCode();
+                hashCode = (hashCode * 397) ^ bold.GetHashCode();
                 return hashCode;
             }
         }
@@ -47,12 +49,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
                 {
                     Color = color == null ? null : color.ToColor<Color>(),
                     FontSize = size == null ? null : new FontSize {Val = size},
-                    Underline = underlined ? new Underline() : null
+                    Underline = underlined ? new Underline() : null,
+                    Bold = bold ? new Bold() : null
                 };
         }
 
         private readonly ColorCacheItem color;
         private readonly int? size;
         private readonly bool underlined;
+        private readonly bool bold;
     }
 }

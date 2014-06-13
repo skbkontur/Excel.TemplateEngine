@@ -58,6 +58,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
             {
             case ExcelBorderType.None:
                 return new EnumValue<BorderStyleValues>(BorderStyleValues.None);
+            case ExcelBorderType.Thin:
+                return new EnumValue<BorderStyleValues>(BorderStyleValues.Thin);
             case ExcelBorderType.Single:
                 return new EnumValue<BorderStyleValues>(BorderStyleValues.Medium);
             case ExcelBorderType.Bold:

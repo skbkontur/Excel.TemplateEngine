@@ -39,6 +39,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return this;
         }
 
+        public IExcelCell SetNumericValue(decimal value)
+        {
+            cell.CellValue = new CellValue(value.ToString(CultureInfo.InvariantCulture));
+            cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+            return this;
+        }
+
         public IExcelCell SetStyle(ExcelCellStyle style)
         {
             cell.StyleIndex = documentStyle.AddStyle(style);

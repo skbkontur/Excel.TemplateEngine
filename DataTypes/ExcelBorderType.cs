@@ -3,6 +3,7 @@
     public enum ExcelBorderType
     {
         None,
+        Thin,
         Single,
         Double,
         Bold
