@@ -1,5 +1,6 @@
 ﻿using System;
 
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
@@ -41,7 +42,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
         {
             return new Run
                 {
-                    Text = new Text(value),
+                    Text = new Text(value) {Space = new EnumValue<SpaceProcessingModeValues>(SpaceProcessingModeValues.Preserve)},
                     RunProperties = color == null
                                         ? null
                                         : new RunProperties(color.ToColor<Color>())
