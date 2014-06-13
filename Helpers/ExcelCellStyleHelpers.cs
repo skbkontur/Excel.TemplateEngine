@@ -59,6 +59,62 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
             return result;
         }
 
+        public static ExcelCellStyle LeftBorder(this ExcelCellStyle style, ExcelBorderType borderType = ExcelBorderType.Thin, ExcelColor color = null)
+        {
+            color = color ?? ExcelColors.Black;
+            var result = serializer.Copy(style);
+            if(result.BordersStyle == null)
+                result.BordersStyle = new ExcelCellBordersStyle();
+            result.BordersStyle.LeftBorder = new ExcelCellBorderStyle
+                {
+                    BorderType = borderType,
+                    Color = color
+                };
+            return result;
+        }
+
+        public static ExcelCellStyle RigthBorder(this ExcelCellStyle style, ExcelBorderType borderType = ExcelBorderType.Thin, ExcelColor color = null)
+        {
+            color = color ?? ExcelColors.Black;
+            var result = serializer.Copy(style);
+            if(result.BordersStyle == null)
+                result.BordersStyle = new ExcelCellBordersStyle();
+            result.BordersStyle.RightBorder = new ExcelCellBorderStyle
+                {
+                    BorderType = borderType,
+                    Color = color
+                };
+            return result;
+        }
+
+        public static ExcelCellStyle TopBorder(this ExcelCellStyle style, ExcelBorderType borderType = ExcelBorderType.Thin, ExcelColor color = null)
+        {
+            color = color ?? ExcelColors.Black;
+            var result = serializer.Copy(style);
+            if(result.BordersStyle == null)
+                result.BordersStyle = new ExcelCellBordersStyle();
+            result.BordersStyle.TopBorder = new ExcelCellBorderStyle
+                {
+                    BorderType = borderType,
+                    Color = color
+                };
+            return result;
+        }
+
+        public static ExcelCellStyle BottomBorder(this ExcelCellStyle style, ExcelBorderType borderType = ExcelBorderType.Thin, ExcelColor color = null)
+        {
+            color = color ?? ExcelColors.Black;
+            var result = serializer.Copy(style);
+            if(result.BordersStyle == null)
+                result.BordersStyle = new ExcelCellBordersStyle();
+            result.BordersStyle.BottomBorder = new ExcelCellBorderStyle
+                {
+                    BorderType = borderType,
+                    Color = color
+                };
+            return result;
+        }
+
         private static readonly ISerializer serializer = new Serializer(new AllFieldsExtractor());
     }
 }
