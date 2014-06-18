@@ -82,7 +82,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
             return result;
         }
 
-        public static ExcelCellStyle RigthBorder(this ExcelCellStyle style, ExcelBorderType borderType = ExcelBorderType.Thin, ExcelColor color = null)
+        public static ExcelCellStyle RightBorder(this ExcelCellStyle style, ExcelBorderType borderType = ExcelBorderType.Thin, ExcelColor color = null)
         {
             color = color ?? ExcelColors.Black;
             var result = serializer.Copy(style);
