@@ -48,6 +48,24 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return new ExcelSpreadsheet(worksheetPart, documentStyle, excelSharedStrings, this);
         }
 
+        public void DeleteSpreadsheet(int index)
+        {
+            var workbookPart = spreadsheetDocument.WorkbookPart;
+            var sheet = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index);
+            var sheetToDelete = sheet.Name.Value;
+            var worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
+            worksheetsCache.Remove(sheet.Id);
+            sheet.Remove();
+            workbookPart.DeletePart(worksheetPart);
+            var definedNames = workbookPart.Workbook.Descendants<DefinedNames>().FirstOrDefault();
+            if(definedNames != null)
+            {
+                var defNamesToDelete = definedNames.Cast<DefinedName>().Where(item => item.Text.Contains(sheetToDelete + "!")).ToList();
+                foreach(var item in defNamesToDelete)
+                    item.Remove();
+            }
+        }
+
         public void SetPivotTableSource(int tableIndex, int fromRow, int fromColumn, int toRow, int toColumn)
         {
             var worksheetSource = spreadsheetDocument.WorkbookPart.PivotTableCacheDefinitionParts.ElementAt(tableIndex).PivotCacheDefinition.CacheSource.GetFirstChild<WorksheetSource>();
@@ -61,12 +79,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         private void Flush()
         {
+            spreadsheetDocument.WorkbookPart.Workbook.RemoveAllChildren<DefinedNames>();
             foreach(var worksheetPart in worksheetsCache.Values)
                 worksheetPart.Worksheet.Save();
             documentStyle.Save();
             excelSharedStrings.Save();
             foreach(var pivotTableCacheDefinitionPart in spreadsheetDocument.WorkbookPart.PivotTableCacheDefinitionParts)
                 pivotTableCacheDefinitionPart.PivotCacheDefinition.Save();
+            spreadsheetDocument.WorkbookPart.Workbook.Save();
         }
 
         private readonly IDictionary<string, WorksheetPart> worksheetsCache;
