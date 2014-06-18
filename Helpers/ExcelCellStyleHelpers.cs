@@ -25,6 +25,15 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
             return result;
         }
 
+        public static ExcelCellStyle FillColor(this ExcelCellStyle style, ExcelColor color)
+        {
+            var result = serializer.Copy(style);
+            if (result.FillStyle == null)
+                result.FillStyle = new ExcelCellFillStyle();
+            result.FillStyle.Color = color;
+            return result;
+        }
+
         public static ExcelCellStyle Bold(this ExcelCellStyle style)
         {
             var result = serializer.Copy(style);
