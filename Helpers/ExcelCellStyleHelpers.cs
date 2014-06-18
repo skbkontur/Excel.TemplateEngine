@@ -28,7 +28,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
         public static ExcelCellStyle FillColor(this ExcelCellStyle style, ExcelColor color)
         {
             var result = serializer.Copy(style);
-            if (result.FillStyle == null)
+            if(result.FillStyle == null)
                 result.FillStyle = new ExcelCellFillStyle();
             result.FillStyle.Color = color;
             return result;
@@ -121,6 +121,33 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
                     BorderType = borderType,
                     Color = color
                 };
+            return result;
+        }
+
+        public static ExcelCellStyle WrapText(this ExcelCellStyle style)
+        {
+            var result = serializer.Copy(style);
+            if(result.Alignment == null)
+                result.Alignment = new ExcelCellAlignment();
+            result.Alignment.WrapText = true;
+            return result;
+        }
+
+        public static ExcelCellStyle Alignment(this ExcelCellStyle style, ExcelVerticalAlignment alignment)
+        {
+            var result = serializer.Copy(style);
+            if(result.Alignment == null)
+                result.Alignment = new ExcelCellAlignment();
+            result.Alignment.VerticalAlignment = alignment;
+            return result;
+        }
+
+        public static ExcelCellStyle Alignment(this ExcelCellStyle style, ExcelHorizontalAlignment alignment)
+        {
+            var result = serializer.Copy(style);
+            if(result.Alignment == null)
+                result.Alignment = new ExcelCellAlignment();
+            result.Alignment.HorizontalAlignment = alignment;
             return result;
         }
 
