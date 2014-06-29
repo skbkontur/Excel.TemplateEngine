@@ -28,6 +28,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 });
         }
 
+        public void CreateAutofilter(int fromRow, int fromCol, int toRow, int toCol)
+        {
+            var autofilter = worksheet.GetFirstChild<AutoFilter>() ?? CreateAutofilter();
+            autofilter.Reference = string.Format("{0}:{1}", IndexHelpers.ToCellName(fromRow, fromCol), IndexHelpers.ToCellName(toRow, toCol));
+        }
+
         public void CreateHyperlink(int row, int col, int toSpreadsheet, int toRow, int toCol)
         {
             var hyperlinks = worksheet.GetFirstChild<Hyperlinks>() ?? CreateHyperlinksWorksheetPart();
@@ -106,6 +112,22 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             else
                 worksheet.InsertAfter(hyperlinks, worksheet.Elements<SheetData>().First());
             return hyperlinks;
+        }
+
+        private AutoFilter CreateAutofilter()
+        {
+            var autofilter = new AutoFilter();
+            if(worksheet.Elements<Scenarios>().Any())
+                worksheet.InsertAfter(autofilter, worksheet.Elements<Scenarios>().First());
+            else if(worksheet.Elements<ProtectedRanges>().Any())
+                worksheet.InsertAfter(autofilter, worksheet.Elements<ProtectedRanges>().First());
+            else if(worksheet.Elements<SheetProtection>().Any())
+                worksheet.InsertAfter(autofilter, worksheet.Elements<SheetProtection>().First());
+            else if(worksheet.Elements<SheetCalculationProperties>().Any())
+                worksheet.InsertAfter(autofilter, worksheet.Elements<SheetCalculationProperties>().First());
+            else
+                worksheet.InsertAfter(autofilter, worksheet.Elements<SheetData>().First());
+            return autofilter;
         }
 
         private readonly IExcelDocumentStyle documentStyle;
