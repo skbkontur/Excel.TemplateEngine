@@ -66,6 +66,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             }
         }
 
+        public void RenameSpreadSheet(int index, string name)
+        {
+            spreadsheetDocument.WorkbookPart.Workbook.Sheets.Elements<Sheet>().ElementAt(index).Name = name;
+        }
+
         public void SetPivotTableSource(int tableIndex, int fromRow, int fromColumn, int toRow, int toColumn)
         {
             var worksheetSource = spreadsheetDocument.WorkbookPart.PivotTableCacheDefinitionParts.ElementAt(tableIndex).PivotCacheDefinition.CacheSource.GetFirstChild<WorksheetSource>();
