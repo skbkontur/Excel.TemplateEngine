@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
@@ -43,6 +44,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                     Reference = IndexHelpers.ToCellName(row, col),
                     Location = string.Format("{0}!{1}", spreadSheetName, IndexHelpers.ToCellName(toRow, toCol))
                 });
+        }
+
+        public void ResizeColumn(int columnIndex, double width)
+        {
+            var column = (Column) worksheet.GetFirstChild<Columns>().ChildElements.Skip(columnIndex-1).First();
+            column.Width = width;
+            if(Math.Abs(width - 0) < 1e-9)
+                column.Hidden = true;
         }
 
         public IExcelRow CreateRow(int rowIndex)
