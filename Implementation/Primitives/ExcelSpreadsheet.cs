@@ -48,7 +48,16 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public void ResizeColumn(int columnIndex, double width)
         {
-            var column = (Column) worksheet.GetFirstChild<Columns>().ChildElements.Skip(columnIndex-1).First();
+            var columns = worksheet.GetFirstChild<Columns>() ?? CreateColumns();
+            while(columns.ChildElements.Count < columnIndex)
+                columns.AppendChild(new Column
+                    {
+                        Min = (uint)columns.ChildElements.Count + 1,
+                        Max = (uint)columns.ChildElements.Count + 1,
+                        BestFit = true,
+                        CustomWidth = true
+                    });
+            var column = (Column)columns.ChildElements.Skip(columnIndex - 1).First();
             column.Width = width;
             if(Math.Abs(width - 0) < 1e-9)
                 column.Hidden = true;
@@ -137,6 +146,22 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             else
                 worksheet.InsertAfter(autofilter, worksheet.Elements<SheetData>().First());
             return autofilter;
+        }
+
+        private Columns CreateColumns()
+        {
+            var columns = new Columns();
+            if(worksheet.Elements<SheetFormatProperties>().Any())
+                worksheet.InsertAfter(columns, worksheet.Elements<SheetFormatProperties>().First());
+            else if(worksheet.Elements<SheetViews>().Any())
+                worksheet.InsertAfter(columns, worksheet.Elements<SheetViews>().First());
+            else if(worksheet.Elements<Dimensions>().Any())
+                worksheet.InsertAfter(columns, worksheet.Elements<Dimensions>().First());
+            else if(worksheet.Elements<SheetProperties>().Any())
+                worksheet.InsertAfter(columns, worksheet.Elements<SheetProperties>().First());
+            else
+                worksheet.InsertAt(columns, 0);
+            return columns;
         }
 
         private readonly IExcelDocumentStyle documentStyle;
