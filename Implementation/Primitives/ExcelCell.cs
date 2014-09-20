@@ -6,6 +6,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
@@ -50,6 +51,15 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             cell.StyleIndex = documentStyle.AddStyle(style);
             return this;
+        }
+
+        public string GetStringValue()
+        {
+            if(cell.With(x => x.DataType).Return(x => (CellValues?)x.Value, null) == CellValues.SharedString)
+            {
+                return excelSharedStrings.GetSharedString(uint.Parse(cell.CellValue.Text));
+            }
+            return cell.CellValue.Text;
         }
 
         public IExcelCell SetFormattedStringValue(FormattedStringValue value)

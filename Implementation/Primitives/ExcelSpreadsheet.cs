@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using DocumentFormat.OpenXml;
@@ -50,6 +51,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             var columns = worksheet.GetFirstChild<Columns>() ?? CreateColumns();
             while(columns.ChildElements.Count < columnIndex)
+            {
                 columns.AppendChild(new Column
                     {
                         Min = (uint)columns.ChildElements.Count + 1,
@@ -57,11 +59,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                         BestFit = true,
                         CustomWidth = true
                     });
+            }
             var column = (Column)columns.ChildElements.Skip(columnIndex - 1).First();
             column.Width = width;
             if(Math.Abs(width - 0) < 1e-9)
                 column.Hidden = true;
         }
+
+        public IEnumerable<IExcelRow> Rows { get { return worksheet.GetFirstChild<SheetData>().ChildElements.OfType<Row>().Select(x => new ExcelRow(x, documentStyle, excelSharedStrings)); } }
 
         public IExcelRow CreateRow(int rowIndex)
         {

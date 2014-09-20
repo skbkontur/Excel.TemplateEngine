@@ -9,5 +9,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         IExcelCell SetStringValue(string value);
         IExcelCell SetFormattedStringValue(FormattedStringValue value);
         IExcelCell SetStyle(ExcelCellStyle style);
+        
+        string GetStringValue();
     }
 }

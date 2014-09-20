@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Catalogue.Objects">
+      <HintPath>..\..\Assemblies\Temp\Catalogue.Objects.dll</HintPath>
+    </Reference>
     <Reference Include="DocumentFormat.OpenXml">
       <HintPath>..\..\Assemblies\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>

@@ -1,4 +1,7 @@
-﻿using DocumentFormat.OpenXml;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
@@ -24,6 +27,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             row.AppendChild(cell);
             return new ExcelCell(cell, documentStyle, excelSharedStrings);
         }
+
+        public IEnumerable<IExcelCell> Cells { get { return row.ChildElements.OfType<Cell>().Select(x => new ExcelCell(x, documentStyle, excelSharedStrings)); } }
 
         public void SetHeight(double value)
         {

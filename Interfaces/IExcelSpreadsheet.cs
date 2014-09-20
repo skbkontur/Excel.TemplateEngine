@@ -1,4 +1,6 @@
-﻿namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
+﻿using System.Collections.Generic;
+
+namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
 {
     public interface IExcelSpreadsheet
     {
@@ -7,5 +9,6 @@
         void CreateAutofilter(int fromRow, int fromCol, int toRow, int toCol);
         void CreateHyperlink(int row, int col, int toSpreadsheet, int toRow, int toCol);
         void ResizeColumn(int columnIndex, double width);
+        IEnumerable<IExcelRow> Rows { get; }
     }
 }

@@ -29,6 +29,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             return result;
         }
 
+        public string GetSharedString(uint index)
+        {
+            var a = sharedStringTable.ChildElements[(int)index];
+            return a.FirstChild.InnerText;
+        }
+
         public void Save()
         {
             sharedStringTable.Save();
