@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using DocumentFormat.OpenXml;
@@ -28,12 +29,40 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return new ExcelCell(cell, documentStyle, excelSharedStrings);
         }
 
-        public IEnumerable<IExcelCell> Cells { get { return row.ChildElements.OfType<Cell>().Select(x => new ExcelCell(x, documentStyle, excelSharedStrings)); } }
+        public IEnumerable<IExcelCell> Cells
+        {
+            get
+            {
+                var currentIndex = 1;
+                foreach(var cell in row.ChildElements.OfType<Cell>())
+                {
+                    var index = GetCellXIndex(cell);
+                    while(currentIndex < index)
+                    {
+                        yield return null;
+                        currentIndex++;
+                    }
+                    yield return new ExcelCell(cell, documentStyle, excelSharedStrings);
+                    currentIndex++;
+                }
+            }
+        }
 
         public void SetHeight(double value)
         {
             row.Height = value;
             row.CustomHeight = new BooleanValue(true);
+        }
+
+        private static int GetCellXIndex(Cell cell)
+        {
+            return cell
+                .CellReference.Value
+                .TakeWhile(char.IsLetter)
+                .Select(c => c - 'A' + 1)
+                .Reverse()
+                .Select((v, i) => v * (int)Math.Pow(26, i))
+                .Sum();
         }
 
         private readonly Row row;
