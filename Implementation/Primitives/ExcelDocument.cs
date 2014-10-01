@@ -84,14 +84,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         private void Flush()
         {
-            spreadsheetDocument.WorkbookPart.Workbook.RemoveAllChildren<DefinedNames>();
-            foreach(var worksheetPart in worksheetsCache.Values)
-                worksheetPart.Worksheet.Save();
-            documentStyle.Save();
-            excelSharedStrings.Save();
-            foreach(var pivotTableCacheDefinitionPart in spreadsheetDocument.WorkbookPart.PivotTableCacheDefinitionParts)
-                pivotTableCacheDefinitionPart.PivotCacheDefinition.Save();
-            spreadsheetDocument.WorkbookPart.Workbook.Save();
+            // Saving document parts in OpenXml is not thread-safe. Detailed info at http://support2.microsoft.com/kb/951731
+            lock(lockObject)
+            {
+                spreadsheetDocument.WorkbookPart.Workbook.RemoveAllChildren<DefinedNames>();
+                foreach(var worksheetPart in worksheetsCache.Values)
+                    worksheetPart.Worksheet.Save();
+                documentStyle.Save();
+                excelSharedStrings.Save();
+                foreach(var pivotTableCacheDefinitionPart in spreadsheetDocument.WorkbookPart.PivotTableCacheDefinitionParts)
+                    pivotTableCacheDefinitionPart.PivotCacheDefinition.Save();
+                spreadsheetDocument.WorkbookPart.Workbook.Save();
+            }
         }
 
         private readonly IDictionary<string, WorksheetPart> worksheetsCache;
@@ -99,5 +103,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private readonly SpreadsheetDocument spreadsheetDocument;
         private readonly IExcelDocumentStyle documentStyle;
         private readonly IExcelSharedStrings excelSharedStrings;
+
+        private static readonly object lockObject = new object();
     }
 }
