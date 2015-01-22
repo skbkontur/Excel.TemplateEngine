@@ -11,9 +11,9 @@ using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
-    internal class ExcelSpreadsheet : IExcelSpreadsheet
+    internal class ExcelWorksheet : IExcelWorksheet
     {
-        public ExcelSpreadsheet(WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings, IExcelDocumentMeta document)
+        public ExcelWorksheet(WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings, IExcelDocumentMeta document)
         {
             worksheet = worksheetPart.Worksheet;
             this.documentStyle = documentStyle;
@@ -36,14 +36,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             autofilter.Reference = string.Format("{0}:{1}", IndexHelpers.ToCellName(fromRow, fromCol), IndexHelpers.ToCellName(toRow, toCol));
         }
 
-        public void CreateHyperlink(int row, int col, int toSpreadsheet, int toRow, int toCol)
+        public void CreateHyperlink(int row, int col, int toWorksheet, int toRow, int toCol)
         {
             var hyperlinks = worksheet.GetFirstChild<Hyperlinks>() ?? CreateHyperlinksWorksheetPart();
-            var spreadSheetName = document.GetSpreadsheetName(toSpreadsheet);
+            var worksheetName = document.GetWorksheetName(toWorksheet);
             hyperlinks.AppendChild(new Hyperlink
                 {
                     Reference = IndexHelpers.ToCellName(row, col),
-                    Location = string.Format("{0}!{1}", spreadSheetName, IndexHelpers.ToCellName(toRow, toCol))
+                    Location = string.Format("{0}!{1}", worksheetName, IndexHelpers.ToCellName(toRow, toCol))
                 });
         }
 

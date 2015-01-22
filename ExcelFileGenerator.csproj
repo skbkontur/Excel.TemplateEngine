@@ -72,7 +72,7 @@
     <Compile Include="Implementation\Caches\ExcelDocumentNumberingFormats.cs" />
     <Compile Include="Implementation\Caches\ExcelDocumentStyle.cs" />
     <Compile Include="Implementation\Caches\ExcelSharedStrings.cs" />
-    <Compile Include="Implementation\Primitives\ExcelSpreadsheet.cs" />
+    <Compile Include="Implementation\Primitives\ExcelWorksheet.cs" />
     <Compile Include="Implementation\Primitives\ExcelRow.cs" />
     <Compile Include="Implementation\Primitives\ExcelCell.cs" />
     <Compile Include="DataTypes\FormattedStringValue.cs" />
@@ -86,9 +86,9 @@
     <Compile Include="Implementation\Caches\IExcelDocumentNumberingFormats.cs" />
     <Compile Include="Implementation\Caches\IExcelDocumentStyle.cs" />
     <Compile Include="Implementation\Caches\IExcelDocumentFontStyles.cs" />
-    <Compile Include="Implementation\Primitives\IExcelDocumentMeta.cs" />
+    <Compile Include="Interfaces\IExcelDocumentMeta.cs" />
     <Compile Include="Interfaces\IExcelRow.cs" />
-    <Compile Include="Interfaces\IExcelSpreadsheet.cs" />
+    <Compile Include="Interfaces\IExcelWorksheet.cs" />
     <Compile Include="Implementation\IndexHelpers.cs" />
     <Compile Include="Implementation\CacheItems\NumberingFormatCacheItem.cs" />
     <Compile Include="Implementation\Caches\IExcelSharedStrings.cs" />

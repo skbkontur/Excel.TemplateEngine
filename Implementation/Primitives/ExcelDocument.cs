@@ -36,7 +36,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return documentMemoryStream.ToArray();
         }
 
-        public IExcelSpreadsheet GetSpreadsheet(int index)
+        public IExcelWorksheet GetWorksheet(int index)
         {
             var sheetId = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index).Id.Value;
             WorksheetPart worksheetPart;
@@ -45,10 +45,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 worksheetPart = (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(sheetId);
                 worksheetsCache.Add(sheetId, worksheetPart);
             }
-            return new ExcelSpreadsheet(worksheetPart, documentStyle, excelSharedStrings, this);
+            return new ExcelWorksheet(worksheetPart, documentStyle, excelSharedStrings, this);
         }
 
-        public void DeleteSpreadsheet(int index)
+        public void DeleteWorksheet(int index)
         {
             var workbookPart = spreadsheetDocument.WorkbookPart;
             var sheet = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index);
@@ -66,7 +66,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             }
         }
 
-        public void RenameSpreadSheet(int index, string name)
+        public void RenameWorksheet(int index, string name)
         {
             spreadsheetDocument.WorkbookPart.Workbook.Sheets.Elements<Sheet>().ElementAt(index).Name = name;
         }
@@ -77,7 +77,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             worksheetSource.Reference = string.Format("{0}:{1}", IndexHelpers.ToCellName(fromRow, fromColumn), IndexHelpers.ToCellName(toRow, toColumn));
         }
 
-        public string GetSpreadsheetName(int index)
+        public string GetWorksheetName(int index)
         {
             return ((Sheet)spreadsheetDocument.WorkbookPart.Workbook.Sheets.ChildElements[index]).Name;
         }
