@@ -66,6 +66,28 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 column.Hidden = true;
         }
 
+        public IEnumerable<IExcelCell> GetSortedCellsInRange(int fromRow, int fromColumn, int toRow, int toColumn)
+        {
+            return worksheet.GetFirstChild<SheetData>().Elements<Row>()
+                            .Where(row => row.RowIndex - 1 >= fromRow && row.RowIndex - 1 <= toRow)
+                            .SelectMany(row => row.Elements<Cell>()
+                                                  .Where(cell =>
+                                                      {
+                                                          var columnIndex = new ExcelCellIndex(cell.CellReference).ColumnIndex;
+                                                          return columnIndex >= upperLeft.ColumnIndex && columnIndex <= lowerRight.ColumnIndex;
+                                                      }))
+                            .OrderBy(cell => (IndexHelpers.GetRowIndex(cell.CellReference) - fromRow) * (toColumn - fromColumn) + IndexHelpers.GetColumnIndex(cell.CellReference))
+                            .Select(cell => new ExcelCell(cell, documentStyle, excelSharedStrings));
+        }
+
+        public IEnumerable<IExcelCell> GetSortedCellsInRange(string upperLeft, string lowerRight)
+        {
+            return GetSortedCellsInRange(IndexHelpers.GetRowIndex(upperLeft),
+                                         IndexHelpers.GetColumnIndex(upperLeft),
+                                         IndexHelpers.GetRowIndex(lowerRight),
+                                         IndexHelpers.GetColumnIndex(lowerRight));
+        }
+
         public IEnumerable<IExcelRow> Rows { get { return worksheet.GetFirstChild<SheetData>().ChildElements.OfType<Row>().Select(x => new ExcelRow(x, documentStyle, excelSharedStrings)); } }
 
         public IExcelRow CreateRow(int rowIndex)
