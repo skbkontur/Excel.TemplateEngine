@@ -2,7 +2,7 @@
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 {
-    internal interface IExcelSharedStrings
+    public interface IExcelSharedStrings
     {
         uint AddSharedString(FormattedStringValue value);
         string GetSharedString(uint index);

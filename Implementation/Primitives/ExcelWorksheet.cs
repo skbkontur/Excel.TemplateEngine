@@ -11,7 +11,7 @@ using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
-    internal class ExcelWorksheet : IExcelWorksheet
+    public class ExcelWorksheet : IExcelWorksheet
     {
         public ExcelWorksheet(WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings, IExcelDocumentMeta document)
         {
@@ -21,29 +21,29 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             this.document = document;
         }
 
-        public void MergeCells(int fromRow, int fromCol, int toRow, int toCol)
+        public void MergeCells(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
         {
             var mergeCells = worksheet.GetFirstChild<MergeCells>() ?? CreateMergeCellsWorksheetPart();
             mergeCells.AppendChild(new MergeCell
                 {
-                    Reference = string.Format("{0}:{1}", IndexHelpers.ToCellName(fromRow, fromCol), IndexHelpers.ToCellName(toRow, toCol))
+                    Reference = string.Format("{0}:{1}", upperLeft.CellReference, lowerRight.CellReference)
                 });
         }
 
-        public void CreateAutofilter(int fromRow, int fromCol, int toRow, int toCol)
+        public void CreateAutofilter(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
         {
             var autofilter = worksheet.GetFirstChild<AutoFilter>() ?? CreateAutofilter();
-            autofilter.Reference = string.Format("{0}:{1}", IndexHelpers.ToCellName(fromRow, fromCol), IndexHelpers.ToCellName(toRow, toCol));
+            autofilter.Reference = string.Format("{0}:{1}", upperLeft.CellReference, lowerRight.CellReference);
         }
 
-        public void CreateHyperlink(int row, int col, int toWorksheet, int toRow, int toCol)
+        public void CreateHyperlink(ExcelCellIndex from, int toWorksheet, ExcelCellIndex to)
         {
             var hyperlinks = worksheet.GetFirstChild<Hyperlinks>() ?? CreateHyperlinksWorksheetPart();
             var worksheetName = document.GetWorksheetName(toWorksheet);
             hyperlinks.AppendChild(new Hyperlink
                 {
-                    Reference = IndexHelpers.ToCellName(row, col),
-                    Location = string.Format("{0}!{1}", worksheetName, IndexHelpers.ToCellName(toRow, toCol))
+                    Reference = from.CellReference,
+                    Location = string.Format("{0}!{1}", worksheetName, to.CellReference)
                 });
         }
 
@@ -66,29 +66,74 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 column.Hidden = true;
         }
 
-        public IEnumerable<IExcelCell> GetSortedCellsInRange(int fromRow, int fromColumn, int toRow, int toColumn)
+        public IEnumerable<IExcelCell> GetSortedCellsInRange(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
         {
             return worksheet.GetFirstChild<SheetData>().Elements<Row>()
-                            .Where(row => row.RowIndex - 1 >= fromRow && row.RowIndex - 1 <= toRow)
+                            .Where(row => row.RowIndex >= upperLeft.RowIndex && row.RowIndex <= lowerRight.RowIndex)
                             .SelectMany(row => row.Elements<Cell>()
                                                   .Where(cell =>
                                                       {
                                                           var columnIndex = new ExcelCellIndex(cell.CellReference).ColumnIndex;
                                                           return columnIndex >= upperLeft.ColumnIndex && columnIndex <= lowerRight.ColumnIndex;
                                                       }))
-                            .OrderBy(cell => (IndexHelpers.GetRowIndex(cell.CellReference) - fromRow) * (toColumn - fromColumn) + IndexHelpers.GetColumnIndex(cell.CellReference))
+                            .OrderBy(cell =>
+                                {
+                                    var cellIndex = new ExcelCellIndex(cell.CellReference);
+                                    return (cellIndex.RowIndex - upperLeft.RowIndex) * (lowerRight.ColumnIndex - upperLeft.ColumnIndex) + cellIndex.ColumnIndex;
+                                })
                             .Select(cell => new ExcelCell(cell, documentStyle, excelSharedStrings));
         }
 
-        public IEnumerable<IExcelCell> GetSortedCellsInRange(string upperLeft, string lowerRight)
+        public IExcelCell GetCell(ExcelCellIndex position)
         {
-            return GetSortedCellsInRange(IndexHelpers.GetRowIndex(upperLeft),
-                                         IndexHelpers.GetColumnIndex(upperLeft),
-                                         IndexHelpers.GetRowIndex(lowerRight),
-                                         IndexHelpers.GetColumnIndex(lowerRight));
+            return GetSortedCellsInRange(position, position).FirstOrDefault();
+        }
+
+        public IEnumerable<IExcelCell> SearchCellsByText(string text)
+        {
+            return worksheet.GetFirstChild<SheetData>().Elements<Row>()
+                            .SelectMany(row => row.Elements<Cell>())
+                            .Where(cell =>
+                                {
+                                    uint id;
+                                    if(uint.TryParse(cell.InnerText, out id))
+                                        return excelSharedStrings.GetSharedString(id).Contains(text);
+                                    return false;
+                                })
+                            .Select(cell => new ExcelCell(cell, documentStyle, excelSharedStrings));
         }
 
         public IEnumerable<IExcelRow> Rows { get { return worksheet.GetFirstChild<SheetData>().ChildElements.OfType<Row>().Select(x => new ExcelRow(x, documentStyle, excelSharedStrings)); } }
+
+        public IExcelCell InsertCell(ExcelCellIndex cellIndex)
+        {
+            var sheetData = worksheet.GetFirstChild<SheetData>();
+
+            Row newRow;
+            if(sheetData.Elements<Row>().Any(r => r.RowIndex == cellIndex.RowIndex))
+                newRow = sheetData.Elements<Row>().First(r => r.RowIndex == cellIndex.RowIndex);
+            else
+            {
+                var refRow = sheetData.Elements<Row>().FirstOrDefault(row => row.RowIndex > (uint)cellIndex.RowIndex);
+                newRow = new Row
+                    {
+                        RowIndex = new UInt32Value((uint)cellIndex.RowIndex)
+                    };
+                sheetData.InsertBefore(newRow, refRow);
+            }
+
+            if(newRow.Elements<Cell>().Any(c => c.CellReference.Value == cellIndex.CellReference))
+                return new ExcelCell(newRow.Elements<Cell>().First(c => c.CellReference.Value == cellIndex.CellReference), documentStyle, excelSharedStrings);
+
+            var refCell = newRow.Elements<Cell>().FirstOrDefault(cell => String.Compare(cell.CellReference.Value, cellIndex.CellReference, StringComparison.OrdinalIgnoreCase) > 0);
+            var newCell = new Cell
+                {
+                    CellReference = cellIndex.CellReference
+                };
+
+            newRow.InsertBefore(newCell, refCell);
+            return new ExcelCell(newCell, documentStyle, excelSharedStrings);
+        }
 
         public IExcelRow CreateRow(int rowIndex)
         {

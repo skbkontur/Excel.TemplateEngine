@@ -10,7 +10,7 @@ using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
-    internal class ExcelCell : IExcelCell
+    public class ExcelCell : IExcelCell
     {
         public ExcelCell(Cell cell, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings)
         {
@@ -40,6 +40,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return this;
         }
 
+        public IExcelCell SetNumericValue(string value)
+        {
+            cell.CellValue = new CellValue(value);
+            cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+            return this;
+        }
+
         public IExcelCell SetNumericValue(decimal value)
         {
             cell.CellValue = new CellValue(value.ToString(CultureInfo.InvariantCulture));
@@ -58,6 +65,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             if(cell.With(x => x.DataType).Return(x => (CellValues?)x.Value, null) == CellValues.SharedString)
                 return excelSharedStrings.GetSharedString(uint.Parse(cell.CellValue.Text));
             return cell.With(x => x.CellValue).Return(x => x.Text, null);
+        }
+
+        public ExcelCellIndex GetCellReference()
+        {
+            return new ExcelCellIndex(cell.CellReference.Value);
         }
 
         public IExcelCell SetFormattedStringValue(FormattedStringValue value)

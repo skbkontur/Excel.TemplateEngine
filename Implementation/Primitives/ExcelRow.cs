@@ -23,7 +23,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             var cell = new Cell
                 {
-                    CellReference = IndexHelpers.ToCellName(row.RowIndex, index)
+                    CellReference = new ExcelCellIndex((int)row.RowIndex.Value, index).CellReference
                 };
             row.AppendChild(cell);
             return new ExcelCell(cell, documentStyle, excelSharedStrings);

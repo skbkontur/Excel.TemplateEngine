@@ -2,7 +2,7 @@
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 {
-    internal interface IExcelDocumentStyle
+    public interface IExcelDocumentStyle
     {
         uint AddStyle(ExcelCellStyle style);
         void Save();

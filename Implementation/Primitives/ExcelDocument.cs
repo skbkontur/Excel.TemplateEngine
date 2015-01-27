@@ -7,10 +7,11 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
-    internal class ExcelDocument : IExcelDocument, IExcelDocumentMeta
+    public class ExcelDocument : IExcelDocument, IExcelDocumentMeta
     {
         public ExcelDocument(byte[] template)
         {
@@ -21,7 +22,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true);
 
             documentStyle = new ExcelDocumentStyle(spreadsheetDocument.WorkbookPart.WorkbookStylesPart.Stylesheet);
-            excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.WorkbookPart.SharedStringTablePart.SharedStringTable);
+            excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.WorkbookPart.With(wp => wp.SharedStringTablePart).With(sstp => sstp.SharedStringTable));
         }
 
         public void Dispose()
@@ -71,10 +72,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             spreadsheetDocument.WorkbookPart.Workbook.Sheets.Elements<Sheet>().ElementAt(index).Name = name;
         }
 
-        public void SetPivotTableSource(int tableIndex, int fromRow, int fromColumn, int toRow, int toColumn)
+        public void SetPivotTableSource(int tableIndex, ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
         {
             var worksheetSource = spreadsheetDocument.WorkbookPart.PivotTableCacheDefinitionParts.ElementAt(tableIndex).PivotCacheDefinition.CacheSource.GetFirstChild<WorksheetSource>();
-            worksheetSource.Reference = string.Format("{0}:{1}", IndexHelpers.ToCellName(fromRow, fromColumn), IndexHelpers.ToCellName(toRow, toColumn));
+            worksheetSource.Reference = string.Format("{0}:{1}", upperLeft.CellReference, lowerRight.CellReference);
         }
 
         public string GetWorksheetName(int index)

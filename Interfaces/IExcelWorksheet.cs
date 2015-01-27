@@ -1,16 +1,20 @@
 ﻿using System.Collections.Generic;
 
+using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
+
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
 {
     public interface IExcelWorksheet
     {
+        IExcelCell InsertCell(ExcelCellIndex cellIndex);
         IExcelRow CreateRow(int rowIndex);
-        void MergeCells(int fromRow, int fromCol, int toRow, int toCol);
-        void CreateAutofilter(int fromRow, int fromCol, int toRow, int toCol);
-        void CreateHyperlink(int row, int col, int toWorksheet, int toRow, int toCol);
+        void MergeCells(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight);
+        void CreateAutofilter(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight);
+        void CreateHyperlink(ExcelCellIndex from, int toWorksheet, ExcelCellIndex to);
         void ResizeColumn(int columnIndex, double width);
-        IEnumerable<IExcelCell> GetSortedCellsInRange(int fromRow, int fromColumn, int toRow, int toColumn);
-        IEnumerable<IExcelCell> GetSortedCellsInRange(string upperLeft, string lowerRight);
+        IEnumerable<IExcelCell> GetSortedCellsInRange(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight);
+        IExcelCell GetCell(ExcelCellIndex position);
+        IEnumerable<IExcelCell> SearchCellsByText(string text);
         IEnumerable<IExcelRow> Rows { get; }
     }
 }
