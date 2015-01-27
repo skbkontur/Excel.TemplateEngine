@@ -1,4 +1,4 @@
-﻿namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
+﻿namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
     public interface IExcelDocumentMeta
     {
