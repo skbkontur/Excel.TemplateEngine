@@ -56,8 +56,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public IExcelCell SetStyle(ExcelCellStyle style)
         {
-            cell.StyleIndex = documentStyle.AddStyle(style);
+            if (style != null)
+                cell.StyleIndex = documentStyle.AddStyle(style);
             return this;
+        }
+
+        public ExcelCellStyle GetStyle()
+        {
+            return cell.With(c => c.StyleIndex) == null ? null : documentStyle.GetStyle((int)cell.StyleIndex.Value);
         }
 
         public string GetStringValue()

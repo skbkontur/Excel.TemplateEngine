@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 {
@@ -12,7 +13,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
         public BorderCacheItem(ExcelCellBorderStyle borderStyle)
         {
             borderType = borderStyle.BorderType;
-            color = new ColorCacheItem(borderStyle.Color);
+            color = new ColorCacheItem(borderStyle.With(bs => bs.Color) ?? ExcelColors.Black);
         }
 
         public bool Equals(BorderCacheItem other)
