@@ -104,6 +104,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         }
 
         public IEnumerable<IExcelRow> Rows { get { return worksheet.GetFirstChild<SheetData>().ChildElements.OfType<Row>().Select(x => new ExcelRow(x, documentStyle, excelSharedStrings)); } }
+        public IEnumerable<IExcelColumn> Columns { get { return worksheet.GetFirstChild<Columns>().ChildElements.OfType<Column>().Select(x => new ExcelColumn(x)); } }
 
         public IExcelCell InsertCell(ExcelCellIndex cellIndex)
         {

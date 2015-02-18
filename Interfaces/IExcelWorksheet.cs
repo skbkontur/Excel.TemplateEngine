@@ -16,5 +16,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         IExcelCell GetCell(ExcelCellIndex position);
         IEnumerable<IExcelCell> SearchCellsByText(string text);
         IEnumerable<IExcelRow> Rows { get; }
+        IEnumerable<IExcelColumn> Columns { get; }
     }
 }
