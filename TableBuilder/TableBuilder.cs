@@ -101,6 +101,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
             return this;
         }
 
+        public ITableBuilder ResizeColumn(int columnIndex, double width)
+        {
+            target.ResizeColumn(columnIndex, width);
+            return this;
+        }
+
         public ITableBuilder SetCurrentStyle()
         {
             var cell = target.GetCell(CurrentState.Cursor);

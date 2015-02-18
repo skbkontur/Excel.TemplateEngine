@@ -47,13 +47,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PostBuildActions\ColumnResizer.cs" />
     <Compile Include="DataTypes\CellType.cs" />
     <Compile Include="DocumentPrimitivesInterfaces\ICell.cs" />
+    <Compile Include="DocumentPrimitivesInterfaces\IColumn.cs" />
     <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelCell.cs" />
+    <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelColumn.cs" />
     <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelTable.cs" />
     <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelTablePart.cs" />
+    <Compile Include="FakeDocumentPrimitivesImplementation\FakeColumn.cs" />
     <Compile Include="Helpers\JaggedArrayHelper.cs" />
     <Compile Include="TableBuilder\IStyler.cs" />
+    <Compile Include="PostBuildActions\IColumnResizer.cs" />
     <Compile Include="NavigationPrimitives\ICellPosition.cs" />
     <Compile Include="NavigationPrimitives\CellPosition.cs" />
     <Compile Include="NavigationPrimitives\IObjectSize.cs" />
@@ -92,6 +97,7 @@
       <Name>ExcelFileGenerator</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetDir)$(TargetName).dll $(SolutionDir)..\Assemblies\Temp\

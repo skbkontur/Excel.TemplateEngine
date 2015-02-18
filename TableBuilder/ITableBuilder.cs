@@ -14,6 +14,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         ITableBuilder PopState();
         ITableBuilder MoveToNextLayer();
         ITableBuilder MoveToNextColumn();
+        ITableBuilder ResizeColumn(int columnIndex, double width);
         ITableBuilder SetCurrentStyle();
         TableBuilderState CurrentState { get; }
     }

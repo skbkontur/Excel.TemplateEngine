@@ -56,6 +56,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
             return new ExcelTablePart(subTable);
         }
 
+        public IEnumerable<IColumn> Columns { get { return internalTable.Columns.Select(c => new ExcelColumn(c)); } }
+
+        public void ResizeColumn(int columnIndex, double width)
+        {
+            internalTable.ResizeColumn(columnIndex, width);
+        }
+
         private readonly IExcelWorksheet internalTable;
     }
 }
