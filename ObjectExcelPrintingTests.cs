@@ -146,7 +146,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(emptyDocumentName));
             var target = new ExcelTable(targetDocument.GetWorksheet(0));
 
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"));
+            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
             var templateEngine = new TemplateEngine(template);
             templateEngine.Render(tableBuilder, model);
 

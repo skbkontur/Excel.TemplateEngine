@@ -24,7 +24,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var templateEngine = new TemplateEngine(template);
 
             var target = new FakeTable(10, 10);
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"));
+            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(target.GetCell(new CellPosition("A1"))));
 
             templateEngine.Render(tableBuilder, "TestStringValue");
 
@@ -43,7 +43,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var templateEngine = new TemplateEngine(template);
 
             var target = new FakeTable(10, 10);
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"));
+            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(target.GetCell(new CellPosition("A1"))));
 
             templateEngine.Render(tableBuilder, model);
 

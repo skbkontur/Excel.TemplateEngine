@@ -19,6 +19,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var tableBuilder = new TableBuilder(table, new CellPosition("A1"));
 
             tableBuilder.RenderAtomicValue("Test");
+            tableBuilder.MoveToNextColumn();
             Assert.AreEqual("Test", table.GetCell(new CellPosition("A1")).StringValue);
             Assert.AreEqual("B1", tableBuilder.CurrentState.Cursor.CellReference);
             Assert.AreEqual(0, tableBuilder.CurrentState.GlobalHeight);
@@ -27,6 +28,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.AreEqual(1, tableBuilder.CurrentState.CurrentLayerStartRowIndex);
 
             tableBuilder.RenderAtomicValue("tseT");
+            tableBuilder.MoveToNextColumn();
             Assert.AreEqual("tseT", table.GetCell(new CellPosition("B1")).StringValue);
             Assert.AreEqual("C1", tableBuilder.CurrentState.Cursor.CellReference);
             Assert.AreEqual(0, tableBuilder.CurrentState.GlobalHeight);
@@ -45,7 +47,9 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var tableBuilder = new TableBuilder(table, new CellPosition("C4"));
 
             tableBuilder.RenderAtomicValue("1");
+            tableBuilder.MoveToNextColumn();
             tableBuilder.RenderAtomicValue("2");
+            tableBuilder.MoveToNextColumn();
             tableBuilder.MoveToNextLayer();
             Assert.AreEqual("C5", tableBuilder.CurrentState.Cursor.CellReference);
             Assert.AreEqual(5, tableBuilder.CurrentState.CurrentLayerStartRowIndex);
@@ -67,47 +71,65 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                         .PushState() //depth = 2
                         .PushState() //depth = 3
                         .RenderAtomicValue("1")
+                        .MoveToNextColumn()
                         .RenderAtomicValue("1")
+                        .MoveToNextColumn()
                         .MoveToNextLayer()
                         .RenderAtomicValue("1")
+                        .MoveToNextColumn()
                         .RenderAtomicValue("1")
+                        .MoveToNextColumn()
                         .PopState() //depth = 2
                         .PushState() //depth = 3
                         .RenderAtomicValue("2")
+                        .MoveToNextColumn()
                         .MoveToNextLayer()
                         .RenderAtomicValue("2")
+                        .MoveToNextColumn()
                         .MoveToNextLayer()
                         .RenderAtomicValue("2")
+                        .MoveToNextColumn()
                         .PopState() //depth = 2
                         .PopState() //depth = 1
                         .MoveToNextLayer()
                         .PushState() //depth = 2
                         .PushState() //depth = 3
                         .RenderAtomicValue("3")
+                        .MoveToNextColumn()
                         .RenderAtomicValue("3")
+                        .MoveToNextColumn()
                         .RenderAtomicValue("3")
+                        .MoveToNextColumn()
                         .PopState() //depth = 2
                         .PushState() //depth = 3
                         .RenderAtomicValue("4")
+                        .MoveToNextColumn()
                         .MoveToNextLayer()
                         .RenderAtomicValue("4")
+                        .MoveToNextColumn()
                         .MoveToNextLayer()
                         .RenderAtomicValue("4")
+                        .MoveToNextColumn()
                         .PopState() //depth = 2
                         .PopState() //depth = 1
                         .PushState() //depth = 2
                         .PushState() //depth = 3
                         .RenderAtomicValue("5")
+                        .MoveToNextColumn()
                         .MoveToNextLayer()
                         .RenderAtomicValue("5")
+                        .MoveToNextColumn()
                         .PopState() //depth = 2
                         .PushState() //depth = 3
                         .RenderAtomicValue("6")
+                        .MoveToNextColumn()
                         .RenderAtomicValue("6")
+                        .MoveToNextColumn()
                         .PopState() //depth = 2
                         .PopState() //depth = 1
                         .MoveToNextLayer()
                         .RenderAtomicValue("7")
+                        .MoveToNextColumn()
                         .PushState(); //depth = 0
 
             Assert.AreEqual(table.GetCell(new CellPosition("A1")).StringValue, "1");
