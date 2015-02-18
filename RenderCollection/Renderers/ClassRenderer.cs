@@ -22,7 +22,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
             {
                 foreach(var cell in row)
                 {
-                    tableBuilder.PushState();
+                    tableBuilder.PushState(new Styler(cell));
 
                     var childModel = ExtractChildModel(model, cell);
                     var childTemplateName = ExtractTemplateName(cell);

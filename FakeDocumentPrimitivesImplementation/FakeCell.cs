@@ -14,5 +14,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
         public string StringValue { get; set; }
         public CellType CellType { get; set; }
         public ICellPosition CellPosition { get; private set; }
+
+        public void CopyStyle(ICell templateCell)
+        {
+        }
     }
 }

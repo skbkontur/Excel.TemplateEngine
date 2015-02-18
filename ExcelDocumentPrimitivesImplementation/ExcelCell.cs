@@ -24,6 +24,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
                     internalCell.SetNumericValue(StringValue);
             }
         }
+
+        public void CopyStyle(ICell templateCell)
+        {
+            var excelCell = ((ExcelCell)templateCell);
+            internalCell.SetStyle(excelCell.internalCell.GetStyle());
+        }
+
         public ICellPosition CellPosition { get { return new CellPosition(internalCell.GetCellReference()); } }
 
         private readonly IExcelCell internalCell;

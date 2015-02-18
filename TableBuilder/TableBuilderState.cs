@@ -10,5 +10,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         public int CurrentLayerHeight { get; set; }
         public int GlobalWidth { get; set; }
         public int GlobalHeight { get; set; }
+        public IStyler Styler { get; set; }
     }
 }

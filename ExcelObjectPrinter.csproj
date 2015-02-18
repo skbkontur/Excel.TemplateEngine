@@ -53,6 +53,7 @@
     <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelTable.cs" />
     <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelTablePart.cs" />
     <Compile Include="Helpers\JaggedArrayHelper.cs" />
+    <Compile Include="TableBuilder\IStyler.cs" />
     <Compile Include="NavigationPrimitives\ICellPosition.cs" />
     <Compile Include="NavigationPrimitives\CellPosition.cs" />
     <Compile Include="NavigationPrimitives\IObjectSize.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="RenderCollection\IRendererCollection.cs" />
     <Compile Include="RenderCollection\RendererCollection.cs" />
     <Compile Include="RenderCollection\Renderers\StringRenderer.cs" />
+    <Compile Include="TableBuilder\Styler.cs" />
     <Compile Include="TemplateEngine.cs" />
     <Compile Include="TableBuilder\ITableBuilder.cs" />
     <Compile Include="ITemplateEngine.cs" />

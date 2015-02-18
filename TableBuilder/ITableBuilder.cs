@@ -8,9 +8,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         ITableBuilder RenderAtomicValue(int value);
         ITableBuilder RenderAtomicValue(double value);
         ITableBuilder RenderAtomicValue(decimal value);
-        ITableBuilder PushState(ICellPosition newOrigin);
+        ITableBuilder PushState(ICellPosition newOrigin, IStyler styler);
+        ITableBuilder PushState(IStyler styler);
         ITableBuilder PushState();
         ITableBuilder PopState();
         ITableBuilder MoveToNextLayer();
+        ITableBuilder MoveToNextColumn();
+        ITableBuilder SetCurrentStyle();
+        TableBuilderState CurrentState { get; }
     }
 }

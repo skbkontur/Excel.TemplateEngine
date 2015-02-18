@@ -9,6 +9,8 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
         {
             var intToRender = (int)model;
             tableBuilder.RenderAtomicValue(intToRender);
+            tableBuilder.SetCurrentStyle();
+            tableBuilder.MoveToNextColumn();
         }
     }
 }

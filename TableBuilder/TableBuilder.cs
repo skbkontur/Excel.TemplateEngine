@@ -12,14 +12,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 {
     public class TableBuilder : ITableBuilder
     {
-        public TableBuilder(ITable target, ICellPosition startPosition)
+        public TableBuilder(ITable target, ICellPosition startPosition, IStyler styler = null)
         {
             this.target = target;
             var initialState = new TableBuilderState
                 {
                     Origin = startPosition,
                     Cursor = startPosition,
-                    CurrentLayerStartRowIndex = startPosition.RowIndex
+                    CurrentLayerStartRowIndex = startPosition.RowIndex,
+                    Styler = styler
                 };
             states = new Stack<TableBuilderState>(new[] {initialState});
         }
@@ -44,21 +45,27 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
             return RenderAtomicValue(value.ToString(CultureInfo.InvariantCulture), CellType.Number);
         }
 
-        public ITableBuilder PushState(ICellPosition newOrigin)
+        public ITableBuilder PushState(ICellPosition newOrigin, IStyler styler)
         {
             var newState = new TableBuilderState
                 {
                     Origin = newOrigin,
                     Cursor = newOrigin,
-                    CurrentLayerStartRowIndex = newOrigin.RowIndex
+                    CurrentLayerStartRowIndex = newOrigin.RowIndex,
+                    Styler = styler
                 };
             states.Push(newState);
             return this;
         }
 
+        public ITableBuilder PushState(IStyler styler)
+        {
+            return PushState(CurrentState.Cursor, styler);
+        }
+
         public ITableBuilder PushState()
         {
-            return PushState(CurrentState.Cursor);
+            return PushState(CurrentState.Cursor, CurrentState.Styler);
         }
 
         public ITableBuilder PopState()
@@ -87,6 +94,20 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
             return this;
         }
 
+        public ITableBuilder MoveToNextColumn()
+        {
+            CurrentState.Cursor = CurrentState.Cursor.Add(new ObjectSize(1, 0));
+            UpdateCurrentState();
+            return this;
+        }
+
+        public ITableBuilder SetCurrentStyle()
+        {
+            var cell = target.GetCell(CurrentState.Cursor);
+            CurrentState.Styler.ApplyStyle(cell);
+            return this;
+        }
+
         public TableBuilderState CurrentState { get { return states.Peek(); } }
 
         private ITableBuilder RenderAtomicValue(string value, CellType cellType)
@@ -94,8 +115,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
             var cell = target.InsertCell(CurrentState.Cursor);
             cell.StringValue = value;
             cell.CellType = cellType;
-            CurrentState.Cursor = CurrentState.Cursor.Add(new ObjectSize(1, 0));
-            UpdateCurrentState();
             return this;
         }
 
