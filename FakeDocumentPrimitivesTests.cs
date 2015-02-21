@@ -119,6 +119,12 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const int height = 40;
             var table = new FakeTable(width, height);
 
+            for(var x = 0; x < width; ++x)
+            {
+                for(var y = 0; y < height; ++y)
+                    table.InsertCell(new CellPosition(y + 1, x + 1));
+            }
+
             var positions = new[] {new CellPosition(1, 1), new CellPosition(40, 20), new CellPosition(10, 10)};
             var stringValues = new[] {"Test Value", "Test Test", "Another text"};
 
@@ -143,9 +149,9 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
             Assert.AreNotEqual(null, targetCell);
 // ReSharper disable PossibleNullReferenceException
-            Assert.AreEqual(2, targetCell.CellPosition.RowIndex);
+            Assert.AreEqual(10, targetCell.CellPosition.RowIndex);
 // ReSharper restore PossibleNullReferenceException
-            Assert.AreEqual(2, targetCell.CellPosition.ColumnIndex);
+            Assert.AreEqual(10, targetCell.CellPosition.ColumnIndex);
 
             targetRow = tablePart.Cells.LastOrDefault();
             Assert.AreNotEqual(null, targetRow);

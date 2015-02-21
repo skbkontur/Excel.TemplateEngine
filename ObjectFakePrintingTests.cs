@@ -24,11 +24,16 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var templateEngine = new TemplateEngine(template);
 
             var target = new FakeTable(10, 10);
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(target.GetCell(new CellPosition("A1"))));
+            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(new FakeCell(new CellPosition("A1"))
+                {
+                    StyleId = "(1,1)"
+                }));
 
             templateEngine.Render(tableBuilder, "TestStringValue");
 
             Assert.AreEqual("TestStringValue", target.GetCell(new CellPosition("B2")).StringValue);
+
+            Assert.AreEqual("(1,1)", ((FakeCell)target.GetCell(new CellPosition("B2"))).StyleId);
         }
 
         [Test]
@@ -43,7 +48,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var templateEngine = new TemplateEngine(template);
 
             var target = new FakeTable(10, 10);
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(target.GetCell(new CellPosition("A1"))));
+            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(new FakeCell(new CellPosition("A1"))
+                {
+                    StyleId = "(1,1)"
+                }));
 
             templateEngine.Render(tableBuilder, model);
 
@@ -100,6 +108,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.AreEqual("ORDERS", target.GetCell(new CellPosition("C2")).StringValue);
             Assert.AreEqual("BuyerAddress", target.GetCell(new CellPosition("A3")).StringValue);
             Assert.AreEqual("SupplierAddress", target.GetCell(new CellPosition("B3")).StringValue);
+
+            Assert.AreEqual("B4", ((FakeCell)target.GetCell(new CellPosition("A1"))).StyleId);
+            Assert.AreEqual("C4", ((FakeCell)target.GetCell(new CellPosition("B1"))).StyleId);
+            Assert.AreEqual("A8", ((FakeCell)target.GetCell(new CellPosition("A2"))).StyleId);
+            Assert.AreEqual("A8", ((FakeCell)target.GetCell(new CellPosition("B2"))).StyleId);
+            Assert.AreEqual("D5", ((FakeCell)target.GetCell(new CellPosition("C2"))).StyleId);
+            Assert.AreEqual("A9", ((FakeCell)target.GetCell(new CellPosition("A3"))).StyleId);
+            Assert.AreEqual("A9", ((FakeCell)target.GetCell(new CellPosition("B3"))).StyleId);
 
             DebugPrinting(target, new CellPosition(1, 1), new CellPosition(10, 10));
         }
