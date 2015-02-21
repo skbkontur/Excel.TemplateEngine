@@ -17,6 +17,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
 
         public void CopyStyle(ICell templateCell)
         {
+            var fakeCell = (FakeCell)templateCell;
+            StyleId = fakeCell.StyleId;
         }
+
+        public string StyleId { get; set; }
     }
 }

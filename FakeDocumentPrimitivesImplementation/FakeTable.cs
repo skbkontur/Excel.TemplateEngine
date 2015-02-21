@@ -27,7 +27,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
             if(OutOfBounds(position))
                 return null;
 
-            var newCell = new FakeCell(position);
+            var newCell = new FakeCell(position)
+                {
+                    StyleId = position.CellReference
+                };
             cells[position.RowIndex - 1][position.ColumnIndex - 1] = newCell;
             return newCell;
         }
@@ -53,10 +56,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
                 for(var x = 0; x < subTableSize.Width; ++x)
                 {
                     var sourceCell = cells[upperLeft.RowIndex + y - 1][upperLeft.ColumnIndex + x - 1];
-                    subTable[y][x] = new FakeCell(new CellPosition(y + 1, x + 1))
-                        {
-                            StringValue = sourceCell == null ? null : sourceCell.StringValue
-                        };
+                    subTable[y][x] = sourceCell ?? new FakeCell(new CellPosition(y + 1, x + 1));
                 }
             }
             return new FakeSeparatedTablePart(subTable);
