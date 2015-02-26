@@ -56,7 +56,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public IExcelCell SetStyle(ExcelCellStyle style)
         {
-            if (style != null)
+            if(style != null)
                 cell.StyleIndex = documentStyle.AddStyle(style);
             return this;
         }
