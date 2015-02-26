@@ -38,11 +38,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
             logger.Error("Excel document generation failed: root template description not found.");
         }
 
+        private const string rootTemplateName = "RootTemplate";
+
         private readonly ITemplateCollection templateCollection;
         private readonly IRendererCollection rendererCollection;
         private readonly IColumnResizer columnResizer;
         private readonly ILog logger = LogManager.GetLogger(typeof(TemplateEngine));
-
-        private const string rootTemplateName = "RootTemplate";
     }
 }
