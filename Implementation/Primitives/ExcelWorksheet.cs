@@ -57,7 +57,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                         Min = (uint)columns.ChildElements.Count + 1,
                         Max = (uint)columns.ChildElements.Count + 1,
                         BestFit = true,
-                        CustomWidth = true
+                        CustomWidth = true,
+                        Width = 8.43
                     });
             }
             var column = (Column)columns.ChildElements.Skip(columnIndex - 1).First();
