@@ -1,19 +1,16 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-
-using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+﻿using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
     public class ExcelColumn : IExcelColumn
     {
-        public ExcelColumn(Column column)
+        public ExcelColumn(double width, int index)
         {
-            this.column = column;
+            Width = width;
+            Index = index;
         }
 
-        public double Width { get { return column.Width; } }
-        public int Index { get { return (int)column.Min.Value; } }
-
-        private readonly Column column;
+        public double Width { get; private set; }
+        public int Index { get; private set; }
     }
 }
