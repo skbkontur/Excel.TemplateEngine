@@ -71,9 +71,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         {
             var result = new List<object>();
             ExtractChildObject(model, pathParts, 0, result);
+
+            if(result.Count == 0)
+                return null;
+
             if(pathParts.Any(TemplateDescriptionHelper.Instance.IsArrayPathPart))
                 return result.ToArray();
-            return result.Count == 0 ? null : result.Single();
+            return result.Single();
         }
 
         private static readonly ObjectPropertiesExtractor instance = new ObjectPropertiesExtractor();

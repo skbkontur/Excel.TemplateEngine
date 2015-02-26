@@ -15,11 +15,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
         public void Render(ITableBuilder tableBuilder, object model, RenderingTemplate template)
         {
-            var enumerableToRender = (IEnumerable)model;
+            var enumerableToRender = ((IEnumerable)model).Cast<object>().ToArray();
 
-            var lastElement = enumerableToRender.Cast<object>().LastOrDefault();
-            foreach(var element in enumerableToRender)
+            for(var i = 0; i < enumerableToRender.Length; ++i)
             {
+                var element = enumerableToRender[i];
+
                 var normalizedElement = NormalizeElement(element);
 
                 tableBuilder.PushState();
@@ -29,7 +30,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
                 tableBuilder.PopState();
 
-                if(!normalizedElement.Equals(lastElement))
+                if(i != enumerableToRender.Length - 1)
                     tableBuilder.MoveToNextLayer();
             }
         }
