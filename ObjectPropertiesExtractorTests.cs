@@ -44,7 +44,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         {
             const string valueDesription = "Value::Bs[].Cs[].NULL";
             var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, valueDesription);
-            Assert.AreEqual(Enumerable.Empty<object>(), child);
+            Assert.AreEqual(null, child);
         }
 
         [Test]
