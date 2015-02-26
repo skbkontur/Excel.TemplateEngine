@@ -48,7 +48,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
             var worksheet = document.GetWorksheet(0);
 
             var cell = worksheet.SearchCellsByText("Value:String").FirstOrDefault();
+            Assert.AreNotEqual(null, cell);
+// ReSharper disable PossibleNullReferenceException
             Assert.AreEqual("Value:String:Name", cell.GetStringValue());
+// ReSharper restore PossibleNullReferenceException
 
             document.Dispose();
         }
