@@ -353,6 +353,26 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             DebugPrinting(target, new CellPosition(1, 1), new CellPosition(20, 20));
         }
 
+        private static void DebugPrinting(ITable table, ICellPosition upperLeft, ICellPosition lowerRight)
+        {
+            var maxWidth = table.GetTablePart(upperLeft, lowerRight)
+                                .Cells
+                                .SelectMany(row => row)
+                                .Select(cell => cell.StringValue)
+                                .Max(value => string.IsNullOrEmpty(value) ? 0 : value.Length);
+            foreach(var row in table.GetTablePart(upperLeft, lowerRight).Cells)
+            {
+                foreach(var cell in row)
+                {
+                    var val = cell.StringValue + "";
+                    while(val.Length < maxWidth)
+                        val = val + " ";
+                    Console.Write(val);
+                }
+                Console.WriteLine();
+            }
+        }
+
         public class DocumentWithArray
         {
             public Organization[] Array { get; set; }
@@ -387,26 +407,6 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             public string VehicleNumber { get; set; }
             public string VehicleBrand { get; set; }
             public string NameOfCarrier { get; set; }
-        }
-
-        private static void DebugPrinting(ITable table, ICellPosition upperLeft, ICellPosition lowerRight)
-        {
-            var maxWidth = table.GetTablePart(upperLeft, lowerRight)
-                                .Cells
-                                .SelectMany(row => row)
-                                .Select(cell => cell.StringValue)
-                                .Max(value => string.IsNullOrEmpty(value) ? 0 : value.Length);
-            foreach(var row in table.GetTablePart(upperLeft, lowerRight).Cells)
-            {
-                foreach(var cell in row)
-                {
-                    var val = cell.StringValue + "";
-                    while(val.Length < maxWidth)
-                        val = val + " ";
-                    Console.Write(val);
-                }
-                Console.WriteLine();
-            }
         }
     }
 }

@@ -68,21 +68,6 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.AreEqual("Test", child);
         }
 
-        public class A
-        {
-            public B[] Bs { get; set; }
-        }
-
-        public class B
-        {
-            public C[] Cs { get; set; }
-        }
-
-        public class C
-        {
-            public string S { get; set; }
-        }
-
         private readonly A model = new A
             {
                 Bs = new[]
@@ -125,5 +110,20 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                             }
                     }
             };
+
+        public class A
+        {
+            public B[] Bs { get; set; }
+        }
+
+        public class B
+        {
+            public C[] Cs { get; set; }
+        }
+
+        public class C
+        {
+            public string S { get; set; }
+        }
     }
 }

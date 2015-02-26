@@ -6,7 +6,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
     public class CellPositionTests
     {
-         [Test]
+        [Test]
         public void CellIndexSubtractionTest1()
         {
             var a = new CellPosition(1, 1);

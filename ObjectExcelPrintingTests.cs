@@ -102,6 +102,30 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             MakeTest(model, complexTemplateFileName);
         }
 
+        private static void MakeTest(object model, string templateFileName)
+        {
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(templateFileName));
+            var template = new ExcelTable(templateDocument.GetWorksheet(0));
+
+            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(emptyDocumentName));
+            var target = new ExcelTable(targetDocument.GetWorksheet(0));
+
+            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
+            var templateEngine = new TemplateEngine(template);
+            templateEngine.Render(tableBuilder, model);
+
+            var result = targetDocument.GetDocumentBytes();
+            File.WriteAllBytes("output.xlsx", result);
+
+            templateDocument.Dispose();
+            targetDocument.Dispose();
+        }
+
+        private const string simpleTemplateFileName = @"ExcelObjectPrinterTests\Files\template.xlsx";
+        private const string complexTemplateFileName = @"ExcelObjectPrinterTests\Files\complexTemplate.xlsx";
+        private const string withFullPathsTemplateFileName = @"ExcelObjectPrinterTests\Files\withFullPathsTemplate.xlsx";
+        private const string emptyDocumentName = @"ExcelObjectPrinterTests\Files\empty.xlsx";
+
         public class DocumentWithArray
         {
             public Organization[][] Array { get; set; }
@@ -137,29 +161,5 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             public string VehicleBrand { get; set; }
             public string NameOfCarrier { get; set; }
         }
-
-        private static void MakeTest(object model, string templateFileName)
-        {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(templateFileName));
-            var template = new ExcelTable(templateDocument.GetWorksheet(0));
-
-            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(emptyDocumentName));
-            var target = new ExcelTable(targetDocument.GetWorksheet(0));
-
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
-            var templateEngine = new TemplateEngine(template);
-            templateEngine.Render(tableBuilder, model);
-
-            var result = targetDocument.GetDocumentBytes();
-            File.WriteAllBytes("output.xlsx", result);
-
-            templateDocument.Dispose();
-            targetDocument.Dispose();
-        }
-
-        private const string simpleTemplateFileName = @"ExcelObjectPrinterTests\Files\template.xlsx";
-        private const string complexTemplateFileName = @"ExcelObjectPrinterTests\Files\complexTemplate.xlsx";
-        private const string withFullPathsTemplateFileName = @"ExcelObjectPrinterTests\Files\withFullPathsTemplate.xlsx";
-        private const string emptyDocumentName = @"ExcelObjectPrinterTests\Files\empty.xlsx";
     }
 }

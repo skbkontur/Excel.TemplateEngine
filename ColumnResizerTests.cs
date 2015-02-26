@@ -4,7 +4,6 @@ using System.Linq;
 using NUnit.Framework;
 
 using SKBKontur.Catalogue.ExcelFileGenerator;
-using SKBKontur.Catalogue.ExcelObjectPrinter;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.PostBuildActions;
