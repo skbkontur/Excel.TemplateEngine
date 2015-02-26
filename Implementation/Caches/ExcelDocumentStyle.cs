@@ -159,12 +159,17 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         private ExcelCellNumberingFormat GetCellNumberingFormat(uint numberFormatId)
         {
+            ExcelCellNumberingFormat result;
+            if(TryExtractStandartNumberingFormat(numberFormatId, out result))
+                return result;
+
             var numberFormat = (NumberingFormat)stylesheet
                                                     .With(s => s.NumberingFormats)
                                                     .With(nfs => nfs.ChildElements)
+                                                    .ReturnEnumerable()
                                                     .FirstOrDefault(ce => ((NumberingFormat)ce)
-                                                                              .With(nf => nf.NumberFormatId)
-                                                                              .Value == numberFormatId);
+                                                                              .With(nf => nf.NumberFormatId) != null &&
+                                                                          ((NumberingFormat)ce).NumberFormatId.Value == numberFormatId);
             if(numberFormat.With(nf => nf.FormatCode).With(fc => fc.Value) == null)
                 return null;
 
@@ -174,6 +179,21 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
                     Precision = GetPrecisionByFormatCode(numberFormat.FormatCode.Value)
 // ReSharper restore PossibleNullReferenceException
                 };
+        }
+
+        private static bool TryExtractStandartNumberingFormat(uint numberingFormat, out ExcelCellNumberingFormat result)
+        {
+            result = null;
+            if(numberingFormat == 2)
+            {
+                result = new ExcelCellNumberingFormat
+                    {
+                        Precision = 2
+                    };
+                return true;
+            }
+
+            return false;
         }
 
         private static int GetPrecisionByFormatCode(string formatCode)
