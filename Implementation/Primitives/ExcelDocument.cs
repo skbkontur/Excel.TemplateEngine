@@ -96,6 +96,32 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             spreadsheetDocument.WorkbookPart.Workbook.Sheets.Elements<Sheet>().ElementAt(index).Name = name;
         }
 
+        public IExcelWorksheet AddWorksheet(string worksheetName)
+        {
+            ThrowIfSpreadsheetDisposed();
+            var worksheetPart = spreadsheetDocument.WorkbookPart.AddNewPart<WorksheetPart>();
+            worksheetPart.Worksheet = new Worksheet(new SheetData());
+
+            var sheets = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>();
+
+            var sheetId = 1u;
+            if(sheets.Elements<Sheet>().Any())
+                sheetId = sheets.Elements<Sheet>().Select(s => s.SheetId.Value).Max() + 1;
+
+            var sheet = new Sheet
+                {
+                    Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(worksheetPart),
+                    SheetId = sheetId,
+                    Name = worksheetName
+                };
+
+            sheets.AppendChild(sheet);
+
+            spreadsheetDocument.WorkbookPart.Workbook.Save();
+
+            return new ExcelWorksheet(spreadsheetDocument.WorkbookPart.WorksheetParts.Last(), documentStyle, excelSharedStrings, this);
+        }
+
         public void SetPivotTableSource(int tableIndex, ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
         {
             ThrowIfSpreadsheetDisposed();

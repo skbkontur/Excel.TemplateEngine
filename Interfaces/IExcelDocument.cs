@@ -10,6 +10,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         IExcelWorksheet GetWorksheet(int index);
         void DeleteWorksheet(int index);
         void RenameWorksheet(int index, string name);
+        IExcelWorksheet AddWorksheet(string worksheetName);
         void SetPivotTableSource(int tableIndex, ExcelCellIndex upperLeft, ExcelCellIndex lowerRight);
     }
 }
