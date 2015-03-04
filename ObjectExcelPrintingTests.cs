@@ -102,6 +102,65 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             MakeTest(model, complexTemplateFileName);
         }
 
+        [Test]
+        public void MultipleObjectsPrintingTest()
+        {
+            var model = new Document
+                {
+                    Buyer = new Organization
+                        {
+                            Address = "BuyerAddress",
+                            Name = "BuyerName"
+                        },
+                    Supplier = new Organization
+                        {
+                            Address = "SupplierAddress",
+                            Name = "SupplierName",
+                            Inn = 90238192,
+                            Kpp = "0832309812"
+                        },
+                    Payer = new Organization
+                        {
+                            Address = "PayerAddress",
+                            Name = "PayerAddress"
+                        },
+                    DeliveryParty = new Organization
+                        {
+                            Address = "DeliveryPartyAddress",
+                            Name = "DeliveryPartyName"
+                        },
+                    Vehicle = new VehicleInfo
+                        {
+                            NameOfCarrier = "Евкакий",
+                            TransportMode = "Agressive",
+                            VehicleBrand = "Tauria",
+                            VehicleNumber = "A777AB"
+                        },
+                    TypeName = "ORDERS"
+                };
+
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(complexTemplateFileName));
+            var template = new ExcelTable(templateDocument.GetWorksheet(0));
+            var templateEngine = new TemplateEngine(template);
+
+            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(emptyDocumentName));
+            targetDocument.AddWorksheet("Лист2");
+
+            var target = new ExcelTable(targetDocument.GetWorksheet(0));
+            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
+            templateEngine.Render(tableBuilder, model);
+
+            target = new ExcelTable(targetDocument.GetWorksheet(1));
+            tableBuilder = new TableBuilder(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
+            templateEngine.Render(tableBuilder, model);
+
+            var result = targetDocument.GetDocumentBytes();
+            File.WriteAllBytes("output.xlsx", result);
+
+            templateDocument.Dispose();
+            targetDocument.Dispose();
+        }
+
         private static void MakeTest(object model, string templateFileName)
         {
             var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(templateFileName));
