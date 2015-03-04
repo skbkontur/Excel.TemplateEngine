@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -23,22 +24,43 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
             documentStyle = new ExcelDocumentStyle(spreadsheetDocument.WorkbookPart.WorkbookStylesPart.Stylesheet);
             excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.WorkbookPart.With(wp => wp.SharedStringTablePart).With(sstp => sstp.SharedStringTable));
+            spreadsheetDisposed = false;
+            excelDocumentDisposed = false;
+        }
+
+        private void ThrowIfSpreadsheetDisposed()
+        {
+            if(spreadsheetDisposed)
+                throw new ObjectDisposedException(spreadsheetDocument.GetType().Name);
         }
 
         public void Dispose()
         {
-            spreadsheetDocument.Dispose();
+            if(!spreadsheetDisposed)
+                spreadsheetDocument.Dispose();
             documentMemoryStream.Dispose();
+            spreadsheetDisposed = true;
+            excelDocumentDisposed = true;
         }
 
         public byte[] GetDocumentBytes()
         {
-            Flush();
+            if(excelDocumentDisposed)
+                throw new ObjectDisposedException(GetType().Name);
+
+            if(!spreadsheetDisposed)
+            {
+                Flush();
+                spreadsheetDocument.Dispose();
+                spreadsheetDisposed = true;
+            }
+
             return documentMemoryStream.ToArray();
         }
 
         public IExcelWorksheet GetWorksheet(int index)
         {
+            ThrowIfSpreadsheetDisposed();
             var sheetId = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index).Id.Value;
             WorksheetPart worksheetPart;
             if(!worksheetsCache.TryGetValue(sheetId, out worksheetPart))
@@ -51,6 +73,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public void DeleteWorksheet(int index)
         {
+            ThrowIfSpreadsheetDisposed();
             var workbookPart = spreadsheetDocument.WorkbookPart;
             var sheet = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index);
             var sheetToDelete = sheet.Name.Value;
@@ -69,22 +92,26 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public void RenameWorksheet(int index, string name)
         {
+            ThrowIfSpreadsheetDisposed();
             spreadsheetDocument.WorkbookPart.Workbook.Sheets.Elements<Sheet>().ElementAt(index).Name = name;
         }
 
         public void SetPivotTableSource(int tableIndex, ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
         {
+            ThrowIfSpreadsheetDisposed();
             var worksheetSource = spreadsheetDocument.WorkbookPart.PivotTableCacheDefinitionParts.ElementAt(tableIndex).PivotCacheDefinition.CacheSource.GetFirstChild<WorksheetSource>();
             worksheetSource.Reference = string.Format("{0}:{1}", upperLeft.CellReference, lowerRight.CellReference);
         }
 
         public string GetWorksheetName(int index)
         {
+            ThrowIfSpreadsheetDisposed();
             return ((Sheet)spreadsheetDocument.WorkbookPart.Workbook.Sheets.ChildElements[index]).Name;
         }
 
         private void Flush()
         {
+            ThrowIfSpreadsheetDisposed();
             // Saving document parts in OpenXml is not thread-safe. Detailed info at http://support2.microsoft.com/kb/951731
             lock(lockObject)
             {
@@ -92,7 +119,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 foreach(var worksheetPart in worksheetsCache.Values)
                     worksheetPart.Worksheet.Save();
                 documentStyle.Save();
-                excelSharedStrings.Save();
+
+                if(excelSharedStrings != null)
+                    excelSharedStrings.Save();
                 foreach(var pivotTableCacheDefinitionPart in spreadsheetDocument.WorkbookPart.PivotTableCacheDefinitionParts)
                     pivotTableCacheDefinitionPart.PivotCacheDefinition.Save();
                 spreadsheetDocument.WorkbookPart.Workbook.Save();
@@ -104,6 +133,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private readonly SpreadsheetDocument spreadsheetDocument;
         private readonly IExcelDocumentStyle documentStyle;
         private readonly IExcelSharedStrings excelSharedStrings;
+        private bool spreadsheetDisposed;
+        private bool excelDocumentDisposed;
 
         private static readonly object lockObject = new object();
     }

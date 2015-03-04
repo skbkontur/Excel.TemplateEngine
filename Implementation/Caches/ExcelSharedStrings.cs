@@ -37,7 +37,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         public void Save()
         {
-            sharedStringTable.Save();
+            if(sharedStringTable != null)
+                sharedStringTable.Save();
         }
 
         private readonly IDictionary<SharedStringCacheItem, uint> cache;
