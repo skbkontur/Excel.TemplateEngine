@@ -11,13 +11,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         {
         }
 
-        public object ExtractChildObject(object model, string templateText)
+        public object ExtractChildObject(object model, string expression)
         {
-            if(!TemplateDescriptionHelper.Instance.IsCorrectValueDescription(templateText) ||
+            if(!TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression) ||
                model == null)
                 return null;
 
-            var descriptionParts = TemplateDescriptionHelper.Instance.GetDescriptionParts(templateText);
+            var descriptionParts = TemplateDescriptionHelper.Instance.GetDescriptionParts(expression);
             var pathParts = descriptionParts[2].Split('.');
 
             return ExtractChildObject(model, pathParts);

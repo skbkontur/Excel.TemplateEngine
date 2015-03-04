@@ -12,14 +12,14 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         {
         }
 
-        public string ExtractTemplateNameFromValueDescription(string templateText)
+        public string ExtractTemplateNameFromValueDescription(string expression)
         {
-            return !IsCorrectValueDescription(templateText) ? null : GetDescriptionParts(templateText)[1];
+            return !IsCorrectValueDescription(expression) ? null : GetDescriptionParts(expression)[1];
         }
 
-        public bool IsCorrectValueDescription(string templateText)
+        public bool IsCorrectValueDescription(string expression)
         {
-            var descriptionParts = GetDescriptionParts(templateText);
+            var descriptionParts = GetDescriptionParts(expression);
             if(descriptionParts.Count() != 3 ||
                descriptionParts[0] != "Value" ||
                string.IsNullOrEmpty(descriptionParts[2]))
@@ -29,9 +29,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return pathRegex.IsMatch(descriptionParts[2]);
         }
 
-        public bool IsCorrectTemplateDescription(string templateText)
+        public bool IsCorrectTemplateDescription(string expression)
         {
-            var descriptionParts = GetDescriptionParts(templateText);
+            var descriptionParts = GetDescriptionParts(expression);
             if(descriptionParts.Count() != 4 ||
                descriptionParts[0] != "Template" ||
                string.IsNullOrEmpty(descriptionParts[1]))

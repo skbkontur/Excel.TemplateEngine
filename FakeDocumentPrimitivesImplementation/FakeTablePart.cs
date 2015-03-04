@@ -4,9 +4,9 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplementation
 {
-    public class FakeSeparatedTablePart : ITablePart
+    public class FakeTablePart : ITablePart
     {
-        public FakeSeparatedTablePart(IEnumerable<IEnumerable<ICell>> cells)
+        public FakeTablePart(IEnumerable<IEnumerable<ICell>> cells)
         {
             Cells = cells;
         }

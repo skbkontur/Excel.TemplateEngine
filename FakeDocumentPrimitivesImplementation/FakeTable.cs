@@ -59,7 +59,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
                     subTable[y][x] = sourceCell ?? new FakeCell(new CellPosition(y + 1, x + 1));
                 }
             }
-            return new FakeSeparatedTablePart(subTable);
+            return new FakeTablePart(subTable);
         }
 
         public IEnumerable<IColumn> Columns { get { return Enumerable.Range(0, cells[0].Count()).Select(index => new FakeColumn {Index = index}); } }

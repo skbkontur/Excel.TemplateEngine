@@ -3,7 +3,7 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 {
-    public class DecimalRender : IRenderer
+    public class DecimalRenderer : IRenderer
     {
         public void Render(ITableBuilder tableBuilder, object model, RenderingTemplate template)
         {

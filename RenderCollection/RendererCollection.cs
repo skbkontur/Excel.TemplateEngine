@@ -18,11 +18,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection
             if(modelType == typeof(string))
                 return new StringRenderer();
             if(modelType == typeof(int))
-                return new IntRender();
+                return new IntRenderer();
             if(modelType == typeof(decimal))
-                return new DecimalRender();
+                return new DecimalRenderer();
             if(modelType == typeof(double))
-                return new DoubleRender();
+                return new DoubleRenderer();
             if(TypeCheckingHelper.Instance.IsEnumerable(modelType))
                 return new EnumerableRenderer(this);
             return new ClassRenderer(templateCollection, this);

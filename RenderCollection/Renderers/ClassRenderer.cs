@@ -43,10 +43,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
         private static object ExtractChildModel(object model, ICell cell)
         {
-            var templateText = cell.StringValue;
-            if(!TemplateDescriptionHelper.Instance.IsCorrectValueDescription(templateText))
-                return templateText ?? "";
-            var result = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, templateText);
+            var expression = cell.StringValue;
+            if(!TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
+                return expression ?? "";
+            var result = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, expression);
             return result ?? "";
         }
 
