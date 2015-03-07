@@ -42,6 +42,27 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         }
 
         [Test]
+        public void PrintWithCellsMergingTest()
+        {
+            var model = new Document
+                {
+                    Buyer = new Organization
+                        {
+                            Address = "BuyerAddress",
+                            Name = "BuyerName"
+                        },
+                    Supplier = new Organization
+                        {
+                            Address = "SupplierAddress",
+                            Name = "SupplierName"
+                        },
+                    TypeName = "ORDERS"
+                };
+
+            MakeTest(model, withCellsMergingTemplateFileName);
+        }
+
+        [Test]
         public void PrintObjectsByFullPathTest()
         {
             var model = new Document
@@ -180,6 +201,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             targetDocument.Dispose();
         }
 
+        private const string withCellsMergingTemplateFileName = @"ExcelObjectPrinterTests\Files\withCellsMergingTemplate.xlsx";
         private const string simpleTemplateFileName = @"ExcelObjectPrinterTests\Files\template.xlsx";
         private const string complexTemplateFileName = @"ExcelObjectPrinterTests\Files\complexTemplate.xlsx";
         private const string withFullPathsTemplateFileName = @"ExcelObjectPrinterTests\Files\withFullPathsTemplate.xlsx";
