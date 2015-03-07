@@ -21,12 +21,20 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public IExcelCell CreateCell(int index)
         {
-            var cell = new Cell
+            var cellRefernce = new ExcelCellIndex((int)row.RowIndex.Value, index).CellReference;
+
+            if(row.Elements<Cell>().Any(c => c.CellReference.Value == cellRefernce))
+                return new ExcelCell(row.Elements<Cell>().First(c => c.CellReference.Value == cellRefernce), documentStyle, excelSharedStrings);
+
+            var refCell = row.Elements<Cell>().FirstOrDefault(cell => String.Compare(cell.CellReference.Value, cellRefernce, StringComparison.OrdinalIgnoreCase) > 0);
+            var newCell = new Cell
                 {
                     CellReference = new ExcelCellIndex((int)row.RowIndex.Value, index).CellReference
                 };
-            row.AppendChild(cell);
-            return new ExcelCell(cell, documentStyle, excelSharedStrings);
+
+            row.InsertBefore(newCell, refCell);
+
+            return new ExcelCell(newCell, documentStyle, excelSharedStrings);
         }
 
         public IEnumerable<IExcelCell> Cells

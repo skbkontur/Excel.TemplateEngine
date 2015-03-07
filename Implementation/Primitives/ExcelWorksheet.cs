@@ -122,42 +122,28 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public IExcelCell InsertCell(ExcelCellIndex cellIndex)
         {
-            var sheetData = worksheet.GetFirstChild<SheetData>();
-
-            Row newRow;
-            if(sheetData.Elements<Row>().Any(r => r.RowIndex == cellIndex.RowIndex))
-                newRow = sheetData.Elements<Row>().First(r => r.RowIndex == cellIndex.RowIndex);
-            else
-            {
-                var refRow = sheetData.Elements<Row>().FirstOrDefault(row => row.RowIndex > (uint)cellIndex.RowIndex);
-                newRow = new Row
-                    {
-                        RowIndex = new UInt32Value((uint)cellIndex.RowIndex)
-                    };
-                sheetData.InsertBefore(newRow, refRow);
-            }
-
-            if(newRow.Elements<Cell>().Any(c => c.CellReference.Value == cellIndex.CellReference))
-                return new ExcelCell(newRow.Elements<Cell>().First(c => c.CellReference.Value == cellIndex.CellReference), documentStyle, excelSharedStrings);
-
-            var refCell = newRow.Elements<Cell>().FirstOrDefault(cell => String.Compare(cell.CellReference.Value, cellIndex.CellReference, StringComparison.OrdinalIgnoreCase) > 0);
-            var newCell = new Cell
-                {
-                    CellReference = cellIndex.CellReference
-                };
-
-            newRow.InsertBefore(newCell, refCell);
-            return new ExcelCell(newCell, documentStyle, excelSharedStrings);
+            var newRow = CreateRow(cellIndex.RowIndex);
+            return newRow.CreateCell(cellIndex.ColumnIndex);
         }
 
         public IExcelRow CreateRow(int rowIndex)
         {
-            var row = new Row
-                {
-                    RowIndex = new UInt32Value((uint)rowIndex)
-                };
-            worksheet.GetFirstChild<SheetData>().AppendChild(row);
-            return new ExcelRow(row, documentStyle, excelSharedStrings);
+            var sheetData = worksheet.GetFirstChild<SheetData>();
+
+            Row newRow;
+            if(sheetData.Elements<Row>().Any(r => r.RowIndex == rowIndex))
+                newRow = sheetData.Elements<Row>().First(r => r.RowIndex == rowIndex);
+            else
+            {
+                var refRow = sheetData.Elements<Row>().FirstOrDefault(row => row.RowIndex > (uint)rowIndex);
+                newRow = new Row
+                    {
+                        RowIndex = new UInt32Value((uint)rowIndex)
+                    };
+                sheetData.InsertBefore(newRow, refRow);
+            }
+
+            return new ExcelRow(newRow, documentStyle, excelSharedStrings);
         }
 
         private MergeCells CreateMergeCellsWorksheetPart()
