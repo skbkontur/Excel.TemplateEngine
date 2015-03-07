@@ -116,6 +116,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 
         public TableBuilderState CurrentState { get { return states.Peek(); } }
 
+        public void MergeCells(ICellPosition upperLeft, ICellPosition lowerRight)
+        {
+            target.MergeCells(upperLeft, lowerRight);
+        }
+
         private ITableBuilder RenderAtomicValue(string value, CellType cellType)
         {
             var cell = target.GetCell(CurrentState.Cursor) ?? target.InsertCell(CurrentState.Cursor);

@@ -64,6 +64,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
 
         public IEnumerable<IColumn> Columns { get { return Enumerable.Range(0, cells[0].Count()).Select(index => new FakeColumn {Index = index}); } }
 
+        public void MergeCells(ICellPosition upperLeft, ICellPosition lowerRight)
+        {
+        }
+
         public void ResizeColumn(int columnIndex, double columnWidth)
         {
         }

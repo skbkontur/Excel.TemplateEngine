@@ -58,6 +58,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
 
         public IEnumerable<IColumn> Columns { get { return internalTable.Columns.Select(c => new ExcelColumn(c)); } }
 
+        public void MergeCells(ICellPosition upperLeft, ICellPosition lowerRight)
+        {
+            internalTable.MergeCells(new ExcelCellIndex(upperLeft.CellReference), new ExcelCellIndex(lowerRight.CellReference));
+        }
+
         public void ResizeColumn(int columnIndex, double width)
         {
             internalTable.ResizeColumn(columnIndex, width);

@@ -42,18 +42,35 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                    cellReferenceRegex.IsMatch(descriptionParts[3]);
         }
 
+        public bool IsCorrectCellsMergingCommand(string expression)
+        {
+            var descriptionParts = GetDescriptionParts(expression);
+            if(descriptionParts.Count() != 3 ||
+               descriptionParts[0] != "MergeCells")
+                return false;
+
+            var cellReferenceRegex = new Regex("^[A-Z]+[1-9][0-9]*$");
+            return cellReferenceRegex.IsMatch(descriptionParts[1]) &&
+                   cellReferenceRegex.IsMatch(descriptionParts[2]);
+        }
+
         public bool TryExtractCoordinates(string templateDescription, out Tuple<ICellPosition, ICellPosition> range)
         {
             range = null;
-            if(!IsCorrectTemplateDescription(templateDescription))
+            if(!IsCorrectTemplateDescription(templateDescription) &&
+               !IsCorrectCellsMergingCommand(templateDescription))
                 return false;
 
-            var cellReferenceRegex = new Regex("[A-Z]+[1-9][0-9]*");
-            var upperLeft = new CellPosition(cellReferenceRegex.Matches(templateDescription)[0].Value);
-            var lowerRight = new CellPosition(cellReferenceRegex.Matches(templateDescription)[1].Value);
-            range = new Tuple<ICellPosition, ICellPosition>(upperLeft, lowerRight);
-
+            range = ExctractCoordinates(templateDescription);
             return true;
+        }
+
+        private static Tuple<ICellPosition, ICellPosition> ExctractCoordinates(string expression)
+        {
+            var cellReferenceRegex = new Regex("[A-Z]+[1-9][0-9]*");
+            var upperLeft = new CellPosition(cellReferenceRegex.Matches(expression)[0].Value);
+            var lowerRight = new CellPosition(cellReferenceRegex.Matches(expression)[1].Value);
+            return new Tuple<ICellPosition, ICellPosition>(upperLeft, lowerRight);
         }
 
         public string[] GetDescriptionParts(string filedDescription)

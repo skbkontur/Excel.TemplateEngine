@@ -12,5 +12,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
         ITablePart GetTablePart(ICellPosition upperLeft, ICellPosition lowerRight);
         void ResizeColumn(int columnIndex, double width);
         IEnumerable<IColumn> Columns { get; }
+        void MergeCells(ICellPosition upperLeft, ICellPosition lowerRight);
     }
 }
