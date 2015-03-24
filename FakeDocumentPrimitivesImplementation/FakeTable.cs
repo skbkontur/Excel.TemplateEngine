@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
@@ -15,6 +16,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
             this.height = height;
 
             cells = JaggedArrayHelper.Instance.CreateJaggedArray<ICell[][]>(height, width);
+            MergedCells = new List<Tuple<ICellPosition, ICellPosition>>();
         }
 
         public ICell GetCell(ICellPosition position)
@@ -66,6 +68,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
 
         public void MergeCells(ICellPosition upperLeft, ICellPosition lowerRight)
         {
+            MergedCells.Add(Tuple.Create(upperLeft, lowerRight));
         }
 
         public void ResizeColumn(int columnIndex, double columnWidth)
@@ -104,6 +107,8 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
             return position.RowIndex < 1 || position.RowIndex > height ||
                    position.ColumnIndex < 1 || position.ColumnIndex > width;
         }
+
+        public List<Tuple<ICellPosition, ICellPosition>> MergedCells { get; private set; }
 
         private readonly int width;
         private readonly int height;
