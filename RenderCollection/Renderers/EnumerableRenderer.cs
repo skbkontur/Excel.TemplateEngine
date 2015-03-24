@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 
+using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 
@@ -15,6 +17,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
         public void Render(ITableBuilder tableBuilder, object model, RenderingTemplate template)
         {
+            if(!TypeCheckingHelper.Instance.IsEnumerable(model.GetType()))
+                throw new ArgumentException("model is not IEnumerable");
+
             var enumerableToRender = ((IEnumerable)model).Cast<object>().ToArray();
 
             for(var i = 0; i < enumerableToRender.Length; ++i)
