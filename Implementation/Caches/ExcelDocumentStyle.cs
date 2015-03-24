@@ -77,7 +77,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         {
             return new ExcelCellAlignment
                 {
-                    WrapText = alignment.With(a => a.WrapText) != null && alignment.WrapText.Value,
+                    WrapText = true, //alignment.With(a => a.WrapText) != null && alignment.WrapText.Value, всегда делать перенос по словам
                     HorizontalAlignment = alignment.With(a => a.Horizontal) == null ? ExcelHorizontalAlignment.Default : ToExcelHorizontalAlignment(alignment.Horizontal),
                     VerticalAlignment = alignment.With(a => a.Vertical) == null ? ExcelVerticalAlignment.Default : ToExcelVerticalAlignment(alignment.Vertical)
                 };
