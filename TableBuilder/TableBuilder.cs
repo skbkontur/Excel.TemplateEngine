@@ -109,7 +109,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 
         public ITableBuilder SetCurrentStyle()
         {
-            var cell = target.GetCell(CurrentState.Cursor);
+            var cell = target.GetCell(CurrentState.Cursor) ?? target.InsertCell(CurrentState.Cursor);
             CurrentState.Styler.ApplyStyle(cell);
             return this;
         }
@@ -118,7 +118,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 
         private ITableBuilder RenderAtomicValue(string value, CellType cellType)
         {
-            var cell = target.InsertCell(CurrentState.Cursor);
+            var cell = target.GetCell(CurrentState.Cursor) ?? target.InsertCell(CurrentState.Cursor);
             cell.StringValue = value;
             cell.CellType = cellType;
             return this;
