@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 
+using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
 {
     public interface IExcelWorksheet
     {
+        void SetPrinterSettings(ExcelPrinterSettings excelPrinterSettings);
         IExcelCell InsertCell(ExcelCellIndex cellIndex);
         IExcelRow CreateRow(int rowIndex);
         void MergeCells(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight);

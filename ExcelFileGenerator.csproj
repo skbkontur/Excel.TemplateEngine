@@ -44,6 +44,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\ExcelPageMargins.cs" />
+    <Compile Include="DataTypes\ExcelPrinterSettings.cs" />
+    <Compile Include="DataTypes\ExcelPrintingOrientation.cs" />
     <Compile Include="Helpers\ExcelCellStyleHelpers.cs" />
     <Compile Include="Implementation\CacheItems\BordersStyleCacheItem.cs" />
     <Compile Include="Implementation\CacheItems\BorderCacheItem.cs" />

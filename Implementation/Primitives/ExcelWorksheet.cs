@@ -6,6 +6,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
+using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
@@ -19,6 +20,29 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             this.documentStyle = documentStyle;
             this.excelSharedStrings = excelSharedStrings;
             this.document = document;
+        }
+
+        public void SetPrinterSettings(ExcelPrinterSettings excelPrinterSettings)
+        {
+            if(excelPrinterSettings.PageMargins != null)
+            {
+                var pageMargins = worksheet.Elements<PageMargins>().FirstOrDefault() ?? new PageMargins();
+                pageMargins.Left = excelPrinterSettings.PageMargins.Left;
+                pageMargins.Right = excelPrinterSettings.PageMargins.Right;
+                pageMargins.Top = excelPrinterSettings.PageMargins.Top;
+                pageMargins.Bottom = excelPrinterSettings.PageMargins.Bottom;
+                pageMargins.Header = excelPrinterSettings.PageMargins.Header;
+                pageMargins.Footer = excelPrinterSettings.PageMargins.Footer;
+
+                if(!worksheet.Elements<PageMargins>().Any())
+                    worksheet.AppendChild(pageMargins);
+            }
+
+            var pageSetup = worksheet.Elements<PageSetup>().FirstOrDefault() ?? new PageSetup();
+            pageSetup.Orientation = (excelPrinterSettings.PrintingOrientation == ExcelPrintingOrientation.Landscape ? OrientationValues.Landscape : OrientationValues.Portrait);
+
+            if(!worksheet.Elements<PageSetup>().Any())
+                worksheet.AppendChild(pageSetup);
         }
 
         public void MergeCells(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
