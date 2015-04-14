@@ -58,6 +58,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return documentMemoryStream.ToArray();
         }
 
+        public int GetWorksheetCount()
+        {
+            return spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().Count();
+        }
+
         public IExcelWorksheet GetWorksheet(int index)
         {
             ThrowIfSpreadsheetDisposed();
