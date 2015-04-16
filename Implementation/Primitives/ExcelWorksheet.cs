@@ -9,6 +9,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
@@ -118,14 +119,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             return worksheet.GetFirstChild<SheetData>().Elements<Row>()
                             .SelectMany(row => row.Elements<Cell>())
-                            .Where(cell =>
-                                {
-                                    uint id;
-                                    if(uint.TryParse(cell.InnerText, out id))
-                                        return excelSharedStrings.GetSharedString(id).Contains(text);
-                                    return false;
-                                })
-                            .Select(cell => new ExcelCell(cell, documentStyle, excelSharedStrings));
+                            .Select(internalCell => new ExcelCell(internalCell, documentStyle, excelSharedStrings))
+                            .Where(cell => cell.GetStringValue().Return(str => str.Contains(text), false));
         }
 
         public IEnumerable<IExcelRow> Rows { get { return worksheet.GetFirstChild<SheetData>().ChildElements.OfType<Row>().Select(x => new ExcelRow(x, documentStyle, excelSharedStrings)); } }
