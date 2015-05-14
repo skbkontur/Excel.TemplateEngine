@@ -175,7 +175,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             tableBuilder = new TableBuilder(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
             templateEngine.Render(tableBuilder, model);
 
-            var result = targetDocument.GetDocumentBytes();
+            var result = targetDocument.CloseAndGetDocumentBytes();
             File.WriteAllBytes("output.xlsx", result);
 
             templateDocument.Dispose();
@@ -194,7 +194,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var templateEngine = new TemplateEngine(template);
             templateEngine.Render(tableBuilder, model);
 
-            var result = targetDocument.GetDocumentBytes();
+            var result = targetDocument.CloseAndGetDocumentBytes();
             File.WriteAllBytes("output.xlsx", result);
 
             templateDocument.Dispose();
