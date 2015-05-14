@@ -25,7 +25,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             documentStyle = new ExcelDocumentStyle(spreadsheetDocument.GetOrCreateSpreadsheetStyles());
             excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.GetOrCreateSpreadsheetSharedStrings());
             spreadsheetDisposed = false;
-            excelDocumentDisposed = false;
         }
 
         private void ThrowIfSpreadsheetDisposed()
@@ -40,20 +39,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 spreadsheetDocument.Dispose();
             documentMemoryStream.Dispose();
             spreadsheetDisposed = true;
-            excelDocumentDisposed = true;
         }
 
-        public byte[] GetDocumentBytes(bool clearDefinedNames = true)
+        public byte[] CloseAndGetDocumentBytes() //Закрывает документ OpenXml и делает все методы недоступными
         {
-            if (excelDocumentDisposed)
-                throw new ObjectDisposedException(GetType().Name);
-
-            if (!spreadsheetDisposed)
-            {
-                spreadsheetDocument.Dispose();
-                spreadsheetDisposed = true;
-            }
-
+            ThrowIfSpreadsheetDisposed();
+            spreadsheetDocument.Dispose();
+            spreadsheetDisposed = true;
             return documentMemoryStream.ToArray();
         }
 
@@ -144,6 +136,5 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private readonly IExcelDocumentStyle documentStyle;
         private readonly IExcelSharedStrings excelSharedStrings;
         private bool spreadsheetDisposed;
-        private bool excelDocumentDisposed;
     }
 }
