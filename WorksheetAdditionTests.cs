@@ -17,7 +17,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
             var worksheet = document.GetWorksheet(1);
             Assert.AreNotEqual(null, worksheet);
 
-            var result = document.GetDocumentBytes();
+            var result = document.CloseAndGetDocumentBytes();
             File.WriteAllBytes("output.xlsx", result);
 
             document.Dispose();
