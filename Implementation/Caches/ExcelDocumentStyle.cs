@@ -21,6 +21,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             bordersStyles = new ExcelDocumentBordersStyles(stylesheet);
             fontStyles = new ExcelDocumentFontStyles(stylesheet);
             cache = new Dictionary<CellStyleCacheItem, uint>();
+            inverseCache = new Dictionary<uint, ExcelCellStyle>();
         }
 
         public uint AddStyle(ExcelCellStyle style)
@@ -51,13 +52,17 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         public ExcelCellStyle GetStyle(int styleIndex)
         {
+            ExcelCellStyle result;
+            if(inverseCache.TryGetValue((uint)styleIndex, out result))
+                return result;
+
             var cellFormat = (CellFormat)stylesheet
                                              .With(s => s.CellFormats)
                                              .With(cf => cf.ChildElements)
                                              .If(ce => ce.Count > styleIndex)
                                              .Return(ce => ce[styleIndex], null);
 
-            var result = new ExcelCellStyle
+            result = new ExcelCellStyle
                 {
                     FillStyle = cellFormat.With(cf => cf.FillId) == null ? null : GetCellFillStyle(cellFormat.FillId.Value),
                     FontStyle = cellFormat.With(cf => cf.FontId) == null ? null : GetCellFontStyle(cellFormat.FontId.Value),
@@ -65,6 +70,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
                     BordersStyle = cellFormat.With(cf => cf.BorderId) == null ? null : GetCellBordersStyle(cellFormat.BorderId.Value),
                     Alignment = cellFormat.With(cf => cf.Alignment) == null ? null : GetCellAlignment(cellFormat.Alignment)
                 };
+            inverseCache.Add((uint)styleIndex, result);
 
             return result;
         }
@@ -249,5 +255,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         private readonly ExcelDocumentBordersStyles bordersStyles;
         private readonly IExcelDocumentFontStyles fontStyles;
         private readonly IDictionary<CellStyleCacheItem, uint> cache;
+        private readonly IDictionary<uint, ExcelCellStyle> inverseCache;
     }
 }
