@@ -5,7 +5,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
+namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 {
     public class AlignmentCacheItem : IEquatable<AlignmentCacheItem>
     {
