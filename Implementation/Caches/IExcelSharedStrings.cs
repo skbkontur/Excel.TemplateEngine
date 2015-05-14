@@ -6,6 +6,5 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
     {
         uint AddSharedString(FormattedStringValue value);
         string GetSharedString(uint index);
-        void Save();
     }
 }

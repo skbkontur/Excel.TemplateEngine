@@ -86,6 +86,7 @@
     <Compile Include="Implementation\Caches\IExcelDocumentFillStyles.cs" />
     <Compile Include="DataTypes\ExcelCellStyle.cs" />
     <Compile Include="ExcelDocumentFactory.cs" />
+    <Compile Include="Helpers\SpreadsheetDocumentHelper.cs" />
     <Compile Include="Interfaces\IExcelCell.cs" />
     <Compile Include="Interfaces\IExcelColumn.cs" />
     <Compile Include="Interfaces\IExcelDocument.cs" />

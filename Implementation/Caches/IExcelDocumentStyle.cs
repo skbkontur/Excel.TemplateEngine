@@ -6,6 +6,5 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
     {
         uint AddStyle(ExcelCellStyle style);
         ExcelCellStyle GetStyle(int styleIndex);
-        void Save();
     }
 }

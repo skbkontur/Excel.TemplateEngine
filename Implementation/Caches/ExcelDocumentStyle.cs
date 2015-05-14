@@ -22,11 +22,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             cache = new Dictionary<CellStyleCacheItem, uint>();
         }
 
-        public void Save()
-        {
-            stylesheet.Save();
-        }
-
         public uint AddStyle(ExcelCellStyle style)
         {
             var fillId = fillStyles.AddStyle(style.FillStyle);

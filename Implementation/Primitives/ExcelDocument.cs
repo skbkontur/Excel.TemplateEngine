@@ -6,9 +6,9 @@ using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
+using SKBKontur.Catalogue.ExcelFileGenerator.Helpers;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
-using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
@@ -22,8 +22,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             documentMemoryStream.Write(template, 0, template.Length);
             spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true);
 
-            documentStyle = new ExcelDocumentStyle(spreadsheetDocument.WorkbookPart.WorkbookStylesPart.Stylesheet);
-            excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.WorkbookPart.With(wp => wp.SharedStringTablePart).With(sstp => sstp.SharedStringTable));
+            documentStyle = new ExcelDocumentStyle(spreadsheetDocument.GetOrCreateSpreadsheetStyles());
+            excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.GetOrCreateSpreadsheetSharedStrings());
             spreadsheetDisposed = false;
             excelDocumentDisposed = false;
         }
@@ -50,7 +50,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
             if (!spreadsheetDisposed)
             {
-                Flush(clearDefinedNames);
                 spreadsheetDocument.Dispose();
                 spreadsheetDisposed = true;
             }
@@ -60,6 +59,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public int GetWorksheetCount()
         {
+            ThrowIfSpreadsheetDisposed();
             return spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().Count();
         }
 
@@ -122,8 +122,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
             sheets.AppendChild(sheet);
 
-            spreadsheetDocument.WorkbookPart.Workbook.Save();
-
             return new ExcelWorksheet(spreadsheetDocument.WorkbookPart.WorksheetParts.Last(), documentStyle, excelSharedStrings, this);
         }
 
@@ -140,26 +138,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return ((Sheet)spreadsheetDocument.WorkbookPart.Workbook.Sheets.ChildElements[index]).Name;
         }
 
-        private void Flush(bool clearDefinedNames = true)
-        {
-            ThrowIfSpreadsheetDisposed();
-            // Saving document parts in OpenXml is not thread-safe. Detailed info at http://support2.microsoft.com/kb/951731
-            lock(lockObject)
-            {
-                if (clearDefinedNames)
-                    spreadsheetDocument.WorkbookPart.Workbook.RemoveAllChildren<DefinedNames>();
-                foreach(var worksheetPart in worksheetsCache.Values)
-                    worksheetPart.Worksheet.Save();
-                documentStyle.Save();
-
-                if(excelSharedStrings != null)
-                    excelSharedStrings.Save();
-                foreach(var pivotTableCacheDefinitionPart in spreadsheetDocument.WorkbookPart.PivotTableCacheDefinitionParts)
-                    pivotTableCacheDefinitionPart.PivotCacheDefinition.Save();
-                spreadsheetDocument.WorkbookPart.Workbook.Save();
-            }
-        }
-
         private readonly IDictionary<string, WorksheetPart> worksheetsCache;
         private readonly MemoryStream documentMemoryStream;
         private readonly SpreadsheetDocument spreadsheetDocument;
@@ -167,7 +145,5 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private readonly IExcelSharedStrings excelSharedStrings;
         private bool spreadsheetDisposed;
         private bool excelDocumentDisposed;
-
-        private static readonly object lockObject = new object();
     }
 }
