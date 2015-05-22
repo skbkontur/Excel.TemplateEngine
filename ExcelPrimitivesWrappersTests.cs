@@ -18,7 +18,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(fileName));
             var table = new ExcelTable(document.GetWorksheet(0));
 
-            var rows = table.GetTablePart(new CellPosition("B9"), new CellPosition("D11"))
+            var rows = table.GetTablePart(new Rectangle(new CellPosition("B9"), new CellPosition("D11")))
                             .Cells
                             .Select(row => row.ToArray())
                             .ToArray();

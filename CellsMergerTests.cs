@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+
+using NUnit.Framework;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplementation;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
@@ -31,10 +33,11 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var tableBuilder = new TableBuilder(target, new CellPosition("A1"));
             cellsMerger.MergeCells(tableBuilder);
 
-            Assert.AreEqual(new CellPosition("A1").CellReference, target.MergedCells[0].Item1.CellReference);
-            Assert.AreEqual(new CellPosition("B2").CellReference, target.MergedCells[0].Item2.CellReference);
-            Assert.AreEqual(new CellPosition("B5").CellReference, target.MergedCells[1].Item1.CellReference);
-            Assert.AreEqual(new CellPosition("D8").CellReference, target.MergedCells[1].Item2.CellReference);
+            var mergedCells = target.MergedCells.ToArray();
+            Assert.AreEqual(new CellPosition("A1").CellReference, mergedCells[0].UpperLeft.CellReference);
+            Assert.AreEqual(new CellPosition("B2").CellReference, mergedCells[0].LowerRight.CellReference);
+            Assert.AreEqual(new CellPosition("B5").CellReference, mergedCells[1].UpperLeft.CellReference);
+            Assert.AreEqual(new CellPosition("D8").CellReference, mergedCells[1].LowerRight.CellReference);
         }
     }
 }

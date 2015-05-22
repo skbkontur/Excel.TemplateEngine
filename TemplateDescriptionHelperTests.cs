@@ -1,6 +1,4 @@
-﻿using System;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
@@ -78,18 +76,18 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void TemplateCoordinatesTest()
         {
-            Tuple<ICellPosition, ICellPosition> range;
+            IRectangle range;
             Assert.IsTrue(TemplateDescriptionHelper.Instance.TryExtractCoordinates("Template:qwe:QWE123:ASD987", out range));
-            Assert.AreEqual(17 * 26 * 26 + 23 * 26 + 5, range.Item1.ColumnIndex);
-            Assert.AreEqual(123, range.Item1.RowIndex);
-            Assert.AreEqual(26 * 26 + 19 * 26 + 4, range.Item2.ColumnIndex);
-            Assert.AreEqual(987, range.Item2.RowIndex);
+            Assert.AreEqual(26 * 26 + 19 * 26 + 4, range.UpperLeft.ColumnIndex);
+            Assert.AreEqual(123, range.UpperLeft.RowIndex);
+            Assert.AreEqual(17 * 26 * 26 + 23 * 26 + 5, range.LowerRight.ColumnIndex);
+            Assert.AreEqual(987, range.LowerRight.RowIndex);
 
             Assert.IsTrue(TemplateDescriptionHelper.Instance.TryExtractCoordinates("MergeCells:QWE123:ASD987", out range));
-            Assert.AreEqual(17 * 26 * 26 + 23 * 26 + 5, range.Item1.ColumnIndex);
-            Assert.AreEqual(123, range.Item1.RowIndex);
-            Assert.AreEqual(26 * 26 + 19 * 26 + 4, range.Item2.ColumnIndex);
-            Assert.AreEqual(987, range.Item2.RowIndex);
+            Assert.AreEqual(26 * 26 + 19 * 26 + 4, range.UpperLeft.ColumnIndex);
+            Assert.AreEqual(123, range.UpperLeft.RowIndex);
+            Assert.AreEqual(17 * 26 * 26 + 23 * 26 + 5, range.LowerRight.ColumnIndex);
+            Assert.AreEqual(987, range.LowerRight.RowIndex);
         }
     }
 }

@@ -134,7 +134,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 cell.StringValue = stringValues[i];
             }
 
-            var tablePart = table.GetTablePart(new CellPosition(9, 9), new CellPosition(40, 20));
+            var tablePart = table.GetTablePart(new Rectangle(new CellPosition(9, 9), new CellPosition(40, 20)));
 
             Assert.AreEqual(32, tablePart.Cells.Count());
 
@@ -173,7 +173,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const int height = 40;
             var table = new FakeTable(width, height);
 
-            var tablePart = table.GetTablePart(new CellPosition(-1, 0), new CellPosition(1, 1));
+            var tablePart = table.GetTablePart(new Rectangle(new CellPosition(-1, 0), new CellPosition(1, 1)));
 
             Assert.AreEqual(null, tablePart);
         }

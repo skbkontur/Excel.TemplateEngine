@@ -355,12 +355,12 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
         private static void DebugPrinting(ITable table, ICellPosition upperLeft, ICellPosition lowerRight)
         {
-            var maxWidth = table.GetTablePart(upperLeft, lowerRight)
+            var maxWidth = table.GetTablePart(new Rectangle(upperLeft, lowerRight))
                                 .Cells
                                 .SelectMany(row => row)
                                 .Select(cell => cell.StringValue)
                                 .Max(value => string.IsNullOrEmpty(value) ? 0 : value.Length);
-            foreach(var row in table.GetTablePart(upperLeft, lowerRight).Cells)
+            foreach(var row in table.GetTablePart(new Rectangle(upperLeft, lowerRight)).Cells)
             {
                 foreach(var cell in row)
                 {
