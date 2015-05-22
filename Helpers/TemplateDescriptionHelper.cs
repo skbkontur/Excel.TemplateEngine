@@ -54,23 +54,23 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                    cellReferenceRegex.IsMatch(descriptionParts[2]);
         }
 
-        public bool TryExtractCoordinates(string templateDescription, out Tuple<ICellPosition, ICellPosition> range)
+        public bool TryExtractCoordinates(string templateDescription, out IRectangle rectangle)
         {
-            range = null;
+            rectangle = null;
             if(!IsCorrectTemplateDescription(templateDescription) &&
                !IsCorrectCellsMergingCommand(templateDescription))
                 return false;
 
-            range = ExctractCoordinates(templateDescription);
+            rectangle = ExctractCoordinates(templateDescription);
             return true;
         }
 
-        private static Tuple<ICellPosition, ICellPosition> ExctractCoordinates(string expression)
+        private static IRectangle ExctractCoordinates(string expression)
         {
             var cellReferenceRegex = new Regex("[A-Z]+[1-9][0-9]*");
             var upperLeft = new CellPosition(cellReferenceRegex.Matches(expression)[0].Value);
             var lowerRight = new CellPosition(cellReferenceRegex.Matches(expression)[1].Value);
-            return new Tuple<ICellPosition, ICellPosition>(upperLeft, lowerRight);
+            return new Rectangle(upperLeft, lowerRight);
         }
 
         public string[] GetDescriptionParts(string filedDescription)

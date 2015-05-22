@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
@@ -16,7 +15,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
             this.height = height;
 
             cells = JaggedArrayHelper.Instance.CreateJaggedArray<ICell[][]>(height, width);
-            MergedCells = new List<Tuple<ICellPosition, ICellPosition>>();
+            mergedCells = new List<IRectangle>();
         }
 
         public ICell GetCell(ICellPosition position)
@@ -46,18 +45,18 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
                    select cell;
         }
 
-        public ITablePart GetTablePart(ICellPosition upperLeft, ICellPosition lowerRight)
+        public ITablePart GetTablePart(IRectangle rectangle)
         {
-            if(OutOfBounds(upperLeft) || OutOfBounds(lowerRight))
+            if(OutOfBounds(rectangle.UpperLeft) || OutOfBounds(rectangle.LowerRight))
                 return null;
 
-            var subTableSize = lowerRight.Subtract(upperLeft).Add(new ObjectSize(1, 1));
+            var subTableSize = rectangle.Size;
             var subTable = JaggedArrayHelper.Instance.CreateJaggedArray<ICell[][]>(subTableSize.Height, subTableSize.Width);
             for(var y = 0; y < subTableSize.Height; ++y)
             {
                 for(var x = 0; x < subTableSize.Width; ++x)
                 {
-                    var sourceCell = cells[upperLeft.RowIndex + y - 1][upperLeft.ColumnIndex + x - 1];
+                    var sourceCell = cells[rectangle.UpperLeft.RowIndex + y - 1][rectangle.UpperLeft.ColumnIndex + x - 1];
                     subTable[y][x] = sourceCell ?? new FakeCell(new CellPosition(y + 1, x + 1));
                 }
             }
@@ -65,10 +64,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
         }
 
         public IEnumerable<IColumn> Columns { get { return Enumerable.Range(0, cells[0].Count()).Select(index => new FakeColumn {Index = index}); } }
+        public IEnumerable<IRectangle> MergedCells { get { return mergedCells; } }
 
-        public void MergeCells(ICellPosition upperLeft, ICellPosition lowerRight)
+        public void MergeCells(IRectangle rectangle)
         {
-            MergedCells.Add(Tuple.Create(upperLeft, lowerRight));
+            mergedCells.Add(rectangle);
         }
 
         public void ResizeColumn(int columnIndex, double columnWidth)
@@ -108,8 +108,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
                    position.ColumnIndex < 1 || position.ColumnIndex > width;
         }
 
-        public List<Tuple<ICellPosition, ICellPosition>> MergedCells { get; private set; }
-
+        private readonly List<IRectangle> mergedCells;
         private readonly int width;
         private readonly int height;
         private readonly ICell[][] cells;

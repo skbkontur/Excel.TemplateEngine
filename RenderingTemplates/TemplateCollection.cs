@@ -29,12 +29,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
             if(cell == null)
                 return null;
 
-            Tuple<ICellPosition, ICellPosition> range;
+            IRectangle range;
             if(TemplateDescriptionHelper.Instance.TryExtractCoordinates(cell.StringValue, out range))
             {
                 cache.Add(templateName, new RenderingTemplate
                     {
-                        Content = templateTable.GetTablePart(range.Item1, range.Item2)
+                        Content = templateTable.GetTablePart(range)
                     });
                 return cache[templateName];
             }

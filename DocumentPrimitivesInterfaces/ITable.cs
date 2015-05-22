@@ -9,9 +9,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
         ICell GetCell(ICellPosition position);
         ICell InsertCell(ICellPosition position);
         IEnumerable<ICell> SearchCellByText(string text);
-        ITablePart GetTablePart(ICellPosition upperLeft, ICellPosition lowerRight);
+        ITablePart GetTablePart(IRectangle rectangle);
         void ResizeColumn(int columnIndex, double width);
         IEnumerable<IColumn> Columns { get; }
-        void MergeCells(ICellPosition upperLeft, ICellPosition lowerRight);
+        void MergeCells(IRectangle rectangle);
     }
 }

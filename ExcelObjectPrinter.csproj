@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NavigationPrimitives\IRectangle.cs" />
+    <Compile Include="NavigationPrimitives\Rectangle.cs" />
     <Compile Include="PostBuildActions\CellsMerger.cs" />
     <Compile Include="PostBuildActions\ColumnResizer.cs" />
     <Compile Include="DataTypes\CellType.cs" />

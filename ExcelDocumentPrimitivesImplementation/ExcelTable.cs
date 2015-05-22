@@ -32,24 +32,25 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
             return internalTable.SearchCellsByText(text).Select(cell => new ExcelCell(cell));
         }
 
-        public ITablePart GetTablePart(ICellPosition upperLeft, ICellPosition lowerRight)
+        public ITablePart GetTablePart(IRectangle rectangle)
         {
             var excelReferenceToCell = internalTable
-                .GetSortedCellsInRange(new ExcelCellIndex(upperLeft.CellReference), new ExcelCellIndex(lowerRight.CellReference))
+                .GetSortedCellsInRange(new ExcelCellIndex(rectangle.UpperLeft.CellReference),
+                                       new ExcelCellIndex(rectangle.LowerRight.CellReference))
                 .Select(cell => new ExcelCell(cell))
                 .ToDictionary(cell => cell.CellPosition.CellReference);
 
-            var subTableSize = lowerRight.Subtract(upperLeft).Add(new ObjectSize(1, 1));
+            var subTableSize = rectangle.Size;
             var subTable = JaggedArrayHelper.Instance.CreateJaggedArray<ICell[][]>(subTableSize.Height, subTableSize.Width);
-            for(var x = upperLeft.ColumnIndex; x <= lowerRight.ColumnIndex; ++x)
+            for(var x = rectangle.UpperLeft.ColumnIndex; x <= rectangle.LowerRight.ColumnIndex; ++x)
             {
-                for(var y = upperLeft.RowIndex; y <= lowerRight.RowIndex; ++y)
+                for(var y = rectangle.UpperLeft.RowIndex; y <= rectangle.LowerRight.RowIndex; ++y)
                 {
                     ExcelCell cell;
                     if(!excelReferenceToCell.TryGetValue(new CellPosition(y, x).CellReference, out cell))
                         cell = new ExcelCell(internalTable.InsertCell(new ExcelCellIndex(y, x)));
 
-                    subTable[y - upperLeft.RowIndex][x - upperLeft.ColumnIndex] = cell;
+                    subTable[y - rectangle.UpperLeft.RowIndex][x - rectangle.UpperLeft.ColumnIndex] = cell;
                 }
             }
 
@@ -58,9 +59,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
 
         public IEnumerable<IColumn> Columns { get { return internalTable.Columns.Select(c => new ExcelColumn(c)); } }
 
-        public void MergeCells(ICellPosition upperLeft, ICellPosition lowerRight)
+        public void MergeCells(IRectangle rectangle)
         {
-            internalTable.MergeCells(new ExcelCellIndex(upperLeft.CellReference), new ExcelCellIndex(lowerRight.CellReference));
+            internalTable.MergeCells(new ExcelCellIndex(rectangle.UpperLeft.CellReference),
+                                     new ExcelCellIndex(rectangle.LowerRight.CellReference));
         }
 
         public void ResizeColumn(int columnIndex, double width)

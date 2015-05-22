@@ -18,9 +18,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.PostBuildActions
         {
             foreach(var cell in templateTable.SearchCellByText("MergeCells:"))
             {
-                Tuple<ICellPosition, ICellPosition> range;
+                IRectangle range;
                 if(TemplateDescriptionHelper.Instance.TryExtractCoordinates(cell.StringValue, out range))
-                    tableBuilder.MergeCells(range.Item1, range.Item2);
+                    tableBuilder.MergeCells(range);
             }
         }
 
