@@ -27,10 +27,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives
 
         public bool IsIntersects(IRectangle rect)
         {
-            if(rect.UpperLeft.ColumnIndex < LowerRight.ColumnIndex &&
-               UpperLeft.ColumnIndex < rect.LowerRight.ColumnIndex &&
-               rect.UpperLeft.RowIndex < LowerRight.RowIndex)
-                return UpperLeft.RowIndex < rect.LowerRight.RowIndex;
+            if(rect.UpperLeft.ColumnIndex <= LowerRight.ColumnIndex &&
+               UpperLeft.ColumnIndex <= rect.LowerRight.ColumnIndex &&
+               rect.UpperLeft.RowIndex <= LowerRight.RowIndex)
+                return UpperLeft.RowIndex <= rect.LowerRight.RowIndex;
             return false;
         }
     }
