@@ -19,6 +19,8 @@ using PageMargins = DocumentFormat.OpenXml.Spreadsheet.PageMargins;
 using PageSetup = DocumentFormat.OpenXml.Spreadsheet.PageSetup;
 using Selection = DocumentFormat.OpenXml.Spreadsheet.Selection;
 
+using Tuple = System.Tuple;
+
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
     public class ExcelWorksheet : IExcelWorksheet
@@ -204,6 +206,17 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                             list.Add(new ExcelColumn(x.Width, (int)index.Value));
                         return list.ToArray();
                     });
+            }
+        }
+
+        public IEnumerable<Tuple<ExcelCellIndex, ExcelCellIndex>> MergedCells
+        {
+            get
+            {
+                return worksheet.With(w => w.GetFirstChild<MergeCells>())
+                                .Return(w => w.Select(x => (MergeCell)x), Enumerable.Empty<MergeCell>())
+                                .Select(mergeCell => mergeCell.Reference.Value.Split(':').ToArray())
+                                .Select(references => Tuple.Create(new ExcelCellIndex(references[0]), new ExcelCellIndex(references[1])));
             }
         }
 

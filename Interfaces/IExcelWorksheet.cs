@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
@@ -20,5 +21,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         void CreateTopFrozenPanel(ExcelCellIndex bottomRightCell);
         IEnumerable<IExcelRow> Rows { get; }
         IEnumerable<IExcelColumn> Columns { get; }
+        IEnumerable<Tuple<ExcelCellIndex, ExcelCellIndex>> MergedCells { get; } 
     }
 }
