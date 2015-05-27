@@ -3,6 +3,7 @@
 using NUnit.Framework;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplementation;
+using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
@@ -13,12 +14,6 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void TemplateExtractionTest()
         {
-            var stringTemplate = new[]
-                {
-                    new[] {"Template:RootTemplate:A2:B3", "", "", ""},
-                    new[] {"Тест:", "Value::Test", "", "Template:Thrash:D3:D3"},
-                    new[] {"Birne:", "Value::Pear", "", "Value::Metallica"}
-                };
             var template = FakeTable.GenerateFromStringArray(stringTemplate);
             var templateCollection = new TemplateCollection(template);
 
@@ -46,6 +41,31 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
             var emptyTemplate = templateCollection.GetTemplate("Тест:");
             Assert.AreEqual(null, emptyTemplate);
+
+            Assert.AreEqual("D3", thrashTemplate.Range.UpperLeft.CellReference);
+            Assert.AreEqual("D3", thrashTemplate.Range.LowerRight.CellReference);
         }
+
+        [Test]
+        public void WithMergeCellsTemplateExtractionTest()
+        {
+            var template = FakeTable.GenerateFromStringArray(stringTemplate);
+            template.MergeCells(new Rectangle(new CellPosition("A3"), new CellPosition("B3")));
+            var templateCollection = new TemplateCollection(template);
+
+            var rootTemplate = templateCollection.GetTemplate("RootTemplate");
+            var mergedCells = rootTemplate.MergedCells.ToArray();
+
+            Assert.AreEqual(1, mergedCells.Length);
+            Assert.AreEqual("A2", mergedCells[0].UpperLeft.CellReference);
+            Assert.AreEqual("B2", mergedCells[0].LowerRight.CellReference);
+        }
+
+        private readonly string[][] stringTemplate =
+            {
+                new[] {"Template:RootTemplate:A2:B3", "", "", ""},
+                new[] {"Тест:", "Value::Test", "", "Template:Thrash:D3:D3"},
+                new[] {"Birne:", "Value::Pear", "", "Value::Metallica"}
+            };
     }
 }

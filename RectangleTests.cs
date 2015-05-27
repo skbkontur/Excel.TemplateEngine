@@ -114,5 +114,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
             Assert.AreEqual(true, rect1.Intersects(rect2));
         }
+
+        [Test]
+        public void PositionContainingTest()
+        {
+            var rect = new Rectangle(new CellPosition(1, 1), new CellPosition(45, 36));
+            var position = new CellPosition(1, 3);
+
+            Assert.AreEqual(true, rect.Contains(position));
+        }
     }
 }

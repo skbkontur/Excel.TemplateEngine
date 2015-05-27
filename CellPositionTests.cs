@@ -71,5 +71,29 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.AreEqual(c.RowIndex, 3);
             Assert.AreEqual(c.ColumnIndex, 3);
         }
+
+        [Test]
+        public void ToRelativeCoordinatesConversionTest()
+        {
+            var pos = new CellPosition(3, 6);
+            var origin = new CellPosition(2, 2);
+
+            var relativePos = pos.ToRelativeCoordinates(origin);
+
+            Assert.AreEqual(relativePos.RowIndex, 2);
+            Assert.AreEqual(relativePos.ColumnIndex, 5);
+        }
+
+        [Test]
+        public void ToGlobalCoordinatesConversionTest()
+        {
+            var pos = new CellPosition(2, 5);
+            var origin = new CellPosition(2, 2);
+
+            var globalPos = pos.ToGlobalCoordinates(origin);
+
+            Assert.AreEqual(globalPos.RowIndex, 3);
+            Assert.AreEqual(globalPos.ColumnIndex, 6);
+        }
     }
 }
