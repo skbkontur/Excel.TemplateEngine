@@ -11,6 +11,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
         IEnumerable<ICell> SearchCellByText(string text);
         ITablePart GetTablePart(IRectangle rectangle);
         void ResizeColumn(int columnIndex, double width);
+        IEnumerable<IRectangle> MergedCells { get; }
         IEnumerable<IColumn> Columns { get; }
         void MergeCells(IRectangle rectangle);
     }

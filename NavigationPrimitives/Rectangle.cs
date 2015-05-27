@@ -33,5 +33,19 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives
                 return UpperLeft.RowIndex <= rect.LowerRight.RowIndex;
             return false;
         }
+
+        public bool Contains(ICellPosition position)
+        {
+            return position.RowIndex >= UpperLeft.RowIndex &&
+                   position.RowIndex <= LowerRight.RowIndex &&
+                   position.ColumnIndex >= UpperLeft.ColumnIndex &&
+                   position.ColumnIndex <= LowerRight.ColumnIndex;
+        }
+
+        public bool Contains(IRectangle rect)
+        {
+            return Contains(rect.UpperLeft) &&
+                   Contains(rect.LowerRight);
+        }
     }
 }

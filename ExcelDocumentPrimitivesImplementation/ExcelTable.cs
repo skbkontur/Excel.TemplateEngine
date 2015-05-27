@@ -70,6 +70,16 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
             internalTable.ResizeColumn(columnIndex, width);
         }
 
+        public IEnumerable<IRectangle> MergedCells
+        {
+            get
+            {
+                return internalTable.MergedCells
+                                    .Select(tuple => new Rectangle(new CellPosition(tuple.Item1),
+                                                                   new CellPosition(tuple.Item2)));
+            }
+        }
+
         private readonly IExcelWorksheet internalTable;
     }
 }

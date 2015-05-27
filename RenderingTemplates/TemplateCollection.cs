@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
@@ -25,21 +24,39 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
             if(cache.TryGetValue(templateName, out template))
                 return template;
 
+            AddNewTemplateIntoCache(templateName);
+
+            return cache[templateName];
+        }
+
+        private void AddNewTemplateIntoCache(string templateName)
+        {
+            cache.Add(templateName, null);
+
             var cell = SearchTemplateDescription(templateName);
             if(cell == null)
-                return null;
+                return;
 
             IRectangle range;
-            if(TemplateDescriptionHelper.Instance.TryExtractCoordinates(cell.StringValue, out range))
-            {
-                cache.Add(templateName, new RenderingTemplate
-                    {
-                        Content = templateTable.GetTablePart(range)
-                    });
-                return cache[templateName];
-            }
+            if(!TemplateDescriptionHelper.Instance.TryExtractCoordinates(cell.StringValue, out range))
+                return;
 
-            return null;
+            var newTemplate = BuildNewRenderinGTemplate(range);
+
+            if(newTemplate.IsValid())
+                cache[templateName] = newTemplate;
+        }
+
+        private RenderingTemplate BuildNewRenderinGTemplate(IRectangle range)
+        {
+            return new RenderingTemplate
+                {
+                    Range = range,
+                    Content = templateTable.GetTablePart(range),
+                    MergedCells = templateTable.MergedCells
+                                               .Where(rect => rect.Intersects(range))
+                                               .Select(rect => rect.ToRelativeCoordinates(range.UpperLeft))
+                };
         }
 
         private ICell SearchTemplateDescription(string templateName)
