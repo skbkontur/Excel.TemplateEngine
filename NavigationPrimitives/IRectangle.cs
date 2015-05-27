@@ -5,6 +5,6 @@
         ICellPosition UpperLeft { get; }
         ICellPosition LowerRight { get; }
         IObjectSize Size { get; }
-        bool IsIntersects(IRectangle rect);
+        bool Intersects(IRectangle rect);
     }
 }

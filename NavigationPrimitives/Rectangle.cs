@@ -25,7 +25,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives
         public ICellPosition LowerRight { get; private set; }
         public IObjectSize Size { get; private set; }
 
-        public bool IsIntersects(IRectangle rect)
+        public bool Intersects(IRectangle rect)
         {
             if(rect.UpperLeft.ColumnIndex <= LowerRight.ColumnIndex &&
                UpperLeft.ColumnIndex <= rect.LowerRight.ColumnIndex &&
