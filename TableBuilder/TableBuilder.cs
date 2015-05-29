@@ -116,9 +116,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 
         public TableBuilderState CurrentState { get { return states.Peek(); } }
 
-        public void MergeCells(IRectangle rectangle)
+        public ITableBuilder MergeCells(IRectangle rectangle)
         {
-            target.MergeCells(rectangle);
+            target.MergeCells(rectangle.ToGlobalCoordinates(CurrentState.Origin));
+            return this;
         }
 
         private ITableBuilder RenderAtomicValue(string value, CellType cellType)

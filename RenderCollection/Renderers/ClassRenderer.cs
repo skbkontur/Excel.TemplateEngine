@@ -34,6 +34,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
                 if(!row.Equals(lastRow))
                     tableBuilder.MoveToNextLayer();
             }
+            MergeCells(tableBuilder, template);
+        }
+
+        private static void MergeCells(ITableBuilder tableBuilder, RenderingTemplate template)
+        {
+            foreach(var mergedCells in template.MergedCells)
+            {
+                tableBuilder.MergeCells(mergedCells);
+            }
         }
 
         private static string ExtractTemplateName(ICell cell)

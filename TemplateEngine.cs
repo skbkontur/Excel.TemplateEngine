@@ -15,7 +15,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
             templateCollection = new TemplateCollection(templateTable);
             rendererCollection = new RendererCollection(templateCollection);
             columnResizer = new ColumnResizer(templateTable);
-            cellsMerger = new CellsMerger(templateTable);
         }
 
         public void Render(ITableBuilder tableBuilder, object model)
@@ -31,7 +30,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
             render.Render(tableBuilder, model, renderingTemplate);
 
             columnResizer.ResizeColumns(tableBuilder);
-            cellsMerger.MergeCells(tableBuilder);
         }
 
         private void RenderError(ITableBuilder tableBuilder)
@@ -45,7 +43,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
         private readonly ITemplateCollection templateCollection;
         private readonly IRendererCollection rendererCollection;
         private readonly IColumnResizer columnResizer;
-        private readonly ICellsMerger cellsMerger;
         private readonly ILog logger = LogManager.GetLogger(typeof(TemplateEngine));
     }
 }

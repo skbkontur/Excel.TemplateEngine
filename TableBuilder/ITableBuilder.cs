@@ -16,7 +16,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         ITableBuilder MoveToNextColumn();
         ITableBuilder ResizeColumn(int columnIndex, double width);
         ITableBuilder SetCurrentStyle();
+        ITableBuilder MergeCells(IRectangle rectangle);
         TableBuilderState CurrentState { get; }
-        void MergeCells(IRectangle rectangle);
     }
 }

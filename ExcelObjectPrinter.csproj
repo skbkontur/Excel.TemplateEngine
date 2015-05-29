@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Include="NavigationPrimitives\IRectangle.cs" />
     <Compile Include="NavigationPrimitives\Rectangle.cs" />
-    <Compile Include="PostBuildActions\CellsMerger.cs" />
     <Compile Include="PostBuildActions\ColumnResizer.cs" />
     <Compile Include="DataTypes\CellType.cs" />
     <Compile Include="DocumentPrimitivesInterfaces\ICell.cs" />
@@ -60,7 +59,6 @@
     <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelTablePart.cs" />
     <Compile Include="FakeDocumentPrimitivesImplementation\FakeColumn.cs" />
     <Compile Include="Helpers\JaggedArrayHelper.cs" />
-    <Compile Include="PostBuildActions\ICellsMerger.cs" />
     <Compile Include="TableBuilder\IStyler.cs" />
     <Compile Include="PostBuildActions\IColumnResizer.cs" />
     <Compile Include="NavigationPrimitives\ICellPosition.cs" />
