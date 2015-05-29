@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 
 using NUnit.Framework;
 
@@ -59,7 +61,13 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                     TypeName = "ORDERS"
                 };
 
-            MakeTest(model, withCellsMergingTemplateFileName);
+            MakeTest(model, withCellsMergingTemplateFileName, doc =>
+                {
+                    var mergedCells = doc.MergedCells.FirstOrDefault();
+                    Assert.AreNotEqual(null, mergedCells);
+                    Assert.AreEqual("C2", mergedCells.UpperLeft.CellReference);
+                    Assert.AreEqual("D2", mergedCells.LowerRight.CellReference);
+                });
         }
 
         [Test]
@@ -182,7 +190,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             targetDocument.Dispose();
         }
 
-        private static void MakeTest(object model, string templateFileName)
+        private static void MakeTest(object model, string templateFileName, Action<ExcelTable> resultValidationFunc = null)
         {
             var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(templateFileName));
             var template = new ExcelTable(templateDocument.GetWorksheet(0));
@@ -196,6 +204,9 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
             var result = targetDocument.CloseAndGetDocumentBytes();
             File.WriteAllBytes("output.xlsx", result);
+
+            if(resultValidationFunc != null)
+                resultValidationFunc(target);
 
             templateDocument.Dispose();
             targetDocument.Dispose();

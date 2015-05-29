@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+
+using NUnit.Framework;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplementation;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
@@ -150,6 +152,91 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.AreEqual(table.GetCell(new CellPosition("F4")).StringValue, "6");
             Assert.AreEqual(table.GetCell(new CellPosition("G4")).StringValue, "6");
             Assert.AreEqual(table.GetCell(new CellPosition("A7")).StringValue, "7");
+        }
+
+        [Test]
+        public void TableBuilderBigAwfulTestWithMergedCells()
+        {
+            const int width = 20;
+            const int height = 40;
+            var table = new FakeTable(width, height);
+
+            var tableBuilder = new TableBuilder(table, new CellPosition("A1"));
+
+            tableBuilder.PushState() //depth = 1
+                        .PushState() //depth = 2
+                        .PushState() //depth = 3
+                        .RenderAtomicValue("1")
+                        .MoveToNextColumn()
+                        .RenderAtomicValue("1")
+                        .MoveToNextColumn()
+                        .MoveToNextLayer()
+                        .RenderAtomicValue("1")
+                        .MoveToNextColumn()
+                        .RenderAtomicValue("1")
+                        .MergeCells(new Rectangle(new CellPosition("A1"), new CellPosition("B2")))
+                        .MoveToNextColumn()
+                        .PopState() //depth = 2
+                        .PushState() //depth = 3
+                        .RenderAtomicValue("2")
+                        .MoveToNextColumn()
+                        .MoveToNextLayer()
+                        .RenderAtomicValue("2")
+                        .MoveToNextColumn()
+                        .MoveToNextLayer()
+                        .RenderAtomicValue("2")
+                        .MoveToNextColumn()
+                        .PopState() //depth = 2
+                        .PopState() //depth = 1
+                        .MoveToNextLayer()
+                        .PushState() //depth = 2
+                        .PushState() //depth = 3
+                        .RenderAtomicValue("3")
+                        .MoveToNextColumn()
+                        .RenderAtomicValue("3")
+                        .MoveToNextColumn()
+                        .RenderAtomicValue("3")
+                        .MoveToNextColumn()
+                        .PopState() //depth = 2
+                        .PushState() //depth = 3
+                        .RenderAtomicValue("4")
+                        .MoveToNextColumn()
+                        .MoveToNextLayer()
+                        .RenderAtomicValue("4")
+                        .MoveToNextColumn()
+                        .MoveToNextLayer()
+                        .RenderAtomicValue("4")
+                        .MoveToNextColumn()
+                        .MergeCells(new Rectangle(new CellPosition("A2"), new CellPosition("A3")))
+                        .PopState() //depth = 2
+                        .PopState() //depth = 1
+                        .PushState() //depth = 2
+                        .PushState() //depth = 3
+                        .RenderAtomicValue("5")
+                        .MoveToNextColumn()
+                        .MoveToNextLayer()
+                        .RenderAtomicValue("5")
+                        .MoveToNextColumn()
+                        .PopState() //depth = 2
+                        .PushState() //depth = 3
+                        .RenderAtomicValue("6")
+                        .MoveToNextColumn()
+                        .RenderAtomicValue("6")
+                        .MoveToNextColumn()
+                        .PopState() //depth = 2
+                        .PopState() //depth = 1
+                        .MoveToNextLayer()
+                        .RenderAtomicValue("7")
+                        .MoveToNextColumn()
+                        .PushState(); //depth = 0
+
+            var mergedCells = table.MergedCells.ToArray();
+
+            Assert.AreEqual(mergedCells.Length, 2);
+            Assert.AreEqual(mergedCells[0].UpperLeft.CellReference, "A1");
+            Assert.AreEqual(mergedCells[0].LowerRight.CellReference, "B2");
+            Assert.AreEqual(mergedCells[1].UpperLeft.CellReference, "D5");
+            Assert.AreEqual(mergedCells[1].LowerRight.CellReference, "D6");
         }
     }
 }
