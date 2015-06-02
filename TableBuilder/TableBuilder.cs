@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+
+using log4net;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.DataTypes;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
-
-using log4net;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 {
@@ -101,9 +103,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
             return this;
         }
 
-        public ITableBuilder ResizeColumn(int columnIndex, double width)
+        public ITableBuilder ExpandColumn(int relativeColumnIndex, double width)
         {
-            target.ResizeColumn(columnIndex, width);
+            var globalIndex = relativeColumnIndex + CurrentState.Origin.ColumnIndex - 1;
+            var currentWidth = target.Columns
+                                     .FirstOrDefault(col => col.Index == globalIndex)
+                                     .Return(c => c.Width, 0.0);
+
+            if(currentWidth < width)
+                target.ResizeColumn(globalIndex, width);
             return this;
         }
 

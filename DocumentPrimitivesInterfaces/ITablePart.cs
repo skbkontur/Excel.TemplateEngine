@@ -2,7 +2,7 @@
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
 {
-    public interface ITablePart
+    public interface ITablePart //TODO: {birne} порвать дубликаты
     {
         IEnumerable<IEnumerable<ICell>> Cells { get; }
     }

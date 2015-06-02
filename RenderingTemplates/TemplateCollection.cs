@@ -55,7 +55,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
                     Content = templateTable.GetTablePart(range),
                     MergedCells = templateTable.MergedCells
                                                .Where(rect => rect.Intersects(range))
-                                               .Select(rect => rect.ToRelativeCoordinates(range.UpperLeft))
+                                               .Select(rect => rect.ToRelativeCoordinates(range.UpperLeft)),
+                    Columns = templateTable.Columns
+                                           .Where(column => column.Index >= range.UpperLeft.ColumnIndex &&
+                                                            column.Index <= range.LowerRight.ColumnIndex)
                 };
         }
 

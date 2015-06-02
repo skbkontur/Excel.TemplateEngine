@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Catalogue.Objects, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assemblies\Temp\Catalogue.Objects.dll</HintPath>
+    </Reference>
     <Reference Include="GroboContainer">
       <HintPath>..\..\Assemblies\GroboContainer.dll</HintPath>
     </Reference>
@@ -49,7 +53,6 @@
   <ItemGroup>
     <Compile Include="NavigationPrimitives\IRectangle.cs" />
     <Compile Include="NavigationPrimitives\Rectangle.cs" />
-    <Compile Include="PostBuildActions\ColumnResizer.cs" />
     <Compile Include="DataTypes\CellType.cs" />
     <Compile Include="DocumentPrimitivesInterfaces\ICell.cs" />
     <Compile Include="DocumentPrimitivesInterfaces\IColumn.cs" />
@@ -60,7 +63,6 @@
     <Compile Include="FakeDocumentPrimitivesImplementation\FakeColumn.cs" />
     <Compile Include="Helpers\JaggedArrayHelper.cs" />
     <Compile Include="TableBuilder\IStyler.cs" />
-    <Compile Include="PostBuildActions\IColumnResizer.cs" />
     <Compile Include="NavigationPrimitives\ICellPosition.cs" />
     <Compile Include="NavigationPrimitives\CellPosition.cs" />
     <Compile Include="NavigationPrimitives\IObjectSize.cs" />

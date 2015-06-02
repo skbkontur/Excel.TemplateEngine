@@ -35,14 +35,22 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
                     tableBuilder.MoveToNextLayer();
             }
             MergeCells(tableBuilder, template);
+            ResizeColumns(tableBuilder, template);
+        }
+
+        private static void ResizeColumns(ITableBuilder tableBuilder, RenderingTemplate template)
+        {
+            foreach(var column in template.Columns)
+            {
+                tableBuilder.ExpandColumn(column.Index - template.Range.UpperLeft.ColumnIndex + 1,
+                                          column.Width);
+            }
         }
 
         private static void MergeCells(ITableBuilder tableBuilder, RenderingTemplate template)
         {
             foreach(var mergedCells in template.MergedCells)
-            {
                 tableBuilder.MergeCells(mergedCells);
-            }
         }
 
         private static string ExtractTemplateName(ICell cell)
