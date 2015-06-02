@@ -199,6 +199,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             get
             {
+                if(worksheet.GetFirstChild<Columns>() == null)
+                    return Enumerable.Empty<IExcelColumn>();
                 return worksheet.GetFirstChild<Columns>().ChildElements.OfType<Column>().SelectMany(x =>
                     {
                         var list = new List<IExcelColumn>();
