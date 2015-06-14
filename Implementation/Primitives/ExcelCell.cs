@@ -86,6 +86,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return this;
         }
 
+        public IExcelCell SetFormula(string formula)
+        {
+            cell.CellFormula = new CellFormula { Text = formula };
+            return this;
+        }
+
         private readonly Cell cell;
         private readonly IExcelDocumentStyle documentStyle;
         private readonly IExcelSharedStrings excelSharedStrings;

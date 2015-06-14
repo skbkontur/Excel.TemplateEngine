@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -10,6 +11,11 @@ using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.Objects;
+
+using OrientationValues = DocumentFormat.OpenXml.Spreadsheet.OrientationValues;
+using PageMargins = DocumentFormat.OpenXml.Spreadsheet.PageMargins;
+using PageSetup = DocumentFormat.OpenXml.Spreadsheet.PageSetup;
+using Selection = DocumentFormat.OpenXml.Spreadsheet.Selection;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
@@ -163,6 +169,25 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             }
 
             return new ExcelRow(newRow, documentStyle, excelSharedStrings);
+        }
+
+        public void CreateTopFrozenPanel(ExcelCellIndex bottomRightCell)
+        {
+            worksheet.Append();
+            var sheetViews = worksheet.GetFirstChild<SheetViews>();
+            var sheetView = sheetViews.GetFirstChild<SheetView>();
+            var selection = new Selection {Pane = PaneValues.BottomLeft};
+            var pane = new Pane
+                {
+                    VerticalSplit = bottomRightCell.RowIndex - 1,
+                    HorizontalSplit = bottomRightCell.ColumnIndex - 1,
+                    TopLeftCell = bottomRightCell.CellReference,
+                    ActivePane = PaneValues.BottomLeft,
+                    State = PaneStateValues.Frozen
+                };
+
+            sheetView.Append(pane);
+            sheetView.Append(selection);
         }
 
         private MergeCells CreateMergeCellsWorksheetPart()

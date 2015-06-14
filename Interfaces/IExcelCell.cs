@@ -10,6 +10,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         IExcelCell SetNumericValue(decimal value);
         IExcelCell SetStringValue(string value);
         IExcelCell SetFormattedStringValue(FormattedStringValue value);
+        IExcelCell SetFormula(string formula);
         IExcelCell SetStyle(ExcelCellStyle style);
         ExcelCellStyle GetStyle();
 

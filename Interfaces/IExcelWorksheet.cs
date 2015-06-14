@@ -17,6 +17,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         IEnumerable<IExcelCell> GetSortedCellsInRange(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight);
         IExcelCell GetCell(ExcelCellIndex position);
         IEnumerable<IExcelCell> SearchCellsByText(string text);
+        void CreateTopFrozenPanel(ExcelCellIndex bottomRightCell);
         IEnumerable<IExcelRow> Rows { get; }
         IEnumerable<IExcelColumn> Columns { get; }
     }
