@@ -42,23 +42,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                    cellReferenceRegex.IsMatch(descriptionParts[3]);
         }
 
-        public bool IsCorrectCellsMergingCommand(string expression)
-        {
-            var descriptionParts = GetDescriptionParts(expression);
-            if(descriptionParts.Count() != 3 ||
-               descriptionParts[0] != "MergeCells")
-                return false;
-
-            var cellReferenceRegex = new Regex("^[A-Z]+[1-9][0-9]*$");
-            return cellReferenceRegex.IsMatch(descriptionParts[1]) &&
-                   cellReferenceRegex.IsMatch(descriptionParts[2]);
-        }
-
         public bool TryExtractCoordinates(string templateDescription, out IRectangle rectangle)
         {
             rectangle = null;
-            if(!IsCorrectTemplateDescription(templateDescription) &&
-               !IsCorrectCellsMergingCommand(templateDescription))
+            if(!IsCorrectTemplateDescription(templateDescription))
                 return false;
 
             rectangle = ExctractCoordinates(templateDescription);

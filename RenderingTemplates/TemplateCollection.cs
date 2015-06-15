@@ -41,13 +41,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
             if(!TemplateDescriptionHelper.Instance.TryExtractCoordinates(cell.StringValue, out range))
                 return;
 
-            var newTemplate = BuildNewRenderinGTemplate(range);
+            var newTemplate = BuildNewRenderingTemplate(range);
 
             if(newTemplate.IsValid())
                 cache[templateName] = newTemplate;
         }
 
-        private RenderingTemplate BuildNewRenderinGTemplate(IRectangle range)
+        private RenderingTemplate BuildNewRenderingTemplate(IRectangle range)
         {
             return new RenderingTemplate
                 {
