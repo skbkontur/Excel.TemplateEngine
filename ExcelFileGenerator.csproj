@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="C5">
+      <HintPath>..\..\Assemblies\C5\C5.dll</HintPath>
+    </Reference>
     <Reference Include="Catalogue.Objects">
       <HintPath>..\..\Assemblies\Temp\Catalogue.Objects.dll</HintPath>
     </Reference>
@@ -109,7 +112,8 @@
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetDir)$(TargetName).dll $(SolutionDir)..\Assemblies\Temp\
 copy $(TargetDir)$(TargetName).pdb $(SolutionDir)..\Assemblies\Temp\
-copy $(SolutionDir)..\Assemblies\DocumentFormat.OpenXml.dll $(SolutionDir)..\Assemblies\Temp\</PostBuildEvent>
+copy $(SolutionDir)..\Assemblies\DocumentFormat.OpenXml.dll $(SolutionDir)..\Assemblies\Temp\
+copy $(SolutionDir)..\Assemblies\C5\C5.dll $(SolutionDir)..\Assemblies\Temp\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
