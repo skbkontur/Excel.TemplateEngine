@@ -71,6 +71,59 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             var autofilter = worksheet.GetFirstChild<AutoFilter>() ?? CreateAutofilter();
             autofilter.Reference = string.Format("{0}:{1}", upperLeft.CellReference, lowerRight.CellReference);
+            int sheetIndex;
+            if (!TryFindSheetIndexByWorksheet(worksheet, out sheetIndex))
+                return;
+            
+            var definedName = new DefinedName
+                {
+                    Name = "_xlnm._FilterDatabase",
+                    LocalSheetId = GetLocalSheetId(sheetIndex),
+                    Hidden = true,
+                    Text = string.Format("{0}!{1}:{2}", document.GetWorksheetName(sheetIndex), upperLeft.CellReference, lowerRight.CellReference),
+                };
+            AddDefinedName(definedName);
+        }
+
+        private Workbook GetWorkbook(Worksheet worksheet)
+        {
+            return ((SpreadsheetDocument)worksheet.WorksheetPart.OpenXmlPackage).WorkbookPart.Workbook;
+        }
+
+        private UInt32Value GetLocalSheetId(int sheetIndex)
+        {
+            return UInt32Value.FromUInt32(Convert.ToUInt32(sheetIndex));
+        }
+
+        private bool TryFindSheetIndexByWorksheet(Worksheet worksheet, out int sheetIndex)
+        {
+            sheetIndex = 0;
+            var workbook = GetWorkbook(worksheet);
+            var sheets = workbook.Sheets.Elements<Sheet>().ToArray();
+            var relationshipId = workbook.WorkbookPart.GetIdOfPart(worksheet.WorksheetPart);
+            for (var i = 0; i < sheets.Length; i++)
+            {
+                if (sheets[i].Id == relationshipId)
+                {
+                    sheetIndex = i;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void AddDefinedName(DefinedName definedName)
+        {
+            var workbook = GetWorkbook(worksheet);
+            var definedNames = workbook.DefinedNames;
+            if (definedNames == null)
+            {
+                definedNames = new DefinedNames();
+                workbook.Append(definedNames);
+            }
+
+            definedNames.Append(definedName);
         }
 
         public void CreateHyperlink(ExcelCellIndex from, int toWorksheet, ExcelCellIndex to)
