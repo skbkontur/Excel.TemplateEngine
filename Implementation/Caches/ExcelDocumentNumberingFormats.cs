@@ -21,17 +21,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             if(format == null)
                 return 0;
             var cacheItem = new NumberingFormatCacheItem(format);
-            uint result;
-            if(cache.TryGetValue(cacheItem, out result))
-                return result;
+            uint formatId;
+            if(cache.TryGetValue(cacheItem, out formatId))
+                return formatId;
             if(stylesheet.NumberingFormats == null)
             {
                 var numberingFormats = new NumberingFormats {Count = new UInt32Value(0u)};
                 stylesheet.InsertAt(numberingFormats, 0);
             }
-            result = ++stylesheet.NumberingFormats.Count;
-            stylesheet.NumberingFormats.AppendChild(cacheItem.ToNumberingFormat(result));
-            return result;
+            formatId = ++stylesheet.NumberingFormats.Count;
+            stylesheet.NumberingFormats.AppendChild(cacheItem.ToNumberingFormat(formatId));
+            cache.Add(cacheItem, formatId);
+            return formatId;
         }
 
         private readonly Stylesheet stylesheet;
