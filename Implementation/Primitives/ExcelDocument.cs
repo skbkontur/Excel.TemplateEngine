@@ -43,14 +43,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             excelDocumentDisposed = true;
         }
 
-        public byte[] GetDocumentBytes()
+        public byte[] GetDocumentBytes(bool clearDefinedNames = true)
         {
-            if(excelDocumentDisposed)
+            if (excelDocumentDisposed)
                 throw new ObjectDisposedException(GetType().Name);
 
-            if(!spreadsheetDisposed)
+            if (!spreadsheetDisposed)
             {
-                Flush();
+                Flush(clearDefinedNames);
                 spreadsheetDocument.Dispose();
                 spreadsheetDisposed = true;
             }
@@ -140,12 +140,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return ((Sheet)spreadsheetDocument.WorkbookPart.Workbook.Sheets.ChildElements[index]).Name;
         }
 
-        private void Flush()
+        private void Flush(bool clearDefinedNames = true)
         {
             ThrowIfSpreadsheetDisposed();
             // Saving document parts in OpenXml is not thread-safe. Detailed info at http://support2.microsoft.com/kb/951731
             lock(lockObject)
             {
+                if (clearDefinedNames)
+                    spreadsheetDocument.WorkbookPart.Workbook.RemoveAllChildren<DefinedNames>();
                 foreach(var worksheetPart in worksheetsCache.Values)
                     worksheetPart.Worksheet.Save();
                 documentStyle.Save();

@@ -6,7 +6,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
 {
     public interface IExcelDocument : IDisposable
     {
-        byte[] GetDocumentBytes();
+        byte[] GetDocumentBytes(bool clearDefinedNames = true);
         int GetWorksheetCount();
         IExcelWorksheet GetWorksheet(int index);
         void DeleteWorksheet(int index);
