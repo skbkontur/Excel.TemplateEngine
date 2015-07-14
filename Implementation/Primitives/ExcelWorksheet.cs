@@ -120,7 +120,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             if (definedNames == null)
             {
                 definedNames = new DefinedNames();
-                workbook.Append(definedNames);
+                if (workbook.Elements<CalculationProperties>().Any())
+                    workbook.InsertBefore(definedNames, workbook.Elements<CalculationProperties>().First());
+                else
+                    workbook.Append(definedNames);
             }
 
             definedNames.Append(definedName);
