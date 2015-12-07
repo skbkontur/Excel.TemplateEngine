@@ -53,37 +53,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         }
 
         [Test]
-        public void CellsMergingCommandCorrectnessTest()
-        {
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells:A1:B2"));
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells:ABCD122:BER22"));
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells:ABCDEFGHIJKLMNOPQRSTUVWXYZ1:B1234567890"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCellsMergeCells:A1:B2"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells::"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("::"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells::A2:BCD33"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells::"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells:B:33"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells:33:33"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells:QWE:EWQ"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells::A1:A2"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells:A0:A2"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells:A02:A2"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand("MergeCells:A02:a2"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectCellsMergingCommand(""));
-        }
-
-        [Test]
         public void TemplateCoordinatesTest()
         {
             IRectangle range;
             Assert.IsTrue(TemplateDescriptionHelper.Instance.TryExtractCoordinates("Template:qwe:QWE123:ASD987", out range));
-            Assert.AreEqual(26 * 26 + 19 * 26 + 4, range.UpperLeft.ColumnIndex);
-            Assert.AreEqual(123, range.UpperLeft.RowIndex);
-            Assert.AreEqual(17 * 26 * 26 + 23 * 26 + 5, range.LowerRight.ColumnIndex);
-            Assert.AreEqual(987, range.LowerRight.RowIndex);
-
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.TryExtractCoordinates("MergeCells:QWE123:ASD987", out range));
             Assert.AreEqual(26 * 26 + 19 * 26 + 4, range.UpperLeft.ColumnIndex);
             Assert.AreEqual(123, range.UpperLeft.RowIndex);
             Assert.AreEqual(17 * 26 * 26 + 23 * 26 + 5, range.LowerRight.ColumnIndex);
