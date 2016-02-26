@@ -33,9 +33,6 @@
     <Reference Include="C5">
       <HintPath>..\..\Assemblies\C5\C5.dll</HintPath>
     </Reference>
-    <Reference Include="Catalogue.Objects">
-      <HintPath>..\..\Assemblies\Temp\Catalogue.Objects.dll</HintPath>
-    </Reference>
     <Reference Include="DocumentFormat.OpenXml">
       <HintPath>..\..\Assemblies\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
@@ -102,11 +99,16 @@
     <Compile Include="Implementation\Caches\IExcelSharedStrings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Resources\empty.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Commons\Commons.csproj">
+      <Project>{95B2CCB1-0C83-4A9B-A33F-EA8B13FD099B}</Project>
+      <Name>Commons</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
