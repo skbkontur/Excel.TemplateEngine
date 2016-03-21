@@ -46,7 +46,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
             var cell = templateDoucument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
-            Assert.AreEqual(4, style.NumberingFormat.Precision);
+            Assert.AreEqual("0.0000", style.NumberingFormat.FormatCode);
         }
 
         [Test]
