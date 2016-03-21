@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -12,12 +11,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
     {
         public NumberingFormatCacheItem(ExcelCellNumberingFormat format)
         {
-            Precision = format.Precision;
+            FormatCode = format.FormatCode;
         }
 
         public bool Equals(NumberingFormatCacheItem other)
         {
-            return Precision == other.Precision;
+            return FormatCode == other.FormatCode;
         }
 
         public override bool Equals(object obj)
@@ -30,19 +29,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 
         public override int GetHashCode()
         {
-            return Precision;
+            return FormatCode.GetHashCode();
         }
 
         public NumberingFormat ToNumberingFormat(uint formatId)
         {
-            var formatCode = "0." + string.Join("", Enumerable.Repeat("0", Precision));
             return new NumberingFormat
                 {
-                    FormatCode = new StringValue(formatCode),
+                    FormatCode = new StringValue(FormatCode),
                     NumberFormatId = formatId
                 };
         }
 
-        private int Precision { get; set; }
+        public string FormatCode { get; private set; }
     }
 }

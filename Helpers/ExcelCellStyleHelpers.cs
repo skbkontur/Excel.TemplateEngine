@@ -63,8 +63,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
         {
             var result = serializer.Copy(style);
             if(result.NumberingFormat == null)
-                result.NumberingFormat = new ExcelCellNumberingFormat();
-            result.NumberingFormat.Precision = precision;
+                result.NumberingFormat = new ExcelCellNumberingFormat(precision);
             return result;
         }
 

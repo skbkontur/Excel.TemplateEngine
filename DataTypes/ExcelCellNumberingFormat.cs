@@ -1,7 +1,19 @@
-﻿namespace SKBKontur.Catalogue.ExcelFileGenerator.DataTypes
+﻿using System.Linq;
+
+namespace SKBKontur.Catalogue.ExcelFileGenerator.DataTypes
 {
     public class ExcelCellNumberingFormat
     {
-        public int Precision { get; set; }
+        public ExcelCellNumberingFormat(int precision)
+        {
+            FormatCode = "0." + string.Join("", Enumerable.Repeat("0", precision));
+        }
+
+        public ExcelCellNumberingFormat(string formatCode)
+        {
+            FormatCode = formatCode;
+        }
+
+        public string FormatCode { get; private set; }
     }
 }

@@ -173,12 +173,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             if(numberFormat.With(nf => nf.FormatCode).With(fc => fc.Value) == null)
                 return null;
 
-            return new ExcelCellNumberingFormat
-                {
-// ReSharper disable PossibleNullReferenceException
-                    Precision = GetPrecisionByFormatCode(numberFormat.FormatCode.Value)
-// ReSharper restore PossibleNullReferenceException
-                };
+            // ReSharper disable once PossibleNullReferenceException
+            return new ExcelCellNumberingFormat(numberFormat.FormatCode.Value);
         }
 
         private static bool TryExtractStandartNumberingFormat(uint numberingFormat, out ExcelCellNumberingFormat result)
@@ -186,19 +182,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             result = null;
             if(numberingFormat == 2)
             {
-                result = new ExcelCellNumberingFormat
-                    {
-                        Precision = 2
-                    };
+                result = new ExcelCellNumberingFormat("0.00");
                 return true;
             }
 
             return false;
-        }
-
-        private static int GetPrecisionByFormatCode(string formatCode)
-        {
-            return formatCode.Split('.')[1].Length;
         }
 
         private ExcelCellFontStyle GetCellFontStyle(uint fontId)
