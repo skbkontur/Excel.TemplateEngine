@@ -98,6 +98,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return new ExcelWorksheet(spreadsheetDocument.WorkbookPart.WorksheetParts.Last(), documentStyle, excelSharedStrings);
         }
 
+        public override string ToString()
+        {
+            return string.Join("", Enumerable.Range(0, GetWorksheetCount())
+                             .SelectMany(id => GetWorksheet(id).SearchCellsByText(""))
+                             .Select(cell => cell.GetCellIndex().CellReference + ":" + cell.GetStringValue() + "\n" + cell.GetStyle() + "\n"));
+        }
+
         private readonly IDictionary<string, WorksheetPart> worksheetsCache;
         private readonly MemoryStream documentMemoryStream;
         private readonly SpreadsheetDocument spreadsheetDocument;

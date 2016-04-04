@@ -14,6 +14,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.DataTypes
             FormatCode = formatCode;
         }
 
+        public override string ToString()
+        {
+            return string.Format("FormatCode = {0}", FormatCode);
+        }
+
         public string FormatCode { get; private set; }
     }
 }
