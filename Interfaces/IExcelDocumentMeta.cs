@@ -2,6 +2,5 @@
 {
     public interface IExcelDocumentMeta
     {
-        string GetWorksheetName(int index);
     }
 }

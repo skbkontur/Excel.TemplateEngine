@@ -5,7 +5,6 @@ using System.Linq;
 using C5;
 
 using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -14,23 +13,17 @@ using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.Objects;
 
-using OrientationValues = DocumentFormat.OpenXml.Spreadsheet.OrientationValues;
-using PageMargins = DocumentFormat.OpenXml.Spreadsheet.PageMargins;
-using PageSetup = DocumentFormat.OpenXml.Spreadsheet.PageSetup;
-using Selection = DocumentFormat.OpenXml.Spreadsheet.Selection;
-
 using Tuple = System.Tuple;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
     public class ExcelWorksheet : IExcelWorksheet
     {
-        public ExcelWorksheet(WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings, IExcelDocumentMeta document)
+        public ExcelWorksheet(WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings)
         {
             worksheet = worksheetPart.Worksheet;
             this.documentStyle = documentStyle;
             this.excelSharedStrings = excelSharedStrings;
-            this.document = document;
             rowsCache = new TreeDictionary<uint, Row>();
             var sheetData = worksheet.GetFirstChild<SheetData>();
             if(sheetData != null)
@@ -54,7 +47,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             }
 
             var pageSetup = worksheet.Elements<PageSetup>().FirstOrDefault() ?? new PageSetup();
-            pageSetup.Orientation = (excelPrinterSettings.PrintingOrientation == ExcelPrintingOrientation.Landscape ? OrientationValues.Landscape : OrientationValues.Portrait);
+            pageSetup.Orientation = excelPrinterSettings.PrintingOrientation == ExcelPrintingOrientation.Landscape ? OrientationValues.Landscape : OrientationValues.Portrait;
 
             if(!worksheet.Elements<PageSetup>().Any())
                 worksheet.AppendChild(pageSetup);
@@ -66,79 +59,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             mergeCells.AppendChild(new MergeCell
                 {
                     Reference = string.Format("{0}:{1}", upperLeft.CellReference, lowerRight.CellReference)
-                });
-        }
-
-        public void CreateAutofilter(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
-        {
-            var autofilter = worksheet.GetFirstChild<AutoFilter>() ?? CreateAutofilter();
-            autofilter.Reference = string.Format("{0}:{1}", upperLeft.CellReference, lowerRight.CellReference);
-            int sheetIndex;
-            if (!TryFindSheetIndexByWorksheet(worksheet, out sheetIndex))
-                return;
-            
-            var definedName = new DefinedName
-                {
-                    Name = "_xlnm._FilterDatabase",
-                    LocalSheetId = GetLocalSheetId(sheetIndex),
-                    Hidden = true,
-                    Text = string.Format("{0}!{1}:{2}", document.GetWorksheetName(sheetIndex), upperLeft.CellReference, lowerRight.CellReference),
-                };
-            AddDefinedName(definedName);
-        }
-
-        private Workbook GetWorkbook(Worksheet worksheet)
-        {
-            return ((SpreadsheetDocument)worksheet.WorksheetPart.OpenXmlPackage).WorkbookPart.Workbook;
-        }
-
-        private UInt32Value GetLocalSheetId(int sheetIndex)
-        {
-            return UInt32Value.FromUInt32(Convert.ToUInt32(sheetIndex));
-        }
-
-        private bool TryFindSheetIndexByWorksheet(Worksheet worksheet, out int sheetIndex)
-        {
-            sheetIndex = 0;
-            var workbook = GetWorkbook(worksheet);
-            var sheets = workbook.Sheets.Elements<Sheet>().ToArray();
-            var relationshipId = workbook.WorkbookPart.GetIdOfPart(worksheet.WorksheetPart);
-            for (var i = 0; i < sheets.Length; i++)
-            {
-                if (sheets[i].Id == relationshipId)
-                {
-                    sheetIndex = i;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private void AddDefinedName(DefinedName definedName)
-        {
-            var workbook = GetWorkbook(worksheet);
-            var definedNames = workbook.DefinedNames;
-            if (definedNames == null)
-            {
-                definedNames = new DefinedNames();
-                if (workbook.Elements<CalculationProperties>().Any())
-                    workbook.InsertBefore(definedNames, workbook.Elements<CalculationProperties>().First());
-                else
-                    workbook.Append(definedNames);
-            }
-
-            definedNames.Append(definedName);
-        }
-
-        public void CreateHyperlink(ExcelCellIndex from, int toWorksheet, ExcelCellIndex to)
-        {
-            var hyperlinks = worksheet.GetFirstChild<Hyperlinks>() ?? CreateHyperlinksWorksheetPart();
-            var worksheetName = document.GetWorksheetName(toWorksheet);
-            hyperlinks.AppendChild(new Hyperlink
-                {
-                    Reference = from.CellReference,
-                    Location = string.Format("{0}!{1}", worksheetName, to.CellReference)
                 });
         }
 
@@ -249,25 +169,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return new ExcelRow(newRow, documentStyle, excelSharedStrings);
         }
 
-        public void CreateTopFrozenPanel(ExcelCellIndex bottomRightCell)
-        {
-            worksheet.Append();
-            var sheetViews = worksheet.GetFirstChild<SheetViews>();
-            var sheetView = sheetViews.GetFirstChild<SheetView>();
-            var selection = new Selection {Pane = PaneValues.BottomLeft};
-            var pane = new Pane
-                {
-                    VerticalSplit = bottomRightCell.RowIndex - 1,
-                    HorizontalSplit = bottomRightCell.ColumnIndex - 1,
-                    TopLeftCell = bottomRightCell.CellReference,
-                    ActivePane = PaneValues.BottomLeft,
-                    State = PaneStateValues.Frozen
-                };
-
-            sheetView.Append(pane);
-            sheetView.Append(selection);
-        }
-
         private MergeCells CreateMergeCellsWorksheetPart()
         {
             // Имеет принципиальное значение, куда именно вставлять элемент MergeCells
@@ -295,54 +196,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return mergeCells;
         }
 
-        private Hyperlinks CreateHyperlinksWorksheetPart()
-        {
-            var hyperlinks = new Hyperlinks();
-            if(worksheet.Elements<DataValidations>().Any())
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<DataValidations>().First());
-            else if(worksheet.Elements<ConditionalFormatting>().Any())
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<ConditionalFormatting>().First());
-            else if(worksheet.Elements<PhoneticProperties>().Any())
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<PhoneticProperties>().First());
-            else if(worksheet.Elements<MergeCells>().Any())
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<MergeCells>().First());
-            else if(worksheet.Elements<CustomSheetView>().Any())
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<CustomSheetView>().First());
-            else if(worksheet.Elements<DataConsolidate>().Any())
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<DataConsolidate>().First());
-            else if(worksheet.Elements<SortState>().Any())
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<SortState>().First());
-            else if(worksheet.Elements<AutoFilter>().Any())
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<AutoFilter>().First());
-            else if(worksheet.Elements<Scenarios>().Any())
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<Scenarios>().First());
-            else if(worksheet.Elements<ProtectedRanges>().Any())
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<ProtectedRanges>().First());
-            else if(worksheet.Elements<SheetProtection>().Any())
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<SheetProtection>().First());
-            else if(worksheet.Elements<SheetCalculationProperties>().Any())
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<SheetCalculationProperties>().First());
-            else
-                worksheet.InsertAfter(hyperlinks, worksheet.Elements<SheetData>().First());
-            return hyperlinks;
-        }
-
-        private AutoFilter CreateAutofilter()
-        {
-            var autofilter = new AutoFilter();
-            if(worksheet.Elements<Scenarios>().Any())
-                worksheet.InsertAfter(autofilter, worksheet.Elements<Scenarios>().First());
-            else if(worksheet.Elements<ProtectedRanges>().Any())
-                worksheet.InsertAfter(autofilter, worksheet.Elements<ProtectedRanges>().First());
-            else if(worksheet.Elements<SheetProtection>().Any())
-                worksheet.InsertAfter(autofilter, worksheet.Elements<SheetProtection>().First());
-            else if(worksheet.Elements<SheetCalculationProperties>().Any())
-                worksheet.InsertAfter(autofilter, worksheet.Elements<SheetCalculationProperties>().First());
-            else
-                worksheet.InsertAfter(autofilter, worksheet.Elements<SheetData>().First());
-            return autofilter;
-        }
-
         private Columns CreateColumns()
         {
             var columns = new Columns();
@@ -362,7 +215,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private readonly IExcelDocumentStyle documentStyle;
         private readonly IExcelSharedStrings excelSharedStrings;
         private readonly Worksheet worksheet;
-        private readonly IExcelDocumentMeta document;
         private readonly TreeDictionary<uint, Row> rowsCache;
     }
 }

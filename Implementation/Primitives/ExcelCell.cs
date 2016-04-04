@@ -88,7 +88,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public IExcelCell SetFormula(string formula)
         {
-            cell.CellFormula = new CellFormula { Text = formula };
+            cell.CellFormula = new CellFormula {Text = formula};
             return this;
         }
 

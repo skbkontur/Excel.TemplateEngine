@@ -65,26 +65,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 worksheetPart = (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(sheetId);
                 worksheetsCache.Add(sheetId, worksheetPart);
             }
-            return new ExcelWorksheet(worksheetPart, documentStyle, excelSharedStrings, this);
-        }
-
-        public void DeleteWorksheet(int index)
-        {
-            ThrowIfSpreadsheetDisposed();
-            var workbookPart = spreadsheetDocument.WorkbookPart;
-            var sheet = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index);
-            var sheetToDelete = sheet.Name.Value;
-            var worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
-            worksheetsCache.Remove(sheet.Id);
-            sheet.Remove();
-            workbookPart.DeletePart(worksheetPart);
-            var definedNames = workbookPart.Workbook.Descendants<DefinedNames>().FirstOrDefault();
-            if(definedNames != null)
-            {
-                var defNamesToDelete = definedNames.Cast<DefinedName>().Where(item => item.Text.Contains(sheetToDelete + "!")).ToList();
-                foreach(var item in defNamesToDelete)
-                    item.Remove();
-            }
+            return new ExcelWorksheet(worksheetPart, documentStyle, excelSharedStrings);
         }
 
         public void RenameWorksheet(int index, string name)
@@ -114,20 +95,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
             sheets.AppendChild(sheet);
 
-            return new ExcelWorksheet(spreadsheetDocument.WorkbookPart.WorksheetParts.Last(), documentStyle, excelSharedStrings, this);
-        }
-
-        public void SetPivotTableSource(int tableIndex, ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
-        {
-            ThrowIfSpreadsheetDisposed();
-            var worksheetSource = spreadsheetDocument.WorkbookPart.PivotTableCacheDefinitionParts.ElementAt(tableIndex).PivotCacheDefinition.CacheSource.GetFirstChild<WorksheetSource>();
-            worksheetSource.Reference = string.Format("{0}:{1}", upperLeft.CellReference, lowerRight.CellReference);
-        }
-
-        public string GetWorksheetName(int index)
-        {
-            ThrowIfSpreadsheetDisposed();
-            return ((Sheet)spreadsheetDocument.WorkbookPart.Workbook.Sheets.ChildElements[index]).Name;
+            return new ExcelWorksheet(spreadsheetDocument.WorkbookPart.WorksheetParts.Last(), documentStyle, excelSharedStrings);
         }
 
         private readonly IDictionary<string, WorksheetPart> worksheetsCache;
