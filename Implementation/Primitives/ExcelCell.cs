@@ -73,7 +73,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return cell.With(x => x.CellValue).Return(x => x.Text, null);
         }
 
-        public ExcelCellIndex GetCellReference()
+        public ExcelCellIndex GetCellIndex()
         {
             return new ExcelCellIndex(cell.CellReference.Value);
         }

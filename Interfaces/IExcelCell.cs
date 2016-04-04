@@ -15,6 +15,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         ExcelCellStyle GetStyle();
 
         string GetStringValue();
-        ExcelCellIndex GetCellReference();
+        ExcelCellIndex GetCellIndex();
     }
 }
