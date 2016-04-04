@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Catalogue.Objects, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Assemblies\Temp\Catalogue.Objects.dll</HintPath>
-    </Reference>
     <Reference Include="GroboContainer">
       <HintPath>..\..\Assemblies\GroboContainer.dll</HintPath>
     </Reference>
@@ -96,6 +92,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Commons\Commons.csproj">
+      <Project>{95B2CCB1-0C83-4A9B-A33F-EA8B13FD099B}</Project>
+      <Name>Commons</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExcelFileGenerator\ExcelFileGenerator.csproj">
       <Project>{24CB5CAE-413D-457D-8ECD-C5C689F6BD4D}</Project>
       <Name>ExcelFileGenerator</Name>
