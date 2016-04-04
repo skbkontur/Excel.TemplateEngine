@@ -31,7 +31,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
             internalCell.SetStyle(excelCell.internalCell.GetStyle());
         }
 
-        public ICellPosition CellPosition { get { return new CellPosition(internalCell.GetCellReference()); } }
+        public ICellPosition CellPosition { get { return new CellPosition(internalCell.GetCellIndex()); } }
 
         private readonly IExcelCell internalCell;
     }
