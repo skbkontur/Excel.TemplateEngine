@@ -93,7 +93,6 @@
     <Compile Include="Implementation\Caches\IExcelDocumentNumberingFormats.cs" />
     <Compile Include="Implementation\Caches\IExcelDocumentStyle.cs" />
     <Compile Include="Implementation\Caches\IExcelDocumentFontStyles.cs" />
-    <Compile Include="Interfaces\IExcelDocumentMeta.cs" />
     <Compile Include="Interfaces\IExcelRow.cs" />
     <Compile Include="Interfaces\IExcelWorksheet.cs" />
     <Compile Include="Implementation\CacheItems\NumberingFormatCacheItem.cs" />
