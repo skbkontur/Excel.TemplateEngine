@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+
+using MoreLinq;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.Helpers;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
@@ -101,23 +103,27 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public override string ToString()
         {
-            var result = "";
+            var stringBuilder = new StringBuilder();
             for(var worksheetId = 0; worksheetId < GetWorksheetCount(); ++worksheetId)
             {
-                result = string.Format("Worksheet #{0}:\n\n", worksheetId);
                 var worksheet = GetWorksheet(worksheetId);
-                result += string.Join("", worksheet
-                                              .SearchCellsByText("")
-                                              .Select(cell => string.Format("{0}:{1}\n{2}\n", cell.GetCellIndex().CellReference, cell.GetStringValue(), cell.GetStyle())));
-                result += "\nMerged cells info:\n";
-                result += string.Join("", worksheet.MergedCells
-                                                   .Select(mergedCells => string.Format("{0}:{1}\n", mergedCells.Item1.CellReference, mergedCells.Item2.CellReference))
-                                                   .OrderBy(s => s));
-                result += "\nColumns info:\n";
-                result += string.Join("", worksheet.Columns.Select(column => string.Format("Column index = {0} Column width = {1:0.0}\n", column.Index.ToString(), column.Width)));
-                result += "\n\n";
+
+                stringBuilder.AppendFormat("Worksheet #{0}:\n\n", worksheetId);
+                worksheet.SearchCellsByText("")
+                         .ForEach(cell => stringBuilder.AppendFormat("{0}:{1}\n{2}\n", cell.GetCellIndex().CellReference, cell.GetStringValue(), cell.GetStyle()));
+
+                stringBuilder.Append("\nMerged cells info:\n");
+                worksheet.MergedCells
+                         .Select(mergedCells => string.Format("{0}:{1}\n", mergedCells.Item1.CellReference, mergedCells.Item2.CellReference))
+                         .OrderBy(s => s)
+                         .ForEach(s => stringBuilder.Append(s));
+
+                stringBuilder.Append("\nColumns info:\n");
+                worksheet.Columns
+                         .ForEach(column => stringBuilder.AppendFormat("Column index = {0} Column width = {1:0.0}\n", column.Index.ToString(), column.Width));
+                stringBuilder.Append("\n\n");
             }
-            return result;
+            return stringBuilder.ToString();
         }
 
         private readonly IDictionary<string, WorksheetPart> worksheetsCache;
