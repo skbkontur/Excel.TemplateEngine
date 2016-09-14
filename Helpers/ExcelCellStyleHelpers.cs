@@ -1,7 +1,7 @@
 ﻿using GroBuf;
-using GroBuf.DataMembersExtracters;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+using SKBKontur.Catalogue.GrobufExtensions;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
 {
@@ -150,6 +150,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
             return result;
         }
 
-        private static readonly ISerializer serializer = new Serializer(new AllFieldsExtractor());
+        private static readonly ISerializer serializer = GrobufSerializers.AllFieldsSerializer;
     }
 }
