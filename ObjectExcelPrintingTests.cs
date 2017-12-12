@@ -9,6 +9,7 @@ using SKBKontur.Catalogue.ExcelObjectPrinter;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
+using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
