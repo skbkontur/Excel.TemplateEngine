@@ -8,6 +8,8 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
+using JetBrains.Annotations;
+
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
@@ -99,6 +101,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         public IExcelCell GetCell(ExcelCellIndex position)
         {
             return GetSortedCellsInRange(position, position).FirstOrDefault();
+        }
+
+        [CanBeNull]
+        public IExcelFormControlInfo GetFormControlInfo(string name)
+        {
+            var control = worksheet.Descendants<Control>().FirstOrDefault(c => c.Name == name);
+            if(control == null)
+                return null;
+            var controlPropertiesPart = (ControlPropertiesPart)worksheet.WorksheetPart.GetPartById(control.Id);
+            // todo (mpivko, 15.12.2017): VmlDrawingParts
+            //worksheet.WorksheetPart.VmlDrawingParts.Select(x => x)
+            return new ExcelFormControlInfo(this, null, controlPropertiesPart);
         }
 
         public IEnumerable<IExcelCell> SearchCellsByText(string text)

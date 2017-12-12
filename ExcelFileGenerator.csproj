@@ -46,6 +46,10 @@
     <Reference Include="Mono.Reflection, Version=1.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Mono.Reflection.1.1.0.0\lib\Mono.Reflection.dll</HintPath>
     </Reference>
+    <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assemblies\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="MoreLinq, Version=1.0.11522.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Assemblies\MoreLinq\MoreLinq.dll</HintPath>
@@ -88,6 +92,7 @@
     <Compile Include="Implementation\Caches\ExcelSharedStrings.cs" />
     <Compile Include="Implementation\ExcelCellIndex.cs" />
     <Compile Include="Implementation\Primitives\ExcelColumn.cs" />
+    <Compile Include="Implementation\Primitives\ExcelFormControlInfo.cs" />
     <Compile Include="Implementation\Primitives\ExcelWorksheet.cs" />
     <Compile Include="Implementation\Primitives\ExcelRow.cs" />
     <Compile Include="Implementation\Primitives\ExcelCell.cs" />
@@ -98,6 +103,7 @@
     <Compile Include="DataTypes\ExcelCellStyle.cs" />
     <Compile Include="ExcelDocumentFactory.cs" />
     <Compile Include="Helpers\SpreadsheetDocumentHelper.cs" />
+    <Compile Include="Interfaces\IExcelFormControlInfo.cs" />
     <Compile Include="Interfaces\IExcelCell.cs" />
     <Compile Include="Interfaces\IExcelColumn.cs" />
     <Compile Include="Interfaces\IExcelDocument.cs" />
