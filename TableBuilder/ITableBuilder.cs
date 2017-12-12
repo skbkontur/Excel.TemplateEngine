@@ -1,4 +1,5 @@
 ﻿using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
+using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 {
@@ -17,6 +18,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         ITableBuilder ExpandColumn(int relativeColumnIndex, double width);
         ITableBuilder SetCurrentStyle();
         ITableBuilder MergeCells(IRectangle rectangle);
-        TableBuilderState CurrentState { get; }
+        TableNavigatorState CurrentState { get; }
     }
 }

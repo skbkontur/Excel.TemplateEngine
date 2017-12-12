@@ -1,30 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-
-using log4net;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.DataTypes;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
+using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 {
     public class TableBuilder : ITableBuilder
     {
+        private readonly ITableNavigator navigator;
+
+        //TODO mpivko for backward compatibility
+        [Obsolete]
         public TableBuilder(ITable target, ICellPosition startPosition, IStyler styler = null)
         {
-            this.target = target;
-            var initialState = new TableBuilderState
-                {
-                    Origin = startPosition,
-                    Cursor = startPosition,
-                    CurrentLayerStartRowIndex = startPosition.RowIndex,
-                    Styler = styler
-                };
-            states = new Stack<TableBuilderState>(new[] {initialState});
+            navigator = new TableNavigator.TableNavigator(target, startPosition, styler);
+        }
+
+        public TableBuilder(ITableNavigator navigator)
+        {
+            this.navigator = navigator;
         }
 
         public ITableBuilder RenderAtomicValue(string value)
@@ -49,106 +48,73 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 
         public ITableBuilder PushState(ICellPosition newOrigin, IStyler styler)
         {
-            var newState = new TableBuilderState
-                {
-                    Origin = newOrigin,
-                    Cursor = newOrigin,
-                    CurrentLayerStartRowIndex = newOrigin.RowIndex,
-                    Styler = styler
-                };
-            states.Push(newState);
+            navigator.PushState(newOrigin, styler);
             return this;
         }
 
         public ITableBuilder PushState(IStyler styler)
         {
-            return PushState(CurrentState.Cursor, styler);
+            navigator.PushState(styler);
+            return this;
         }
 
         public ITableBuilder PushState()
         {
-            return PushState(CurrentState.Cursor, CurrentState.Styler);
+            navigator.PushState();
+            return this;
         }
 
         public ITableBuilder PopState()
         {
-            if(states.Count == 1)
-            {
-                logger.Warn("Unexpected attempt to pop state.");
-                return this;
-            }
-
-            var childState = states.Peek();
-            states.Pop();
-            CurrentState.Cursor = CurrentState.Cursor.Add(new ObjectSize(childState.GlobalWidth, 0));
-            CurrentState.CurrentLayerHeight = Math.Max(CurrentState.CurrentLayerHeight, childState.GlobalHeight);
-            UpdateCurrentState();
+            navigator.PopState();
             return this;
         }
 
         public ITableBuilder MoveToNextLayer()
         {
-            var nextLayerStartRowIndex = CurrentState.CurrentLayerStartRowIndex + CurrentState.CurrentLayerHeight + 1;
-            CurrentState.Cursor = new CellPosition(nextLayerStartRowIndex, CurrentState.Origin.ColumnIndex);
-            CurrentState.CurrentLayerStartRowIndex = nextLayerStartRowIndex;
-            CurrentState.CurrentLayerHeight = 0;
-            UpdateCurrentState();
+            navigator.MoveToNextLayer();
             return this;
         }
 
         public ITableBuilder MoveToNextColumn()
         {
-            CurrentState.Cursor = CurrentState.Cursor.Add(new ObjectSize(1, 0));
-            UpdateCurrentState();
+            navigator.MoveToNextColumn();
+            return this;
+        }
+
+        public ITableBuilder SetCurrentStyle()
+        {
+            navigator.SetCurrentStyle();
             return this;
         }
 
         public ITableBuilder ExpandColumn(int relativeColumnIndex, double width)
         {
             var globalIndex = relativeColumnIndex + CurrentState.Origin.ColumnIndex - 1;
-            var currentWidth = target.Columns
+            var currentWidth = Target.Columns
                                      .FirstOrDefault(col => col.Index == globalIndex)?.Width ?? 0.0;
 
             if(currentWidth < width)
-                target.ResizeColumn(globalIndex, width);
+                Target.ResizeColumn(globalIndex, width);
             return this;
         }
-
-        public ITableBuilder SetCurrentStyle()
-        {
-            var cell = target.GetCell(CurrentState.Cursor) ?? target.InsertCell(CurrentState.Cursor);
-            CurrentState.Styler.ApplyStyle(cell);
-            return this;
-        }
-
-        public TableBuilderState CurrentState { get { return states.Peek(); } }
+        
 
         public ITableBuilder MergeCells(IRectangle rectangle)
         {
-            target.MergeCells(rectangle.ToGlobalCoordinates(CurrentState.Origin));
+            Target.MergeCells(rectangle.ToGlobalCoordinates(CurrentState.Origin));
             return this;
         }
 
         private ITableBuilder RenderAtomicValue(string value, CellType cellType)
         {
-            var cell = target.GetCell(CurrentState.Cursor) ?? target.InsertCell(CurrentState.Cursor);
+            var cell = Target.GetCell(CurrentState.Cursor) ?? Target.InsertCell(CurrentState.Cursor);
             cell.StringValue = value;
             cell.CellType = cellType;
             return this;
         }
 
-        private void UpdateCurrentState()
-        {
-            var currentHeightInLayer = CurrentState.Cursor.RowIndex - CurrentState.CurrentLayerStartRowIndex;
-            CurrentState.CurrentLayerHeight = Math.Max(CurrentState.CurrentLayerHeight, currentHeightInLayer);
-            var currentCursorOffset = CurrentState.Cursor.Subtract(CurrentState.Origin);
-            CurrentState.GlobalHeight = Math.Max(CurrentState.CurrentLayerHeight,
-                                                 Math.Max(CurrentState.GlobalHeight, currentCursorOffset.Height));
-            CurrentState.GlobalWidth = Math.Max(CurrentState.GlobalWidth, currentCursorOffset.Width);
-        }
-
-        private readonly Stack<TableBuilderState> states;
-        private readonly ITable target;
-        private readonly ILog logger = LogManager.GetLogger(typeof(TableBuilder));
+        public TableNavigatorState CurrentState => navigator.CurrentState;
+        private ITable Target => navigator.Target;
     }
 }

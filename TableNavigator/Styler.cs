@@ -1,6 +1,6 @@
 ﻿using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
+namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
 {
     public class Styler : IStyler
     {

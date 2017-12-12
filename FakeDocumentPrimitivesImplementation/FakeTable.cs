@@ -71,6 +71,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
             mergedCells.Add(rectangle);
         }
 
+        public IFormControl TryGetFormControl(string name)
+        {
+            return null;
+        }
+
         public void ResizeColumn(int columnIndex, double columnWidth)
         {
         }

@@ -1,9 +1,16 @@
-﻿using log4net;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+
+using log4net;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
+using SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
+using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter
 {
@@ -13,6 +20,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
         {
             templateCollection = new TemplateCollection(templateTable);
             rendererCollection = new RendererCollection(templateCollection);
+            parserCollection = new ParserCollection(templateCollection);
         }
 
         public void Render(ITableBuilder tableBuilder, object model)
@@ -28,6 +36,20 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
             render.Render(tableBuilder, model, renderingTemplate);
         }
 
+        public (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(ITableParser tableParser)
+        {
+            var renderingTemplate = templateCollection.GetTemplate(rootTemplateName);
+            
+            if (renderingTemplate == null)
+            {
+                throw new InvalidProgramStateException($"Template with name {rootTemplateName} not found in xlsx"); //TODO {mpivko} it's not ipse maybe
+            }
+
+            var parser = parserCollection.GetParser(typeof(TModel));
+            var fieldsMappingForErrors = new Dictionary<string, string>();
+            return ((TModel)parser.Parse(tableParser, typeof(TModel), renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), fieldsMappingForErrors);
+        }
+
         private void RenderError(ITableBuilder tableBuilder)
         {
             tableBuilder.RenderAtomicValue("Error: Root template description not found!");
@@ -38,5 +60,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
         private readonly ITemplateCollection templateCollection;
         private readonly IRendererCollection rendererCollection;
         private readonly ILog logger = LogManager.GetLogger(typeof(TemplateEngine));
+        private readonly IParserCollection parserCollection;
     }
 }

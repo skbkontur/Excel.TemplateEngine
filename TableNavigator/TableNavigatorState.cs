@@ -1,8 +1,8 @@
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
+﻿using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
+namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
 {
-    public class TableBuilderState
+    public class TableNavigatorState
     {
         public ICellPosition Origin { get; set; }
         public ICellPosition Cursor { get; set; }

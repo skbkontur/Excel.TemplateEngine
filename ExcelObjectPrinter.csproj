@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assemblies\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Assemblies\log4net.dll</HintPath>
@@ -39,6 +43,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DocumentPrimitivesInterfaces\FakeFormControl.cs" />
+    <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelFormControl.cs" />
+    <Compile Include="DocumentPrimitivesInterfaces\IFormControl.cs" />
     <Compile Include="NavigationPrimitives\IRectangle.cs" />
     <Compile Include="NavigationPrimitives\Rectangle.cs" />
     <Compile Include="DataTypes\CellType.cs" />
@@ -50,7 +57,22 @@
     <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelTablePart.cs" />
     <Compile Include="FakeDocumentPrimitivesImplementation\FakeColumn.cs" />
     <Compile Include="Helpers\JaggedArrayHelper.cs" />
-    <Compile Include="TableBuilder\IStyler.cs" />
+    <Compile Include="ParseCollection\IParserCollection.cs" />
+    <Compile Include="ParseCollection\ParserCollection.cs" />
+    <Compile Include="ParseCollection\Parsers\CheckBoxValueParser.cs" />
+    <Compile Include="ParseCollection\Parsers\ClassParser.cs" />
+    <Compile Include="ParseCollection\Parsers\DoubleParser.cs" />
+    <Compile Include="ParseCollection\Parsers\DropDownValueParser.cs" />
+    <Compile Include="ParseCollection\Parsers\IAtomicValueParser.cs" />
+    <Compile Include="ParseCollection\Parsers\IEnumerableParser.cs" />
+    <Compile Include="ParseCollection\Parsers\IFormValueParser.cs" />
+    <Compile Include="ParseCollection\Parsers\IntParser.cs" />
+    <Compile Include="ParseCollection\Parsers\LongParser.cs" />
+    <Compile Include="ParseCollection\Parsers\StringParser.cs" />
+    <Compile Include="ParseCollection\Parsers\IParser.cs" />
+    <Compile Include="ParseCollection\Parsers\EnumerableParser.cs" />
+    <Compile Include="ParseCollection\Parsers\DecimalParser.cs" />
+    <Compile Include="TableNavigator\IStyler.cs" />
     <Compile Include="NavigationPrimitives\ICellPosition.cs" />
     <Compile Include="NavigationPrimitives\CellPosition.cs" />
     <Compile Include="NavigationPrimitives\IObjectSize.cs" />
@@ -70,7 +92,11 @@
     <Compile Include="RenderCollection\IRendererCollection.cs" />
     <Compile Include="RenderCollection\RendererCollection.cs" />
     <Compile Include="RenderCollection\Renderers\StringRenderer.cs" />
-    <Compile Include="TableBuilder\Styler.cs" />
+    <Compile Include="TableNavigator\ITableNavigator.cs" />
+    <Compile Include="TableParser\ITableParser.cs" />
+    <Compile Include="TableNavigator\Styler.cs" />
+    <Compile Include="TableNavigator\TableNavigator.cs" />
+    <Compile Include="TableParser\TableParser.cs" />
     <Compile Include="TemplateEngine.cs" />
     <Compile Include="TableBuilder\ITableBuilder.cs" />
     <Compile Include="ITemplateEngine.cs" />
@@ -78,7 +104,7 @@
     <Compile Include="RenderingTemplates\RenderingTemplate.cs" />
     <Compile Include="RenderingTemplates\TemplateCollection.cs" />
     <Compile Include="TableBuilder\TableBuilder.cs" />
-    <Compile Include="TableBuilder\TableBuilderState.cs" />
+    <Compile Include="TableNavigator\TableNavigatorState.cs" />
     <Compile Include="Helpers\TemplateDescriptionHelper.cs" />
     <Compile Include="NavigationPrimitives\ObjectSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

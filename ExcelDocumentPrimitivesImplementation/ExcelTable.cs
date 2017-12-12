@@ -65,6 +65,17 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
                                      new ExcelCellIndex(rectangle.LowerRight.CellReference));
         }
 
+        public IFormControl TryGetFormControl(string name)
+        {
+            var excelFormControlInfo = internalTable.GetFormControlInfo(name);
+            if(excelFormControlInfo == null)
+                return null;
+            return new ExcelFormControl
+                {
+                    ExcelFormControlInfo = excelFormControlInfo,
+                };
+        }
+
         public void ResizeColumn(int columnIndex, double width)
         {
             internalTable.ResizeColumn(columnIndex, width);
