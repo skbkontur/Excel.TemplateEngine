@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -101,28 +102,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return new ExcelWorksheet(spreadsheetDocument.WorkbookPart.WorksheetParts.Last(), documentStyle, excelSharedStrings);
         }
 
-        public List<IExcelFormControlInfo> GetFormControlInfos(int worksheetIndex) // todo (mpivko, 11.12.2017): check index
-        {
-            var sheetId = spreadsheetDocument.WorkbookPart.Workbook.Sheets.Elements<Sheet>().ElementAt(worksheetIndex).Id;
-            var worksheetPart = (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(sheetId);
-            return worksheetPart.VmlDrawingParts.Select(x => new ExcelFormControlInfo(GetWorksheet(worksheetIndex), x, null/*todo mpivko*/)).Cast<IExcelFormControlInfo>().ToList();
-        }
-
-        public void AddFormControlInfos(int worksheetIndex, IEnumerable<IExcelFormControlInfo> formControlInfos) // todo (mpivko, 11.12.2017): check index
-        {
-            var sheetId = spreadsheetDocument.WorkbookPart.Workbook.Sheets.Elements<Sheet>().ElementAt(worksheetIndex).Id;
-            var worksheetPart = (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(sheetId);
-            if (worksheetPart == null)
-                throw new NotSupportedException();
-            foreach (var templateVmlDrawingPart in formControlInfos.Select(x => x.VmlDrawingPart))
-            {
-                var addedPart = worksheetPart.AddPart(templateVmlDrawingPart);
-                var legacyDrawing = new LegacyDrawing { Id = worksheetPart.GetIdOfPart(addedPart) };
-                // ReSharper disable once PossiblyMistakenUseOfParamsMethod
-                worksheetPart.Worksheet.Append(newChildren: legacyDrawing);
-            }
-        }
-        
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();

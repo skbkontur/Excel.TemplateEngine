@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using C5;
@@ -110,9 +111,44 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             if(control == null)
                 return null;
             var controlPropertiesPart = (ControlPropertiesPart)worksheet.WorksheetPart.GetPartById(control.Id);
-            // todo (mpivko, 15.12.2017): VmlDrawingParts
-            //worksheet.WorksheetPart.VmlDrawingParts.Select(x => x)
-            return new ExcelFormControlInfo(this, null, controlPropertiesPart);
+            var vmlDrawingPart = worksheet.WorksheetPart.VmlDrawingParts.Single();
+            var drawingsPart = worksheet.WorksheetPart.DrawingsPart;
+            return new ExcelFormControlInfo(this, control, controlPropertiesPart, vmlDrawingPart, drawingsPart);
+        }
+
+        public IExcelFormControlInfo[] GetFormControlInfosList()
+        {
+            var controls = worksheet.Descendants<Control>().ToList();
+            if (!controls.Any())
+                return new IExcelFormControlInfo[0];
+            var vmlDrawingPart = worksheet.WorksheetPart.VmlDrawingParts.Single();
+            var drawingsPart = worksheet.WorksheetPart.DrawingsPart;
+            return controls.Select(control => new ExcelFormControlInfo(this, control, (ControlPropertiesPart)worksheet.WorksheetPart.GetPartById(control.Id), vmlDrawingPart, drawingsPart)).Cast<IExcelFormControlInfo>().ToArray();
+        }
+        
+        [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
+        public void AddFormControlInfos(IExcelFormControlInfo[] formControlInfos)
+        {
+            if (formControlInfos.Length > 0)
+            {
+                // todo (mpivko, 19.12.2017): do here as in formControlInfosList for
+
+                var addedVmlPart = worksheet.WorksheetPart.AddPart(formControlInfos.First().GlobalVmlDrawingPart);
+                var legacyDrawing = new LegacyDrawing { Id = worksheet.WorksheetPart.GetIdOfPart(addedVmlPart) };
+                worksheet.Append(newChildren: legacyDrawing);
+
+
+                //var addedDrawingsPart = worksheetPart.AddPart(formControlInfosList.First().GlobalDrawingsPart);
+                //var drawing = new Drawing { Id = worksheetPart.GetIdOfPart(addedDrawingsPart) };
+                //worksheetPart.Worksheet.Append(newChildren: drawing);
+            }
+
+            foreach (var formControlInfo in formControlInfos)
+            {
+                var cloneControl = (Control)formControlInfo.Control.CloneNode(true);
+                worksheet.WorksheetPart.AddPart(formControlInfo.ControlPropertiesPart, cloneControl.Id);
+                worksheet.Append(newChildren: cloneControl);
+            }
         }
 
         public IEnumerable<IExcelCell> SearchCellsByText(string text)
