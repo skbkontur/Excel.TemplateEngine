@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -22,6 +23,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return !IsCorrectFormValueDescription(expression) ? null : GetDescriptionParts(expression)[1];
         }
 
+        public string GetFormControlTypeFromValueDescription(string expression)
+        {
+            return !IsCorrectFormValueDescription(expression) ? null : GetDescriptionParts(expression)[0];
+        }
+
         public bool IsCorrectValueDescription(string expression)
         {
             var descriptionParts = GetDescriptionParts(expression);
@@ -30,7 +36,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         public bool IsCorrectFormValueDescription(string expression)
         {
-            var formControlTypes = new[] {"CheckBox", "DropDown"}; // todo (mpivko, 15.12.2017): static hashset
             var descriptionParts = GetDescriptionParts(expression);
             return IsCorrectAbstractValueDescription(expression) && formControlTypes.Contains(descriptionParts[0]);
         }
@@ -96,10 +101,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return pathPart.Contains("[]");
         }
 
-        public static TemplateDescriptionHelper Instance { get { return instance; } }
-
-        private static readonly TemplateDescriptionHelper instance = new TemplateDescriptionHelper();
-
         public string GetCollectionAccessPathPartName(string pathPart)
         {
             return GetCollectionAccessPathPart(pathPart).name;
@@ -110,23 +111,22 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return GetCollectionAccessPathPart(pathPart).index;
         }
 
-        // todo (mpivko, 17.12.2017): copypaste
+        public bool IsCollectionAccessPathPart(string pathPart)
+        {
+            return collectionAccessPathPartRegex.IsMatch(pathPart);
+        }
+        
         private (string name, string index) GetCollectionAccessPathPart(string pathPart)
         {
-            var regex = new Regex(@"^(\w*)\[([^\[\]]+)\]$"); // todo (mpivko, 17.12.2017): static and compiled
-            var match = regex.Match(pathPart);
+            var match = collectionAccessPathPartRegex.Match(pathPart);
             if (!match.Success)
                 throw new ArgumentException($"{nameof(pathPart)} should be collection access path part");
             return (match.Groups[1].Value, match.Groups[2].Value);
         }
+        
+        public static TemplateDescriptionHelper Instance { get; } = new TemplateDescriptionHelper();
 
-        public bool IsCollectionAccessPathPart(string pathPart)
-        {
-            var regex = new Regex(@"^(\w*)\[([^\[\]]+)\]$");
-            var match = regex.Match(pathPart);
-            if (!match.Success)
-                return false;
-            return true;
-        }
+        private static readonly Regex collectionAccessPathPartRegex = new Regex(@"^(\w*)\[([^\[\]]+)\]$", RegexOptions.Compiled);
+        private HashSet<string> formControlTypes = new HashSet<string>(new [] { "CheckBox", "DropDown" });
     }
 }

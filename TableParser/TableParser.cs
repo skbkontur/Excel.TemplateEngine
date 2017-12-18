@@ -38,13 +38,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
         {
             var cellValue = Target.GetCell(CurrentState.Cursor)?.StringValue;
 
-            if(decimal.TryParse(cellValue, numberStyles, russianCultureInfo, out result) || decimal.TryParse(cellValue, numberStyles, CultureInfo.InvariantCulture, out result))
-            {
-                var s = result.ToString(".0000", CultureInfo.InvariantCulture);
-                result = decimal.Parse(s, numberStyles, CultureInfo.InvariantCulture); // todo (mpivko, 15.12.2017): 
-                return true;
-            }
-            return false;
+            return decimal.TryParse(cellValue, numberStyles, russianCultureInfo, out result) || decimal.TryParse(cellValue, numberStyles, CultureInfo.InvariantCulture, out result);
         }
 
         public bool TryParseAtomicValue(out long result)

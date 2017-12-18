@@ -26,9 +26,20 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
                     tableBuilder.PushState(new Styler(cell));
 
                     var childModel = ExtractChildModel(model, cell);
-                    var childTemplateName = ExtractTemplateName(cell);
-                    var renderer = rendererCollection.GetRenderer(childModel.GetType());
-                    renderer.Render(tableBuilder, childModel, templateCollection.GetTemplate(childTemplateName));
+
+                    if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(cell.StringValue))
+                    {
+                        var typeName = TemplateDescriptionHelper.Instance.GetFormControlTypeFromValueDescription(cell.StringValue);
+                        var name = TemplateDescriptionHelper.Instance.ExtractFormControlNameFromValueDescription(cell.StringValue);
+                        var renderer = rendererCollection.GetFormControlRenderer(typeName, childModel.GetType());
+                        renderer.Render(tableBuilder, name, childModel);
+                    }
+                    else
+                    {
+                        var childTemplateName = ExtractTemplateName(cell);
+                        var renderer = rendererCollection.GetRenderer(childModel.GetType());
+                        renderer.Render(tableBuilder, childModel, templateCollection.GetTemplate(childTemplateName));
+                    }
 
                     tableBuilder.PopState();
                 }
@@ -62,10 +73,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
         private static object ExtractChildModel(object model, ICell cell)
         {
             var expression = cell.StringValue;
-            if(!TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
-                return expression ?? "";
-            var result = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, expression);
-            return result ?? "";
+            if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression) || TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
+            {
+                var result = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, expression);
+                return result ?? "";
+            }
+            return expression ?? "";
         }
 
         private readonly ITemplateCollection templateCollection;

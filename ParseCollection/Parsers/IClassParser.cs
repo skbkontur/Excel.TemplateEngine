@@ -7,9 +7,10 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 {
-    public interface IParser
+    public interface IClassParser
     {
         [NotNull]
-        object Parse([NotNull] ITableParser tableParser, [NotNull] Type modelType, [NotNull] RenderingTemplate template, Action<string, string> addFieldMapping);
+        TModel Parse<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template, Action<string, string> addFieldMapping)
+            where TModel : new();
     }
 }

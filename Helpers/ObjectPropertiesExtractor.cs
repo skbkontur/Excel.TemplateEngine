@@ -20,7 +20,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         [CanBeNull]
         public object ExtractChildObject(object model, string expression)
         {
-            if(!TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression) ||
+            if(!(TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression) || TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression)) ||
                model == null)
                 return null;
 
@@ -133,7 +133,29 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         private static bool TryExtractCurrentChild(object model, string pathPart, out object child)
         {
             child = null;
-            if(!TryExtractCurrentChildPropertyInfo(model, pathPart, out var propertyInfo))
+            if (TemplateDescriptionHelper.Instance.IsCollectionAccessPathPart(pathPart))
+            {
+                var name = TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartName(pathPart);
+                var key = TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartIndex(pathPart);
+                if (!TryExtractCurrentChildPropertyInfo(model, name, out var dictPropertyInfo))
+                    return false;
+                if(!TypeCheckingHelper.Instance.IsDictionary(dictPropertyInfo.PropertyType))
+                    throw new Exception($"Unexpected child type: expected dictionary (pathPath='{pathPart}'), but model is {model.GetType()}");
+                if(key.StartsWith("\"") && key.EndsWith("\"")) // todo (mpivko, 19.12.2017): copypaste from printer
+                {
+                    child = ((IDictionary)dictPropertyInfo.GetValue(model, null))[key.Substring(1, key.Length - 2)];
+                }
+                else if(int.TryParse(key, out var keyInt))
+                {
+                    child = ((IDictionary)dictPropertyInfo.GetValue(model, null))[keyInt];
+                }
+                else
+                {
+                    throw new NotSupportedException($"Can't parse '{key}' as a dictionary key");
+                }
+                return true;
+            }
+            if (!TryExtractCurrentChildPropertyInfo(model, pathPart, out var propertyInfo))
                 return false;
             child = propertyInfo.GetValue(model, null);
             return true;
@@ -141,17 +163,16 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         private static void ExtractChildObject(object model, string[] pathParts, int pathPartIndex, List<object> result)
         {
-            if(pathPartIndex == pathParts.Count())
+            if(pathPartIndex == pathParts.Length)
             {
                 result.Add(model);
                 return;
             }
 
-            object currentChild;
-            if(!TryExtractCurrentChild(model, pathParts[pathPartIndex], out currentChild))
+            if (!TryExtractCurrentChild(model, pathParts[pathPartIndex], out var currentChild))
                 return;
-
-            if(currentChild == null)
+            
+            if (currentChild == null)
             {
                 result.Add(null);
                 return;

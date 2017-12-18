@@ -17,7 +17,7 @@ using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 {
-    public class ClassParser : IParser
+    public class ClassParser : IClassParser
     {
         private readonly ITemplateCollection templateCollection;
         private readonly IParserCollection parserCollection;
@@ -29,14 +29,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         }
 
         [NotNull]
-        public object Parse([NotNull] ITableParser tableParser, [NotNull] Type modelType, [NotNull] RenderingTemplate template, Action<string, string> addFieldMapping)
-            //where TModel : new()
+        public TModel Parse<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template, Action<string, string> addFieldMapping)
+            where TModel : new()
         {
-            //var model = new TModel();
-            var constructor = modelType.GetConstructor(new Type[0]);
-            if (constructor == null)
-                throw new NotSupportedException();
-            var model = constructor.Invoke(new object[0]);
+            var model = new TModel();
             
             foreach (var row in template.Content.Cells)
             {
@@ -85,7 +81,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
                 var parser = parserCollection.GetEnumerableParser(enumerableType);
 
                 var clearPathToEnumerable = pathToEnumerable.Replace("[]", "");
-                var parsedObject = parser.Parse(tableParser, childModelType, maxIEnumerableLen + 1 /*TODO mpivko*/, (name, value) => addFieldMapping($"{clearPathToEnumerable}{name}.{childPath}", value));
+                var parsedObject = parser.Parse(tableParser, childModelType, maxIEnumerableLen + 1 /*TODO mpivko use existing enumerable length*/, (name, value) => addFieldMapping($"{clearPathToEnumerable}{name}.{childPath}", value));
                 var parsedList = (List<object>)parsedObject;
 
                 var cntNullOrEmpty = 0;

@@ -2,8 +2,10 @@
 using System.Globalization;
 using System.Linq;
 
+using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DataTypes;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
+using SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 using SKBKontur.Catalogue.Objects;
@@ -13,14 +15,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
     public class TableBuilder : ITableBuilder
     {
         private readonly ITableNavigator navigator;
-
-        //TODO mpivko for backward compatibility
-        [Obsolete]
-        public TableBuilder(ITable target, ICellPosition startPosition, IStyler styler = null)
-        {
-            navigator = new TableNavigator.TableNavigator(target, startPosition, styler);
-        }
-
+        
         public TableBuilder(ITableNavigator navigator)
         {
             this.navigator = navigator;
@@ -44,6 +39,24 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         public ITableBuilder RenderAtomicValue(decimal value)
         {
             return RenderAtomicValue(value.ToString(CultureInfo.InvariantCulture), CellType.Number);
+        }
+
+        public ITableBuilder RenderCheckBoxValue(string name, bool value)
+        {
+            var formControl = Target.TryGetFormControl(name);
+            if (formControl == null)
+                throw new ArgumentException($"Form control with name {name} not found");
+            formControl.ExcelFormControlInfo.IsChecked = value;
+            return this;
+        }
+
+        public ITableBuilder RenderDropDownValue(string name, string value)
+        {
+            var formControl = Target.TryGetFormControl(name);
+            if (formControl == null)
+                throw new ArgumentException($"Form control with name {name} not found");
+            formControl.ExcelFormControlInfo.SelectedValue = value;
+            return this;
         }
 
         public ITableBuilder PushState(ICellPosition newOrigin, IStyler styler)
@@ -103,6 +116,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         public ITableBuilder MergeCells(IRectangle rectangle)
         {
             Target.MergeCells(rectangle.ToGlobalCoordinates(CurrentState.Origin));
+            return this;
+        }
+
+        public ITableBuilder AddFormControlInfos(IExcelFormControlInfo[] excelFormControlInfo)
+        {
+            Target.AddFormControls(excelFormControlInfo.Select(x => new ExcelFormControl {ExcelFormControlInfo = x}).Cast<IFormControl>().ToArray());
             return this;
         }
 

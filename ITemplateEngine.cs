@@ -8,6 +8,8 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
     public interface ITemplateEngine
     {
         void Render(ITableBuilder tableBuilder, object model);
-        (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(ITableParser tableParser);
+
+        (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(ITableParser tableParser)
+            where TModel : new();
     }
 }

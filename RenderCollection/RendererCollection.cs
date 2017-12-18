@@ -28,6 +28,16 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection
             return new ClassRenderer(templateCollection, this);
         }
 
+        public IFormControlRenderer GetFormControlRenderer(string typeName, Type modelType)
+        {
+            // todo (mpivko, 19.12.2017): ;
+            if(typeName == "CheckBox" && modelType == typeof(bool))
+                return new CheckBoxRenderer();
+            if(typeName == "DropDown" && modelType == typeof(string))
+                return new DropDownRenderer();
+            throw new Exception($"Unsupported pair of typeName ({typeName}) and modelType ({modelType}) for form controls");
+        }
+
         private readonly ITemplateCollection templateCollection;
     }
 }

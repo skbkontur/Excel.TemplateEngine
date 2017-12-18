@@ -76,6 +76,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
             return null;
         }
 
+        public IFormControl[] GetFormControlsList()
+        {
+            return new IFormControl[0];
+        }
+
+        public void AddFormControls(IFormControl[] formControls)
+        {
+        }
+
         public void ResizeColumn(int columnIndex, double columnWidth)
         {
         }

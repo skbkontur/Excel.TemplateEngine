@@ -43,7 +43,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DocumentPrimitivesInterfaces\FakeFormControl.cs" />
     <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelFormControl.cs" />
     <Compile Include="DocumentPrimitivesInterfaces\IFormControl.cs" />
     <Compile Include="NavigationPrimitives\IRectangle.cs" />
@@ -69,9 +68,12 @@
     <Compile Include="ParseCollection\Parsers\IntParser.cs" />
     <Compile Include="ParseCollection\Parsers\LongParser.cs" />
     <Compile Include="ParseCollection\Parsers\StringParser.cs" />
-    <Compile Include="ParseCollection\Parsers\IParser.cs" />
+    <Compile Include="ParseCollection\Parsers\IClassParser.cs" />
     <Compile Include="ParseCollection\Parsers\EnumerableParser.cs" />
     <Compile Include="ParseCollection\Parsers\DecimalParser.cs" />
+    <Compile Include="RenderCollection\Renderers\CheckBoxRenderer.cs" />
+    <Compile Include="RenderCollection\Renderers\DropDownRenderer.cs" />
+    <Compile Include="RenderCollection\Renderers\IFormControlRenderer.cs" />
     <Compile Include="TableNavigator\IStyler.cs" />
     <Compile Include="NavigationPrimitives\ICellPosition.cs" />
     <Compile Include="NavigationPrimitives\CellPosition.cs" />

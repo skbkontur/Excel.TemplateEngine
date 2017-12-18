@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 using log4net;
 
@@ -18,6 +17,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
     {
         public TemplateEngine(ITable templateTable)
         {
+            formControlsList = templateTable.GetFormControlsList();
             templateCollection = new TemplateCollection(templateTable);
             rendererCollection = new RendererCollection(templateCollection);
             parserCollection = new ParserCollection(templateCollection);
@@ -31,12 +31,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
                 RenderError(tableBuilder);
                 return;
             }
-
+            tableBuilder.AddFormControlInfos(formControlsList.Select(x => x.ExcelFormControlInfo).ToArray());
             var render = rendererCollection.GetRenderer(model.GetType());
             render.Render(tableBuilder, model, renderingTemplate);
         }
 
         public (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(ITableParser tableParser)
+            where TModel : new()
         {
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName);
             
@@ -47,7 +48,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
 
             var parser = parserCollection.GetParser(typeof(TModel));
             var fieldsMappingForErrors = new Dictionary<string, string>();
-            return ((TModel)parser.Parse(tableParser, typeof(TModel), renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), fieldsMappingForErrors);
+            return (parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), fieldsMappingForErrors);
         }
 
         private void RenderError(ITableBuilder tableBuilder)
@@ -61,5 +62,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
         private readonly IRendererCollection rendererCollection;
         private readonly ILog logger = LogManager.GetLogger(typeof(TemplateEngine));
         private readonly IParserCollection parserCollection;
+        private readonly IFormControl[] formControlsList;
     }
 }

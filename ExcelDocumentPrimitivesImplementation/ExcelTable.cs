@@ -76,6 +76,16 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
                 };
         }
 
+        public IFormControl[] GetFormControlsList()
+        {
+            return internalTable.GetFormControlInfosList().Select(x => new ExcelFormControl() {ExcelFormControlInfo = x}).Cast<IFormControl>().ToArray();
+        }
+
+        public void AddFormControls(IFormControl[] formControls)
+        {
+            internalTable.AddFormControlInfos(formControls.Select(x => x.ExcelFormControlInfo).ToArray());
+        }
+
         public void ResizeColumn(int columnIndex, double width)
         {
             internalTable.ResizeColumn(columnIndex, width);

@@ -19,39 +19,22 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         [NotNull]
         public IEnumerable Parse([NotNull] ITableParser tableParser, [NotNull] Type modelType, int count, [NotNull] Action<string, string> addFieldMapping)
         {
-            /*if (!TypeCheckingHelper.Instance.IsEnumerable(modelType))
-                throw new ArgumentException($"modelType is {modelType} but expected IEnumerable");
-
-            var itemType = TypeCheckingHelper.Instance.GetEnumerableItemType(modelType);*/
-
-
-            var maxIterations = (int)1e4; //TODO mpivko
-            if (count > maxIterations)
-                throw new NotSupportedException($"Lists longer than {maxIterations} are not supported");
-
+            if (count > maxEnumerableLength)
+                throw new NotSupportedException($"Lists longer than {maxEnumerableLength} are not supported");
+            
             var result = new List<object>();
-            for (var i = 0; i < count; i++)
+            for (var i = 0; (count == -1 || i < count) && i < maxEnumerableLength; i++)
             {
                 if (i != 0)
                     tableParser.MoveToNextLayer();
 
                 tableParser.PushState();
 
-                Func<int, object> parse;
-                try
-                {
-                    var parser = parserCollection.GetAtomicValueParser(modelType);
-                    parse = _ => parser.TryParse(tableParser, modelType);
-                }
-                catch (NotSupportedException)
-                {
-                    throw new Exception($"There is no atomic value parser for '{modelType}'"); // todo (mpivko, 08.12.2017): 
-                }
-                
-                var item = parse(i);
+                var parser = parserCollection.GetAtomicValueParser(modelType);
+                var item = parser.TryParse(tableParser, modelType);
+                if (count == -1 && item == null)
+                    break;
 
-                /*if (isAtomicValue && item == null || !isAtomicValue && AllPropertiesAreNull(item))
-                    break;*/
                 addFieldMapping($"[{i}]", tableParser.CurrentState.Cursor.CellReference);
                 result.Add(item);
                 tableParser.PopState();
@@ -60,11 +43,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             return result;
         }
 
-        private bool AllPropertiesAreNull(object item)
-        {
-            return item.GetType().GetProperties().Select(x => x.GetValue(item)).All(x => x == null);
-        }
-
         private readonly IParserCollection parserCollection;
+        private const int maxEnumerableLength = (int)1e4;
     }
 }

@@ -13,7 +13,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
             this.templateCollection = templateCollection;
         }
 
-        public IParser GetParser(Type modelType)
+        public IClassParser GetParser(Type modelType)
         {
             //TODO mpivko avoid calling it with atomic values
             return new ClassParser(templateCollection, this);

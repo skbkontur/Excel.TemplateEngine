@@ -16,11 +16,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         [CanBeNull]
         public object TryParse([NotNull] ITableParser tableParser, [NotNull] Type modelType)
         {
-            // todo (mpivko, 15.12.2017):
-            /*if (decimal.TryParse(value, numberStyles, russianCultureInfo, out var result) || decimal.TryParse(value, numberStyles, CultureInfo.InvariantCulture, out result))
-                return decimalConverter.ToDecimal(decimalConverter.ToString(result)); // todo (mpivko, 15.12.2017): */
-
-
             if(nullable)
             {
                 if (!typeof(decimal?).IsAssignableFrom(modelType))
