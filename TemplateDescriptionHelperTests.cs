@@ -119,21 +119,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                     new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ"},
                 }, model.Items);
         }
-
-        [Test]
-        public void С()
-        {
-            return;
-            using(var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/defaultPriceList.xlsx")))
-            using(var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsx")))
-            {
-                targetDocument.AddFormControlInfos(0, templateDocument.GetFormControlInfos(0));
-
-                var bytes = targetDocument.CloseAndGetDocumentBytes();
-                File.WriteAllBytes("test.xlsx", bytes);
-            }
-        }
-
+        
         [Test]
         public void D()
         {

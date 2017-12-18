@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -177,13 +178,41 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             targetDocument.AddWorksheet("Лист2");
 
             var target = new ExcelTable(targetDocument.GetWorksheet(0));
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
+            var tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1")))));
             templateEngine.Render(tableBuilder, model);
 
             target = new ExcelTable(targetDocument.GetWorksheet(1));
-            tableBuilder = new TableBuilder(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
+            tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1")))));
             templateEngine.Render(tableBuilder, model);
 
+            var result = targetDocument.CloseAndGetDocumentBytes();
+            File.WriteAllBytes("output.xlsx", result);
+
+            templateDocument.Dispose();
+            targetDocument.Dispose();
+        }
+
+        [Test]
+        public void FormControlsPrintingTest()
+        {
+            var model = new
+            {
+                BoolValue1 = false,
+                BoolValue2 = true,
+                String1 = "Value1",
+                Dict = new Dictionary<string, bool> {{"TestKey", false}},
+            };
+
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(formControlsTemplate));
+            var template = new ExcelTable(templateDocument.GetWorksheet(0));
+            var templateEngine = new TemplateEngine(template);
+
+            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(emptyDocumentName));
+            
+            var target = new ExcelTable(targetDocument.GetWorksheet(0));
+            var tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1")))));
+            templateEngine.Render(tableBuilder, model);
+            
             var result = targetDocument.CloseAndGetDocumentBytes();
             File.WriteAllBytes("output.xlsx", result);
 
@@ -199,7 +228,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(emptyDocumentName));
             var target = new ExcelTable(targetDocument.GetWorksheet(0));
 
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
+            var tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1")))));
             var templateEngine = new TemplateEngine(template);
             templateEngine.Render(tableBuilder, model);
 
@@ -213,11 +242,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             targetDocument.Dispose();
         }
 
-        private const string withCellsMergingTemplateFileName = @"ExcelObjectPrinterTests\Files\withCellsMergingTemplate.xlsx";
-        private const string simpleTemplateFileName = @"ExcelObjectPrinterTests\Files\template.xlsx";
-        private const string complexTemplateFileName = @"ExcelObjectPrinterTests\Files\complexTemplate.xlsx";
-        private const string withFullPathsTemplateFileName = @"ExcelObjectPrinterTests\Files\withFullPathsTemplate.xlsx";
-        private const string emptyDocumentName = @"ExcelObjectPrinterTests\Files\empty.xlsx";
+        private const string withCellsMergingTemplateFileName = filenamePrefix + "withCellsMergingTemplate.xlsx";
+        private const string simpleTemplateFileName = filenamePrefix + "template.xlsx";
+        private const string complexTemplateFileName = filenamePrefix + "complexTemplate.xlsx";
+        private const string withFullPathsTemplateFileName = filenamePrefix + "withFullPathsTemplate.xlsx";
+        private const string emptyDocumentName = filenamePrefix + "empty.xlsx";
+        private const string formControlsTemplate = filenamePrefix + "formControlsTemplate.xlsx";
+        private const string filenamePrefix = @"ExcelObjectPrinterTests\Files\";
+
 
         public class DocumentWithArray
         {

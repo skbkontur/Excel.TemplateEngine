@@ -25,10 +25,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var templateEngine = new TemplateEngine(template);
 
             var target = new FakeTable(10, 10);
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(new FakeCell(new CellPosition("A1"))
+            var tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("B2"), new Styler(new FakeCell(new CellPosition("A1"))
                 {
                     StyleId = "(1,1)"
-                }));
+                })));
 
             templateEngine.Render(tableBuilder, "TestStringValue");
 
@@ -49,10 +49,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var templateEngine = new TemplateEngine(template);
 
             var target = new FakeTable(10, 10);
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"), new Styler(new FakeCell(new CellPosition("A1"))
+            var tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("B2"), new Styler(new FakeCell(new CellPosition("A1"))
                 {
                     StyleId = "(1,1)"
-                }));
+                })));
 
             templateEngine.Render(tableBuilder, model);
 
@@ -98,7 +98,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var template = FakeTable.GenerateFromStringArray(stringTemplate);
 
             var target = new FakeTable(100, 100);
-            var tableBuilder = new TableBuilder(target, new CellPosition("A1"));
+            var tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("A1")));
             var templateEngine = new TemplateEngine(template);
             templateEngine.Render(tableBuilder, model);
 
@@ -182,7 +182,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var template = FakeTable.GenerateFromStringArray(stringTemplate);
 
             var target = new FakeTable(100, 100);
-            var tableBuilder = new TableBuilder(target, new CellPosition("A1"));
+            var tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("A1")));
             var templateEngine = new TemplateEngine(template);
             templateEngine.Render(tableBuilder, model);
 
@@ -251,7 +251,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var template = FakeTable.GenerateFromStringArray(stringTemplate);
 
             var target = new FakeTable(100, 100);
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"));
+            var tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("B2")));
             var templateEngine = new TemplateEngine(template);
             templateEngine.Render(tableBuilder, model);
 
@@ -287,7 +287,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var template = FakeTable.GenerateFromStringArray(stringTemplate);
 
             var target = new FakeTable(100, 100);
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"));
+            var tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("B2")));
             var templateEngine = new TemplateEngine(template);
             templateEngine.Render(tableBuilder, model);
 
@@ -335,7 +335,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var template = FakeTable.GenerateFromStringArray(stringTemplate);
 
             var target = new FakeTable(100, 100);
-            var tableBuilder = new TableBuilder(target, new CellPosition("B2"));
+            var tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("B2")));
             var templateEngine = new TemplateEngine(template);
             templateEngine.Render(tableBuilder, model);
 

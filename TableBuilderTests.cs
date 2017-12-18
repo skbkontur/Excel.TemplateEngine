@@ -5,6 +5,7 @@ using NUnit.Framework;
 using SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplementation;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
+using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
@@ -18,7 +19,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const int height = 40;
             var table = new FakeTable(width, height);
 
-            var tableBuilder = new TableBuilder(table, new CellPosition("A1"));
+            var tableBuilder = new TableBuilder(new TableNavigator(table, new CellPosition("A1")));
 
             tableBuilder.RenderAtomicValue("Test");
             tableBuilder.MoveToNextColumn();
@@ -46,7 +47,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const int height = 40;
             var table = new FakeTable(width, height);
 
-            var tableBuilder = new TableBuilder(table, new CellPosition("C4"));
+            var tableBuilder = new TableBuilder(new TableNavigator(table, new CellPosition("C4")));
 
             tableBuilder.RenderAtomicValue("1");
             tableBuilder.MoveToNextColumn();
@@ -67,7 +68,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const int height = 40;
             var table = new FakeTable(width, height);
 
-            var tableBuilder = new TableBuilder(table, new CellPosition("A1"));
+            var tableBuilder = new TableBuilder(new TableNavigator(table, new CellPosition("A1")));
 
             tableBuilder.PushState() //depth = 1
                         .PushState() //depth = 2
@@ -161,7 +162,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const int height = 40;
             var table = new FakeTable(width, height);
 
-            var tableBuilder = new TableBuilder(table, new CellPosition("A1"));
+            var tableBuilder = new TableBuilder(new TableNavigator(table, new CellPosition("A1")));
 
             tableBuilder.PushState() //depth = 1
                         .PushState() //depth = 2
