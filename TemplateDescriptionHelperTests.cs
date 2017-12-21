@@ -15,12 +15,18 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
     class Item
     {
+        public int Index { get; set; }
         public string Id { get; set; }
         public string Name { get; set; }
 
+        public override string ToString()
+        {
+            return $"{nameof(Index)}: {Index}, {nameof(Id)}: {Id}, {nameof(Name)}: {Name}";
+        }
+
         protected bool Equals(Item other)
         {
-            return string.Equals(Id, other.Id) && string.Equals(Name, other.Name);
+            return Index == other.Index && string.Equals(Id, other.Id) && string.Equals(Name, other.Name);
         }
 
         public override bool Equals(object obj)
@@ -35,13 +41,11 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         {
             unchecked
             {
-                return ((Id != null ? Id.GetHashCode() : 0) * 397) ^ (Name != null ? Name.GetHashCode() : 0);
+                var hashCode = Index;
+                hashCode = (hashCode * 397) ^ (Id != null ? Id.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Name != null ? Name.GetHashCode() : 0);
+                return hashCode;
             }
-        }
-
-        public override string ToString()
-        {
-            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}";
         }
     }
 
@@ -211,6 +215,25 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 Assert.AreEqual("TestDropDown1", mappingForErrors["IntStringDict[15]"]);
                 Assert.AreEqual(new Dictionary<string, string> { { "testKey", "testValue" } }, model.StringStringDict);
                 Assert.AreEqual(new Dictionary<int, string> {{42, "testValueInt"}, {15, "Value2"}}, model.IntStringDict);
+            }
+        }
+
+        [Test]
+        public void H()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/test_H_template.xlsx")))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/test_H_target.xlsx")))
+            {
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
+                var tableParser = new TableParser(tableNavigator);
+                var (model, mappingForErrors) = templateEngine.Parse<PriceList>(tableParser);
+
+                Assert.AreEqual(0, model.Items.Length);
+                Assert.AreEqual("", model.Type);
             }
         }
     }
