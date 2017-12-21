@@ -30,6 +30,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return ExtractChildObject(model, pathParts);
         }
 
+        [CanBeNull]
+        public object ExtractChildObjectViaPath(object model, string path)
+        {
+            if (!TemplateDescriptionHelper.Instance.IsCorrectModelPath(path))
+                return null;
+            var pathParts = path.Split('.');
+            return ExtractChildObject(model, pathParts);
+        }
+
         public static Type ExtractChildObjectType([NotNull] object model, [NotNull] string expression)
         {
             return ExtractChildObjectTypeFromPath(model, ExtractCleanChildObjectPath(expression));
@@ -178,8 +187,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                 return;
             }
 
-            if(TypeCheckingHelper.Instance.IsEnumerable(currentChild.GetType()))
+            if(TemplateDescriptionHelper.Instance.IsArrayPathPart(pathParts[pathPartIndex]))
             {
+                if(!TypeCheckingHelper.Instance.IsEnumerable(currentChild.GetType()))
+                    throw new Exception($"Trying to extract enumerable from non-enumerable property {string.Join(".", pathParts)}");
                 foreach(var element in ((IEnumerable)currentChild).Cast<object>())
                     ExtractChildObject(element, pathParts, pathPartIndex + 1, result);
                 return;
@@ -319,6 +330,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                         {
                             subEnumerable = (IList)Activator.CreateInstance(childPropertyInfo.PropertyType, listValue.Count);
                             childPropertyInfo.SetValue(model, subEnumerable);
+                        }
+
+                        if(subEnumerable.Count < listValue.Count)
+                        {
+                            throw new Exception($"Secondary column is longer than main one (secondary - {listValue.Count}, main - {subEnumerable.Count})");
                         }
 
                         for(var i = 0; i < listValue.Count; i++)

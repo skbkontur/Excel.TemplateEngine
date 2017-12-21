@@ -14,7 +14,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
         {
             this.navigator = navigator;
         }
-        
+
+        /// <summary>
+        /// Be careful! Result can be both null and "" when cell is empty (seems like it depends on the way of file creation)
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
         public bool TryParseAtomicValue(out string result)
         {
             var cellValue = Target.GetCell(CurrentState.Cursor)?.StringValue;

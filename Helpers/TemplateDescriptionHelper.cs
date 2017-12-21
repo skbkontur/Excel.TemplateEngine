@@ -47,8 +47,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                 string.IsNullOrEmpty(descriptionParts[2]))
                 return false;
 
+            return IsCorrectModelPath(descriptionParts[2]);
+        }
+
+        public bool IsCorrectModelPath(string pathPart)
+        {
             var pathRegex = new Regex(@"^[A-Za-z]\w*(\[[^\[\]]*\])?(\.[A-Za-z]\w*(\[[^\[\]]*\])?)*$");
-            return pathRegex.IsMatch(descriptionParts[2]);
+            return pathRegex.IsMatch(pathPart);
         }
 
         public bool IsCorrectTemplateDescription(string expression)

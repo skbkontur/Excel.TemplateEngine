@@ -63,7 +63,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         private void ParseValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, string expression)
         {
             var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression);
-
+            
             var childModelPath = ObjectPropertiesExtractor.ExtractChildObjectPath(expression);
             var cleanChildModelPath = ObjectPropertiesExtractor.ExtractCleanChildObjectPath(expression);
             var childModelType = ObjectPropertiesExtractor.ExtractChildObjectType(model, expression);
@@ -75,13 +75,20 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
                 var (pathToEnumerable, childPath) = ObjectPropertiesExtractor.SplitForEnumerableExpansion(expression);
                 var enumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, pathToEnumerable);
 
+                var cleanPathToEnumerable = pathToEnumerable.Replace("[]", "");
+                var childEnumerable = ObjectPropertiesExtractor.Instance.ExtractChildObjectViaPath(model, cleanPathToEnumerable);
+                
+                if (childEnumerable != null && !(childEnumerable is IList))
+                    throw new Exception($"Trying to set IEnumerable to non-enumerable (name: {cleanPathToEnumerable}, type: {childEnumerable.GetType()})");
+
                 if (!TypeCheckingHelper.Instance.IsEnumerable(enumerableType))
                     throw new Exception(); // todo (mpivko, 08.12.2017): ipse
 
                 var parser = parserCollection.GetEnumerableParser(enumerableType);
 
                 var clearPathToEnumerable = pathToEnumerable.Replace("[]", "");
-                var parsedObject = parser.Parse(tableParser, childModelType, maxIEnumerableLen + 1 /*TODO mpivko use existing enumerable length*/, (name, value) => addFieldMapping($"{clearPathToEnumerable}{name}.{childPath}", value));
+                var limit = ((IList)childEnumerable)?.Count ?? maxIEnumerableLen + 1;
+                var parsedObject = parser.Parse(tableParser, childModelType, limit, (name, value) => addFieldMapping($"{clearPathToEnumerable}{name}.{childPath}", value));
                 var parsedList = (List<object>)parsedObject;
 
                 var cntNullOrEmpty = 0;
