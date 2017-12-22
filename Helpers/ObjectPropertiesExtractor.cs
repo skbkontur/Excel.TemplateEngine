@@ -149,7 +149,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                 if (!TryExtractCurrentChildPropertyInfo(model, name, out var dictPropertyInfo))
                     return false;
                 if(!TypeCheckingHelper.Instance.IsDictionary(dictPropertyInfo.PropertyType))
-                    throw new Exception($"Unexpected child type: expected dictionary (pathPath='{pathPart}'), but model is {model.GetType()}");
+                    throw new Exception($"Unexpected child type: expected dictionary (pathPath='{pathPart}'), but model is '{dictPropertyInfo.PropertyType}' in '{model.GetType()}'");
                 if(key.StartsWith("\"") && key.EndsWith("\"")) // todo (mpivko, 19.12.2017): copypaste from printer
                 {
                     child = ((IDictionary)dictPropertyInfo.GetValue(model, null))[key.Substring(1, key.Length - 2)];

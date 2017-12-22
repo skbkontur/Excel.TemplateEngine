@@ -121,7 +121,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 
         public ITableBuilder AddFormControlInfos(IExcelFormControlInfo[] excelFormControlInfo)
         {
-            Target.AddFormControls(excelFormControlInfo.Select(x => new ExcelFormControl {ExcelFormControlInfo = x}).Cast<IFormControl>().ToArray());
+            Target.AddFormControls(excelFormControlInfo.Select(x => new ExcelFormControl(x)).Cast<IFormControl>().ToArray());
             return this;
         }
 

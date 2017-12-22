@@ -70,15 +70,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
             var excelFormControlInfo = internalTable.GetFormControlInfo(name);
             if(excelFormControlInfo == null)
                 return null;
-            return new ExcelFormControl
-                {
-                    ExcelFormControlInfo = excelFormControlInfo,
-                };
+            return new ExcelFormControl(excelFormControlInfo);
         }
 
         public IFormControl[] GetFormControlsList()
         {
-            return internalTable.GetFormControlInfosList().Select(x => new ExcelFormControl() {ExcelFormControlInfo = x}).Cast<IFormControl>().ToArray();
+            return internalTable.GetFormControlInfosList().Select(x => new ExcelFormControl(x)).Cast<IFormControl>().ToArray();
         }
 
         public void AddFormControls(IFormControl[] formControls)

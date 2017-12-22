@@ -27,12 +27,19 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
                     var childModel = ExtractChildModel(model, cell);
 
+                    // todo (mpivko, 22.12.2017): kind of bug here: when property doesn't exist childModel is just raw cell value, so we shouldn't actually render it maybe
                     if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(cell.StringValue))
                     {
-                        var typeName = TemplateDescriptionHelper.Instance.GetFormControlTypeFromValueDescription(cell.StringValue);
-                        var name = TemplateDescriptionHelper.Instance.ExtractFormControlNameFromValueDescription(cell.StringValue);
-                        var renderer = rendererCollection.GetFormControlRenderer(typeName, childModel.GetType());
-                        renderer.Render(tableBuilder, name, childModel);
+                        childModel = StrictExtractChildModel(model, cell); // todo (mpivko, 22.12.2017): 
+                        if(childModel != null)
+                        {
+                            var typeName = TemplateDescriptionHelper.Instance.GetFormControlTypeFromValueDescription(cell.StringValue);
+                            var name = TemplateDescriptionHelper.Instance.ExtractFormControlNameFromValueDescription(cell.StringValue);
+                            var renderer = rendererCollection.GetFormControlRenderer(typeName, childModel.GetType());
+                            renderer.Render(tableBuilder, name, childModel);
+                        }
+                        tableBuilder.SetCurrentStyle();
+                        tableBuilder.MoveToNextColumn(); // todo (mpivko, 22.12.2017): test for it
                     }
                     else
                     {
@@ -79,6 +86,16 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
                 return result ?? "";
             }
             return expression ?? "";
+        }
+
+        private static object StrictExtractChildModel(object model, ICell cell)
+        {
+            var expression = cell.StringValue;
+            if (TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression) || TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
+            {
+                return ObjectPropertiesExtractor.Instance.ExtractChildObject(model, expression);
+            }
+            return null;
         }
 
         private readonly ITemplateCollection templateCollection;
