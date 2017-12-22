@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using NUnit.Framework;
 
@@ -8,6 +9,7 @@ using SKBKontur.Catalogue.ExcelObjectPrinter;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
+using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
 
@@ -234,6 +236,52 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
                 Assert.AreEqual(0, model.Items.Length);
                 Assert.AreEqual("", model.Type);
+            }
+        }
+
+        [Test]
+        public void I()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/test_I_template.xlsx")))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/test_I_target.xlsx")))
+            {
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
+                var tableParser = new TableParser(tableNavigator);
+                var (model, mappingForErrors) = templateEngine.Parse<PriceList>(tableParser);
+
+                Assert.AreEqual("ValueC", model.Type);
+            }
+        }
+
+        [Test]
+        public void J()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/test_J.xlsx")))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsx")))
+            {
+                foreach (var index in Enumerable.Range(1, templateDocument.GetWorksheetCount() - 1))
+                {
+                    var worksheet = templateDocument.GetWorksheet(index);
+                    var name = templateDocument.GetWorksheetName(index);
+                    var innterTemplateEngine = new TemplateEngine(new ExcelTable(worksheet));
+                    var targetWorksheet = targetDocument.AddWorksheet(name);
+                    var innerTableBuilder = new TableBuilder(new TableNavigator(new ExcelTable(targetWorksheet), new CellPosition("A1")));
+                    innterTemplateEngine.Render(innerTableBuilder, new { });
+                }
+
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
+                var tableBuilder = new TableBuilder(tableNavigator);
+                templateEngine.Render(tableBuilder, new {Type = "Значение 2"});
+
+                File.WriteAllBytes("output2.xlsx", targetDocument.CloseAndGetDocumentBytes());
             }
         }
     }
