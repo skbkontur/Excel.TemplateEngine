@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -14,6 +15,7 @@ using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
+    // todo (mpivko, 22.12.2017): use different classes for different form controls
     public class ExcelFormControlInfo : IExcelFormControlInfo
     {
         public ExcelFormControlInfo([NotNull] IExcelWorksheet excelWorksheet, [NotNull] Control control, [NotNull] ControlPropertiesPart controlPropertiesPart, [NotNull] VmlDrawingPart vmlDrawingPart, [NotNull] DrawingsPart drawingsPart)
@@ -47,33 +49,55 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             get
             {
-                // todo (mpivko, 18.12.2017): it does not work when range is from other worksheet
-                var range = ControlPropertiesPart.FormControlProperties.FmlaRange.Value;
-                var parts = range.Split(':').Select(x => x.Replace("$", "")).ToList();
-                if (parts.Count != 2)
-                    throw new Exception($"Invalid range: '{range}'");
-                return excelWorksheet.GetSortedCellsInRange(new ExcelCellIndex(parts[0]), new ExcelCellIndex(parts[1])).Skip((int)ControlPropertiesPart.FormControlProperties.Selected.Value - 1).First().GetStringValue();
+                if(!ControlPropertiesPart.FormControlProperties.Selected.HasValue)
+                    return null;
+                return GetDropDownCells().Skip((int)ControlPropertiesPart.FormControlProperties.Selected.Value - 1).First().GetStringValue();
             }
             set
             {
-                // todo (mpivko, 18.12.2017): it does not work when range is from other worksheet
-                if (ControlPropertiesPart.FormControlProperties.FmlaRange == null)
-                    throw new ArgumentException("This form control has no FmlaRange (maybe you are using it as dropdown, while it isn't dropdown)");
-                var range = ControlPropertiesPart.FormControlProperties.FmlaRange.Value;
-                var parts = range.Split(':').Select(x => x.Replace("$", "")).ToList();
-                if (parts.Count != 2)
-                    throw new Exception($"Invalid range: '{range}'");
-                var index = excelWorksheet.GetSortedCellsInRange(new ExcelCellIndex(parts[0]), new ExcelCellIndex(parts[1])).Select(x => x.GetStringValue()).ToList().IndexOf(value);
+                var index = GetDropDownCells().Select(x => x.GetStringValue()).ToList().IndexOf(value);
+                if(index == -1)
+                    return; // todo (mpivko, 21.12.2017): unknown value
                 ControlPropertiesPart.FormControlProperties.Selected = (uint)index + 1;
 
                 var ns = "urn:schemas-microsoft-com:office:excel";
                 var xdoc = XDocument.Load(GlobalVmlDrawingPart.GetStream());
                 var clientData = xdoc.Root.Elements().Single(x => x.Attribute("id")?.Value == Control.Name).Element(XName.Get("ClientData", ns));
-                var checkedElement = clientData.Element(XName.Get("Sel", ns));
+                var checkedElement = clientData.Element(XName.Get("Sel", ns)); // todo (mpivko, 21.12.2017): do it more carefully
                 checkedElement?.Remove();
                 clientData.Add(new XElement(XName.Get("Sel", ns), (index + 1).ToString()));
                 xdoc.Save(GlobalVmlDrawingPart.GetStream());
             }
+        }
+
+        private IEnumerable<IExcelCell> GetDropDownCells()
+        {
+            // todo (mpivko, 18.12.2017): it does not work when range is from other worksheet
+            if (ControlPropertiesPart.FormControlProperties.FmlaRange == null)
+                throw new ArgumentException("This form control has no FmlaRange (maybe you are using it as dropdown, while it isn't dropdown)");
+            var absoluteRange = ControlPropertiesPart.FormControlProperties.FmlaRange.Value;
+            var (worksheetName, range) = SplitAbsoluteRange(absoluteRange);
+            var parts = range.Split(':').Select(x => x.Replace("$", "")).ToList(); // todo (mpivko, 21.12.2017): extract method
+            if (parts.Count != 2)
+                throw new Exception($"Invalid range: '{range}'"); // todo (mpivko, 22.12.2017): use other exception
+            var worksheet = worksheetName == null ? excelWorksheet : excelWorksheet.ExcelDocument.FindWorksheet(worksheetName);
+            if (worksheet == null)
+                throw new Exception($"Worksheet with name {worksheetName} not found, but used in dropDown"); // todo (mpivko, 22.12.2017): use other exception
+            return worksheet.GetSortedCellsInRange(new ExcelCellIndex(parts[0]), new ExcelCellIndex(parts[1]));
+        }
+
+        private (string worksheetName, string cellRange) SplitAbsoluteRange(string absoluteRange)
+        {
+            var parts = absoluteRange.Split('!').ToList();
+            if(parts.Count == 1)
+                return (null, parts[0]);
+            if(parts.Count == 2)
+            {
+                if (parts[0].StartsWith("'") && parts[0].EndsWith("'"))
+                    return (parts[0].Substring(1, parts[0].Length - 2), parts[1]);
+                return (parts[0], parts[1]);
+            }
+            throw new ArgumentException($"Invalid range: '{absoluteRange}'");
         }
 
         public DrawingsPart GlobalDrawingsPart { get; }

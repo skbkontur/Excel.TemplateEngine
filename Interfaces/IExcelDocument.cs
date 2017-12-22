@@ -9,5 +9,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         IExcelWorksheet GetWorksheet(int index);
         void RenameWorksheet(int index, string name);
         IExcelWorksheet AddWorksheet(string worksheetName);
+        IExcelWorksheet FindWorksheet(string name);
+        string GetWorksheetName(int index);
     }
 }

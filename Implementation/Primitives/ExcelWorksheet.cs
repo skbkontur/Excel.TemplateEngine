@@ -21,9 +21,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
     public class ExcelWorksheet : IExcelWorksheet
     {
-        public ExcelWorksheet(WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings)
+        public ExcelWorksheet(IExcelDocument excelDocument, WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings)
         {
             worksheet = worksheetPart.Worksheet;
+            this.ExcelDocument = excelDocument;
             this.documentStyle = documentStyle;
             this.excelSharedStrings = excelSharedStrings;
             rowsCache = new TreeDictionary<uint, Row>();
@@ -255,6 +256,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 worksheet.InsertAt(columns, 0);
             return columns;
         }
+
+        public IExcelDocument ExcelDocument { get; }
 
         private readonly IExcelDocumentStyle documentStyle;
         private readonly IExcelSharedStrings excelSharedStrings;

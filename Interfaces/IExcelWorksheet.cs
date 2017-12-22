@@ -22,5 +22,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         IEnumerable<Tuple<ExcelCellIndex, ExcelCellIndex>> MergedCells { get; }
         IExcelFormControlInfo[] GetFormControlInfosList();
         void AddFormControlInfos(IExcelFormControlInfo[] formControlInfos);
+        IExcelDocument ExcelDocument { get; }
     }
 }

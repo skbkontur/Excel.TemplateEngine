@@ -59,17 +59,38 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().Count();
         }
 
+        public IExcelWorksheet FindWorksheet(string name)
+        {
+            ThrowIfSpreadsheetDisposed();
+            var sheet = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().FirstOrDefault(x => x?.Name?.Value == name);
+            if(sheet == null)
+                return null;
+            var sheetId = sheet.Id.Value;
+            return GetWorksheetById(sheetId);
+        }
+
         public IExcelWorksheet GetWorksheet(int index)
         {
             ThrowIfSpreadsheetDisposed();
             var sheetId = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index).Id.Value;
-            WorksheetPart worksheetPart;
-            if(!worksheetsCache.TryGetValue(sheetId, out worksheetPart))
+            return GetWorksheetById(sheetId);
+        }
+
+        public string GetWorksheetName(int index)
+        {
+            ThrowIfSpreadsheetDisposed();
+            return spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index).Name;
+        }
+
+        private IExcelWorksheet GetWorksheetById(string sheetId)
+        {
+            if (!worksheetsCache.TryGetValue(sheetId, out var worksheetPart))
             {
+                // todo (mpivko, 22.12.2017): race here
                 worksheetPart = (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(sheetId);
                 worksheetsCache.Add(sheetId, worksheetPart);
             }
-            return new ExcelWorksheet(worksheetPart, documentStyle, excelSharedStrings);
+            return new ExcelWorksheet(this, worksheetPart, documentStyle, excelSharedStrings);
         }
 
         public void RenameWorksheet(int index, string name)
@@ -81,6 +102,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         public IExcelWorksheet AddWorksheet(string worksheetName)
         {
             ThrowIfSpreadsheetDisposed();
+
+            if (FindWorksheet(worksheetName) != null)
+                throw new ArgumentException($"Sheet with name {worksheetName} already exists");
+
             var worksheetPart = spreadsheetDocument.WorkbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = new Worksheet(new SheetData());
 
@@ -98,8 +123,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 };
 
             sheets.AppendChild(sheet);
-
-            return new ExcelWorksheet(spreadsheetDocument.WorkbookPart.WorksheetParts.Last(), documentStyle, excelSharedStrings);
+            return new ExcelWorksheet(this, spreadsheetDocument.WorkbookPart.WorksheetParts.Last(), documentStyle, excelSharedStrings);
         }
 
         public override string ToString()
