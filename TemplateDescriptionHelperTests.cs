@@ -263,6 +263,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/test_J.xlsx")))
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsx")))
             {
+                targetDocument.AddVbaInfo(templateDocument.GetVbaInfo());
+
                 foreach (var index in Enumerable.Range(1, templateDocument.GetWorksheetCount() - 1))
                 {
                     var worksheet = templateDocument.GetWorksheet(index);
@@ -282,6 +284,27 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 templateEngine.Render(tableBuilder, new {Type = "Значение 2"});
 
                 File.WriteAllBytes("output2.xlsx", targetDocument.CloseAndGetDocumentBytes());
+            }
+        }
+
+        [Test]
+        public void K()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/test_K.xlsm")))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsm")))
+            {
+                targetDocument.AddVbaInfo(templateDocument.GetVbaInfo());
+
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
+                var tableBuilder = new TableBuilder(tableNavigator);
+                //templateEngine.Render(tableBuilder, new { Type = "Значение 2" });
+                templateEngine.Render(tableBuilder, new {  });
+
+                File.WriteAllBytes("output2.xlsm", targetDocument.CloseAndGetDocumentBytes());
             }
         }
     }
