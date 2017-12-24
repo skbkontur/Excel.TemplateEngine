@@ -11,5 +11,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         IExcelWorksheet AddWorksheet(string worksheetName);
         IExcelWorksheet FindWorksheet(string name);
         string GetWorksheetName(int index);
+        IExcelVbaInfo GetVbaInfo();
+        void AddVbaInfo(IExcelVbaInfo excelVbaInfo);
     }
 }

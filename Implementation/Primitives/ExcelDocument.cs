@@ -8,6 +8,8 @@ using System.Text;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
+using JetBrains.Annotations;
+
 using MoreLinq;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.Helpers;
@@ -80,6 +82,20 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             ThrowIfSpreadsheetDisposed();
             return spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index).Name;
+        }
+
+        [CanBeNull]
+        public IExcelVbaInfo GetVbaInfo()
+        {
+            var part = spreadsheetDocument.WorkbookPart.VbaProjectPart;
+            return part == null ? null : new ExcelVbaInfo(part);
+        }
+
+        public void AddVbaInfo([CanBeNull]IExcelVbaInfo excelVbaInfo)
+        {
+            if (excelVbaInfo == null)
+                return;
+            spreadsheetDocument.WorkbookPart.AddPart(excelVbaInfo.VbaProjectPart);
         }
 
         private IExcelWorksheet GetWorksheetById(string sheetId)
