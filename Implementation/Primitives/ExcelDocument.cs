@@ -112,12 +112,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         public void RenameWorksheet(int index, string name)
         {
             ThrowIfSpreadsheetDisposed();
+            AssertWorksheetNameValid(name);
             spreadsheetDocument.WorkbookPart.Workbook.Sheets.Elements<Sheet>().ElementAt(index).Name = name;
         }
 
         public IExcelWorksheet AddWorksheet(string worksheetName)
         {
             ThrowIfSpreadsheetDisposed();
+            AssertWorksheetNameValid(worksheetName);
 
             if (FindWorksheet(worksheetName) != null)
                 throw new ArgumentException($"Sheet with name {worksheetName} already exists");
@@ -140,6 +142,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
             sheets.AppendChild(sheet);
             return new ExcelWorksheet(this, spreadsheetDocument.WorkbookPart.WorksheetParts.Last(), documentStyle, excelSharedStrings);
+        }
+
+        private void AssertWorksheetNameValid(string worksheetName)
+        {
+            if (worksheetName.Length > 31)
+                throw new ArgumentException($"Worksheet name ('{worksheetName}') is too long (allowed <=31 symbols, current - {worksheetName.Length})");
         }
 
         public override string ToString()
