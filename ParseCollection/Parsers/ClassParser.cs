@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using JetBrains.Annotations;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
+using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
@@ -97,8 +98,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
                 parsedList = parsedList.Take(parsedList.Count - cntNullOrEmpty).ToList();
                 if (parsedList.Count > maxIEnumerableLen)
                 {
-                    // todo (mpivko, 18.12.2017): parsing error here, not exception
-                    throw new Exception();
+                    throw new EnumerableTooLongException(maxIEnumerableLen);
                 }
 
                 IList result;
@@ -157,8 +157,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             {
                 // todo (mpivko, 08.12.2017): copypaste
                 var parser = parserCollection.GetFormValueParser(childModelType);//TODO mpivko create ParserCaller
-                var parsedObject = parser.TryParse(tableParser, childFormControlName, childModelType);
-                //todo mpivko parsedObject == null is error
+                if(!parser.TryParse(tableParser, childFormControlName, childModelType, out var parsedObject))
+                {
+                    throw new FormControlParsingException(childFormControlName);
+                }
                 childSetter(parsedObject);
                 addFieldMapping(childModelPath, childFormControlName /*todo mpivko consider calculation of form control postion to return cell here instead of control name*/);
             }

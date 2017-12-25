@@ -6,11 +6,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 {
     public class DropDownValueParser : IFormValueParser
     {
-        public object TryParse(ITableParser tableParser, string name, Type modelType)
+        public bool TryParse(ITableParser tableParser, string name, Type modelType, out object result)
         {
-            if (!tableParser.TryParseDropDownValue(name, out string result))
-                return null;
-            return result;
+            if(!tableParser.TryParseDropDownValue(name, out string parseResult))
+            {
+                result = null;
+                return false;
+            }
+            result = parseResult;
+            return true;
         }
     }
 }
