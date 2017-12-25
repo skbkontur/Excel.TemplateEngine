@@ -2,6 +2,7 @@
 using System.Linq;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
+using SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 
@@ -75,16 +76,16 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
         {
             return null;
         }
-
-        public IFormControl[] GetFormControlsList()
+        
+        public IFormControls GetFormControlsInfo()
         {
-            return new IFormControl[0];
+            return null;
         }
 
-        public void AddFormControls(IFormControl[] formControls)
+        public void AddFormControls(IFormControls formControls)
         {
         }
-
+        
         public void ResizeColumn(int columnIndex, double columnWidth)
         {
         }

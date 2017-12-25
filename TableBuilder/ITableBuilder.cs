@@ -1,4 +1,4 @@
-﻿using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+﻿using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 
@@ -21,7 +21,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         ITableBuilder ExpandColumn(int relativeColumnIndex, double width);
         ITableBuilder SetCurrentStyle();
         ITableBuilder MergeCells(IRectangle rectangle);
-        ITableBuilder AddFormControlInfos(IExcelFormControlInfo[] excelFormControlInfo);
+        ITableBuilder AddFormControlInfos(IFormControls excelFormControlsInfo);
         TableNavigatorState CurrentState { get; }
     }
 }

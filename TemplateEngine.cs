@@ -3,6 +3,7 @@ using System.Linq;
 
 using log4net;
 
+using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection;
@@ -17,7 +18,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
     {
         public TemplateEngine(ITable templateTable)
         {
-            formControlsList = templateTable.GetFormControlsList();
+            formControlsInfo = templateTable.GetFormControlsInfo();
             templateCollection = new TemplateCollection(templateTable);
             rendererCollection = new RendererCollection(templateCollection);
             parserCollection = new ParserCollection(templateCollection);
@@ -31,7 +32,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
                 RenderError(tableBuilder);
                 return;
             }
-            tableBuilder.AddFormControlInfos(formControlsList.Select(x => x.ExcelFormControlInfo).ToArray());
+            tableBuilder.AddFormControlInfos(formControlsInfo);
             var render = rendererCollection.GetRenderer(model.GetType());
             render.Render(tableBuilder, model, renderingTemplate);
         }
@@ -62,6 +63,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
         private readonly IRendererCollection rendererCollection;
         private readonly ILog logger = LogManager.GetLogger(typeof(TemplateEngine));
         private readonly IParserCollection parserCollection;
-        private readonly IFormControl[] formControlsList;
+        private readonly IFormControls formControlsInfo;
     }
 }

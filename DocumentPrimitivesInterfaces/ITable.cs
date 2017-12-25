@@ -15,7 +15,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
         IEnumerable<IColumn> Columns { get; }
         void MergeCells(IRectangle rectangle);
         IFormControl TryGetFormControl(string name);
-        IFormControl[] GetFormControlsList();
-        void AddFormControls(IFormControl[] formControls);
+        IFormControls GetFormControlsInfo();
+        void AddFormControls(IFormControls formControls);
     }
 }
