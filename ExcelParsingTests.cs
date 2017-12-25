@@ -7,6 +7,7 @@ using SKBKontur.Catalogue.ExcelFileGenerator;
 using SKBKontur.Catalogue.ExcelObjectPrinter;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
+using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
 
@@ -175,6 +176,46 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 Assert.AreEqual("DropDown1", mappingForErrors["Type"]);
 
                 Assert.AreEqual("ValueC", model.Type);
+            }
+        }
+
+        [Test]
+        public void TestImportAfterCreate()
+        {
+            byte[] bytes;
+
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/importAfterCreate_template.xlsx")))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsx")))
+            {
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
+                var tableBuilder = new TableBuilder(tableNavigator);
+
+                templateEngine.Render(tableBuilder, new { Type = "Значение 2", TestFlag2 = true });
+                
+                target.InsertCell(new CellPosition("C16"));
+
+                bytes = targetDocument.CloseAndGetDocumentBytes();
+            }
+            
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/importAfterCreate_template.xlsx")))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(bytes))
+            {
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
+                var tableParser = new TableParser(tableNavigator);
+                var (model, mappingForErrors) = templateEngine.Parse<PriceList>(tableParser);
+                
+                Assert.AreEqual("CheckBoxName1", mappingForErrors["TestFlag1"]);
+                Assert.AreEqual("CheckBoxName2", mappingForErrors["TestFlag2"]);
+                Assert.AreEqual(false, model.TestFlag1);
+                Assert.AreEqual(true, model.TestFlag2);
             }
         }
 
