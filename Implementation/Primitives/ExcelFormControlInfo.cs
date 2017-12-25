@@ -28,9 +28,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         }
 
         public bool IsChecked { get => ControlPropertiesPart.FormControlProperties.Checked != null && ControlPropertiesPart.FormControlProperties.Checked.HasValue && ControlPropertiesPart.FormControlProperties.Checked.Value == CheckedValues.Checked;
-            set {
-                ControlPropertiesPart.FormControlProperties.Checked = value ? CheckedValues.Checked : CheckedValues.Unchecked;
-                lock(GlobalVmlDrawingPart)
+            set
+            {
+                if(value)
+                    ControlPropertiesPart.FormControlProperties.Checked = CheckedValues.Checked;
+                else
+                    ControlPropertiesPart.FormControlProperties.Checked = null;
+                lock (GlobalVmlDrawingPart)
                 {
                     var ns = "urn:schemas-microsoft-com:office:excel";
                     var xdoc = XDocument.Load(GlobalVmlDrawingPart.GetStream());

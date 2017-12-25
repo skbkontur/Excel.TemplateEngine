@@ -95,6 +95,7 @@
     <Compile Include="Implementation\ExcelCellIndex.cs" />
     <Compile Include="Implementation\Primitives\ExcelColumn.cs" />
     <Compile Include="Implementation\Primitives\ExcelFormControlInfo.cs" />
+    <Compile Include="Implementation\Primitives\ExcelFormControlsInfo.cs" />
     <Compile Include="Implementation\Primitives\ExcelVbaInfo.cs" />
     <Compile Include="Implementation\Primitives\ExcelWorksheet.cs" />
     <Compile Include="Implementation\Primitives\ExcelRow.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="DataTypes\ExcelCellStyle.cs" />
     <Compile Include="ExcelDocumentFactory.cs" />
     <Compile Include="Helpers\SpreadsheetDocumentHelper.cs" />
+    <Compile Include="Interfaces\IExcelFormControlsInfo.cs" />
     <Compile Include="Interfaces\IExcelVbaInfo.cs" />
     <Compile Include="Interfaces\IExcelFormControlInfo.cs" />
     <Compile Include="Interfaces\IExcelCell.cs" />

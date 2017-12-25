@@ -111,44 +111,85 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             var control = worksheet.Descendants<Control>().FirstOrDefault(c => c.Name == name);
             if(control == null)
                 return null;
+
             var controlPropertiesPart = (ControlPropertiesPart)worksheet.WorksheetPart.GetPartById(control.Id);
             var vmlDrawingPart = worksheet.WorksheetPart.VmlDrawingParts.Single();
             var drawingsPart = worksheet.WorksheetPart.DrawingsPart;
             return new ExcelFormControlInfo(this, control, controlPropertiesPart, vmlDrawingPart, drawingsPart);
         }
-
-        public IExcelFormControlInfo[] GetFormControlInfosList()
-        {
-            var controls = worksheet.Descendants<Control>().ToList();
-            if (!controls.Any())
-                return new IExcelFormControlInfo[0];
-            var vmlDrawingPart = worksheet.WorksheetPart.VmlDrawingParts.Single();
-            var drawingsPart = worksheet.WorksheetPart.DrawingsPart;
-            return controls.Select(control => new ExcelFormControlInfo(this, control, (ControlPropertiesPart)worksheet.WorksheetPart.GetPartById(control.Id), vmlDrawingPart, drawingsPart)).Cast<IExcelFormControlInfo>().ToArray();
-        }
         
-        [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
-        public void AddFormControlInfos(IExcelFormControlInfo[] formControlInfos)
+        public IExcelFormControlsInfo GetFormControlsInfo()
         {
-            if (formControlInfos.Length > 0)
+            return new ExcelFormControlsInfo(worksheet.WorksheetPart);
+        }
+
+        [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
+        public void AddFormControlInfos(IExcelFormControlsInfo formControlInfos)
+        {
+            if (formControlInfos.Controls == null)
+                return;
+
+            // todo (mpivko, 25.12.2017): refactor this method
+            var targetWsPart = worksheet.WorksheetPart;
+
+            foreach(var (controlPropertiesPart, id) in formControlInfos.ControlPropertiesParts)
+                targetWsPart.AddPart(controlPropertiesPart, id);
+
+            targetWsPart.AddPart(formControlInfos.VmlDrawingPart.part, formControlInfos.VmlDrawingPart.id);
+            targetWsPart.AddPart(formControlInfos.DrawingsPart.part, formControlInfos.DrawingsPart.id);
+
+            var drawing1 = new Drawing { Id = formControlInfos.DrawingsPart.id };
+            var legacyDrawing1 = new LegacyDrawing { Id = formControlInfos.VmlDrawingPart.id };
+
             {
-                // todo (mpivko, 19.12.2017): do here as in formControlInfosList for
+                var worksheet1 = targetWsPart.Worksheet;
 
-                var addedVmlPart = worksheet.WorksheetPart.AddPart(formControlInfos.First().GlobalVmlDrawingPart);
-                var legacyDrawing = new LegacyDrawing { Id = worksheet.WorksheetPart.GetIdOfPart(addedVmlPart) };
-                worksheet.Append(newChildren: legacyDrawing);
+                if (worksheet1.LookupNamespace("r") == null)
+                    worksheet1.AddNamespaceDeclaration("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+                if (worksheet1.LookupNamespace("xdr") == null)
+                    worksheet1.AddNamespaceDeclaration("xdr", "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing");
+                if (worksheet1.LookupNamespace("x14") == null)
+                    worksheet1.AddNamespaceDeclaration("x14", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main");
+                if (worksheet1.LookupNamespace("mc") == null)
+                    worksheet1.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+                if (worksheet1.LookupNamespace("x14ac") == null)
+                    worksheet1.AddNamespaceDeclaration("x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac");
 
+                AlternateContent alternateContent2 = new AlternateContent();
+                alternateContent2.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
 
-                //var addedDrawingsPart = worksheetPart.AddPart(formControlInfosList.First().GlobalDrawingsPart);
-                //var drawing = new Drawing { Id = worksheetPart.GetIdOfPart(addedDrawingsPart) };
-                //worksheetPart.Worksheet.Append(newChildren: drawing);
-            }
+                AlternateContentChoice alternateContentChoice2 = new AlternateContentChoice() { Requires = "x14" };
 
-            foreach (var formControlInfo in formControlInfos)
-            {
-                var cloneControl = (Control)formControlInfo.Control.CloneNode(true);
-                worksheet.WorksheetPart.AddPart(formControlInfo.ControlPropertiesPart, cloneControl.Id);
-                worksheet.Append(newChildren: cloneControl);
+                var targetControls = new Controls();
+                
+                foreach (var controlAlternateContent in formControlInfos.Controls.ChildElements.Where(x => x is AlternateContent))
+                {
+                    var templateControl = controlAlternateContent.GetFirstChild<AlternateContentChoice>().GetFirstChild<Control>();
+
+                    var newControl = (Control)templateControl.CloneNode(true);
+                    newControl.Id = templateControl.Id;
+
+                    var alternateContentChoice = new AlternateContentChoice { Requires = "x14" };
+                    alternateContentChoice.Append(newControl);
+
+                    var alternateContent = new AlternateContent();
+                    alternateContent.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+                    alternateContent.Append(alternateContentChoice);
+
+                    targetControls.Append(alternateContent);
+                }
+
+                alternateContentChoice2.Append(targetControls);
+
+                alternateContent2.Append(alternateContentChoice2);
+
+                worksheet1.RemoveAllChildren<Drawing>();
+                worksheet1.Append(drawing1);
+                worksheet1.RemoveAllChildren<LegacyDrawing>();
+                worksheet1.Append(legacyDrawing1);
+
+                worksheet1.RemoveAllChildren<AlternateContent>();
+                worksheet1.Append(alternateContent2);
             }
         }
 

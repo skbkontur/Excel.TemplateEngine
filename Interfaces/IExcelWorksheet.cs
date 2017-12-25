@@ -20,8 +20,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         IEnumerable<IExcelRow> Rows { get; }
         IEnumerable<IExcelColumn> Columns { get; }
         IEnumerable<Tuple<ExcelCellIndex, ExcelCellIndex>> MergedCells { get; }
-        IExcelFormControlInfo[] GetFormControlInfosList();
-        void AddFormControlInfos(IExcelFormControlInfo[] formControlInfos);
+        IExcelFormControlsInfo GetFormControlsInfo();
+        void AddFormControlInfos(IExcelFormControlsInfo formControlInfos);
         IExcelDocument ExcelDocument { get; }
     }
 }
