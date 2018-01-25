@@ -106,16 +106,19 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         }
 
         [CanBeNull]
-        public IExcelFormControlInfo GetFormControlInfo(string name)
+        public TExcelFormControlInfo GetFormControlInfo<TExcelFormControlInfo>(string name)
+            where TExcelFormControlInfo : class, IExcelFormControlInfo
         {
             var control = worksheet.Descendants<Control>().FirstOrDefault(c => c.Name == name);
             if(control == null)
                 return null;
-
             var controlPropertiesPart = (ControlPropertiesPart)worksheet.WorksheetPart.GetPartById(control.Id);
             var vmlDrawingPart = worksheet.WorksheetPart.VmlDrawingParts.Single();
             var drawingsPart = worksheet.WorksheetPart.DrawingsPart;
-            return new ExcelFormControlInfo(this, control, controlPropertiesPart, vmlDrawingPart, drawingsPart);
+            var info = new ExcelFormControlInfo(this, control, controlPropertiesPart, vmlDrawingPart, drawingsPart);
+            if(info is TExcelFormControlInfo excelFormControlInfo)
+                return excelFormControlInfo;
+            throw new NotSupportedException($"Type {typeof(TExcelFormControlInfo)} is not a supported ExcelFormControlInfo"); // todo (mpivko, 26.01.2018): 
         }
         
         public IExcelFormControlsInfo GetFormControlsInfo()

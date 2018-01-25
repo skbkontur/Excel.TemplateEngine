@@ -15,7 +15,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         void ResizeColumn(int columnIndex, double width);
         IEnumerable<IExcelCell> GetSortedCellsInRange(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight);
         IExcelCell GetCell(ExcelCellIndex position);
-        IExcelFormControlInfo GetFormControlInfo(string name);
+        TExcelFormControlInfo GetFormControlInfo<TExcelFormControlInfo>(string name)
+            where TExcelFormControlInfo : class, IExcelFormControlInfo;
         IEnumerable<IExcelCell> SearchCellsByText(string text);
         IEnumerable<IExcelRow> Rows { get; }
         IEnumerable<IExcelColumn> Columns { get; }

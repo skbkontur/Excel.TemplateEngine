@@ -16,7 +16,7 @@ using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
     // todo (mpivko, 22.12.2017): use different classes for different form controls
-    public class ExcelFormControlInfo : IExcelFormControlInfo
+    public class ExcelFormControlInfo : IExcelCheckBoxControlInfo, IExcelDropDownControlInfo
     {
         public ExcelFormControlInfo([NotNull] IExcelWorksheet excelWorksheet, [NotNull] Control control, [NotNull] ControlPropertiesPart controlPropertiesPart, [NotNull] VmlDrawingPart vmlDrawingPart, [NotNull] DrawingsPart drawingsPart)
         {

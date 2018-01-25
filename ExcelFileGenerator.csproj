@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="C5, Version=2.3.5280.26713, Culture=neutral, PublicKeyToken=282361b99ded7e8e, processorArchitecture=MSIL">
@@ -107,9 +109,11 @@
     <Compile Include="DataTypes\ExcelCellStyle.cs" />
     <Compile Include="ExcelDocumentFactory.cs" />
     <Compile Include="Helpers\SpreadsheetDocumentHelper.cs" />
+    <Compile Include="Interfaces\IExcelDropDownControlInfo.cs" />
+    <Compile Include="Interfaces\IExcelFormControlInfo.cs" />
     <Compile Include="Interfaces\IExcelFormControlsInfo.cs" />
     <Compile Include="Interfaces\IExcelVbaInfo.cs" />
-    <Compile Include="Interfaces\IExcelFormControlInfo.cs" />
+    <Compile Include="Interfaces\IExcelCheckBoxControlInfo.cs" />
     <Compile Include="Interfaces\IExcelCell.cs" />
     <Compile Include="Interfaces\IExcelColumn.cs" />
     <Compile Include="Interfaces\IExcelDocument.cs" />
