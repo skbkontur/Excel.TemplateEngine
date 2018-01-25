@@ -30,7 +30,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection
 
         public IFormControlRenderer GetFormControlRenderer(string typeName, Type modelType)
         {
-            // todo (mpivko, 19.12.2017): ;
             if(typeName == "CheckBox" && modelType == typeof(bool))
                 return new CheckBoxRenderer();
             if(typeName == "DropDown" && modelType == typeof(string))

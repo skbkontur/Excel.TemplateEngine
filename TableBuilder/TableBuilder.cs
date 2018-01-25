@@ -43,19 +43,19 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 
         public ITableBuilder RenderCheckBoxValue(string name, bool value)
         {
-            var formControl = Target.TryGetFormControl(name);
+            var formControl = Target.TryGetFormControl<IExcelCheckBoxControlInfo>(name);
             if (formControl == null)
-                throw new ArgumentException($"Form control with name {name} not found");
-            formControl.ExcelFormControlInfo.IsChecked = value;
+                throw new ArgumentException($"CheckBox with name {name} not found");
+            formControl.IsChecked = value;
             return this;
         }
 
         public ITableBuilder RenderDropDownValue(string name, string value)
         {
-            var formControl = Target.TryGetFormControl(name);
+            var formControl = Target.TryGetFormControl<IExcelDropDownControlInfo>(name);
             if (formControl == null)
-                throw new ArgumentException($"Form control with name {name} not found");
-            formControl.ExcelFormControlInfo.SelectedValue = value;
+                throw new ArgumentException($"DropDown with name {name} not found");
+            formControl.SelectedValue = value;
             return this;
         }
 

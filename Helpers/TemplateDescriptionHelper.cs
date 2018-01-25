@@ -13,6 +13,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         {
         }
 
+        // todo (mpivko, 25.01.2018): use single style of namings: "extract" or "get" everywhere
         public string ExtractTemplateNameFromValueDescription(string expression)
         {
             return !IsCorrectValueDescription(expression) ? null : GetDescriptionParts(expression)[1];

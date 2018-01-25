@@ -147,6 +147,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             var childModelPath = ObjectPropertiesExtractor.ExtractChildObjectPath(expression);
             var cleanChildModelPath = ObjectPropertiesExtractor.ExtractCleanChildObjectPath(expression);
             var childModelType = ObjectPropertiesExtractor.ExtractChildObjectType(model, expression);
+            var childFormControlType = ExtractFormControlType(cell);
             var childFormControlName = ExtractFormControlName(cell);
 
             if (ObjectPropertiesExtractor.NeedEnumerableExpansion(expression))
@@ -156,7 +157,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             try
             {
                 // todo (mpivko, 08.12.2017): copypaste
-                var parser = parserCollection.GetFormValueParser(childModelType);//TODO mpivko create ParserCaller
+                var parser = parserCollection.GetFormValueParser(childFormControlType, childModelType);//TODO mpivko create ParserCaller
                 if(!parser.TryParse(tableParser, childFormControlName, childModelType, out var parsedObject))
                 {
                     throw new FormControlParsingException(childFormControlName);
@@ -182,6 +183,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         private static string ExtractFormControlName([NotNull] ICell cell)
         {
             return TemplateDescriptionHelper.Instance.ExtractFormControlNameFromValueDescription(cell.StringValue) ??
+                   throw new InvalidProgramStateException($"Invalid xlsx template. '{cell.StringValue}' is not a valid form control description.");
+        }
+
+        [NotNull]
+        private static string ExtractFormControlType([NotNull] ICell cell)
+        {
+            return TemplateDescriptionHelper.Instance.GetFormControlTypeFromValueDescription(cell.StringValue) ??
                    throw new InvalidProgramStateException($"Invalid xlsx template. '{cell.StringValue}' is not a valid form control description.");
         }
 

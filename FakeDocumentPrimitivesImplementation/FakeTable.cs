@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
@@ -72,7 +73,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
             mergedCells.Add(rectangle);
         }
 
-        public IFormControl TryGetFormControl(string name)
+        public TFormControl TryGetFormControl<TFormControl>(string name) where TFormControl : class, IExcelFormControlInfo
         {
             return null;
         }

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
-using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
@@ -66,12 +66,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
                                      new ExcelCellIndex(rectangle.LowerRight.CellReference));
         }
 
-        public IFormControl TryGetFormControl(string name)
+        public TExcelFormControlInfo TryGetFormControl<TExcelFormControlInfo>(string name)
+            where TExcelFormControlInfo : class, IExcelFormControlInfo
         {
-            var excelFormControlInfo = internalTable.GetFormControlInfo(name);
-            if(excelFormControlInfo == null)
-                return null;
-            return new ExcelFormControl(excelFormControlInfo);
+            return internalTable.GetFormControlInfo<TExcelFormControlInfo>(name);
         }
         
         public IFormControls GetFormControlsInfo()

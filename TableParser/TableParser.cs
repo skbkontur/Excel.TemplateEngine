@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 
+using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
@@ -106,25 +107,25 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
 
         public bool TryParseCheckBoxValue(string name, out bool result)
         {
-            var formControl = Target.TryGetFormControl(name);
+            var formControl = Target.TryGetFormControl<IExcelCheckBoxControlInfo>(name);
             if(formControl == null)
             {
                 result = false;
                 return false;
             }
-            result = formControl.ExcelFormControlInfo.IsChecked;
+            result = formControl.IsChecked;
             return true;
         }
 
         public bool TryParseDropDownValue(string name, out string result)
         {
-            var formControl = Target.TryGetFormControl(name);
+            var formControl = Target.TryGetFormControl<IExcelDropDownControlInfo>(name);
             if (formControl == null)
             {
                 result = null;
                 return false;
             }
-            result = formControl.ExcelFormControlInfo.SelectedValue;
+            result = formControl.SelectedValue;
             return true;
         }
 

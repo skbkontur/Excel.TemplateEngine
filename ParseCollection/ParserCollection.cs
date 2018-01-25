@@ -2,6 +2,7 @@
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers;
+using SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
@@ -50,14 +51,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
             throw new NotSupportedException($"{valueType} is not a supported atomic value");
         }
 
-        public IFormValueParser GetFormValueParser(Type valueType)
+        public IFormValueParser GetFormValueParser(string formControlTypeName, Type valueType)
         {
-            // todo (mpivko, 15.12.2017): maybe it's better not to derive Parser from valueType but use first part of value description instead ("this_one::")
-            if (valueType == typeof(bool))
+            if (formControlTypeName == "CheckBox" && valueType == typeof(bool))
                 return new CheckBoxValueParser();
-            if (valueType == typeof(string))
+            if (formControlTypeName == "DropDown" && valueType == typeof(string))
                 return new DropDownValueParser();
-            throw new NotSupportedException($"{valueType} is not a supported atomic value");
+            throw new Exception($"Unsupported pair of {nameof(formControlTypeName)} ({formControlTypeName}) and {nameof(valueType)} ({valueType}) for form controls");
         }
 
         private readonly ITemplateCollection templateCollection;

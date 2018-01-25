@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
@@ -14,7 +15,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
         IEnumerable<IRectangle> MergedCells { get; }
         IEnumerable<IColumn> Columns { get; }
         void MergeCells(IRectangle rectangle);
-        IFormControl TryGetFormControl(string name);
+        TExcelFormControlInfo TryGetFormControl<TExcelFormControlInfo>(string name) where TExcelFormControlInfo : class, IExcelFormControlInfo;
         IFormControls GetFormControlsInfo();
         void AddFormControls(IFormControls formControls);
     }
