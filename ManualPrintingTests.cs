@@ -44,7 +44,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var filename = "output.xlsx";
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
                 
-                Assert.Fail($"Please manually open file '{Path.GetFullPath(filename)}' and check that dropdown on the first sheet has value 'Значение 1'");
+                Assert.Fail($"Please manually open file '{Path.GetFullPath(filename)}' and check that dropdown on the first sheet has value 'Значение 2'");
             }
         }
 
@@ -68,6 +68,38 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
 
                 Assert.Fail($"Please manually open file '{Path.GetFullPath(filename)}' and check that clicking on the right checkbox leads to changes in both checkbox");
+            }
+        }
+
+        [Test]
+        public void TestColumnsSwitching()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/columnsSwitching.xlsx")))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsx")))
+            {
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
+                var tableBuilder = new TableBuilder(tableNavigator);
+                templateEngine.Render(tableBuilder, new { A = "First", B = true, C = "Third", D = new [] {1, 2, 3}, E = "Fifth" });
+
+                var filename = "output.xlsx";
+                File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
+
+                Assert.Fail($"Please manually open file '{Path.GetFullPath(filename)}' and check values:\n" +
+                            string.Join("\n", new[]
+                                {
+                                    "C5: First",
+                                    "D5: <empty>",
+                                    "E5: Third",
+                                    "F5: 1",
+                                    "F6: 2",
+                                    "F7: 3",
+                                    "G5: Fifth",
+                                    "Флажок 1: checked",
+                                }) + "\n");
             }
         }
     }

@@ -6,10 +6,12 @@ using NUnit.Framework;
 using SKBKontur.Catalogue.ExcelFileGenerator;
 using SKBKontur.Catalogue.ExcelObjectPrinter;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation;
+using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
@@ -66,6 +68,22 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 Assert.AreEqual(false, model.TestFlag1);
                 Assert.AreEqual(true, model.TestFlag2);
             }
+        }
+
+        [Test]
+        public void TestNonexistentField()
+        {
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/nonexistentField_template.xlsx"));
+            var template = new ExcelTable(templateDocument.GetWorksheet(0));
+            var templateEngine = new TemplateEngine(template);
+
+            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsx"));
+
+            var target = new ExcelTable(targetDocument.GetWorksheet(0));
+            var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
+            var tableParser = new TableParser(tableNavigator);
+
+            Assert.Throws<InvalidExcelTemplateException>(() => templateEngine.Parse<PriceList>(tableParser));
         }
 
         [Test]
@@ -194,7 +212,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var tableNavigator = new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
                 var tableBuilder = new TableBuilder(tableNavigator);
 
-                templateEngine.Render(tableBuilder, new { Type = "Значение 2", TestFlag2 = true });
+                templateEngine.Render(tableBuilder, new { Type = "Значение 2", TestFlag1 = false, TestFlag2 = true });
                 
                 target.InsertCell(new CellPosition("C16"));
 
@@ -214,8 +232,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 
                 Assert.AreEqual("CheckBoxName1", mappingForErrors["TestFlag1"]);
                 Assert.AreEqual("CheckBoxName2", mappingForErrors["TestFlag2"]);
+                Assert.AreEqual("C3", mappingForErrors["Type"]);
                 Assert.AreEqual(false, model.TestFlag1);
                 Assert.AreEqual(true, model.TestFlag2);
+                Assert.AreEqual("Значение 2", model.Type);
             }
         }
 

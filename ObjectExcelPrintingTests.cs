@@ -8,6 +8,7 @@ using NUnit.Framework;
 using SKBKontur.Catalogue.ExcelFileGenerator;
 using SKBKontur.Catalogue.ExcelObjectPrinter;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation;
+using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
@@ -218,6 +219,30 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
             templateDocument.Dispose();
             targetDocument.Dispose();
+        }
+
+        [Test]
+        public void NonExistentFieldPrintingTest()
+        {
+            var model = new
+                {
+                    A = false,
+                    B = true,
+                };
+
+            using(var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(simpleTemplateFileName)))
+            {
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template);
+
+                using(var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(emptyDocumentName)))
+                {
+                    var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                    var tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1")))));
+
+                    Assert.Throws<InvalidExcelTemplateException>(() => templateEngine.Render(tableBuilder, model));
+                }
+            }
         }
 
         private static void MakeTest(object model, string templateFileName, Action<ExcelTable> resultValidationFunc = null)
