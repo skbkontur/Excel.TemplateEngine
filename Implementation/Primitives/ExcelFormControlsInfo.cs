@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
+using SKBKontur.Catalogue.ExcelFileGenerator.Exceptions;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
@@ -14,7 +15,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         public ExcelFormControlsInfo(WorksheetPart worksheetPart)
         {
             DrawingsPart = (worksheetPart.DrawingsPart, worksheetPart.DrawingsPart == null ? null : worksheetPart.GetIdOfPart(worksheetPart.DrawingsPart));
-            var vmlPart = worksheetPart.VmlDrawingParts.SingleOrDefault(); // todo (mpivko, 25.12.2017): what if not single?
+            var vmlDrawingParts = worksheetPart.VmlDrawingParts.ToList();
+            if (vmlDrawingParts.Count > 1)
+                throw new InvalidExcelDocumentException("More than one VmlDrawingPart found");
+            var vmlPart = vmlDrawingParts.SingleOrDefault();
             VmlDrawingPart = (vmlPart, vmlPart == null ? null : worksheetPart.GetIdOfPart(vmlPart));
             ControlPropertiesParts = worksheetPart.ControlPropertiesParts.Select(x => (x, x == null ? null : worksheetPart.GetIdOfPart(x))).ToList();
             Controls = worksheetPart.Worksheet?.GetFirstChild<AlternateContent>()?.GetFirstChild<AlternateContentChoice>()?.GetFirstChild<Controls>();

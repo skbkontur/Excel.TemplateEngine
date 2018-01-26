@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Exceptions
 {
-    public class InvalidExcelDocumentException : Exception
+    public class InvalidExcelDocumentException : BaseExcelException
     {
         public InvalidExcelDocumentException()
         {

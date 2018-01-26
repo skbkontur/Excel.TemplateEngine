@@ -52,6 +52,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Assemblies\JetBrains.Annotations.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assemblies\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="MoreLinq, Version=1.0.11522.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Assemblies\MoreLinq\MoreLinq.dll</HintPath>
@@ -66,7 +70,9 @@
     <Compile Include="DataTypes\ExcelPageMargins.cs" />
     <Compile Include="DataTypes\ExcelPrinterSettings.cs" />
     <Compile Include="DataTypes\ExcelPrintingOrientation.cs" />
+    <Compile Include="Exceptions\BaseExcelException.cs" />
     <Compile Include="Exceptions\InvalidExcelDocumentException.cs" />
+    <Compile Include="Exceptions\NotSupportedExcelDocumentException.cs" />
     <Compile Include="Helpers\ExcelCellStyleHelpers.cs" />
     <Compile Include="Implementation\CacheItems\BordersStyleCacheItem.cs" />
     <Compile Include="Implementation\CacheItems\BorderCacheItem.cs" />
@@ -96,8 +102,10 @@
     <Compile Include="Implementation\Caches\ExcelDocumentStyle.cs" />
     <Compile Include="Implementation\Caches\ExcelSharedStrings.cs" />
     <Compile Include="Implementation\ExcelCellIndex.cs" />
+    <Compile Include="Implementation\Primitives\BaseExcelFormControlInfo.cs" />
+    <Compile Include="Implementation\Primitives\ExcelCheckBoxControlInfo.cs" />
     <Compile Include="Implementation\Primitives\ExcelColumn.cs" />
-    <Compile Include="Implementation\Primitives\ExcelFormControlInfo.cs" />
+    <Compile Include="Implementation\Primitives\ExcelDropDownControlInfo.cs" />
     <Compile Include="Implementation\Primitives\ExcelFormControlsInfo.cs" />
     <Compile Include="Implementation\Primitives\ExcelVbaInfo.cs" />
     <Compile Include="Implementation\Primitives\ExcelWorksheet.cs" />
@@ -134,6 +142,10 @@
     <ProjectReference Include="..\Commons\Commons.csproj">
       <Project>{95B2CCB1-0C83-4A9B-A33F-EA8B13FD099B}</Project>
       <Name>Commons</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceLib\ServiceLib.csproj">
+      <Project>{2F8F38DC-3CDA-48BB-9798-7B6F75B02BC8}</Project>
+      <Name>ServiceLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
