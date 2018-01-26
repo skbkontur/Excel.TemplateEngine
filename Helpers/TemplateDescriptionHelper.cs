@@ -13,13 +13,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         {
         }
 
-        // todo (mpivko, 25.01.2018): use single style of namings: "extract" or "get" everywhere
-        public string ExtractTemplateNameFromValueDescription(string expression)
+        public string GetTemplateNameFromValueDescription(string expression)
         {
             return !IsCorrectValueDescription(expression) ? null : GetDescriptionParts(expression)[1];
         }
 
-        public string ExtractFormControlNameFromValueDescription(string expression)
+        public string GetFormControlNameFromValueDescription(string expression)
         {
             return !IsCorrectFormValueDescription(expression) ? null : GetDescriptionParts(expression)[1];
         }
@@ -44,8 +43,8 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         public bool IsCorrectAbstractValueDescription(string expression)
         {
             var descriptionParts = GetDescriptionParts(expression);
-            if (descriptionParts.Count() != 3 ||
-                string.IsNullOrEmpty(descriptionParts[2]))
+            if(descriptionParts.Count() != 3 ||
+               string.IsNullOrEmpty(descriptionParts[2]))
                 return false;
 
             return IsCorrectModelPath(descriptionParts[2]);
@@ -121,18 +120,18 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         {
             return collectionAccessPathPartRegex.IsMatch(pathPart);
         }
-        
+
         private (string name, string index) GetCollectionAccessPathPart(string pathPart)
         {
             var match = collectionAccessPathPartRegex.Match(pathPart);
-            if (!match.Success)
+            if(!match.Success)
                 throw new ArgumentException($"{nameof(pathPart)} should be collection access path part");
             return (match.Groups[1].Value, match.Groups[2].Value);
         }
-        
+
         public static TemplateDescriptionHelper Instance { get; } = new TemplateDescriptionHelper();
 
         private static readonly Regex collectionAccessPathPartRegex = new Regex(@"^(\w*)\[([^\[\]]+)\]$", RegexOptions.Compiled);
-        private HashSet<string> formControlTypes = new HashSet<string>(new [] { "CheckBox", "DropDown" });
+        private readonly HashSet<string> formControlTypes = new HashSet<string>(new[] {"CheckBox", "DropDown"});
     }
 }

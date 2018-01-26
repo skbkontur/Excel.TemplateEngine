@@ -11,6 +11,7 @@ using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 {
+    // todo (mpivko, 29.01.2018): use more special exceptions in this class
     public sealed class ObjectPropertiesExtractor
     {
         private ObjectPropertiesExtractor()
@@ -44,7 +45,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return ExtractChildObjectTypeFromPath(model, ExtractCleanChildObjectPath(expression));
         }
 
-        public static Type ExtractChildObjectTypeFromPath([NotNull] object model, [NotNull] string path)
+        public static Type ExtractChildObjectTypeFromPath([NotNull] object model/*todo mpivko: we need only type, not model*/, [NotNull] string path)
         {
             var currType = model.GetType();
             foreach (var part in path.Split('.'))

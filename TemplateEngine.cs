@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 using log4net;
-
-using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection;
@@ -21,7 +18,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
             formControlsInfo = templateTable.GetFormControlsInfo();
             templateCollection = new TemplateCollection(templateTable);
             rendererCollection = new RendererCollection(templateCollection);
-            parserCollection = new ParserCollection(templateCollection);
+            parserCollection = new ParserCollection();
         }
 
         public void Render(ITableBuilder tableBuilder, object model)
@@ -47,7 +44,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
                 throw new InvalidProgramStateException($"Template with name {rootTemplateName} not found in xlsx"); //TODO {mpivko} it's not ipse maybe
             }
 
-            var parser = parserCollection.GetParser(typeof(TModel));
+            var parser = parserCollection.GetClassParser(typeof(TModel));
             var fieldsMappingForErrors = new Dictionary<string, string>();
             return (parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), fieldsMappingForErrors);
         }

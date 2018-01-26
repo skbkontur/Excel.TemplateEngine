@@ -6,7 +6,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
 {
     public interface IParserCollection
     {
-        IClassParser GetParser(Type modelType);
+        IClassParser GetClassParser(Type modelType);
         IEnumerableParser GetEnumerableParser(Type modelType);
         IAtomicValueParser GetAtomicValueParser(Type valueType);
         IFormValueParser GetFormValueParser(string formControlTypeName, Type valueType);

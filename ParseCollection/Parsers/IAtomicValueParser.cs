@@ -6,9 +6,8 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 {
-    public interface IAtomicValueParser // todo (mpivko, 15.12.2017): it's implementations just delegate calls to tableParser. Do we really need them?
+    public interface IAtomicValueParser
     {
-        [CanBeNull]
-        object TryParse([NotNull] ITableParser tableParser, [NotNull] Type itemType);
+        bool TryParse([NotNull] ITableParser tableParser, [NotNull] Type itemType, [CanBeNull] out object result);
     }
 }

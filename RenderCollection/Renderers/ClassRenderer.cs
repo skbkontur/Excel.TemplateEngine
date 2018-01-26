@@ -27,19 +27,18 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
                     var childModel = ExtractChildModel(model, cell);
 
-                    // todo (mpivko, 22.12.2017): kind of bug here: when property doesn't exist childModel is just raw cell value, so we shouldn't actually render it maybe
                     if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(cell.StringValue))
                     {
                         childModel = StrictExtractChildModel(model, cell); // todo (mpivko, 22.12.2017): 
                         if(childModel != null)
                         {
                             var typeName = TemplateDescriptionHelper.Instance.GetFormControlTypeFromValueDescription(cell.StringValue);
-                            var name = TemplateDescriptionHelper.Instance.ExtractFormControlNameFromValueDescription(cell.StringValue);
+                            var name = TemplateDescriptionHelper.Instance.GetFormControlNameFromValueDescription(cell.StringValue);
                             var renderer = rendererCollection.GetFormControlRenderer(typeName, childModel.GetType());
                             renderer.Render(tableBuilder, name, childModel);
                         }
                         tableBuilder.SetCurrentStyle();
-                        tableBuilder.MoveToNextColumn(); // todo (mpivko, 22.12.2017): test for it
+                        tableBuilder.MoveToNextColumn();
                     }
                     else
                     {
@@ -74,7 +73,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
         private static string ExtractTemplateName(ICell cell)
         {
-            return TemplateDescriptionHelper.Instance.ExtractTemplateNameFromValueDescription(cell.StringValue);
+            return TemplateDescriptionHelper.Instance.GetTemplateNameFromValueDescription(cell.StringValue);
         }
 
         private static object ExtractChildModel(object model, ICell cell)
@@ -83,6 +82,8 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
             if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression) || TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
             {
                 var result = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, expression);
+                // todo (mpivko, 22.12.2017): kind of bug here: when property doesn't exist childModel is just raw cell value, so we shouldn't actually render it maybe
+                // todo we should report inexsitance of field here instead of returning expression
                 return result ?? "";
             }
             return expression ?? "";

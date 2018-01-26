@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
@@ -43,7 +44,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
         public bool TryParseAtomicValue(out decimal result)
         {
             var cellValue = Target.GetCell(CurrentState.Cursor)?.StringValue;
-
             return decimal.TryParse(cellValue, numberStyles, russianCultureInfo, out result) || decimal.TryParse(cellValue, numberStyles, CultureInfo.InvariantCulture, out result);
         }
 
@@ -55,44 +55,26 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
 
         public bool TryParseAtomicValue(out int? result)
         {
-            var cellValue = Target.GetCell(CurrentState.Cursor)?.StringValue;
-            if(string.IsNullOrEmpty(cellValue))
-            {
-                result = null;
-                return true;
-            }
-            var succeed = int.TryParse(cellValue, out var intResult);
-            result = intResult;
-            return succeed;
+            return TryParseNullableAtomicValue(() => (TryParseAtomicValue(out int res), res), out result);
         }
 
         public bool TryParseAtomicValue(out double? result)
         {
-            var cellValue = Target.GetCell(CurrentState.Cursor)?.StringValue;
-            if (string.IsNullOrEmpty(cellValue))
-            {
-                result = null;
-                return true;
-            }
-            var succeed = double.TryParse(cellValue, out var doubleResult);
-            result = doubleResult;
-            return succeed;
+            return TryParseNullableAtomicValue(() => (TryParseAtomicValue(out double res), res), out result);
         }
 
         public bool TryParseAtomicValue(out decimal? result)
         {
-            var cellValue = Target.GetCell(CurrentState.Cursor)?.StringValue;
-            if (string.IsNullOrEmpty(cellValue))
-            {
-                result = null;
-                return true;
-            }
-            var succeed = TryParseAtomicValue(out decimal decimalResult);
-            result = decimalResult;
-            return succeed;
+            return TryParseNullableAtomicValue(() => (TryParseAtomicValue(out decimal res), res), out result);
         }
 
         public bool TryParseAtomicValue(out long? result)
+        {
+            return TryParseNullableAtomicValue(() => (TryParseAtomicValue(out long res), res), out result);
+        }
+
+        public bool TryParseNullableAtomicValue<T>(Func<(bool succeed, T result)> parser, out T? result)
+            where T : struct
         {
             var cellValue = Target.GetCell(CurrentState.Cursor)?.StringValue;
             if (string.IsNullOrEmpty(cellValue))
@@ -100,8 +82,8 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
                 result = null;
                 return true;
             }
-            var succeed = long.TryParse(cellValue, out var longResult);
-            result = longResult;
+            bool succeed;
+            (succeed, result) = parser();
             return succeed;
         }
 

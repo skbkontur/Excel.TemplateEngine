@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using SKBKontur.Catalogue.Objects;
+
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 {
     public sealed class TypeCheckingHelper
@@ -24,7 +26,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         public Type GetEnumerableItemType(Type type)
         {
-            return GetImplementedEnumerableInterface(type).GetGenericArguments().SingleOrDefault() ?? typeof(object); // todo (mpivko, 17.12.2017): suppport non-generic enumerables
+            return GetImplementedEnumerableInterface(type).GetGenericArguments().SingleOrDefault() ?? typeof(object);
         }
 
         public Type GetDictionaryKeyType(Type type)
@@ -43,8 +45,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                 throw new ArgumentException($"{nameof(type)} ({type}) should implement IDictionary<,> or IDictionary");
             var genericArguments = GetImplementedDictionaryInterface(type).GetGenericArguments();
             if (!genericArguments.Any())
-                return (typeof(object), typeof(object)); // todo (mpivko, 17.12.2017): suport non-generic dictionaries 
-            return (genericArguments.First(), genericArguments.Skip(1).First());
+                return (typeof(object), typeof(object));
+            if (genericArguments.Length != 2)
+                throw new InvalidProgramStateException($"Dict can have only 0 or 2 generic arguments, but here is {genericArguments.Length} of them ({string.Join(", ", genericArguments.Select(x => x.ToString()))}). Type is '{type}'.");
+            return (genericArguments[0], genericArguments[1]);
         }
 
         private Type GetImplementedEnumerableInterface(Type type)
@@ -63,7 +67,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return type.GetInterfaces().FirstOrDefault(IsGenericDictionaryDirectly) ?? type.GetInterfaces().FirstOrDefault(IsDictionaryDirectly);
         }
 
-        public static TypeCheckingHelper Instance { get { return instance; } }
+        public static TypeCheckingHelper Instance { get; } = new TypeCheckingHelper();
 
         private static bool IsGenericEnumerableDirectly(Type type)
         {
@@ -84,7 +88,5 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         {
             return type == typeof(IDictionary) || IsGenericDictionaryDirectly(type);
         }
-
-        private static readonly TypeCheckingHelper instance = new TypeCheckingHelper();
     }
 }

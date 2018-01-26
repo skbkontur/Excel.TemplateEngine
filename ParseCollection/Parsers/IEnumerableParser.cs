@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
@@ -10,6 +10,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
     public interface IEnumerableParser
     {
         [NotNull]
-        IEnumerable Parse([NotNull] ITableParser tableParser, [NotNull] Type modelType, int count, [NotNull] Action<string, string> addFieldMapping);
+        List<object> Parse([NotNull] ITableParser tableParser, [NotNull] Type modelType, int count, [NotNull] Action<string, string> addFieldMapping);
     }
 }

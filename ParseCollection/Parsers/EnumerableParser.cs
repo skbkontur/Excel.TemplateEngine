@@ -17,11 +17,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         }
 
         [NotNull]
-        public IEnumerable Parse([NotNull] ITableParser tableParser, [NotNull] Type modelType, int count, [NotNull] Action<string, string> addFieldMapping)
+        public List<object> Parse([NotNull] ITableParser tableParser, [NotNull] Type modelType, int count, [NotNull] Action<string, string> addFieldMapping)
         {
             if (count > maxEnumerableLength)
                 throw new NotSupportedException($"Lists longer than {maxEnumerableLength} are not supported");
-            
+
+            var parser = parserCollection.GetAtomicValueParser(modelType);
             var result = new List<object>();
             for (var i = 0; (count == -1 || i < count) && i < maxEnumerableLength; i++)
             {
@@ -30,10 +31,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
                 tableParser.PushState();
 
-                var parser = parserCollection.GetAtomicValueParser(modelType);
-                var item = parser.TryParse(tableParser, modelType);
-                if (count == -1 && item == null)
-                    break;
+                if(!parser.TryParse(tableParser, modelType, out var item) || item == null)
+                {
+                    if(count == -1)
+                        break;
+                    item = default;
+                    // todo (mpivko, 29.01.2018): think carefully
+                }
 
                 addFieldMapping($"[{i}]", tableParser.CurrentState.Cursor.CellReference);
                 result.Add(item);

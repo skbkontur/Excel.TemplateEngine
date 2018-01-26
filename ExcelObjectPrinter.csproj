@@ -50,6 +50,8 @@
     <Compile Include="Exceptions\BaseExcelSerializationException.cs" />
     <Compile Include="Exceptions\EnumerableTooLongException.cs" />
     <Compile Include="Exceptions\FormControlParsingException.cs" />
+    <Compile Include="Exceptions\InvalidExcelTemplateException.cs" />
+    <Compile Include="Exceptions\NotSupportedExcelSerializationException.cs" />
     <Compile Include="Exceptions\ObjectPropertyExtractionException.cs" />
     <Compile Include="NavigationPrimitives\IRectangle.cs" />
     <Compile Include="NavigationPrimitives\Rectangle.cs" />
@@ -66,17 +68,13 @@
     <Compile Include="ParseCollection\ParserCollection.cs" />
     <Compile Include="ParseCollection\Parsers\CheckBoxValueParser.cs" />
     <Compile Include="ParseCollection\Parsers\ClassParser.cs" />
-    <Compile Include="ParseCollection\Parsers\DoubleParser.cs" />
     <Compile Include="ParseCollection\Parsers\DropDownValueParser.cs" />
     <Compile Include="ParseCollection\Parsers\IAtomicValueParser.cs" />
     <Compile Include="ParseCollection\Parsers\IEnumerableParser.cs" />
     <Compile Include="ParseCollection\Parsers\IFormValueParser.cs" />
-    <Compile Include="ParseCollection\Parsers\IntParser.cs" />
-    <Compile Include="ParseCollection\Parsers\LongParser.cs" />
-    <Compile Include="ParseCollection\Parsers\StringParser.cs" />
+    <Compile Include="ParseCollection\Parsers\AtomicValueParser.cs" />
     <Compile Include="ParseCollection\Parsers\IClassParser.cs" />
     <Compile Include="ParseCollection\Parsers\EnumerableParser.cs" />
-    <Compile Include="ParseCollection\Parsers\DecimalParser.cs" />
     <Compile Include="RenderCollection\Renderers\CheckBoxRenderer.cs" />
     <Compile Include="RenderCollection\Renderers\DropDownRenderer.cs" />
     <Compile Include="RenderCollection\Renderers\IFormControlRenderer.cs" />
