@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions
+﻿namespace SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions
 {
-    public class FormControlParsingException : Exception
+    public class FormControlParsingException : BaseExcelSerializationException
     {
         public FormControlParsingException(string name) : base($"Failed to parse value from control {name}")
         {

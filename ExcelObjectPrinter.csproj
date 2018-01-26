@@ -47,8 +47,10 @@
   <ItemGroup>
     <Compile Include="DocumentPrimitivesInterfaces\IFormControls.cs" />
     <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelFormControls.cs" />
+    <Compile Include="Exceptions\BaseExcelSerializationException.cs" />
     <Compile Include="Exceptions\EnumerableTooLongException.cs" />
     <Compile Include="Exceptions\FormControlParsingException.cs" />
+    <Compile Include="Exceptions\ObjectPropertyExtractionException.cs" />
     <Compile Include="NavigationPrimitives\IRectangle.cs" />
     <Compile Include="NavigationPrimitives\Rectangle.cs" />
     <Compile Include="DataTypes\CellType.cs" />

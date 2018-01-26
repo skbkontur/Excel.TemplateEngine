@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions
+﻿namespace SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions
 {
-    public class EnumerableTooLongException : Exception
+    public class EnumerableTooLongException : BaseExcelSerializationException
     {
         public EnumerableTooLongException(int limit) : base($"IEnumerable was longer than {limit}")
         {
