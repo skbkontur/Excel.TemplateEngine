@@ -66,6 +66,7 @@
     <Compile Include="DataTypes\ExcelPageMargins.cs" />
     <Compile Include="DataTypes\ExcelPrinterSettings.cs" />
     <Compile Include="DataTypes\ExcelPrintingOrientation.cs" />
+    <Compile Include="Exceptions\InvalidExcelDocumentException.cs" />
     <Compile Include="Helpers\ExcelCellStyleHelpers.cs" />
     <Compile Include="Implementation\CacheItems\BordersStyleCacheItem.cs" />
     <Compile Include="Implementation\CacheItems\BorderCacheItem.cs" />
