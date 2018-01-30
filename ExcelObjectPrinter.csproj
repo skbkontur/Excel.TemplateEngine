@@ -53,6 +53,7 @@
     <Compile Include="Exceptions\InvalidExcelTemplateException.cs" />
     <Compile Include="Exceptions\NotSupportedExcelSerializationException.cs" />
     <Compile Include="Exceptions\ObjectPropertyExtractionException.cs" />
+    <Compile Include="Helpers\ExpressionPath.cs" />
     <Compile Include="NavigationPrimitives\IRectangle.cs" />
     <Compile Include="NavigationPrimitives\Rectangle.cs" />
     <Compile Include="DataTypes\CellType.cs" />

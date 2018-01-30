@@ -62,7 +62,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression);
             
             var childModelPath = ObjectPropertiesExtractor.ExtractChildObjectPath(expression);
-            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectType(model, expression);
+            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, ExpressionPath.FromRawExpression(expression));
             
             if (ObjectPropertiesExtractor.NeedEnumerableExpansion(expression))
             {
@@ -89,7 +89,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             
             var cleanPathToEnumerable = pathToEnumerable.Replace("[]", "");
             
-            var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, cleanPathToEnumerable);
+            var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, ExpressionPath.FromRawPath(cleanPathToEnumerable));
             if (!typeof(IList).IsAssignableFrom(childEnumerableType))
                 throw new Exception($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable})");
 
@@ -118,7 +118,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
             var childModelPath = ObjectPropertiesExtractor.ExtractChildObjectPath(expression);
             var cleanChildModelPath = ObjectPropertiesExtractor.ExtractCleanChildObjectPath(expression);
-            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectType(model, expression);
+            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, ExpressionPath.FromRawExpression(expression));
             var childFormControlType = ExtractFormControlType(cell);
             var childFormControlName = ExtractFormControlName(cell);
 

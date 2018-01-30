@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
+using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
@@ -81,10 +83,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
             var expression = cell.StringValue;
             if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression) || TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
             {
-                var result = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, expression);
-                // todo (mpivko, 22.12.2017): kind of bug here: when property doesn't exist childModel is just raw cell value, so we shouldn't actually render it maybe
-                // todo we should report inexsitance of field here instead of returning expression
-                return result ?? "";
+                try
+                {
+                    return ObjectPropertiesExtractor.Instance.ExtractChildObject(model, expression) ?? "";
+                }
+                catch(ObjectPropertyExtractionException exception)
+                {
+                    throw new InvalidExcelTemplateException($"Failed to extract child by path '{TemplateDescriptionHelper.Instance.GetDescriptionParts(expression)[2]}' in model of type {model.GetType()}", exception);
+                }
+                
             }
             return expression ?? "";
         }

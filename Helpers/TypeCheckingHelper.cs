@@ -24,6 +24,16 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return IsDictionaryDirectly(type) || type.GetInterfaces().Any(IsDictionaryDirectly);
         }
 
+        public bool IsIList(Type type)
+        {
+            return type != typeof(string) && (IsIListDirectly(type) || type.GetInterfaces().Any(IsIListDirectly));
+        }
+
+        public bool IsNullable(Type type)
+        {
+            return Nullable.GetUnderlyingType(type) != null;
+        }
+
         public Type GetEnumerableItemType(Type type)
         {
             return GetImplementedEnumerableInterface(type).GetGenericArguments().SingleOrDefault() ?? typeof(object);
@@ -37,6 +47,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         public Type GetDictionaryValueType(Type type)
         {
             return GetDictionaryGenericTypeArguments(type).valueType;
+        }
+
+        public Type GetIListItemType(Type type)
+        {
+            return GetImplementedIListInterface(type).GetGenericArguments().SingleOrDefault() ?? typeof(object);
         }
 
         private (Type keyType, Type valueType) GetDictionaryGenericTypeArguments(Type type)
@@ -67,6 +82,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return type.GetInterfaces().FirstOrDefault(IsGenericDictionaryDirectly) ?? type.GetInterfaces().FirstOrDefault(IsDictionaryDirectly);
         }
 
+        private Type GetImplementedIListInterface(Type type)
+        {
+            if (IsGenericIListDirectly(type))
+                return type;
+            return type.GetInterfaces().FirstOrDefault(IsGenericIListDirectly) ?? type.GetInterfaces().FirstOrDefault(IsIListDirectly);
+        }
+
         public static TypeCheckingHelper Instance { get; } = new TypeCheckingHelper();
 
         private static bool IsGenericEnumerableDirectly(Type type)
@@ -87,6 +109,16 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         private static bool IsDictionaryDirectly(Type type)
         {
             return type == typeof(IDictionary) || IsGenericDictionaryDirectly(type);
+        }
+
+        private static bool IsIListDirectly(Type type)
+        {
+            return type == typeof(IList) || IsGenericIListDirectly(type);
+        }
+
+        private static bool IsGenericIListDirectly(Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IList<>);
         }
     }
 }
