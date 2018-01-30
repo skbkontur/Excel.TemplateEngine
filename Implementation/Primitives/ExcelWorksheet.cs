@@ -11,7 +11,6 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
-using SKBKontur.Catalogue.Objects;
 
 using Tuple = System.Tuple;
 
@@ -56,10 +55,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         public void MergeCells(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
         {
             var mergeCells = worksheet.GetFirstChild<MergeCells>() ?? CreateMergeCellsWorksheetPart();
-            mergeCells.AppendChild(new MergeCell
-                {
-                    Reference = string.Format("{0}:{1}", upperLeft.CellReference, lowerRight.CellReference)
-                });
+            mergeCells.AppendChild(new MergeCell {Reference = $"{upperLeft.CellReference}:{lowerRight.CellReference}"});
         }
 
         public void ResizeColumn(int columnIndex, double width)
@@ -135,9 +131,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             get
             {
-                return worksheet?.GetFirstChild<MergeCells>()?.Select(x => (MergeCell)x) ?? Enumerable.Empty<MergeCell>()
-                                .Select(mergeCell => mergeCell.Reference.Value.Split(':').ToArray())
-                                .Select(references => Tuple.Create(new ExcelCellIndex(references[0]), new ExcelCellIndex(references[1])));
+                return (worksheet?.GetFirstChild<MergeCells>()?.Select(x => (MergeCell)x) ?? Enumerable.Empty<MergeCell>())
+                    .Select(mergeCell => mergeCell.Reference.Value.Split(':').ToArray())
+                    .Select(references => Tuple.Create(new ExcelCellIndex(references[0]), new ExcelCellIndex(references[1])));
             }
         }
 
@@ -151,13 +147,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             var unsignedRowIndex = (uint)rowIndex;
             var sheetData = worksheet.GetFirstChild<SheetData>();
-            C5.KeyValuePair<uint, Row> successor;
             Row refRow = null;
             var newRow = new Row
                 {
                     RowIndex = new UInt32Value((uint)rowIndex),
                 };
-            if(rowsCache.TryWeakSuccessor(unsignedRowIndex, out successor))
+            if(rowsCache.TryWeakSuccessor(unsignedRowIndex, out var successor))
             {
                 if(successor.Key == unsignedRowIndex)
                     return new ExcelRow(successor.Value, documentStyle, excelSharedStrings);
