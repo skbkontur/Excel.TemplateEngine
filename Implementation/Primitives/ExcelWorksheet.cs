@@ -110,7 +110,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return rowsCache.Select(x => x.Value)
                             .SelectMany(row => row.Elements<Cell>())
                             .Select(internalCell => new ExcelCell(internalCell, documentStyle, excelSharedStrings))
-                            .Where(cell => cell.GetStringValue().Return(str => str.Contains(text), false));
+                            .Where(cell => cell.GetStringValue()?.Contains(text) ?? false);
         }
 
         public IEnumerable<IExcelRow> Rows { get { return rowsCache.Select(x => new ExcelRow(x.Value, documentStyle, excelSharedStrings)); } }
@@ -135,8 +135,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             get
             {
-                return worksheet.With(w => w.GetFirstChild<MergeCells>())
-                                .Return(w => w.Select(x => (MergeCell)x), Enumerable.Empty<MergeCell>())
+                return worksheet?.GetFirstChild<MergeCells>()?.Select(x => (MergeCell)x) ?? Enumerable.Empty<MergeCell>()
                                 .Select(mergeCell => mergeCell.Reference.Value.Split(':').ToArray())
                                 .Select(references => Tuple.Create(new ExcelCellIndex(references[0]), new ExcelCellIndex(references[1])));
             }

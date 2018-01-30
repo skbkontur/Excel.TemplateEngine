@@ -63,14 +63,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public ExcelCellStyle GetStyle()
         {
-            return cell.With(c => c.StyleIndex) == null ? null : documentStyle.GetStyle((int)cell.StyleIndex.Value);
+            return cell?.StyleIndex == null ? null : documentStyle.GetStyle((int)cell.StyleIndex.Value);
         }
 
         public string GetStringValue()
         {
-            if(cell.With(x => x.DataType).Return(x => (CellValues?)x.Value, null) == CellValues.SharedString)
+            if(cell?.DataType.Return(x => (CellValues?)x.Value, null) == CellValues.SharedString)
                 return excelSharedStrings.GetSharedString(uint.Parse(cell.CellValue.Text));
-            return cell.With(x => x.CellValue).Return(x => x.Text, null);
+            return cell?.CellValue?.Text;
         }
 
         public ExcelCellIndex GetCellIndex()
