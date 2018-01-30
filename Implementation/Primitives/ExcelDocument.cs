@@ -31,6 +31,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             documentStyle = new ExcelDocumentStyle(spreadsheetDocument.GetOrCreateSpreadsheetStyles());
             excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.GetOrCreateSpreadsheetSharedStrings());
             spreadsheetDisposed = false;
+
+            SetDefaultCreatorAndEditor();
         }
 
         private void ThrowIfSpreadsheetDisposed()
@@ -96,6 +98,25 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             if (excelVbaInfo == null)
                 return;
             spreadsheetDocument.WorkbookPart.AddPart(excelVbaInfo.VbaProjectPart);
+        }
+
+        [CanBeNull]
+        public string GetDescription()
+        {
+            return spreadsheetDocument.PackageProperties.Description;
+        }
+
+        public void AddDescription([NotNull] string text)
+        {
+            spreadsheetDocument.PackageProperties.Description = text;
+        }
+
+        public void SetDefaultCreatorAndEditor()
+        {
+            spreadsheetDocument.PackageProperties.Creator = "Контур.EDI";
+            spreadsheetDocument.PackageProperties.Created = System.Xml.XmlConvert.ToDateTime("2014-01-01T00:00:00Z", System.Xml.XmlDateTimeSerializationMode.RoundtripKind);
+            spreadsheetDocument.PackageProperties.Modified = System.Xml.XmlConvert.ToDateTime("2014-01-01T00:00:00Z", System.Xml.XmlDateTimeSerializationMode.RoundtripKind);
+            spreadsheetDocument.PackageProperties.LastModifiedBy = "Контур.EDI";
         }
 
         private IExcelWorksheet GetWorksheetById(string sheetId)
