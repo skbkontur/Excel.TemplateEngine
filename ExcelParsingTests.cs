@@ -83,7 +83,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
             var tableParser = new TableParser(tableNavigator);
 
-            Assert.Throws<InvalidExcelTemplateException>(() => templateEngine.Parse<PriceList>(tableParser));
+            Assert.Throws<ObjectPropertyExtractionException>(() => templateEngine.Parse<PriceList>(tableParser));
         }
 
         [Test]
