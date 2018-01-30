@@ -170,7 +170,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var (model, mappingForErrors) = templateEngine.Parse<PriceList>(tableParser);
 
                 Assert.AreEqual("C3", mappingForErrors["Type"]);
-                Assert.AreEqual(202, mappingForErrors.Count); // todo (mpivko, 25.12.2017): 
+                Assert.AreEqual(1, mappingForErrors.Count);
 
                 Assert.AreEqual(0, model.Items.Length);
                 Assert.AreEqual("", model.Type);
