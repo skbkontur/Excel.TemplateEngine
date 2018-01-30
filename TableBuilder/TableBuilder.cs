@@ -107,8 +107,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         {
             var globalIndex = relativeColumnIndex + CurrentState.Origin.ColumnIndex - 1;
             var currentWidth = target.Columns
-                                     .FirstOrDefault(col => col.Index == globalIndex)
-                                     .Return(c => c.Width, 0.0);
+                                     .FirstOrDefault(col => col.Index == globalIndex)?.Width ?? 0.0;
 
             if(currentWidth < width)
                 target.ResizeColumn(globalIndex, width);
