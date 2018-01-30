@@ -35,7 +35,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
                 {
                     if(count == -1)
                         break;
-                    item = default;
+                    item = GetDefault(modelType);
                     // todo (mpivko, 29.01.2018): think carefully
                 }
 
@@ -45,6 +45,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             }
             
             return result;
+        }
+
+        public static object GetDefault(Type type)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+            return null;
         }
 
         private readonly IParserCollection parserCollection;

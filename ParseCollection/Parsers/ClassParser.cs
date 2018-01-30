@@ -100,7 +100,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             
             var parser = parserCollection.GetEnumerableParser(childEnumerableType);
             
-            var limit = childEnumerable?.Count ?? maxIEnumerableLen + 1;
+            var limit = childEnumerable?.Count ?? -1;
             var parsedList = parser.Parse(tableParser, childModelType, limit, (name, value) => addFieldMapping($"{cleanPathToEnumerable}{name}.{childPath}", value));
 
             var lastNotNull = parsedList.FindLastIndex(x => x != null);
