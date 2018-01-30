@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
@@ -31,7 +30,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
                     if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(cell.StringValue))
                     {
-                        childModel = StrictExtractChildModel(model, cell); // todo (mpivko, 22.12.2017): 
+                        childModel = StrictExtractChildModel(model, cell);
                         if(childModel != null)
                         {
                             var typeName = TemplateDescriptionHelper.Instance.GetFormControlTypeFromValueDescription(cell.StringValue);
@@ -81,27 +80,27 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
         private static object ExtractChildModel(object model, ICell cell)
         {
             var expression = cell.StringValue;
-            if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression) || TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
-            {
-                try
-                {
-                    return ObjectPropertiesExtractor.Instance.ExtractChildObject(model, expression) ?? "";
-                }
-                catch(ObjectPropertyExtractionException exception)
-                {
-                    throw new InvalidExcelTemplateException($"Failed to extract child by path '{TemplateDescriptionHelper.Instance.GetDescriptionParts(expression)[2]}' in model of type {model.GetType()}", exception);
-                }
-                
-            }
-            return expression ?? "";
+            return ExtractCorrectDescription(expression, model, "") ?? expression ?? "";
         }
 
         private static object StrictExtractChildModel(object model, ICell cell)
         {
             var expression = cell.StringValue;
+            return ExtractCorrectDescription(expression, model, null);
+        }
+
+        private static object ExtractCorrectDescription(string expression, object model, object onNullReplacement)
+        {
             if (TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression) || TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
             {
-                return ObjectPropertiesExtractor.Instance.ExtractChildObject(model, expression);
+                try
+                {
+                    return ObjectPropertiesExtractor.Instance.ExtractChildObject(model, expression) ?? onNullReplacement;
+                }
+                catch (ObjectPropertyExtractionException exception)
+                {
+                    throw new InvalidExcelTemplateException($"Failed to extract child by path '{TemplateDescriptionHelper.Instance.GetDescriptionParts(expression)[2]}' in model of type {model.GetType()}", exception);
+                }
             }
             return null;
         }
