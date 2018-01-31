@@ -7,7 +7,6 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems;
-using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 {
@@ -39,8 +38,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
                     NumberFormatId = numberFormatId,
                     Alignment = alignment
                 };
-            uint result;
-            if(!cache.TryGetValue(cacheItem, out result))
+            if(!cache.TryGetValue(cacheItem, out var result))
             {
                 result = stylesheet.CellFormats.Count;
                 stylesheet.CellFormats.Count++;
@@ -52,14 +50,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         public ExcelCellStyle GetStyle(int styleIndex)
         {
-            ExcelCellStyle result;
-            if(inverseCache.TryGetValue((uint)styleIndex, out result))
+            if(inverseCache.TryGetValue((uint)styleIndex, out var result))
                 return result;
 
-            var cellFormat = (CellFormat)stylesheet?.CellFormats?.ChildElements
-                                             .If(ce => ce.Count > styleIndex)
-                                             .Return(ce => ce[styleIndex], null);
-
+            var cellFormat = stylesheet?.CellFormats?.ChildElements?.Count > styleIndex ? (CellFormat)stylesheet.CellFormats.ChildElements[styleIndex] : null;
             result = new ExcelCellStyle
                 {
                     FillStyle = cellFormat?.FillId == null ? null : GetCellFillStyle(cellFormat.FillId.Value),
@@ -115,9 +109,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         private ExcelCellBordersStyle GetCellBordersStyle(uint borderId)
         {
-            var bordersStyle = (Border)stylesheet?.Borders?.ChildElements
-                                           .If(ce => ce.Count > borderId)
-                                           .Return(ce => ce[(int)borderId], null);
+            var bordersStyle = stylesheet?.Borders?.ChildElements?.Count > borderId ? (Border)stylesheet.Borders.ChildElements[(int)borderId] : null;
             return new ExcelCellBordersStyle
                 {
                     LeftBorder = bordersStyle?.LeftBorder == null ? null : GetBorderStyle(bordersStyle.LeftBorder),
@@ -151,21 +143,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             case BorderStyleValues.Double:
                 return ExcelBorderType.Double;
             default:
-                throw new Exception(string.Format("Unknown border type: {0}", borderStyle));
+                throw new Exception($"Unknown border type: {borderStyle}");
             }
         }
 
         private ExcelCellNumberingFormat GetCellNumberingFormat(uint numberFormatId)
         {
-            ExcelCellNumberingFormat result;
-            if(TryExtractStandartNumberingFormat(numberFormatId, out result))
+            if(TryExtractStandartNumberingFormat(numberFormatId, out var result))
                 return result;
 
             var numberFormat = (NumberingFormat)stylesheet?.NumberingFormats?.ChildElements
-                                                    .ReturnEnumerable()
-                                                    .FirstOrDefault(ce => ((NumberingFormat)ce)
-                                                                              .With(nf => nf.NumberFormatId) != null &&
-                                                                          ((NumberingFormat)ce).NumberFormatId.Value == numberFormatId);
+                                                          ?.FirstOrDefault(ce => ((NumberingFormat)ce)?.NumberFormatId != null &&
+                                                                                 ((NumberingFormat)ce).NumberFormatId.Value == numberFormatId);
             if(numberFormat?.FormatCode?.Value == null)
                 return null;
 
@@ -187,9 +176,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         private ExcelCellFontStyle GetCellFontStyle(uint fontId)
         {
-            var internalFont = (Font)stylesheet?.Fonts?.ChildElements
-                                         .If(cf => cf.Count > fontId)
-                                         .Return(cf => cf[(int)fontId], null);
+            var internalFont = stylesheet?.Fonts?.ChildElements?.Count > fontId ? (Font)stylesheet.Fonts.ChildElements[(int)fontId] : null;
             return new ExcelCellFontStyle
                 {
                     Bold = internalFont?.Bold != null,
@@ -201,22 +188,15 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         private ExcelCellFillStyle GetCellFillStyle(uint fillId)
         {
-            var internalColor = ((Fill)stylesheet?.Fills?.ChildElements
-                                           .If(ce => ce.Count > fillId)
-                                           .Return(ce => ce[(int)fillId], null))
-                .With(f => f.PatternFill)
-                .With(pf => pf.ForegroundColor)
-                .With(fc => fc.Rgb);
+            var fill = stylesheet?.Fills?.ChildElements?.Count > fillId ? (Fill)stylesheet.Fills.ChildElements[(int)fillId] : null;
+            var internalColor = fill?.PatternFill?.ForegroundColor?.Rgb;
 
             if(internalColor == null)
                 return null;
 
             var color = ToExcelColor(internalColor);
 
-            return new ExcelCellFillStyle
-                {
-                    Color = color
-                };
+            return new ExcelCellFillStyle {Color = color};
         }
 
         private static ExcelColor ToExcelColor(HexBinaryValue color)

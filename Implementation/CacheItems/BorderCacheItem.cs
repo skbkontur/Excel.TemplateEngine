@@ -4,7 +4,6 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
-using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 {
@@ -13,7 +12,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
         public BorderCacheItem(ExcelCellBorderStyle borderStyle)
         {
             borderType = borderStyle.BorderType;
-            color = new ColorCacheItem(borderStyle?.Color ?? ExcelColors.Black);
+            color = new ColorCacheItem(borderStyle.Color ?? ExcelColors.Black);
         }
 
         public bool Equals(BorderCacheItem other)
@@ -50,7 +49,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 
         private Color GetColor()
         {
-            return color == null ? null : color.ToColor<Color>();
+            return color?.ToColor<Color>();
         }
 
         private EnumValue<BorderStyleValues> GetStyle()
@@ -68,7 +67,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
             case ExcelBorderType.Double:
                 return new EnumValue<BorderStyleValues>(BorderStyleValues.Double);
             default:
-                throw new Exception(string.Format("Unknown border type: {0}", borderType));
+                throw new Exception($"Unknown border type: {borderType}");
             }
         }
 
