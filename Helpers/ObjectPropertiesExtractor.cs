@@ -355,9 +355,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         {
             var res = new List<Expression>();
             var argumentType = Expression.Call(from, typeof(object).GetMethod("GetType"));
-            var nullToValueViolationCondition = Expression.And(Expression.Equal(from, Expression.Constant(null)), Expression.IsTrue(Expression.Property(Expression.Constant(targetType), "IsValueType")));
+            var isFromNull = Expression.Equal(from, Expression.Constant(null));
+            var nullToValueViolationCondition = Expression.AndAlso(isFromNull, Expression.IsTrue(Expression.Property(Expression.Constant(targetType), "IsValueType")));
             res.Add(Expression.IfThen(nullToValueViolationCondition, Expression.Throw(Expression.Constant(new ObjectPropertyExtractionException($"Can't assign null to value-type {targetType}")))));
-            var wrongArgumentTypeCondition = Expression.IsFalse(Expression.Call(Expression.Constant(targetType), typeof(Type).GetMethod("IsAssignableFrom"), argumentType));
+            var wrongArgumentTypeCondition = Expression.AndAlso(Expression.IsFalse(isFromNull), Expression.IsFalse(Expression.Call(Expression.Constant(targetType), typeof(Type).GetMethod("IsAssignableFrom"), argumentType))); // todo (mpivko, 31.01.2018): add test for i
             res.Add(Expression.IfThen(wrongArgumentTypeCondition, Expression.Throw(Expression.Constant(new ObjectPropertyExtractionException($"Can't assign item of type {argumentType} to {targetType}")))));
             var argumentObjectCastExpression = Expression.Convert(from, targetType);
             res.Add(Expression.Assign(target, argumentObjectCastExpression));
