@@ -13,6 +13,7 @@ using JetBrains.Annotations;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.Exceptions;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+using SKBKontur.Catalogue.ServiceLib.Logging;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
@@ -29,14 +30,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             {
                 if (ControlPropertiesPart.FormControlProperties?.Selected == null || !ControlPropertiesPart.FormControlProperties.Selected.HasValue)
                     return null;
-                return GetDropDownCells().ElementAt((int)ControlPropertiesPart.FormControlProperties.Selected.Value - 1).GetStringValue();
+                var cells = GetDropDownCells().ToList();
+                var index = (int)ControlPropertiesPart.FormControlProperties.Selected.Value - 1;
+                if(index < 0 || index >= cells.Count)
+                    return null;
+                return cells.ElementAt(index).GetStringValue();
             }
             set
             {
-
                 var index = GetDropDownCells().Select(x => x.GetStringValue()).ToList().IndexOf(value);
-                if (index == -1)
-                    throw new ArgumentException($"Unable to set dropbox value: value '{value}' is unknown");
+                if(index == -1)
+                    Log.For(this).Error($"Tried to set unknown dropbox value: '{value}'. Setting empty value instead");
+
                 if(ControlPropertiesPart.FormControlProperties == null)
                     ControlPropertiesPart.FormControlProperties = new FormControlProperties();
                 ControlPropertiesPart.FormControlProperties.Selected = (uint)index + 1;
