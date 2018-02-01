@@ -11,8 +11,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             return new ExcelDocument(template);
         }
 
-        public static IExcelDocument CreateEmpty()
+        public static IExcelDocument CreateEmpty(bool useXlsm)
         {
+            if (useXlsm)
+                return CreateFromTemplate(GetFileBytes("empty.xlsm"));
             return CreateFromTemplate(GetFileBytes("empty.xlsx"));
         }
 
