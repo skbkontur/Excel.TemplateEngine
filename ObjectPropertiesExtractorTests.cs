@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using JetBrains.Annotations;
@@ -16,48 +17,92 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
     public class ObjectPropertiesExtractorTests
     {
         [Test]
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
         public void AtomicObjectsArrayExtractionTest()
         {
             const string valueDesription = "Value::Bs[].Cs[].S";
 
-            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, valueDesription);
-            Assert.AreNotEqual(null, child);
-
-            var childArray = ((IEnumerable)child).Cast<string>().ToArray();
-            Assert.AreNotEqual(null, childArray);
-// ReSharper disable AssignNullToNotNullAttribute
-            Assert.AreEqual(6, childArray.Count());
-// ReSharper restore AssignNullToNotNullAttribute
-// ReSharper disable PossibleNullReferenceException
-            Assert.AreEqual("Test21", childArray[3]);
-// ReSharper restore PossibleNullReferenceException
+            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, new ExcelTemplateExpression(valueDesription));
+            var childArray = child as object[];
+            Assert.NotNull(childArray);
+            
+            Assert.AreEqual(2, childArray.Length);
+            CollectionAssert.AreEqual(model.Bs[0].Cs.Select(x => x.S), childArray[0] as object[]);
+            CollectionAssert.AreEqual(model.Bs[1].Cs.Select(x => x.S), childArray[1] as object[]);
         }
 
         [Test]
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
         public void ComplexObjectsArrayExtractionTest()
         {
             const string valueDesription = "Value::Bs[].Cs[]";
-            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, valueDesription);
-            Assert.AreNotEqual(null, child);
-            var objectChildArray = ((IEnumerable)child).Cast<C>().ToArray();
-            Assert.AreNotEqual(null, objectChildArray);
-            Assert.AreEqual(6, objectChildArray.Count());
+            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, new ExcelTemplateExpression(valueDesription));
+            var childArray = child as object[];
+            Assert.NotNull(childArray);
+
+            Assert.AreEqual(2, childArray.Length);
+            CollectionAssert.AreEqual(model.Bs[0].Cs, childArray[0] as object[]);
+            CollectionAssert.AreEqual(model.Bs[1].Cs, childArray[1] as object[]);
+        }
+
+        [Test]
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
+        public void NullArrayExtractionTest()
+        {
+            const string valueDesription = "Value::Bs";
+            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(new A(), new ExcelTemplateExpression(valueDesription));
+            Assert.Null(child);
+        }
+
+        [Test]
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
+        public void NullArrayExtractionTestWithBraces()
+        {
+            const string valueDesription = "Value::Bs[]";
+            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(new A(), new ExcelTemplateExpression(valueDesription));
+            Assert.Null(child);
+        }
+
+        [Test]
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
+        public void NullValuesArrayExtractionTest()
+        {
+            const string valueDesription = "Value::Bs[]";
+            var localModel = new A
+                {
+                    Bs = new [] {null, new B(), null}
+                };
+            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(localModel, new ExcelTemplateExpression(valueDesription));
+            var childArray = child as object[];
+            CollectionAssert.AreEqual(localModel.Bs, childArray);
+        }
+
+        [Test]
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
+        public void AllNullValuesArrayExtractionTest()
+        {
+            const string valueDesription = "Value::Bs[]";
+            var localModel = new A
+                {
+                    Bs = new B[] { null, null, null }
+                };
+            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(localModel, new ExcelTemplateExpression(valueDesription));
+            var childArray = child as object[];
+            CollectionAssert.AreEqual(localModel.Bs, childArray);
         }
 
         [Test]
         public void NonexistentObjectsArrayExtractionTest()
         {
             const string valueDesription = "Value::Bs[].Cs[].NULL";
-            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, valueDesription);
-            Assert.AreEqual(null, child);
+            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.Instance.ExtractChildObject(model, new ExcelTemplateExpression(valueDesription)));
         }
 
         [Test]
         public void NonexistentObjectExtractionTest()
         {
             const string valueDesription = "Value::NULL";
-            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(model, valueDesription);
-            Assert.AreEqual(null, child);
+            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.Instance.ExtractChildObject(model, new ExcelTemplateExpression(valueDesription)));
         }
 
         [Test]
@@ -68,27 +113,9 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                     S = "Test"
                 };
             const string valueDescription = "Value::S";
-            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(simpleModel, valueDescription);
+            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(simpleModel, new ExcelTemplateExpression(valueDescription));
             Assert.AreNotEqual(null, child);
             Assert.AreEqual("Test", child);
-        }
-
-        [TestCase("Value::StrProp", typeof(string), TestName = nameof(TypeExtractionTest) + " - string")]
-        [TestCase("Value::IntProp", typeof(int), TestName = nameof(TypeExtractionTest) + " - int")]
-        [TestCase("Value::DoubleProp", typeof(double), TestName = nameof(TypeExtractionTest) + " - double")]
-        [TestCase("Value::ObjectProp", typeof(object), TestName = nameof(TypeExtractionTest) + " - null object")]
-        [TestCase("Value::ArrayIntProp", typeof(int[]), TestName = nameof(TypeExtractionTest) + " - int array")]
-        [TestCase("Value::NullableInt", typeof(int?), TestName = nameof(TypeExtractionTest) + " - nullable int")]
-        [TestCase("Value::InnerObject.A.Value", typeof(MarkerA), TestName = nameof(TypeExtractionTest) + " - deep property")]
-        [TestCase("Value::InnerObject.InnerArray[].ElementProp.A", typeof(MarkerB), TestName = nameof(TypeExtractionTest) + " - array in expression")]
-        [TestCase("Value::InnerObject.InnerArray[1].ElementProp.A", typeof(MarkerB), TestName = nameof(TypeExtractionTest) + " - array with ind in expression")]
-        [TestCase("Value::DictProperty", typeof(Dictionary<string, MarkerC>), TestName = nameof(TypeExtractionTest) + " - dict")]
-        [TestCase("Value::DictProperty[\"Test\"]", typeof(MarkerC), TestName = nameof(TypeExtractionTest) + " - dict element")]
-        [TestCase("Value::DictPropertyIntKeys[123]", typeof(MarkerD), TestName = nameof(TypeExtractionTest) + " - dict element int key")]
-        public void TypeExtractionTest(string expression, Type expectedType)
-        {
-            var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest, ExpressionPath.FromRawExpression(expression));
-            Assert.AreEqual(expectedType, type);
         }
         
         [TestCase("Value::lalala", TestName = "Non-existent property")]
@@ -98,39 +125,55 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [TestCase("Value::DictProperty[123123]", TestName = "Access to dict with index of wrong type")]
         public void TypeExtractionTestOnInvalidExpressions(string expression)
         {
-            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest, ExpressionPath.FromRawExpression(expression)));
+            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest, new ExcelTemplateExpression(expression).ChildObjectPath));
         }
 
-        [TestCase("Value::StrProp", typeof(string), TestName = nameof(TypeExtractionTestWithNotFullyInitializedModel) + " - string")]
-        [TestCase("Value::IntProp", typeof(int), TestName = nameof(TypeExtractionTestWithNotFullyInitializedModel) + " - int")]
-        [TestCase("Value::DoubleProp", typeof(double), TestName = nameof(TypeExtractionTestWithNotFullyInitializedModel) + " - double")]
-        [TestCase("Value::ObjectProp", typeof(object), TestName = nameof(TypeExtractionTestWithNotFullyInitializedModel) + " - null object")]
-        [TestCase("Value::ArrayIntProp", typeof(int[]), TestName = nameof(TypeExtractionTestWithNotFullyInitializedModel) + " - int array")]
-        [TestCase("Value::NullableInt", typeof(int?), TestName = nameof(TypeExtractionTestWithNotFullyInitializedModel) + " - nullable int")]
-        [TestCase("Value::InnerObject.A.Value", typeof(MarkerA), TestName = nameof(TypeExtractionTestWithNotFullyInitializedModel) + " - deep property")]
-        [TestCase("Value::InnerObject.InnerArray[].ElementProp.A", typeof(MarkerB), TestName = nameof(TypeExtractionTestWithNotFullyInitializedModel) + " - array in expression")]
-        [TestCase("Value::InnerObject.InnerArray[1].ElementProp.A", typeof(MarkerB), TestName = nameof(TypeExtractionTestWithNotFullyInitializedModel) + " - array with ind in expression")]
-        [TestCase("Value::DictProperty", typeof(Dictionary<string, MarkerC>), TestName = nameof(TypeExtractionTestWithNotFullyInitializedModel) + " - dict")]
-        [TestCase("Value::DictProperty[\"Test\"]", typeof(MarkerC), TestName = nameof(TypeExtractionTestWithNotFullyInitializedModel) + " - dict element")]
-        [TestCase("Value::DictPropertyIntKeys[123]", typeof(MarkerD), TestName = nameof(TypeExtractionTestWithNotFullyInitializedModel) + " - dict element int key")]
-        public void TypeExtractionTestWithNotFullyInitializedModel(string expression, Type expectedType) // todo (mpivko, 19.01.2018): merge with TypeExtractionTest
+        public static IEnumerable TypeExtractionTestTestCases
+        {
+            get
+            {
+                yield return new TestCaseData("Value::IntProp", typeof(int)).SetName("int");
+                yield return new TestCaseData("Value::StrProp", typeof(string)).SetName("string");
+                yield return new TestCaseData("Value::DoubleProp", typeof(double)).SetName("double");
+                yield return new TestCaseData("Value::ObjectProp", typeof(object)).SetName("null object");
+                yield return new TestCaseData("Value::ArrayIntProp", typeof(int[])).SetName("int array");
+                yield return new TestCaseData("Value::NullableInt", typeof(int?)).SetName("nullable int");
+                yield return new TestCaseData("Value::InnerObject.A.Value", typeof(MarkerA)).SetName("deep property");
+                yield return new TestCaseData("Value::InnerObject.InnerArray[].ElementProp.A", typeof(MarkerB)).SetName("array in expression");
+                yield return new TestCaseData("Value::InnerObject.InnerArray[1].ElementProp.A", typeof(MarkerB)).SetName("array with ind in expression");
+                yield return new TestCaseData("Value::DictProperty", typeof(Dictionary<string, MarkerC>)).SetName("dict");
+                yield return new TestCaseData("Value::DictProperty[\"Test\"]", typeof(MarkerC)).SetName("dict element");
+                yield return new TestCaseData("Value::DictPropertyIntKeys[123]", typeof(MarkerD)).SetName("dict element int key");
+            }
+        }
+
+        [TestCaseSource(nameof(TypeExtractionTestTestCases))]
+        public void TypeExtractionTest(string expression, Type expectedType)
+        {
+            var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest, new ExcelTemplateExpression(expression).ChildObjectPath);
+            Assert.AreEqual(expectedType, type);
+        }
+
+        [TestCaseSource(nameof(TypeExtractionTestTestCases))]
+        public void TypeExtractionTestWithNotFullyInitializedModel(string expression, Type expectedType)
         {
             var modelToGetType = new ComplexModel();
             
-            var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelToGetType, ExpressionPath.FromRawExpression(expression));
+            var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelToGetType, new ExcelTemplateExpression(expression).ChildObjectPath);
             Assert.AreEqual(expectedType, type);
         }
 
         private static object[][] ExtractChildObjectSetterTestSource { [UsedImplicitly] get; } = new (string, Func<ComplexModel, object>, object)[]
             {
                 ("Value::StrProp", x => x.StrProp, "123"),
+                ("Value::StrProp", x => x.StrProp, null),
                 ("Value::IntProp", x => x.IntProp, 42),
                 ("Value::DoubleProp", x => x.DoubleProp, 1.5),
                 ("Value::ObjectProp", x => x.ObjectProp, new MarkerA()),
                 ("Value::ArrayIntProp", x => x.ArrayIntProp, new[] {1, 2, 10}),
                 ("Value::NullableInt", x => x.NullableInt, (int?)10),
                 ("Value::InnerObject.A.Value", x => x.InnerObject.A.Value, new MarkerA()),
-                ("Value::InnerObject.InnerArray[1].ElementProp.A", x => x.InnerObject.InnerArray[1].ElementProp.A, new MarkerB()),// todo mpivko
+                ("Value::InnerObject.InnerArray[1].ElementProp.A", x => x.InnerObject.InnerArray[1].ElementProp.A, new MarkerB()),
                 ("Value::DictProperty", x => x.DictProperty, new Dictionary<string, MarkerC>()),
                 ("Value::DictProperty[\"Test\"]", x => x.DictProperty["Test"], new MarkerC()),
                 ("Value::DictPropertyIntKeys[123]", x => x.DictPropertyIntKeys[123], new MarkerD()),
@@ -144,7 +187,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public void ExtractChildObjectSetterTest(string expression, Func<ComplexModel, object> getter, object valueToSet)
         {
             var modelToSet = new ComplexModel();
-            var s = ObjectPropertiesExtractor.ExtractChildObjectSetter(modelToSet, expression);
+            var s = ObjectPropertiesExtractor.ExtractChildObjectSetter(modelToSet, new ExcelTemplateExpression(expression));
             s(valueToSet);
             Assert.AreEqual(valueToSet, getter(modelToSet));
         }
@@ -287,11 +330,47 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public class B
         {
             public C[] Cs { get; set; }
+
+            protected bool Equals(B other)
+            {
+                return Equals(Cs, other.Cs);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if(ReferenceEquals(null, obj)) return false;
+                if(ReferenceEquals(this, obj)) return true;
+                if(obj.GetType() != this.GetType()) return false;
+                return Equals((B)obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return (Cs != null ? Cs.GetHashCode() : 0);
+            }
         }
 
         public class C
         {
             public string S { get; set; }
+
+            protected bool Equals(C other)
+            {
+                return string.Equals(S, other.S);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if(ReferenceEquals(null, obj)) return false;
+                if(ReferenceEquals(this, obj)) return true;
+                if(obj.GetType() != this.GetType()) return false;
+                return Equals((C)obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return (S != null ? S.GetHashCode() : 0);
+            }
         }
 
         #endregion
