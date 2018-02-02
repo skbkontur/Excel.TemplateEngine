@@ -38,11 +38,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
             where TModel : new()
         {
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName);
-            
-            if (renderingTemplate == null)
-            {
-                throw new InvalidProgramStateException($"Template with name {rootTemplateName} not found in xlsx"); //TODO {mpivko} it's not ipse maybe
-            }
+
+            if(renderingTemplate == null)
+                throw new InvalidProgramStateException($"Template with name {rootTemplateName} not found in xlsx");
 
             var parser = parserCollection.GetClassParser(typeof(TModel));
             var fieldsMappingForErrors = new Dictionary<string, string>();

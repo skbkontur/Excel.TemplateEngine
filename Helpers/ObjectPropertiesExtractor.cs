@@ -147,7 +147,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                 if(!TypeCheckingHelper.Instance.IsDictionary(dictPropertyInfo.PropertyType))
                     throw new ObjectPropertyExtractionException($"Unexpected child type: expected dictionary (pathPath='{pathPart}'), but model is '{dictPropertyInfo.PropertyType}' in '{model.GetType()}'"); // todo (mpivko, 30.01.2018): what about arrays?
                 var indexer = ParseCollectionIndexer(key, TypeCheckingHelper.Instance.GetDictionaryKeyType(dictPropertyInfo.PropertyType));
-                child = ((IDictionary)dictPropertyInfo.GetValue(model, null))[indexer];
+                var dict = dictPropertyInfo.GetValue(model, null);
+                if(dict == null)
+                    return true;
+                child = ((IDictionary)dict)[indexer];
                 return true;
             }
             if (!TryExtractCurrentChildPropertyInfo(model, pathPart, out var propertyInfo))

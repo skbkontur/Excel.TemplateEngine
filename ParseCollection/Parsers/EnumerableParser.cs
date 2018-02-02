@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 using JetBrains.Annotations;
 
@@ -36,7 +34,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
                     if(count == -1)
                         break;
                     item = GetDefault(modelType);
-                    // todo (mpivko, 29.01.2018): think carefully
                 }
 
                 addFieldMapping($"[{i}]", tableParser.CurrentState.Cursor.CellReference);
@@ -49,10 +46,8 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
         public static object GetDefault(Type type)
         {
-            if (type.IsValueType)
-            {
+            if(type.IsValueType)
                 return Activator.CreateInstance(type);
-            }
             return null;
         }
 
