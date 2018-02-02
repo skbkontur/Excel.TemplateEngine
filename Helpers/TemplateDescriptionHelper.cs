@@ -50,10 +50,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return IsCorrectModelPath(descriptionParts[2]);
         }
 
-        public bool IsCorrectModelPath(string pathPart)
+        public bool IsCorrectModelPath(string pathParts)
         {
-            var pathRegex = new Regex(@"^[A-Za-z]\w*(\[[^\[\]]*\])?(\.[A-Za-z]\w*(\[[^\[\]]*\])?)*$");
-            return pathRegex.IsMatch(pathPart);
+            return pathRegex.IsMatch(pathParts);
         }
 
         public bool IsCorrectTemplateDescription(string expression)
@@ -63,10 +62,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                descriptionParts[0] != "Template" ||
                string.IsNullOrEmpty(descriptionParts[1]))
                 return false;
-
-            var cellReferenceRegex = new Regex("^[A-Z]+[1-9][0-9]*$");
-            return cellReferenceRegex.IsMatch(descriptionParts[2]) &&
-                   cellReferenceRegex.IsMatch(descriptionParts[3]);
+            
+            return exactCellReferenceRegex.IsMatch(descriptionParts[2]) &&
+                   exactCellReferenceRegex.IsMatch(descriptionParts[3]);
         }
 
         public bool TryExtractCoordinates(string templateDescription, out IRectangle rectangle)
@@ -81,7 +79,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         private static IRectangle ExctractCoordinates(string expression)
         {
-            var cellReferenceRegex = new Regex("[A-Z]+[1-9][0-9]*");
             var upperLeft = new CellPosition(cellReferenceRegex.Matches(expression)[0].Value);
             var lowerRight = new CellPosition(cellReferenceRegex.Matches(expression)[1].Value);
             return new Rectangle(upperLeft, lowerRight);
@@ -132,6 +129,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         public static TemplateDescriptionHelper Instance { get; } = new TemplateDescriptionHelper();
 
         private static readonly Regex collectionAccessPathPartRegex = new Regex(@"^(\w*)\[([^\[\]]+)\]$", RegexOptions.Compiled);
+        private static readonly Regex pathRegex = new Regex(@"^[A-Za-z]\w*(\[[^\[\]]*\])?(\.[A-Za-z]\w*(\[[^\[\]]*\])?)*$", RegexOptions.Compiled);
+        private static readonly Regex cellReferenceRegex = new Regex("[A-Z]+[1-9][0-9]*", RegexOptions.Compiled);
+        private static readonly Regex exactCellReferenceRegex = new Regex("^[A-Z]+[1-9][0-9]*$", RegexOptions.Compiled);
         private readonly HashSet<string> formControlTypes = new HashSet<string>(new[] {"CheckBox", "DropDown"});
     }
 }

@@ -12,6 +12,7 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
 using SKBKontur.Catalogue.Objects;
+using SKBKontur.Catalogue.ServiceLib.Logging;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 {
@@ -41,12 +42,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
                     if (TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
                     {
-                        ParseValue(tableParser, addFieldMapping, model, cell, expression);
+                        ParseValue(tableParser, addFieldMapping, model, cell, new ExcelTemplateExpression(expression));
                         continue;
                     }
                     if (TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression))
                     {
-                        ParseFormValue(tableParser, addFieldMapping, model, cell, expression);
+                        ParseFormValue(tableParser, addFieldMapping, model, cell, new ExcelTemplateExpression(expression));
                         continue;
                     }
 
@@ -57,14 +58,14 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             return model;
         }
 
-        private void ParseValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, string expression)
+        private void ParseValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplateExpression expression)
         {
             var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression);
             
-            var childModelPath = ObjectPropertiesExtractor.ExtractChildObjectPath(expression);
-            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, ExpressionPath.FromRawExpression(expression));
+            var childModelPath = expression.ChildObjectPath;
+            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, childModelPath);
             
-            if (ObjectPropertiesExtractor.NeedEnumerableExpansion(expression))
+            if (childModelPath.HasArrayAccess)
             {
                 ParseEnumerableValue(tableParser, addFieldMapping, model, expression, childSetter, childModelType);
             }
@@ -74,26 +75,31 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             }
         }
 
-        private void ParseSingleValue(ITableParser tableParser, Action<string, string> addFieldMapping, ICell cell, Action<object> childSetter, string childModelPath, Type childModelType)
+        private void ParseSingleValue(ITableParser tableParser, Action<string, string> addFieldMapping, ICell cell, Action<object> childSetter, ExcelTemplatePath childModelPath, Type childModelType)
         {
             var parser = parserCollection.GetAtomicValueParser(childModelType);
-            if (!parser.TryParse(tableParser, childModelType, out var parsedObject))
-                return; // todo (mpivko, 29.01.2018): 
+            if(!parser.TryParse(tableParser, childModelType, out var parsedObject))
+            {
+                Log.For(this).Error($"Failed to parse value '{cell.StringValue}' with childModelType='{childModelType}' via AtomicValueParser");
+                return;
+            }
             childSetter(parsedObject);
-            addFieldMapping(childModelPath, cell.CellPosition.CellReference);
+            addFieldMapping(childModelPath.RawPath, cell.CellPosition.CellReference);
         }
 
-        private void ParseEnumerableValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, string expression, Action<object> childSetter, Type childModelType)
+        private void ParseEnumerableValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ExcelTemplateExpression expression, Action<object> childSetter, Type childModelType)
         {
-            var (pathToEnumerable, childPath) = ObjectPropertiesExtractor.SplitForEnumerableExpansion(expression);
-            
-            var cleanPathToEnumerable = pathToEnumerable.Replace("[]", "");
-            
-            var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, ExpressionPath.FromRawPath(cleanPathToEnumerable));
-            if (!typeof(IList).IsAssignableFrom(childEnumerableType))
-                throw new Exception($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable})");
+            var (rawPathToEnumerable, childPath) = ObjectPropertiesExtractor.SplitForEnumerableExpansion(expression);
 
-            var childObject = ObjectPropertiesExtractor.Instance.ExtractChildObjectViaPath(model, cleanPathToEnumerable);
+            var pathToEnumerable = ExcelTemplatePath.FromRawPath(rawPathToEnumerable);
+
+            var cleanPathToEnumerable = pathToEnumerable.WithoutArrayAccess();
+            
+            var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, cleanPathToEnumerable);
+            if (!typeof(IList).IsAssignableFrom(childEnumerableType))
+                throw new Exception($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
+
+            var childObject = ObjectPropertiesExtractor.Instance.ExtractChildObjectViaPath(model, pathToEnumerable);
             if (childObject != null && !(childObject is IList))
                 throw new InvalidProgramStateException("Failed to cast child to IList, although we checked that it should be IList");
             var childEnumerable = (IList)childObject;
@@ -101,7 +107,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             var parser = parserCollection.GetEnumerableParser(childEnumerableType);
             
             var limit = childEnumerable?.Count ?? -1;
-            var parsedList = parser.Parse(tableParser, childModelType, limit, (name, value) => addFieldMapping($"{cleanPathToEnumerable}{name}.{childPath}", value));
+            var parsedList = parser.Parse(tableParser, childModelType, limit, (name, value) => addFieldMapping($"{cleanPathToEnumerable.RawPath}{name}.{childPath}", value));
 
             var lastNotNull = parsedList.FindLastIndex(x => x != null);
             parsedList = parsedList.Take(lastNotNull + 1).ToList();
@@ -112,17 +118,16 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             childSetter(parsedList);
         }
 
-        private void ParseFormValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, string expression)
+        private void ParseFormValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplateExpression expression)
         {
             var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression);
 
-            var childModelPath = ObjectPropertiesExtractor.ExtractChildObjectPath(expression);
-            var cleanChildModelPath = ObjectPropertiesExtractor.ExtractCleanChildObjectPath(expression);
-            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, ExpressionPath.FromRawExpression(expression));
+            var childModelPath = expression.ChildObjectPath;
+            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, childModelPath);
             var childFormControlType = ExtractFormControlType(cell);
             var childFormControlName = ExtractFormControlName(cell);
 
-            if(ObjectPropertiesExtractor.NeedEnumerableExpansion(expression))
+            if(childModelPath.HasArrayAccess)
                 throw new NotSupportedExcelSerializationException("Enumerables are not supported for form controls");
 
             var parser = parserCollection.GetFormValueParser(childFormControlType, childModelType);
@@ -130,7 +135,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
                 throw new FormControlParsingException(childFormControlName);
 
             childSetter(parsedObject);
-            addFieldMapping(childModelPath, childFormControlName /*todo mpivko consider calculation of form control postion to return cell here instead of control name*/);
+            addFieldMapping(childModelPath.RawPath, childFormControlName /*todo mpivko consider calculation of form control postion to return cell here instead of control name*/);
         }
 
         [NotNull]

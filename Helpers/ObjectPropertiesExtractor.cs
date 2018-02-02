@@ -9,6 +9,7 @@ using JetBrains.Annotations;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.Linq;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 {
@@ -19,29 +20,19 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         }
 
         [CanBeNull]
-        public object ExtractChildObject(object model, string expression)
+        public object ExtractChildObject(object model, ExcelTemplateExpression expression)
         {
-            if(!(TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression) || TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression)) ||
-               model == null)
-                return null;
-
-            var descriptionParts = TemplateDescriptionHelper.Instance.GetDescriptionParts(expression);
-            var pathParts = descriptionParts[2].Split('.');
-
-            return ExtractChildObject(model, pathParts);
+            return ExtractChildObject(model, expression.ChildObjectPath.PartsWithIndexers);
         }
 
         [CanBeNull]
-        public object ExtractChildObjectViaPath(object model, string path)
+        public object ExtractChildObjectViaPath(object model, ExcelTemplatePath path)
         {
-            if (!TemplateDescriptionHelper.Instance.IsCorrectModelPath(path))
-                return null;
-            var pathParts = path.Split('.');
-            return ExtractChildObject(model, pathParts);
+            return ExtractChildObject(model, path.PartsWithIndexers);
         }
 
         [NotNull]
-        public static Type ExtractChildObjectTypeFromPath([NotNull] object model/*todo mpivko: we need only type, not model*/, [NotNull] ExpressionPath path) // todo (mpivko, 19.01.2018): make sure that path is not cleaned
+        public static Type ExtractChildObjectTypeFromPath([NotNull] object model/*todo mpivko: we need only type, not model*/, [NotNull] ExcelTemplatePath path) // todo (mpivko, 19.01.2018): make sure that path is not cleaned
         {
             var currType = model.GetType();
 
@@ -79,41 +70,19 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return currType;
         }
 
-        public static (string, string) SplitForEnumerableExpansion([NotNull] string expression)
+        public static (string, string) SplitForEnumerableExpansion([NotNull] ExcelTemplateExpression expression)
         {
-            var parts = ExtractChildObjectPath(expression).Split('.');
-            if (!parts.Any(x => x.Contains("[]")))
+            if (!expression.ChildObjectPath.HasArrayAccess)
                 throw new ObjectPropertyExtractionException($"Expression needs enumerable expansion but has no part with '[]' (expression - '{expression}')");
+            var parts = expression.ChildObjectPath.PartsWithIndexers;
             var firstPartLen = parts.TakeWhile(x => !x.EndsWith("[]")).Count() + 1;
             return (string.Join(".", parts.Take(firstPartLen)), string.Join(".", parts.Skip(firstPartLen)));
         }
-
-        public static bool NeedEnumerableExpansion([NotNull] string expression)
-        {
-            return ExtractChildObjectPath(expression).Contains("[]");
-        }
-
-        public static string ExtractChildObjectPath([NotNull] string expression)
-        {
-            // todo (mpivko, 19.01.2018): check expression
-            return expression.Split(':')[2];
-        }
-
-        public static string ExtractCleanChildObjectPath([NotNull] string expression)
-        {
-            return ExtractChildObjectPath(expression).Replace("[]", "");
-        }
-
+        
         [NotNull]
-        public static Action<object> ExtractChildObjectSetter([NotNull] object model, [NotNull] string expression)
+        public static Action<object> ExtractChildObjectSetter([NotNull] object model, [NotNull] ExcelTemplateExpression expression)
         {
-            if (!TemplateDescriptionHelper.Instance.IsCorrectAbstractValueDescription(expression))
-                throw new ObjectPropertyExtractionException($"Invalid description {expression}");
-
-            var descriptionParts = TemplateDescriptionHelper.Instance.GetDescriptionParts(expression);
-            var pathParts = descriptionParts[2].Split('.');
-
-            return ExtractChildModelSetter(model, pathParts);
+            return ExtractChildModelSetter(model, expression.ChildObjectPath.PartsWithIndexers);
         }
         
         public static ObjectPropertiesExtractor Instance { get; } = new ObjectPropertiesExtractor();
@@ -159,46 +128,54 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return true;
         }
 
-        private static void ExtractChildObject(object model, string[] pathParts, int pathPartIndex, List<object> result)
+        private static bool TryExtractChildObject(object model, string[] pathParts, int pathPartIndex, out object result)
         {
             if(pathPartIndex == pathParts.Length)
             {
-                result.Add(model);
-                return;
+                result = model;
+                return true;
             }
 
-            if (!TryExtractCurrentChild(model, pathParts[pathPartIndex], out var currentChild))
-                return;
-            
+            if(!TryExtractCurrentChild(model, pathParts[pathPartIndex], out var currentChild))
+            {
+                result = null;
+                return false;
+            }
+
             if (currentChild == null)
             {
-                result.Add(null);
-                return;
+                result = null;
+                return true;
             }
 
             if(TemplateDescriptionHelper.Instance.IsArrayPathPart(pathParts[pathPartIndex]))
             {
                 if(!TypeCheckingHelper.Instance.IsEnumerable(currentChild.GetType()))
                     throw new ObjectPropertyExtractionException($"Trying to extract enumerable from non-enumerable property {string.Join(".", pathParts)}");
+                var resultList = new List<object>();
                 foreach(var element in ((IEnumerable)currentChild).Cast<object>())
-                    ExtractChildObject(element, pathParts, pathPartIndex + 1, result);
-                return;
+                {
+                    if(!TryExtractChildObject(element, pathParts, pathPartIndex + 1, out var resultItem))
+                    {
+                        result = null;
+                        return false;
+                    }
+                    resultList.Add(resultItem);
+                }
+                result = resultList.ToArray();
+                return true;
             }
 
-            ExtractChildObject(currentChild, pathParts, pathPartIndex + 1, result);
+            return TryExtractChildObject(currentChild, pathParts, pathPartIndex + 1, out result);
         }
 
+        [CanBeNull]
         private static object ExtractChildObject(object model, string[] pathParts)
         {
-            var result = new List<object>();
-            ExtractChildObject(model, pathParts, 0, result);
-
-            if(result.Count == 0)
+            if (!TryExtractChildObject(model, pathParts, 0, out var result))
                 throw new ObjectPropertyExtractionException($"Can't find path '{string.Join(".", pathParts)}' in model of type '{model.GetType()}'");
-
-            if(pathParts.Any(TemplateDescriptionHelper.Instance.IsArrayPathPart))
-                return result.ToArray();
-            return result.Single();
+            
+            return result;
         }
 
         private static Action<object> ExtractChildModelSetter(object model, string[] pathParts)
@@ -220,152 +197,191 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
             return x => act(model, x);
         }
-
-        // todo (mpivko, 30.01.2018): rewrite next 5 methods without expressions
-        private static Expression CreateValueInitializationStatement(Expression expression, Type valueType)
+        
+        private static T InitValue<T>(T currentValue)
+            where T : new()
         {
-            var currNodeConstructor = valueType.GetConstructor(new Type[0]);
-            if (currNodeConstructor == null)
-                throw new NotSupportedExcelSerializationException($"Object has no parameterless constructor (type - {valueType})");
-            var createCurrNodeExpression = Expression.New(currNodeConstructor);
-            var assignCurrNodeExpression = Expression.Assign(expression, createCurrNodeExpression);
-            return assignCurrNodeExpression;
+            if (typeof(T).IsValueType)
+                return currentValue;
+            if (currentValue != null)
+                return currentValue;
+            return new T();
         }
 
-        private static Expression CreateArrayInitializationStatement(Expression expression, Type arrayItemType, Expression length)
+        private static T[] InitArray<T>(T[] currentValue, int length)
+            where T : new()
         {
-            var createCurrNodeExpression = Expression.NewArrayBounds(arrayItemType, length);
-            var assignCurrNodeExpression = Expression.Assign(expression, createCurrNodeExpression);
-            return assignCurrNodeExpression;
+            if (currentValue != null)
+                return currentValue;
+            return new T[length];
         }
 
-        private static Expression CreateInitStatement(Expression currNodeIsNullCondition, Expression initializationStatement)
+        private static void InitDict<TKey, TValue>(Dictionary<TKey, TValue> dict, object indexer, Func<TValue> createValue)
         {
-            var maybeInit = Expression.IfThen(currNodeIsNullCondition, initializationStatement);
+            if (!(indexer is TKey realIndexer))
+                throw new ObjectPropertyExtractionException($"Indexer type '{indexer?.GetType().ToString() ?? "NULL"}' does not match dictionary key type '{typeof(TKey)}'");
+            if (indexer == null)
+                throw new ObjectPropertyExtractionException("Can't use null as dict key");
+            if (!dict.ContainsKey(realIndexer))
+                dict[realIndexer] = createValue();
+        }
 
-            var tryBlock = maybeInit;
-            var catchBlock = initializationStatement;
+        private static void InitPrimitiveDict<TKey, TValue>(Dictionary<TKey, TValue> dict, object indexer)
+        {
+            InitDict(dict, indexer, () => default);
+        }
 
-            return Expression.TryCatch(Expression.Block(typeof(void), tryBlock), Expression.Catch(typeof(KeyNotFoundException), Expression.Block(typeof(void), catchBlock)));
+        private static void InitClassDict<TKey, TValue>(Dictionary<TKey, TValue> dict, object indexer)
+            where TValue : new()
+        {
+            InitDict(dict, indexer, () => new TValue());
         }
 
         private static Expression CreateValueInitStatement(Expression expression, Type valueType)
         {
-            var currNodeIsNullCondition = Expression.Equal(expression, Expression.Constant(null, valueType));
-            return CreateInitStatement(currNodeIsNullCondition, CreateValueInitializationStatement(expression, valueType));
+            var method = GetGenericMethod(nameof(InitValue), valueType);
+            return Expression.Assign(expression, Expression.Call(method, expression));
         }
 
         private static Expression CreateArrayInitStatement(Expression expression, Type arrayItemType, Expression length)
         {
-            var currNodeIsNullCondition = Expression.Equal(expression, Expression.Constant(null, Array.CreateInstance(arrayItemType, 0).GetType()));
-            return CreateInitStatement(currNodeIsNullCondition, CreateArrayInitializationStatement(expression, arrayItemType, length));
+            var method = GetGenericMethod(nameof(InitArray), arrayItemType);
+            return Expression.Assign(expression, Expression.Call(method, expression, length));
         }
 
+        private static Expression CreateDictValueInitStatement(Expression dict, Type dictKeyType, Type dictValueType, object indexer)
+        {
+            MethodInfo method;
+            if (dictValueType.IsValueType || dictValueType == typeof(string))
+                method = GetGenericMethod(nameof(InitPrimitiveDict), dictKeyType, dictValueType);
+            else
+                method = GetGenericMethod(nameof(InitClassDict), dictKeyType, dictValueType);
+            return Expression.Call(method, dict, Expression.Convert(Expression.Constant(indexer), typeof(object)));
+        }
+        
         [NotNull, ItemNotNull]
         private static List<Expression> ExtractChildModelSetterInner([NotNull] Type currNodeType, [NotNull] Expression currNodeExpression, [NotNull] Expression argumentObjectExpression, [NotNull, ItemNotNull] string[] pathParts)
         {
             var statements = new List<Expression>();
-
-            var needToAssign = true;
+            
             foreach (var (i, part) in pathParts.WithIndices())
             {
                 var name = TemplateDescriptionHelper.Instance.GetPathPartName(part);
                 
-                if(!TypeCheckingHelper.Instance.IsNullable(currNodeType) && i != 0)
-                {
-                    if(currNodeType.IsArray)
-                    {
-                        var getLenExpression = Expression.Property(Expression.Convert(argumentObjectExpression, typeof(List<object>)), "Count");
-                        statements.Add(CreateArrayInitStatement(currNodeExpression, currNodeType.GetElementType(), getLenExpression));
-                    }
-                    else
-                    {
-                        statements.Add(CreateValueInitStatement(currNodeExpression, currNodeType));
-                    }
-                }
-
                 var newNodeType = currNodeType.GetProperty(name)?.PropertyType;
                 currNodeType = newNodeType ?? throw new ObjectPropertyExtractionException($"Type '{currNodeType}' has no property '{name}'");
                 currNodeExpression = Expression.Property(currNodeExpression, name);
 
                 if (TemplateDescriptionHelper.Instance.IsCollectionAccessPathPart(part))
                 {
-                    if(TypeCheckingHelper.Instance.IsDictionary(currNodeType))
-                    {
-                        // todo (mpivko, 24.01.2018): check that it's not a first iteration
-                        statements.Add(CreateValueInitStatement(currNodeExpression, currNodeType));
-
-                        var dictKeyType = TypeCheckingHelper.Instance.GetDictionaryKeyType(currNodeType);
-                        var indexer = ParseCollectionIndexer(TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartIndex(part), dictKeyType);
-
-                        var dictElementExpression = Expression.Property(currNodeExpression, "Item", Expression.Constant(indexer));
-                        var dictValueType = TypeCheckingHelper.Instance.GetDictionaryValueType(currNodeType);
-
-                        currNodeExpression = dictElementExpression;
-                        currNodeType = dictValueType; // todo (mpivko, 24.01.2018): it can't be not dict
-                    }
-                    else if(currNodeType.IsArray)
-                    {
-                        var arrayItemType = currNodeType.GetElementType() ?? throw new ObjectPropertyExtractionException($"Array of type '{currNodeType}' has no item type");
-                        var extendArrayMethod = typeof(ObjectPropertiesExtractor).GetMethod(nameof(ExtendArray), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(arrayItemType);
-                        var indexer = ParseCollectionIndexer(TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartIndex(part), typeof(int));
-                        statements.Add(Expression.Assign(currNodeExpression, Expression.Call(extendArrayMethod, currNodeExpression, Expression.Constant((int)indexer + 1))));
-                        var arrayItemExpression = Expression.ArrayAccess(currNodeExpression, Expression.Constant(indexer));
-                        
-                        currNodeExpression = arrayItemExpression;
-                        currNodeType = arrayItemType;
-                    }
-                    else
-                    {
-                        throw new ObjectPropertyExtractionException("Only dicts and arrays are supported as collections");
-                    }
+                    List<Expression> statementsToAdd;
+                    (currNodeExpression, currNodeType, statementsToAdd) = ParseCollectionAccessPart(currNodeExpression, currNodeType, part);
+                    statements.AddRange(statementsToAdd);
                 }
                 else if(TemplateDescriptionHelper.Instance.IsArrayPathPart(part))
                 {
-                    if(currNodeType.IsArray)//todo mpivko potentially it could be imporoved to TypeCheckingHelper.Instance.IsIList(currNodeType))
+                    var statementsToAdd = ParseArrayPart(currNodeExpression, currNodeType, argumentObjectExpression, pathParts.Skip(i + 1).ToArray());
+                    statements.AddRange(statementsToAdd);
+                    return statements;
+                }
+                else
+                {
+                    if (!TypeCheckingHelper.Instance.IsNullable(currNodeType) && i != pathParts.Length - 1)
                     {
-                        var itemType = TypeCheckingHelper.Instance.GetEnumerableItemType(currNodeType);
-                        
-                        var getLenExpression = Expression.Property(Expression.Convert(argumentObjectExpression, typeof(ICollection)), "Count");
-                        statements.Add(CreateArrayInitStatement(currNodeExpression, currNodeType.GetElementType(), getLenExpression));
-
-                        var expressionLoopVar = Expression.Variable(typeof(int));
-
-                        var elementExpression = Expression.ArrayAccess(currNodeExpression, expressionLoopVar);
-                        var elementInitStatement = CreateValueInitStatement(elementExpression, itemType);
-                        var setItemStatements = Expression.Block(ExtractChildModelSetterInner(itemType, elementExpression, GetIndexAccessExpression(argumentObjectExpression, expressionLoopVar), pathParts.Skip(i + 1).ToArray()));
-                        
-                        var loopBodyExpression = Expression.Block(elementInitStatement, setItemStatements);
-                        
-                        var loopExpression = ForFromTo(expressionLoopVar, Expression.Constant(0), getLenExpression, loopBodyExpression);
-
-                        statements.Add(loopExpression);
-
-                        needToAssign = false;
-                        break;
+                        if (currNodeType.IsArray)
+                        {
+                            var getLenExpression = Expression.Property(Expression.Convert(argumentObjectExpression, typeof(List<object>)), "Count");
+                            statements.Add(CreateArrayInitStatement(currNodeExpression, currNodeType.GetElementType(), getLenExpression));
+                        }
+                        else
+                        {
+                            statements.Add(CreateValueInitStatement(currNodeExpression, currNodeType));
+                        }
                     }
-                    throw new ObjectPropertyExtractionException("Only array is supported as iterated collection");
                 }
             }
-            if(needToAssign)
-            {
-                statements.AddRange(AssignWithTypeChecks(currNodeExpression, currNodeType, argumentObjectExpression));
-            }
+            statements.Add(AssignWithTypeChecks(currNodeExpression, currNodeType, argumentObjectExpression));
             return statements;
         }
 
-        private static List<Expression> AssignWithTypeChecks(Expression target, Type targetType, Expression from)
+        private static (Expression currNodeExpression, Type currNodeType, List<Expression> statements) ParseCollectionAccessPart(Expression currNodeExpression, Type currNodeType, string part)
         {
-            var res = new List<Expression>();
-            var argumentType = Expression.Call(from, typeof(object).GetMethod("GetType"));
-            var isFromNull = Expression.Equal(from, Expression.Constant(null));
-            var nullToValueViolationCondition = Expression.AndAlso(isFromNull, Expression.IsTrue(Expression.Property(Expression.Constant(targetType), "IsValueType")));
-            res.Add(Expression.IfThen(nullToValueViolationCondition, Expression.Throw(Expression.Constant(new ObjectPropertyExtractionException($"Can't assign null to value-type {targetType}")))));
-            var wrongArgumentTypeCondition = Expression.AndAlso(Expression.IsFalse(isFromNull), Expression.IsFalse(Expression.Call(Expression.Constant(targetType), typeof(Type).GetMethod("IsAssignableFrom"), argumentType))); // todo (mpivko, 31.01.2018): add test for i
-            res.Add(Expression.IfThen(wrongArgumentTypeCondition, Expression.Throw(Expression.Constant(new ObjectPropertyExtractionException($"Can't assign item of type {argumentType} to {targetType}")))));
-            var argumentObjectCastExpression = Expression.Convert(from, targetType);
-            res.Add(Expression.Assign(target, argumentObjectCastExpression));
-            return res;
+            var statements = new List<Expression>();
+            if (TypeCheckingHelper.Instance.IsDictionary(currNodeType))
+            {
+                // todo (mpivko, 24.01.2018): check that it's not a first iteration
+                statements.Add(CreateValueInitStatement(currNodeExpression, currNodeType));
+
+                var dictKeyType = TypeCheckingHelper.Instance.GetDictionaryKeyType(currNodeType);
+                var indexer = ParseCollectionIndexer(TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartIndex(part), dictKeyType);
+
+                var dictElementExpression = Expression.Property(currNodeExpression, "Item", Expression.Constant(indexer));
+                var dictValueType = TypeCheckingHelper.Instance.GetDictionaryValueType(currNodeType);
+
+                statements.Add(CreateDictValueInitStatement(currNodeExpression, dictKeyType, dictValueType, indexer));
+
+                currNodeExpression = dictElementExpression;
+                currNodeType = dictValueType; // todo (mpivko, 24.01.2018): it can't be not dict
+            }
+            else if (currNodeType.IsArray)
+            {
+                var arrayItemType = currNodeType.GetElementType() ?? throw new ObjectPropertyExtractionException($"Array of type '{currNodeType}' has no item type");
+                var extendArrayMethod = GetGenericMethod(nameof(ExtendArray), arrayItemType);
+                var indexer = ParseCollectionIndexer(TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartIndex(part), typeof(int));
+                statements.Add(Expression.Assign(currNodeExpression, Expression.Call(extendArrayMethod, currNodeExpression, Expression.Constant((int)indexer + 1))));
+                var arrayItemExpression = Expression.ArrayAccess(currNodeExpression, Expression.Constant(indexer));
+
+                currNodeExpression = arrayItemExpression;
+                currNodeType = arrayItemType;
+
+                statements.Add(CreateValueInitStatement(currNodeExpression, currNodeType));
+            }
+            else
+            {
+                throw new ObjectPropertyExtractionException("Only dicts and arrays are supported as collections");
+            }
+            return (currNodeExpression, currNodeType, statements);
+        }
+
+        private static List<Expression> ParseArrayPart(Expression currNodeExpression, Type currNodeType, Expression argumentObjectExpression, string[] pathParts)
+        {
+            var statements = new List<Expression>();
+            if (currNodeType.IsArray) //todo mpivko potentially it could be imporoved to TypeCheckingHelper.Instance.IsIList(currNodeType))
+            {
+                var itemType = TypeCheckingHelper.Instance.GetEnumerableItemType(currNodeType);
+
+                var getLenExpression = Expression.Property(Expression.Convert(argumentObjectExpression, typeof(ICollection)), "Count");
+                statements.Add(CreateArrayInitStatement(currNodeExpression, itemType, getLenExpression));
+
+                var expressionLoopVar = Expression.Variable(typeof(int));
+
+                var elementExpression = Expression.ArrayAccess(currNodeExpression, expressionLoopVar);
+                var elementInitStatement = CreateValueInitStatement(elementExpression, itemType);
+                var setItemStatements = Expression.Block(ExtractChildModelSetterInner(itemType, elementExpression, GetIndexAccessExpression(argumentObjectExpression, expressionLoopVar), pathParts));
+
+                var loopBodyExpression = Expression.Block(elementInitStatement, setItemStatements);
+
+                var loopExpression = ForFromTo(expressionLoopVar, Expression.Constant(0), getLenExpression, loopBodyExpression);
+
+                statements.Add(loopExpression);
+                return statements;
+            }
+            throw new ObjectPropertyExtractionException("Only array is supported as iterated collection");
+        }
+
+        private static Expression AssignWithTypeChecks(Expression target, Type targetType, Expression from)
+        {
+            var smartCastMethod = GetGenericMethod(nameof(SmartCast), targetType);
+            return Expression.Assign(target, Expression.Call(smartCastMethod, @from));
+        }
+
+        private static T SmartCast<T>(object from)
+        {
+            if(from is T res)
+                return res;
+            if(from == null && !typeof(T).IsValueType)
+                return default;
+            throw new ObjectPropertyExtractionException($"Can't assign item of type '{from?.GetType().ToString() ?? "NULL"}' to target of type '{typeof(T)}'");
         }
 
         private static T[] ExtendArray<T>(T[] array, int length)
@@ -378,6 +394,19 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             foreach(var (i, item) in array.WithIndices())
                 newArray[i] = item;
             return newArray;
+        }
+
+        private static MethodInfo GetMethod(string name)
+        {
+            var method = typeof(ObjectPropertiesExtractor).GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static);
+            if (method == null)
+                throw new InvalidProgramStateException($"Method '{name}' not found in '{typeof(ObjectPropertiesExtractor)}'");
+            return method;
+        }
+
+        private static MethodInfo GetGenericMethod(string name, params Type[] genericTypes)
+        {
+            return GetMethod(name).MakeGenericMethod(genericTypes);
         }
 
         [NotNull]

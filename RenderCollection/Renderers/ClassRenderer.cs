@@ -80,26 +80,27 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
         private static object ExtractChildModel(object model, ICell cell)
         {
             var expression = cell.StringValue;
-            return ExtractCorrectDescription(expression, model, "") ?? expression ?? "";
+            return ExtractChildIfCorrectDescription(expression, model, "") ?? expression ?? "";
         }
 
         private static object StrictExtractChildModel(object model, ICell cell)
         {
             var expression = cell.StringValue;
-            return ExtractCorrectDescription(expression, model, null);
+            return ExtractChildIfCorrectDescription(expression, model, null);
         }
 
-        private static object ExtractCorrectDescription(string expression, object model, object onNullReplacement)
+        private static object ExtractChildIfCorrectDescription(string expression, object model, object onNullReplacement)
         {
             if (TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression) || TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
             {
+                var excelTemplateExpression = new ExcelTemplateExpression(expression);
                 try
                 {
-                    return ObjectPropertiesExtractor.Instance.ExtractChildObject(model, expression) ?? onNullReplacement;
+                    return ObjectPropertiesExtractor.Instance.ExtractChildObject(model, excelTemplateExpression) ?? onNullReplacement;
                 }
                 catch (ObjectPropertyExtractionException exception)
                 {
-                    throw new InvalidExcelTemplateException($"Failed to extract child by path '{TemplateDescriptionHelper.Instance.GetDescriptionParts(expression)[2]}' in model of type {model.GetType()}", exception);
+                    throw new InvalidExcelTemplateException($"Failed to extract child by path '{excelTemplateExpression.ChildObjectPath.RawPath}' in model of type {model.GetType()}", exception);
                 }
             }
             return null;

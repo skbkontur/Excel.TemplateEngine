@@ -53,7 +53,8 @@
     <Compile Include="Exceptions\InvalidExcelTemplateException.cs" />
     <Compile Include="Exceptions\NotSupportedExcelSerializationException.cs" />
     <Compile Include="Exceptions\ObjectPropertyExtractionException.cs" />
-    <Compile Include="Helpers\ExpressionPath.cs" />
+    <Compile Include="Helpers\ExcelTemplateExpression.cs" />
+    <Compile Include="Helpers\ExcelTemplatePath.cs" />
     <Compile Include="NavigationPrimitives\IRectangle.cs" />
     <Compile Include="NavigationPrimitives\Rectangle.cs" />
     <Compile Include="DataTypes\CellType.cs" />
@@ -124,6 +125,10 @@
     <ProjectReference Include="..\ExcelFileGenerator\ExcelFileGenerator.csproj">
       <Project>{24CB5CAE-413D-457D-8ECD-C5C689F6BD4D}</Project>
       <Name>ExcelFileGenerator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceLib\ServiceLib.csproj">
+      <Project>{2F8F38DC-3CDA-48BB-9798-7B6F75B02BC8}</Project>
+      <Name>ServiceLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
