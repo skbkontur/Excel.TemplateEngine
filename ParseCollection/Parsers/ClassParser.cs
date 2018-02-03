@@ -63,7 +63,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression);
             
             var childModelPath = expression.ChildObjectPath;
-            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, childModelPath);
+            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), childModelPath);
             
             if (childModelPath.HasArrayAccess)
             {
@@ -95,7 +95,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
             var cleanPathToEnumerable = pathToEnumerable.WithoutArrayAccess();
             
-            var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, cleanPathToEnumerable);
+            var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), cleanPathToEnumerable);
             if (!typeof(IList).IsAssignableFrom(childEnumerableType))
                 throw new Exception($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
 
@@ -123,7 +123,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression);
 
             var childModelPath = expression.ChildObjectPath;
-            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model, childModelPath);
+            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), childModelPath);
             var childFormControlType = ExtractFormControlType(cell);
             var childFormControlName = ExtractFormControlName(cell);
 

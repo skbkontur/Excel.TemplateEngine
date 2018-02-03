@@ -32,9 +32,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         }
 
         [NotNull]
-        public static Type ExtractChildObjectTypeFromPath([NotNull] object model/*todo mpivko: we need only type, not model*/, [NotNull] ExcelTemplatePath path) // todo (mpivko, 19.01.2018): make sure that path is not cleaned
+        public static Type ExtractChildObjectTypeFromPath([NotNull] Type modelType, [NotNull] ExcelTemplatePath path)
         {
-            var currType = model.GetType();
+            var currType = modelType;
 
             foreach (var part in path.PartsWithIndexers)
             {
@@ -309,7 +309,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             var statements = new List<Expression>();
             if (TypeCheckingHelper.Instance.IsDictionary(currNodeType))
             {
-                // todo (mpivko, 24.01.2018): check that it's not a first iteration
                 statements.Add(CreateValueInitStatement(currNodeExpression, currNodeType));
 
                 var dictKeyType = TypeCheckingHelper.Instance.GetDictionaryKeyType(currNodeType);
@@ -321,7 +320,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                 statements.Add(CreateDictValueInitStatement(currNodeExpression, dictKeyType, dictValueType, indexer));
 
                 currNodeExpression = dictElementExpression;
-                currNodeType = dictValueType; // todo (mpivko, 24.01.2018): it can't be not dict
+                currNodeType = dictValueType;
             }
             else if (currNodeType.IsArray)
             {
