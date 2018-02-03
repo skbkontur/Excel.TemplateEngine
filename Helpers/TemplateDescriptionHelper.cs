@@ -37,7 +37,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         public bool IsCorrectFormValueDescription(string expression)
         {
             var descriptionParts = GetDescriptionParts(expression);
-            return IsCorrectAbstractValueDescription(expression) && formControlTypes.Contains(descriptionParts[0]);
+            return IsCorrectAbstractValueDescription(expression) && !string.IsNullOrEmpty(descriptionParts[1]) && formControlTypes.Contains(descriptionParts[0]);
         }
 
         public bool IsCorrectAbstractValueDescription(string expression)
@@ -100,7 +100,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         public bool IsArrayPathPart(string pathPart)
         {
-            return pathPart.Contains("[]");
+            return arrayPathPartRegex.IsMatch(pathPart);
         }
 
         public string GetCollectionAccessPathPartName(string pathPart)
@@ -128,7 +128,8 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         public static TemplateDescriptionHelper Instance { get; } = new TemplateDescriptionHelper();
 
-        private static readonly Regex collectionAccessPathPartRegex = new Regex(@"^(\w*)\[([^\[\]]+)\]$", RegexOptions.Compiled);
+        private static readonly Regex collectionAccessPathPartRegex = new Regex(@"^(\w+)\[([^\[\]]+)\]$", RegexOptions.Compiled);
+        private static readonly Regex arrayPathPartRegex = new Regex(@"^(\w+)\[\]$", RegexOptions.Compiled);
         private static readonly Regex pathRegex = new Regex(@"^[A-Za-z]\w*(\[[^\[\]]*\])?(\.[A-Za-z]\w*(\[[^\[\]]*\])?)*$", RegexOptions.Compiled);
         private static readonly Regex cellReferenceRegex = new Regex("[A-Z]+[1-9][0-9]*", RegexOptions.Compiled);
         private static readonly Regex exactCellReferenceRegex = new Regex("^[A-Z]+[1-9][0-9]*$", RegexOptions.Compiled);

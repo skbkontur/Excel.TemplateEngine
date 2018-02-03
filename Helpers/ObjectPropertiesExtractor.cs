@@ -111,16 +111,28 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             {
                 var name = TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartName(pathPart);
                 var key = TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartIndex(pathPart);
-                if (!TryExtractCurrentChildPropertyInfo(model, name, out var dictPropertyInfo))
+                if (!TryExtractCurrentChildPropertyInfo(model, name, out var collectionPropertyInfo))
                     return false;
-                if(!TypeCheckingHelper.Instance.IsDictionary(dictPropertyInfo.PropertyType))
-                    throw new ObjectPropertyExtractionException($"Unexpected child type: expected dictionary (pathPath='{pathPart}'), but model is '{dictPropertyInfo.PropertyType}' in '{model.GetType()}'"); // todo (mpivko, 30.01.2018): what about arrays?
-                var indexer = ParseCollectionIndexer(key, TypeCheckingHelper.Instance.GetDictionaryKeyType(dictPropertyInfo.PropertyType));
-                var dict = dictPropertyInfo.GetValue(model, null);
-                if(dict == null)
+                if(TypeCheckingHelper.Instance.IsDictionary(collectionPropertyInfo.PropertyType))
+                {
+                    var indexer = ParseCollectionIndexer(key, TypeCheckingHelper.Instance.GetDictionaryKeyType(collectionPropertyInfo.PropertyType));
+                    var dict = collectionPropertyInfo.GetValue(model, null);
+                    if (dict == null)
+                        return true;
+                    child = ((IDictionary)dict)[indexer];
                     return true;
-                child = ((IDictionary)dict)[indexer];
-                return true;
+                }
+                if(TypeCheckingHelper.Instance.IsIList(collectionPropertyInfo.PropertyType))
+                {
+                    var indexer = (int)ParseCollectionIndexer(key, typeof(int));
+                    var list = collectionPropertyInfo.GetValue(model, null);
+                    if (list == null)
+                        return true;
+                    child = ((IList)list)[indexer];
+                    return true;
+                }
+                throw new ObjectPropertyExtractionException($"Unexpected child type: expected dictionary or array (pathPath='{pathPart}'), but model is '{collectionPropertyInfo.PropertyType}' in '{model.GetType()}'");
+                
             }
             if (!TryExtractCurrentChildPropertyInfo(model, pathPart, out var propertyInfo))
                 return false;
