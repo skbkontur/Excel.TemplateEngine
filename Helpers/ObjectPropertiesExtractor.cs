@@ -155,12 +155,17 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                 var resultList = new List<object>();
                 foreach(var element in ((IEnumerable)currentChild).Cast<object>())
                 {
-                    if(!TryExtractChildObject(element, pathParts, pathPartIndex + 1, out var resultItem))
+                    if (element == null)
+                        resultList.Add(null);
+                    else
                     {
-                        result = null;
-                        return false;
+                        if (!TryExtractChildObject(element, pathParts, pathPartIndex + 1, out var resultItem))
+                        {
+                            result = null;
+                            return false;
+                        }
+                        resultList.Add(resultItem);
                     }
-                    resultList.Add(resultItem);
                 }
                 result = resultList.ToArray();
                 return true;
