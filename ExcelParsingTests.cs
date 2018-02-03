@@ -11,30 +11,17 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
-using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
     [TestFixture]
     public class ExcelParsingTests
     {
-        // todo (mpivko, 25.12.2017): maybe merge some tests
-        // todo (mpivko, 25.12.2017): refactor these test
-
         [Test]
         public void TestSimpleWithEnumerable()
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/simpleWithEnumerable_template.xlsx"));
-            var template = new ExcelTable(templateDocument.GetWorksheet(0));
-            var templateEngine = new TemplateEngine(template);
-
-            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/simpleWithEnumerable_target.xlsx"));
-
-            var target = new ExcelTable(targetDocument.GetWorksheet(0));
-            var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
-            var tableParser = new TableParser(tableNavigator);
-            var (model, mappingForErrors) = templateEngine.Parse<PriceList>(tableParser);
-
+            var(model, mappingForErrors) = Parse("simpleWithEnumerable_template.xlsx", "simpleWithEnumerable_target.xlsx");
+            
             Assert.AreEqual("C3", mappingForErrors["Type"]);
             Assert.AreEqual("B13", mappingForErrors["Items[0].Id"]);
             Assert.AreEqual("C13", mappingForErrors["Items[0].Name"]);
@@ -52,158 +39,86 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void TestCheckBoxes()
         {
-            using(var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/сheckBoxes_template.xlsx")))
-            using(var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/сheckBoxes_target.xlsx")))
-            {
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
-
-                var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
-                var tableParser = new TableParser(tableNavigator);
-                var (model, mappingForErrors) = templateEngine.Parse<PriceList>(tableParser);
-
-                Assert.AreEqual("CheckBoxName1", mappingForErrors["TestFlag1"]);
-                Assert.AreEqual("CheckBoxName2", mappingForErrors["TestFlag2"]);
-                Assert.AreEqual(false, model.TestFlag1);
-                Assert.AreEqual(true, model.TestFlag2);
-            }
+            var (model, mappingForErrors) = Parse("сheckBoxes_template.xlsx", "сheckBoxes_target.xlsx");
+            Assert.AreEqual("CheckBoxName1", mappingForErrors["TestFlag1"]);
+            Assert.AreEqual("CheckBoxName2", mappingForErrors["TestFlag2"]);
+            Assert.AreEqual(false, model.TestFlag1);
+            Assert.AreEqual(true, model.TestFlag2);
         }
 
         [Test]
         public void TestNonexistentField()
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/nonexistentField_template.xlsx"));
-            var template = new ExcelTable(templateDocument.GetWorksheet(0));
-            var templateEngine = new TemplateEngine(template);
-
-            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsx"));
-
-            var target = new ExcelTable(targetDocument.GetWorksheet(0));
-            var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
-            var tableParser = new TableParser(tableNavigator);
-
-            Assert.Throws<ObjectPropertyExtractionException>(() => templateEngine.Parse<PriceList>(tableParser));
+            Assert.Throws<ObjectPropertyExtractionException>(() => Parse("nonexistentField_template.xlsx", "empty.xlsx"));
         }
 
         [Test]
         public void TestDictDirectAccess()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/dictDirectAccess_template.xlsx")))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/dictDirectAccess_target.xlsx")))
-            {
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
-
-                var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
-                var tableParser = new TableParser(tableNavigator);
-                var (model, mappingForErrors) = templateEngine.Parse<PriceList>(tableParser);
-
-                // todo (mpivko, 25.12.2017): add non-leaf dicts
-
-                Assert.AreEqual("C7", mappingForErrors["StringStringDict[\"testKey\"]"]);
-                Assert.AreEqual("E7", mappingForErrors["IntStringDict[42]"]);
-                Assert.AreEqual(new Dictionary<string, string> { { "testKey", "testValue" } }, model.StringStringDict);
-                Assert.AreEqual(new Dictionary<int, string> { { 42, "testValueInt" } }, model.IntStringDict);
-            }
+            var (model, mappingForErrors) = Parse("dictDirectAccess_template.xlsx", "dictDirectAccess_target.xlsx");
+            Assert.AreEqual("C7", mappingForErrors["StringStringDict[\"testKey\"]"]);
+            Assert.AreEqual("E7", mappingForErrors["IntStringDict[42]"]);
+            Assert.AreEqual("E9", mappingForErrors["InnerPriceList.IntStringDict[25]"]);
+            Assert.AreEqual("E10", mappingForErrors["InnerPriceList.PriceListsDict[\"price\"].Type"]);
+            Assert.AreEqual(new Dictionary<string, string> { { "testKey", "testValue" } }, model.StringStringDict);
+            Assert.AreEqual(new Dictionary<int, string> { { 42, "testValueInt" } }, model.IntStringDict);
+            Assert.AreEqual(new Dictionary<int, string> { { 25, "222222222" } }, model.InnerPriceList.IntStringDict);
+            Assert.AreEqual(1, model.InnerPriceList.PriceListsDict.Count);
+            Assert.AreEqual("720306001", model.InnerPriceList.PriceListsDict["price"].Type);
         }
 
         [Test]
         public void TestDictDirectAccessInCheckBoxes()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/dictDirectAccessInCheckBoxes_template.xlsx")))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/dictDirectAccessInCheckBoxes_target.xlsx")))
-            {
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
-
-                var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
-                var tableParser = new TableParser(tableNavigator);
-                var (model, mappingForErrors) = templateEngine.Parse<PriceList>(tableParser);
-
-                Assert.AreEqual("C7", mappingForErrors["StringStringDict[\"testKey\"]"]);
-                Assert.AreEqual("E7", mappingForErrors["IntStringDict[42]"]);
-                Assert.AreEqual("TestCheckBox1", mappingForErrors["IntBoolDict[25]"]);
-                Assert.AreEqual("TestCheckBox2", mappingForErrors["IntBoolDict[27]"]);
-                Assert.AreEqual(new Dictionary<string, string> { { "testKey", "testValue" } }, model.StringStringDict);
-                Assert.AreEqual(new Dictionary<int, string> { { 42, "testValueInt" } }, model.IntStringDict);
-                Assert.AreEqual(new Dictionary<int, bool> { { 25, false }, { 27, true } }, model.IntBoolDict);
-            }
+            var (model, mappingForErrors) = Parse("dictDirectAccessInCheckBoxes_template.xlsx", "dictDirectAccessInCheckBoxes_target.xlsx");
+            Assert.AreEqual("C7", mappingForErrors["StringStringDict[\"testKey\"]"]);
+            Assert.AreEqual("E7", mappingForErrors["IntStringDict[42]"]);
+            Assert.AreEqual("TestCheckBox1", mappingForErrors["IntBoolDict[25]"]);
+            Assert.AreEqual("TestCheckBox2", mappingForErrors["IntBoolDict[27]"]);
+            Assert.AreEqual(new Dictionary<string, string> { { "testKey", "testValue" } }, model.StringStringDict);
+            Assert.AreEqual(new Dictionary<int, string> { { 42, "testValueInt" } }, model.IntStringDict);
+            Assert.AreEqual(new Dictionary<int, bool> { { 25, false }, { 27, true } }, model.IntBoolDict);
         }
 
         [Test]
         public void TestDictDirectAccessInDropDown()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/dictDirectAccessInDropDown_template.xlsx")))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/dictDirectAccessInDropDown_target.xlsx")))
-            {
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
-
-                var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
-                var tableParser = new TableParser(tableNavigator);
-                var (model, mappingForErrors) = templateEngine.Parse<PriceList>(tableParser);
-
-                Assert.AreEqual("C7", mappingForErrors["StringStringDict[\"testKey\"]"]);
-                Assert.AreEqual("E7", mappingForErrors["IntStringDict[42]"]);
-                Assert.AreEqual("TestDropDown1", mappingForErrors["IntStringDict[15]"]);
-                Assert.AreEqual(new Dictionary<string, string> { { "testKey", "testValue" } }, model.StringStringDict);
-                Assert.AreEqual(new Dictionary<int, string> {{42, "testValueInt"}, {15, "Value2"}}, model.IntStringDict);
-            }
+            var (model, mappingForErrors) = Parse("dictDirectAccessInDropDown_template.xlsx", "dictDirectAccessInDropDown_target.xlsx");
+            Assert.AreEqual("C7", mappingForErrors["StringStringDict[\"testKey\"]"]);
+            Assert.AreEqual("E7", mappingForErrors["IntStringDict[42]"]);
+            Assert.AreEqual("TestDropDown1", mappingForErrors["IntStringDict[15]"]);
+            Assert.AreEqual(new Dictionary<string, string> { { "testKey", "testValue" } }, model.StringStringDict);
+            Assert.AreEqual(new Dictionary<int, string> { { 42, "testValueInt" }, { 15, "Value2" } }, model.IntStringDict);
         }
 
         [Test]
         public void TestEmptyEnumerable()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/emptyEnumerable_template.xlsx")))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/emptyEnumerable_target.xlsx")))
-            {
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
+            var (model, mappingForErrors) = Parse("emptyEnumerable_template.xlsx", "emptyEnumerable_target.xlsx");
 
-                var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
-                var tableParser = new TableParser(tableNavigator);
-                var (model, mappingForErrors) = templateEngine.Parse<PriceList>(tableParser);
+            Assert.AreEqual("C3", mappingForErrors["Type"]);
+            Assert.AreEqual(1, mappingForErrors.Count);
 
-                Assert.AreEqual("C3", mappingForErrors["Type"]);
-                Assert.AreEqual(1, mappingForErrors.Count);
-
-                Assert.AreEqual(0, model.Items.Length);
-                Assert.AreEqual("", model.Type);
-            }
+            Assert.AreEqual(0, model.Items.Length);
+            Assert.AreEqual("", model.Type);
         }
 
         [Test]
         public void TestDropDownFromTheOtherWorksheet()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/dropDownOtherWorksheet_template.xlsx")))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/dropDownOtherWorksheet_target.xlsx")))
-            {
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
-
-                var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
-                var tableParser = new TableParser(tableNavigator);
-                var (model, mappingForErrors) = templateEngine.Parse<PriceList>(tableParser);
-
-                Assert.AreEqual("DropDown1", mappingForErrors["Type"]);
-
-                Assert.AreEqual("ValueC", model.Type);
-            }
+            var (model, mappingForErrors) = Parse("dropDownOtherWorksheet_template.xlsx", "dropDownOtherWorksheet_target.xlsx");
+            Assert.AreEqual("DropDown1", mappingForErrors["Type"]);
+            Assert.AreEqual("ValueC", model.Type);
         }
 
-        [Test]
-        public void TestImportAfterCreate()
+        [TestCase("xlsx")]
+        [TestCase("xlsm")]
+        public void TestImportAfterCreate(string extension)
         {
             byte[] bytes;
 
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/importAfterCreate_template.xlsx")))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsx")))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes($"ExcelObjectPrinterTests/Files/empty.{extension}")))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
                 var templateEngine = new TemplateEngine(template);
@@ -218,28 +133,40 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
                 bytes = targetDocument.CloseAndGetDocumentBytes();
             }
-            
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/importAfterCreate_template.xlsx")))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(bytes))
+
+            var (model, mappingForErrors) = Parse(File.ReadAllBytes("ExcelObjectPrinterTests/Files/importAfterCreate_template.xlsx"), bytes);
+            Assert.AreEqual("CheckBoxName1", mappingForErrors["TestFlag1"]);
+            Assert.AreEqual("CheckBoxName2", mappingForErrors["TestFlag2"]);
+            Assert.AreEqual("C3", mappingForErrors["Type"]);
+            Assert.AreEqual(false, model.TestFlag1);
+            Assert.AreEqual(true, model.TestFlag2);
+            Assert.AreEqual("Значение 2", model.Type);
+        }
+
+        private (PriceList model, Dictionary<string, string> mappingForErrors) Parse(string templateFileName, string targetFileName)
+        {
+            return Parse(GetFile(templateFileName), GetFile(targetFileName));
+        }
+
+        private byte[] GetFile(string filename)
+        {
+            return File.ReadAllBytes($"ExcelObjectPrinterTests/Files/{filename}");
+        }
+
+        private (PriceList model, Dictionary<string, string> mappingForErrors) Parse(byte[] templateBytes, byte[] targetBytes)
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(templateBytes))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
                 var templateEngine = new TemplateEngine(template);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(target, new CellPosition("B2"), new Styler(template.GetCell(new CellPosition("A1"))));
+                var tableNavigator = new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
                 var tableParser = new TableParser(tableNavigator);
-                var (model, mappingForErrors) = templateEngine.Parse<PriceList>(tableParser);
-                
-                Assert.AreEqual("CheckBoxName1", mappingForErrors["TestFlag1"]);
-                Assert.AreEqual("CheckBoxName2", mappingForErrors["TestFlag2"]);
-                Assert.AreEqual("C3", mappingForErrors["Type"]);
-                Assert.AreEqual(false, model.TestFlag1);
-                Assert.AreEqual(true, model.TestFlag2);
-                Assert.AreEqual("Значение 2", model.Type);
+                return templateEngine.Parse<PriceList>(tableParser);
             }
         }
-
-        // todo (mpivko, 25.12.2017): test for xlsm
     }
 
     #region TestModels
@@ -289,6 +216,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public Dictionary<string, string> StringStringDict { get; set; }
         public Dictionary<int, string> IntStringDict { get; set; }
         public Dictionary<int, bool> IntBoolDict { get; set; }
+        public PriceList InnerPriceList { get; set; }
+        public Dictionary<string, PriceList> PriceListsDict { get; set; }
     }
 
     #endregion

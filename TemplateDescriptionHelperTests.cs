@@ -52,7 +52,68 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Val::A"));
         }
 
-        // todo (mpivko, 25.12.2017): tests for IsCorrectFormValueDescription
+        [TestCase("CheckBox:CheckBoxName:Path")]
+        [TestCase("DropDown:DropDownName:Path")]
+        [TestCase("CheckBox:abc:A.SubItem.Array[10].Element")]
+        [TestCase("DropDown:cde:Test.Dict[\"aaa\"]")]
+        [TestCase("CheckBox:very[strange] name\"with quote:Path")]
+        public void TestIsCorrectFormValueDescriptionReturnsTrue(string description)
+        {
+            Assert.True(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(description));
+        }
+
+        [TestCase("Lalala:CheckBoxName:Path")]
+        [TestCase("CheckBox::Path")]
+        [TestCase("CheckBox::")]
+        [TestCase(":Name:Path")]
+        [TestCase("::Path")]
+        [TestCase("::")]
+        [TestCase("abracadabra")]
+        [TestCase("CheckBox:b")]
+        [TestCase("CheckBox:abc:Path:Test")]
+        public void TestIsCorrectFormValueDescriptionReturnsFalse(string description)
+        {
+            Assert.False(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(description));
+        }
+
+        [TestCase("Test[123]")]
+        [TestCase("Test[\"lalala\"]")]
+        [TestCase("Test[abc]")]
+        [TestCase("Test['abc']")]
+        [TestCase("Test[1.5]")]
+        public void TestIsCollectionAccessPathPartReturnsTrue(string pathPart)
+        {
+            Assert.True(TemplateDescriptionHelper.Instance.IsCollectionAccessPathPart(pathPart));
+        }
+
+        [TestCase("Test")]
+        [TestCase("Test[]")]
+        [TestCase("[]")]
+        [TestCase("[1]")]
+        [TestCase("[\"abc\"]")]
+        [TestCase("Test[123]abc")]
+        public void TestIsCollectionAccessPathPartReturnsFalse(string pathPart)
+        {
+            Assert.False(TemplateDescriptionHelper.Instance.IsCollectionAccessPathPart(pathPart));
+        }
+
+        [TestCase("Test[]")]
+        public void TestIsIsArrayPathPartReturnsTrue(string pathPart)
+        {
+            Assert.True(TemplateDescriptionHelper.Instance.IsArrayPathPart(pathPart));
+        }
+
+        [TestCase("Test")]
+        [TestCase("Test[123]")]
+        [TestCase("[]")]
+        [TestCase("[1]")]
+        [TestCase("[\"abc\"]")]
+        [TestCase("Test[123]lalala")]
+        [TestCase("Test[][]")]
+        public void TestIsArrayPathPartReturnsFalse(string pathPart)
+        {
+            Assert.False(TemplateDescriptionHelper.Instance.IsArrayPathPart(pathPart));
+        }
 
         [Test]
         public void TemplateCoordinatesTest()

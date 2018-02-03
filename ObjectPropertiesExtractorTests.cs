@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Linq.Expressions;
 
 using JetBrains.Annotations;
 
@@ -10,6 +11,7 @@ using NUnit.Framework;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
+using SKBKontur.Catalogue.Expressions;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
@@ -89,6 +91,58 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(localModel, new ExcelTemplateExpression(valueDesription));
             var childArray = child as object[];
             CollectionAssert.AreEqual(localModel.Bs, childArray);
+        }
+
+        public static IEnumerable CollectionElementsExtractionTestSource
+        {
+            get
+            {
+                return new (string, Func<ModelWithCollections, object>)[]
+                    {
+                        ("IntToStringDict[10]", x => x.IntToStringDict[10]),
+                        ("IntToStringDict[25]", x => x.IntToStringDict[25]),
+                        ("StringToIntDict[\"lalala\"]", x => x.StringToIntDict["lalala"]),
+                        ("StringToIntDict[\"abracadabra\"]", x => x.StringToIntDict["abracadabra"]),
+                        ("Array[0]", x => x.Array[0]),
+                        ("Array[1]", x => x.Array[1]),
+                        ("Array[2]", x => x.Array[2]),
+                        ("List[0]", x => x.List[0]),
+                        ("List[1]", x => x.List[1]),
+                        ("List[2]", x => x.List[2]),
+                        ("InnerModel.IntToStringDict[10010]", x => x.InnerModel.IntToStringDict[10010]),
+                        ("InnerModel.IntToStringDict[10025]", x => x.InnerModel.IntToStringDict[10025]),
+                        ("InnerModel.StringToIntDict[\"inner_lalala\"]", x => x.InnerModel.StringToIntDict["inner_lalala"]),
+                        ("InnerModel.StringToIntDict[\"inner_abracadabra\"]", x => x.InnerModel.StringToIntDict["inner_abracadabra"]),
+                        ("InnerModel.Array[0]", x => x.InnerModel.Array[0]),
+                        ("InnerModel.Array[1]", x => x.InnerModel.Array[1]),
+                        ("InnerModel.Array[2]", x => x.InnerModel.Array[2]),
+                        ("InnerModel.List[0]", x => x.InnerModel.List[0]),
+                        ("InnerModel.List[1]", x => x.InnerModel.List[1]),
+                        ("InnerModel.List[2]", x => x.InnerModel.List[2]),
+                    }
+                    .Select(x => new object[] {$"Value::{x.Item1}", x.Item2});
+            }
+        }
+
+        [TestCaseSource(nameof(CollectionElementsExtractionTestSource))]
+        public void CollectionElementsExtractionTest(string valueDesription, Func<ModelWithCollections, object> expectedElementProvider)
+        {
+            var localModel = new ModelWithCollections
+                {
+                    IntToStringDict = new Dictionary<int, string> { { 10, "abc" }, { 25, "def" } },
+                    StringToIntDict = new Dictionary<string, int> { { "lalala", 123 }, { "abracadabra", 321 } },
+                    Array = new[] { "a", "lalaa", "test" },
+                    List = new List<string> { "first", "second", "third" },
+                    InnerModel = new InnerModelWithCollections
+                        {
+                            IntToStringDict = new Dictionary<int, string> { { 10010, "inner_abc" }, { 10025, "inner_def" } },
+                            StringToIntDict = new Dictionary<string, int> { { "inner_lalala", 100123 }, { "inner_abracadabra", 100321 } },
+                            Array = new[] { "inner_a", "inner_inner_lalaa", "inner_test" },
+                            List = new List<string> { "first", "inner_second", "inner_third" },
+                        }
+                };
+            var child = ObjectPropertiesExtractor.Instance.ExtractChildObject(localModel, new ExcelTemplateExpression(valueDesription));
+            Assert.AreEqual(expectedElementProvider(localModel), child);
         }
 
         [Test]
@@ -371,6 +425,23 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             {
                 return (S != null ? S.GetHashCode() : 0);
             }
+        }
+
+        public class ModelWithCollections
+        {
+            public Dictionary<string, int> StringToIntDict { get; set; }
+            public Dictionary<int, string> IntToStringDict { get; set; }
+            public string[] Array { get; set; }
+            public List<string> List { get; set; }
+            public InnerModelWithCollections InnerModel { get; set; }
+        }
+
+        public class InnerModelWithCollections
+        {
+            public Dictionary<string, int> StringToIntDict { get; set; }
+            public Dictionary<int, string> IntToStringDict { get; set; }
+            public string[] Array { get; set; }
+            public List<string> List { get; set; }
         }
 
         #endregion
