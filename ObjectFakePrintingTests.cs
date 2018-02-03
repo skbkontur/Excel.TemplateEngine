@@ -295,6 +295,38 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         }
 
         [Test]
+        public void WithNullArrayTest()
+        {
+            var model = new DocumentWithArray
+            {
+                Array = null,
+                NonArray = "StringValue"
+            };
+            var stringTemplate = new[]
+                {
+                    new[] {"", "Template:RootTemplate:A2:D4", "", ""},
+                    new[] {"", "Адреса:", "Имена:", ""},
+                    new[] {"", "Value::Array[].Address", "Value::Array[].Name", ""},
+                    new[] {"Value::NonArray", "", "", ""}
+                };
+
+            var template = FakeTable.GenerateFromStringArray(stringTemplate);
+
+            var target = new FakeTable(100, 100);
+            var tableBuilder = new TableBuilder(new TableNavigator(target, new CellPosition("B2")));
+            var templateEngine = new TemplateEngine(template);
+            templateEngine.Render(tableBuilder, model);
+
+            Assert.AreEqual("Адреса:", target.GetCell(new CellPosition("C2")).StringValue);
+            Assert.AreEqual("Имена:", target.GetCell(new CellPosition("D2")).StringValue);
+            Assert.AreEqual("", target.GetCell(new CellPosition("C3")).StringValue);
+            Assert.AreEqual("", target.GetCell(new CellPosition("D3")).StringValue);
+            Assert.AreEqual("StringValue", target.GetCell(new CellPosition("B4")).StringValue);
+
+            DebugPrinting(target, new CellPosition(1, 1), new CellPosition(20, 20));
+        }
+
+        [Test]
         public void ObjectWithArrayAndNullFieldsPrintingTest()
         {
             var model = new DocumentWithArray
@@ -316,6 +348,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                                     Address = null,
                                     Name = "Name3"
                                 },
+                            null,
                             new Organization
                                 {
                                     Address = "Address4",
@@ -344,12 +377,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.AreEqual("Address1", target.GetCell(new CellPosition("C3")).StringValue);
             Assert.AreEqual("Address2", target.GetCell(new CellPosition("C4")).StringValue);
             Assert.AreEqual("", target.GetCell(new CellPosition("C5")).StringValue);
-            Assert.AreEqual("Address4", target.GetCell(new CellPosition("C6")).StringValue);
+            Assert.AreEqual("", target.GetCell(new CellPosition("C6")).StringValue);
+            Assert.AreEqual("Address4", target.GetCell(new CellPosition("C7")).StringValue);
             Assert.AreEqual("Name1", target.GetCell(new CellPosition("D3")).StringValue);
             Assert.AreEqual("", target.GetCell(new CellPosition("D4")).StringValue);
             Assert.AreEqual("Name3", target.GetCell(new CellPosition("D5")).StringValue);
-            Assert.AreEqual("Name4", target.GetCell(new CellPosition("D6")).StringValue);
-            Assert.AreEqual("StringValue", target.GetCell(new CellPosition("B7")).StringValue);
+            Assert.AreEqual("", target.GetCell(new CellPosition("D6")).StringValue);
+            Assert.AreEqual("Name4", target.GetCell(new CellPosition("D7")).StringValue);
+            Assert.AreEqual("StringValue", target.GetCell(new CellPosition("B8")).StringValue);
 
             DebugPrinting(target, new CellPosition(1, 1), new CellPosition(20, 20));
         }
