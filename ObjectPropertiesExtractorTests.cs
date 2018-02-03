@@ -125,7 +125,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [TestCase("Value::DictProperty[123123]", TestName = "Access to dict with index of wrong type")]
         public void TypeExtractionTestOnInvalidExpressions(string expression)
         {
-            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest, new ExcelTemplateExpression(expression).ChildObjectPath));
+            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest.GetType(), new ExcelTemplateExpression(expression).ChildObjectPath));
         }
 
         public static IEnumerable TypeExtractionTestTestCases
@@ -150,7 +150,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [TestCaseSource(nameof(TypeExtractionTestTestCases))]
         public void TypeExtractionTest(string expression, Type expectedType)
         {
-            var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest, new ExcelTemplateExpression(expression).ChildObjectPath);
+            var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest.GetType(), new ExcelTemplateExpression(expression).ChildObjectPath);
             Assert.AreEqual(expectedType, type);
         }
 
@@ -159,7 +159,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         {
             var modelToGetType = new ComplexModel();
             
-            var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelToGetType, new ExcelTemplateExpression(expression).ChildObjectPath);
+            var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelToGetType.GetType(), new ExcelTemplateExpression(expression).ChildObjectPath);
             Assert.AreEqual(expectedType, type);
         }
 
