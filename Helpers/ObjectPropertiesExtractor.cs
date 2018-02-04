@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -80,9 +81,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         }
         
         [NotNull]
-        public static Action<object> ExtractChildObjectSetter([NotNull] object model, [NotNull] ExcelTemplateExpression expression)
+        public static Action<object> ExtractChildObjectSetter([NotNull] object model, [NotNull] ExcelTemplatePath path)
         {
-            return ExtractChildModelSetter(model, expression.ChildObjectPath.PartsWithIndexers);
+            var action = childObjectSettersCache.GetOrAdd((model.GetType(), path), x => ExtractChildModelSetter(x.Item1, x.Item2.PartsWithIndexers));
+            return x => action(model, x);
         }
         
         public static ObjectPropertiesExtractor Instance { get; } = new ObjectPropertiesExtractor();
@@ -195,10 +197,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return result;
         }
 
-        private static Action<object> ExtractChildModelSetter(object model, string[] pathParts)
+        private static Action<object, object> ExtractChildModelSetter(Type modelType, string[] pathParts)
         {
             var modelParameter = Expression.Variable(typeof(object));
-            var currNodeType = model.GetType();
+            var currNodeType = modelType;
             Expression currNodeExpression = Expression.Convert(modelParameter, currNodeType);
 
 
@@ -210,9 +212,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
             var expression = Expression.Lambda<Action<object, object>>(block, modelParameter, argumentObjectExpression);
 
-            var act = expression.Compile();
-
-            return x => act(model, x);
+            return expression.Compile();
         }
         
         private static T InitValue<T>(T currentValue)
@@ -470,5 +470,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             }
             throw new ObjectPropertyExtractionException("Only strings and ints are supported as collection indexers");
         }
+
+        private static readonly ConcurrentDictionary<(Type, ExcelTemplatePath), Action<object, object>> childObjectSettersCache = new ConcurrentDictionary<(Type, ExcelTemplatePath), Action<object, object>>();
     }
 }

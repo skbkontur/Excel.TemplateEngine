@@ -38,5 +38,23 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         public string[] PartsWithIndexers { get; }
         public string[] PartsWithoutArrayAccess { get; }
         public string[] PartsWithoutIndexers { get; }
+
+        protected bool Equals(ExcelTemplatePath other)
+        {
+            return string.Equals(RawPath, other.RawPath);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(ReferenceEquals(null, obj)) return false;
+            if(ReferenceEquals(this, obj)) return true;
+            if(obj.GetType() != this.GetType()) return false;
+            return Equals((ExcelTemplatePath)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return RawPath != null ? RawPath.GetHashCode() : 0;
+        }
     }
 }

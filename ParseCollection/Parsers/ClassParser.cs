@@ -60,7 +60,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
         private void ParseValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplateExpression expression)
         {
-            var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression);
+            var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression.ChildObjectPath);
             
             var childModelPath = expression.ChildObjectPath;
             var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), childModelPath);
@@ -120,7 +120,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
         private void ParseFormValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplateExpression expression)
         {
-            var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression);
+            var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression.ChildObjectPath);
 
             var childModelPath = expression.ChildObjectPath;
             var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), childModelPath);
