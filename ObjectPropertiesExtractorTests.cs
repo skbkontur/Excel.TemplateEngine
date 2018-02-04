@@ -241,7 +241,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public void ExtractChildObjectSetterTest(string expression, Func<ComplexModel, object> getter, object valueToSet)
         {
             var modelToSet = new ComplexModel();
-            var s = ObjectPropertiesExtractor.ExtractChildObjectSetter(modelToSet, new ExcelTemplateExpression(expression));
+            var s = ObjectPropertiesExtractor.ExtractChildObjectSetter(modelToSet, new ExcelTemplateExpression(expression).ChildObjectPath);
             s(valueToSet);
             Assert.AreEqual(valueToSet, getter(modelToSet));
         }
