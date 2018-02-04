@@ -135,7 +135,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
                 throw new FormControlParsingException(childFormControlName);
 
             childSetter(parsedObject);
-            addFieldMapping(childModelPath.RawPath, childFormControlName /*todo mpivko consider calculation of form control postion to return cell here instead of control name*/);
+            addFieldMapping(childModelPath.RawPath, childFormControlName);
         }
 
         [NotNull]

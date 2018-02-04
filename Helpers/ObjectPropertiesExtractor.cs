@@ -362,7 +362,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         private static List<Expression> ParseArrayPart(Expression currNodeExpression, Type currNodeType, Expression argumentObjectExpression, string[] pathParts)
         {
             var statements = new List<Expression>();
-            if (currNodeType.IsArray) //todo mpivko potentially it could be imporoved to TypeCheckingHelper.Instance.IsIList(currNodeType))
+            if (currNodeType.IsArray)
             {
                 var itemType = TypeCheckingHelper.Instance.GetEnumerableItemType(currNodeType);
 
