@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -22,7 +23,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
     {
         public ExcelDocument(byte[] template)
         {
-            worksheetsCache = new Dictionary<string, WorksheetPart>();
+            worksheetsCache = new ConcurrentDictionary<string, WorksheetPart>();
 
             documentMemoryStream = new MemoryStream();
             documentMemoryStream.Write(template, 0, template.Length);
@@ -121,12 +122,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         private IExcelWorksheet GetWorksheetById(string sheetId)
         {
-            if (!worksheetsCache.TryGetValue(sheetId, out var worksheetPart))
-            {
-                // todo (mpivko, 22.12.2017): race here
-                worksheetPart = (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(sheetId);
-                worksheetsCache.Add(sheetId, worksheetPart);
-            }
+            var worksheetPart = worksheetsCache.GetOrAdd(sheetId, x => (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(x));
             return new ExcelWorksheet(this, worksheetPart, documentStyle, excelSharedStrings);
         }
 
@@ -196,7 +192,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return stringBuilder.ToString();
         }
 
-        private readonly IDictionary<string, WorksheetPart> worksheetsCache;
+        private readonly ConcurrentDictionary<string, WorksheetPart> worksheetsCache;
         private readonly MemoryStream documentMemoryStream;
         private readonly SpreadsheetDocument spreadsheetDocument;
         private readonly IExcelDocumentStyle documentStyle;
