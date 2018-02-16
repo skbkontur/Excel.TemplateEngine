@@ -33,5 +33,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
                 return new DropDownValueParser();
             throw new NotSupportedExcelSerializationException($"Unsupported pair of {nameof(formControlTypeName)} ({formControlTypeName}) and {nameof(valueType)} ({valueType}) for form controls");
         }
+
+        public IEnumerableMeasurer GetEnumerableMeasurer()
+        {
+            return new EnumerableMeasurer(this);
+        }
     }
 }

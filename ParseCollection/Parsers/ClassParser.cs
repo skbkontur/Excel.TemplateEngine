@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 using JetBrains.Annotations;
@@ -7,6 +8,7 @@ using JetBrains.Annotations;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
+using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
@@ -30,7 +32,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         {
             var model = new TModel();
 
-            foreach(var row in template.Content.Cells)
+            var lengths = GetEnumerablesLengths<TModel>(tableParser, template);
+
+            foreach (var row in template.Content.Cells)
             {
                 foreach(var cell in row)
                 {
@@ -40,7 +44,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
                     if(TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
                     {
-                        ParseValue(tableParser, addFieldMapping, model, cell, new ExcelTemplateExpression(expression));
+                        ParseValue(tableParser, addFieldMapping, model, cell, new ExcelTemplateExpression(expression), lengths);
                         continue;
                     }
                     if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression))
@@ -56,7 +60,56 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             return model;
         }
 
-        private void ParseValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplateExpression expression)
+        [NotNull]
+        public Dictionary<string, int> GetEnumerablesLengths<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template)
+        {
+            var enumerableCellsGroups = new Dictionary<string, List<ICell>>();
+            foreach (var row in template.Content.Cells)
+            {
+                foreach (var cell in row)
+                {
+                    tableParser.PushState(cell.CellPosition, new Styler(cell));
+
+                    var expression = cell.StringValue;
+
+                    if (TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
+                    {
+                        if(new ExcelTemplateExpression(expression).ChildObjectPath.HasArrayAccess)
+                        {
+                            var (rawPathToEnumerable, _) = new ExcelTemplateExpression(expression).ChildObjectPath.SplitForEnumerableExpansion();
+                            rawPathToEnumerable = ExcelTemplatePath.FromRawPath(rawPathToEnumerable).WithoutArrayAccess().RawPath;
+                            if(!enumerableCellsGroups.ContainsKey(rawPathToEnumerable))
+                                enumerableCellsGroups[rawPathToEnumerable] = new List<ICell>();
+                            enumerableCellsGroups[rawPathToEnumerable].Add(cell);
+                        }
+                    }
+                    
+                    tableParser.PopState();
+                }
+            }
+
+            var lengths = new Dictionary<string, int>();
+
+            foreach(var enumerableCells in enumerableCellsGroups)
+            {
+                var cleanPathToEnumerable = ExcelTemplatePath.FromRawPath(enumerableCells.Key);
+
+                var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(typeof(TModel), cleanPathToEnumerable);
+                if (!typeof(IList).IsAssignableFrom(childEnumerableType))
+                    throw new Exception($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
+
+                var primaryParts = enumerableCells.Value.Where(x => new ExcelTemplateExpression(x.StringValue).ChildObjectPath.HasPrimaryArrayAccess).ToList();
+                if(primaryParts.Count == 0)
+                    primaryParts = enumerableCells.Value.Take(1).ToList();
+
+                var measurer = parserCollection.GetEnumerableMeasurer();
+                lengths[enumerableCells.Key] = measurer.GetLength(tableParser, typeof(TModel), primaryParts);
+            }
+
+            return lengths;
+        }
+
+        private void ParseValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplateExpression expression, Dictionary<string, int> lengths)
         {
             var childSetter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(model, expression.ChildObjectPath);
 
@@ -65,7 +118,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
             if(childModelPath.HasArrayAccess)
             {
-                ParseEnumerableValue(tableParser, addFieldMapping, model, expression, childSetter, childModelType);
+                ParseEnumerableValue(tableParser, addFieldMapping, model, expression, childSetter, childModelType, lengths);
             }
             else
             {
@@ -85,7 +138,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             addFieldMapping(childModelPath.RawPath, cell.CellPosition.CellReference);
         }
 
-        private void ParseEnumerableValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ExcelTemplateExpression expression, Action<object> childSetter, Type childModelType)
+        private void ParseEnumerableValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ExcelTemplateExpression expression, Action<object> childSetter, Type childModelType, Dictionary<string, int> lengths)
         {
             var (rawPathToEnumerable, childPath) = expression.ChildObjectPath.SplitForEnumerableExpansion();
 
@@ -96,19 +149,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), cleanPathToEnumerable);
             if(!typeof(IList).IsAssignableFrom(childEnumerableType))
                 throw new Exception($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
-
-            var childObject = ObjectPropertiesExtractor.ExtractChildObject(model, pathToEnumerable);
-            if(childObject != null && !(childObject is IList))
-                throw new InvalidProgramStateException("Failed to cast child to IList, although we checked that it should be IList");
-            var childEnumerable = (IList)childObject;
-
+            
             var parser = parserCollection.GetEnumerableParser(childEnumerableType);
 
-            var limit = childEnumerable?.Count ?? -1;
-            var parsedList = parser.Parse(tableParser, childModelType, limit, (name, value) => addFieldMapping($"{cleanPathToEnumerable.RawPath}{name}.{childPath}", value));
-
-            var lastNotNull = parsedList.FindLastIndex(x => x != null);
-            parsedList = parsedList.Take(lastNotNull + 1).ToList();
+            var count = lengths[cleanPathToEnumerable.RawPath];
+            var parsedList = parser.Parse(tableParser, childModelType, count, (name, value) => addFieldMapping($"{cleanPathToEnumerable.RawPath}{name}.{childPath}", value));
 
             if(parsedList.Count > maxIEnumerableLen)
                 throw new EnumerableTooLongException(maxIEnumerableLen);

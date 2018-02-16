@@ -10,5 +10,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
         IEnumerableParser GetEnumerableParser(Type modelType);
         IAtomicValueParser GetAtomicValueParser(Type valueType);
         IFormValueParser GetFormValueParser(string formControlTypeName, Type valueType);
+        IEnumerableMeasurer GetEnumerableMeasurer();
     }
 }

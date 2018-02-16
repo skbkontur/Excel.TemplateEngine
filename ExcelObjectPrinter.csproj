@@ -73,7 +73,9 @@
     <Compile Include="ParseCollection\Parsers\CheckBoxValueParser.cs" />
     <Compile Include="ParseCollection\Parsers\ClassParser.cs" />
     <Compile Include="ParseCollection\Parsers\DropDownValueParser.cs" />
+    <Compile Include="ParseCollection\Parsers\EnumerableMeasurer.cs" />
     <Compile Include="ParseCollection\Parsers\IAtomicValueParser.cs" />
+    <Compile Include="ParseCollection\Parsers\IEnumerableMeasurer.cs" />
     <Compile Include="ParseCollection\Parsers\IEnumerableParser.cs" />
     <Compile Include="ParseCollection\Parsers\IFormValueParser.cs" />
     <Compile Include="ParseCollection\Parsers\AtomicValueParser.cs" />

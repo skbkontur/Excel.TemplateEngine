@@ -95,15 +95,25 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         public string GetPathPartName(string pathPart)
         {
             if(IsArrayPathPart(pathPart))
-                return pathPart.Replace("[]", "");
+                return GetArrayPathPartName(pathPart);
             if(IsCollectionAccessPathPart(pathPart))
                 return GetCollectionAccessPathPartName(pathPart);
             return pathPart;
         }
 
+        public string GetArrayPathPartName(string pathPart)
+        {
+             return pathPart.Replace("[]", "").Replace("[#]", "");
+        }
+
         public bool IsArrayPathPart(string pathPart)
         {
             return arrayPathPartRegex.IsMatch(pathPart);
+        }
+
+        public bool IsPrimaryArrayPathPart(string pathPart)
+        {
+            return arrayPrimaryPathPartRegex.IsMatch(pathPart);
         }
 
         public string GetCollectionAccessPathPartName(string pathPart)
@@ -149,8 +159,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         public static TemplateDescriptionHelper Instance { get; } = new TemplateDescriptionHelper();
 
-        private static readonly Regex collectionAccessPathPartRegex = new Regex(@"^(\w+)\[([^\[\]]+)\]$", RegexOptions.Compiled);
-        private static readonly Regex arrayPathPartRegex = new Regex(@"^(\w+)\[\]$", RegexOptions.Compiled);
+        private static readonly Regex collectionAccessPathPartRegex = new Regex(@"^(\w+)\[([^\[\]#]+)\]$", RegexOptions.Compiled);
+        private static readonly Regex arrayPathPartRegex = new Regex(@"^(\w+)\[#?\]$", RegexOptions.Compiled);
+        private static readonly Regex arrayPrimaryPathPartRegex = new Regex(@"^(\w+)\[#\]$", RegexOptions.Compiled);
         private static readonly Regex pathRegex = new Regex(@"^[A-Za-z]\w*(\[[^\[\]]*\])?(\.[A-Za-z]\w*(\[[^\[\]]*\])?)*$", RegexOptions.Compiled);
         private static readonly Regex cellReferenceRegex = new Regex("[A-Z]+[1-9][0-9]*", RegexOptions.Compiled);
         private static readonly Regex exactCellReferenceRegex = new Regex("^[A-Z]+[1-9][0-9]*$", RegexOptions.Compiled);

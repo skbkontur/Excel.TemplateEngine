@@ -11,15 +11,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             if(!TemplateDescriptionHelper.Instance.IsCorrectModelPath(rawPath))
                 throw new ObjectPropertyExtractionException($"Invalid excel template path '{rawPath}'");
             PartsWithIndexers = rawPath.Split('.');
-            PartsWithoutArrayAccess = PartsWithIndexers.Select(x => x.Replace("[]", "")).ToArray();
-            PartsWithoutIndexers = PartsWithIndexers.Select(x =>
-                {
-                    if(TemplateDescriptionHelper.Instance.IsCollectionAccessPathPart(x))
-                        return TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartName(x);
-                    return x.Replace("[]", "");
-                }).ToArray();
+            PartsWithoutArrayAccess = PartsWithIndexers.Select(TemplateDescriptionHelper.Instance.GetArrayPathPartName).ToArray();
+            PartsWithoutIndexers = PartsWithIndexers.Select(TemplateDescriptionHelper.Instance.GetPathPartName).ToArray();
             RawPath = rawPath;
-            HasArrayAccess = PartsWithIndexers.Any(x => x.EndsWith("[]"));
+            HasArrayAccess = PartsWithIndexers.Any(TemplateDescriptionHelper.Instance.IsArrayPathPart);
+            HasPrimaryArrayAccess = PartsWithIndexers.Any(TemplateDescriptionHelper.Instance.IsPrimaryArrayPathPart);
         }
 
         public static ExcelTemplatePath FromRawPath(string rawPath)
@@ -35,18 +31,19 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         public (string, string) SplitForEnumerableExpansion()
         {
             if (!HasArrayAccess)
-                throw new BaseExcelSerializationException($"Expression needs enumerable expansion but has no part with '[]' (path - '{RawPath}')");
+                throw new BaseExcelSerializationException($"Expression needs enumerable expansion but has no part with '[]' or '[#]' (path - '{RawPath}')");
             var parts = PartsWithIndexers;
-            var firstPartLen = parts.TakeWhile(x => !x.EndsWith("[]")).Count() + 1;
+            var firstPartLen = parts.TakeWhile(x => !TemplateDescriptionHelper.Instance.IsArrayPathPart(x)).Count() + 1;
             return (string.Join(".", parts.Take(firstPartLen)), string.Join(".", parts.Skip(firstPartLen)));
         }
 
         public bool HasArrayAccess { get; }
+        public bool HasPrimaryArrayAccess { get; set; }
         public string RawPath { get; }
         public string[] PartsWithIndexers { get; }
         public string[] PartsWithoutArrayAccess { get; }
         public string[] PartsWithoutIndexers { get; }
-
+        
         protected bool Equals(ExcelTemplatePath other)
         {
             return string.Equals(RawPath, other.RawPath);
