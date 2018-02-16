@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -94,9 +93,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return part == null ? null : new ExcelVbaInfo(part);
         }
 
-        public void AddVbaInfo([CanBeNull]IExcelVbaInfo excelVbaInfo)
+        public void AddVbaInfo([CanBeNull] IExcelVbaInfo excelVbaInfo)
         {
-            if (excelVbaInfo == null)
+            if(excelVbaInfo == null)
                 return;
             spreadsheetDocument.WorkbookPart.AddPart(excelVbaInfo.VbaProjectPart);
         }
@@ -115,8 +114,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         public void SetDefaultCreatorAndEditor()
         {
             spreadsheetDocument.PackageProperties.Creator = "Контур.EDI";
-            spreadsheetDocument.PackageProperties.Created = System.Xml.XmlConvert.ToDateTime("2014-01-01T00:00:00Z", System.Xml.XmlDateTimeSerializationMode.RoundtripKind);
-            spreadsheetDocument.PackageProperties.Modified = System.Xml.XmlConvert.ToDateTime("2014-01-01T00:00:00Z", System.Xml.XmlDateTimeSerializationMode.RoundtripKind);
+            spreadsheetDocument.PackageProperties.Created = XmlConvert.ToDateTime("2014-01-01T00:00:00Z", XmlDateTimeSerializationMode.RoundtripKind);
+            spreadsheetDocument.PackageProperties.Modified = XmlConvert.ToDateTime("2014-01-01T00:00:00Z", XmlDateTimeSerializationMode.RoundtripKind);
             spreadsheetDocument.PackageProperties.LastModifiedBy = "Контур.EDI";
         }
 
@@ -138,7 +137,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             ThrowIfSpreadsheetDisposed();
             AssertWorksheetNameValid(worksheetName);
 
-            if (FindWorksheet(worksheetName) != null)
+            if(FindWorksheet(worksheetName) != null)
                 throw new ArgumentException($"Sheet with name {worksheetName} already exists");
 
             var worksheetPart = spreadsheetDocument.WorkbookPart.AddNewPart<WorksheetPart>();
@@ -163,7 +162,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         private void AssertWorksheetNameValid(string worksheetName)
         {
-            if (worksheetName.Length > 31)
+            if(worksheetName.Length > 31)
                 throw new ArgumentException($"Worksheet name ('{worksheetName}') is too long (allowed <=31 symbols, current - {worksheetName.Length})");
         }
 

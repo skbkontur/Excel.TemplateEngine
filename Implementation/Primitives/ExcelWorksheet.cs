@@ -121,11 +121,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             var drawingsPart = worksheet.WorksheetPart.DrawingsPart;
             if(new ExcelCheckBoxControlInfo(this, control, controlPropertiesPart, vmlDrawingPart, drawingsPart) is TExcelFormControlInfo checkBoxControlInfo)
                 return checkBoxControlInfo;
-            if (new ExcelDropDownControlInfo(this, control, controlPropertiesPart, vmlDrawingPart, drawingsPart) is TExcelFormControlInfo dropDownControlInfo)
+            if(new ExcelDropDownControlInfo(this, control, controlPropertiesPart, vmlDrawingPart, drawingsPart) is TExcelFormControlInfo dropDownControlInfo)
                 return dropDownControlInfo;
             throw new NotSupportedExcelDocumentException($"Type {typeof(TExcelFormControlInfo)} is not a supported ExcelFormControlInfo");
         }
-        
+
         public IExcelFormControlsInfo GetFormControlsInfo()
         {
             return new ExcelFormControlsInfo(worksheet.WorksheetPart);
@@ -134,7 +134,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private void SafelyAddPart<TPart>([NotNull] WorksheetPart target, [CanBeNull] TPart part, [CanBeNull] string id)
             where TPart : OpenXmlPart
         {
-            if (part == null || id == null)
+            if(part == null || id == null)
                 Log.For(this).Warn($"Tried to add null part of type '{typeof(TPart)}'");
             else
                 target.AddPart(part, id);
@@ -145,7 +145,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             if(formControlInfos.Controls == null)
                 return;
-            
+
             var targetWsPart = worksheet.WorksheetPart;
 
             foreach(var (controlPropertiesPart, id) in formControlInfos.ControlPropertiesParts)
@@ -165,18 +165,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             foreach(var (prefix, uri) in requiedNamespaces)
                 if(worksheet.LookupNamespace(prefix) == null)
                     worksheet.AddNamespaceDeclaration(prefix, uri);
-            
-            var alternateContents = formControlInfos.Controls.ChildElements
-                            .Where(x => x is AlternateContent)
-                            .Select(x => x.GetFirstChild<AlternateContentChoice>().GetFirstChild<Control>())
-                            .Select(x => (Control: (Control)x.CloneNode(true), CorrectId: x.Id))
-                            .Pipe(x => x.Control.Id = x.CorrectId)
-                            .Select(x => new AlternateContent(new AlternateContentChoice(x.Control) {Requires = "x14"}))
-                            .Pipe(x => x.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006"))
-                            .Cast<OpenXmlElement>()
-                            .ToArray();
 
-            var alternateContentChoice = new AlternateContentChoice(new Controls(alternateContents)) { Requires = "x14" };
+            var alternateContents = formControlInfos.Controls.ChildElements
+                                                    .Where(x => x is AlternateContent)
+                                                    .Select(x => x.GetFirstChild<AlternateContentChoice>().GetFirstChild<Control>())
+                                                    .Select(x => (Control: (Control)x.CloneNode(true), CorrectId: x.Id))
+                                                    .Pipe(x => x.Control.Id = x.CorrectId)
+                                                    .Select(x => new AlternateContent(new AlternateContentChoice(x.Control) {Requires = "x14"}))
+                                                    .Pipe(x => x.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006"))
+                                                    .Cast<OpenXmlElement>()
+                                                    .ToArray();
+
+            var alternateContentChoice = new AlternateContentChoice(new Controls(alternateContents)) {Requires = "x14"};
 
             var alternateContent = new AlternateContent(alternateContentChoice);
             alternateContent.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");

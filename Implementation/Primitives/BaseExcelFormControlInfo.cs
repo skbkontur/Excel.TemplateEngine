@@ -22,12 +22,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         public VmlDrawingPart GlobalVmlDrawingPart { get; }
 
         [NotNull]
-        protected readonly IExcelWorksheet excelWorksheet;
-
-        [NotNull]
         public Control Control { get; }
 
         [NotNull]
         public ControlPropertiesPart ControlPropertiesPart { get; }
+
+        [NotNull]
+        protected readonly IExcelWorksheet excelWorksheet;
     }
 }

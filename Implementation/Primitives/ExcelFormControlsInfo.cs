@@ -16,7 +16,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             DrawingsPart = (worksheetPart.DrawingsPart, worksheetPart.DrawingsPart == null ? null : worksheetPart.GetIdOfPart(worksheetPart.DrawingsPart));
             var vmlDrawingParts = worksheetPart.VmlDrawingParts.ToList();
-            if (vmlDrawingParts.Count > 1)
+            if(vmlDrawingParts.Count > 1)
                 throw new InvalidExcelDocumentException("More than one VmlDrawingPart found");
             var vmlPart = vmlDrawingParts.SingleOrDefault();
             VmlDrawingPart = (vmlPart, vmlPart == null ? null : worksheetPart.GetIdOfPart(vmlPart));

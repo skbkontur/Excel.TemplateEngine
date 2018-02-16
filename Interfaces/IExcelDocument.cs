@@ -15,8 +15,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         string GetWorksheetName(int index);
         IExcelVbaInfo GetVbaInfo();
         void AddVbaInfo(IExcelVbaInfo excelVbaInfo);
+
         [CanBeNull]
         string GetDescription();
+
         void AddDescription([NotNull] string text);
     }
 }

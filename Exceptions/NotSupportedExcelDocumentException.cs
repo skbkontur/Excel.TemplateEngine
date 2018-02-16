@@ -9,15 +9,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Exceptions
         {
         }
 
-        public NotSupportedExcelDocumentException(string message) : base(message)
+        public NotSupportedExcelDocumentException(string message)
+            : base(message)
         {
         }
 
-        public NotSupportedExcelDocumentException(string message, Exception innerException) : base(message, innerException)
+        public NotSupportedExcelDocumentException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
 
-        protected NotSupportedExcelDocumentException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected NotSupportedExcelDocumentException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }
