@@ -15,7 +15,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
 
         public IEnumerableParser GetEnumerableParser(Type modelType)
         {
-            if (TypeCheckingHelper.Instance.IsEnumerable(modelType))
+            if(TypeCheckingHelper.Instance.IsEnumerable(modelType))
                 return new EnumerableParser(this);
             throw new ArgumentException();
         }
@@ -27,9 +27,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
 
         public IFormValueParser GetFormValueParser(string formControlTypeName, Type valueType)
         {
-            if (formControlTypeName == "CheckBox" && valueType == typeof(bool))
+            if(formControlTypeName == "CheckBox" && valueType == typeof(bool))
                 return new CheckBoxValueParser();
-            if (formControlTypeName == "DropDown" && valueType == typeof(string))
+            if(formControlTypeName == "DropDown" && valueType == typeof(string))
                 return new DropDownValueParser();
             throw new NotSupportedExcelSerializationException($"Unsupported pair of {nameof(formControlTypeName)} ({formControlTypeName}) and {nameof(valueType)} ({valueType}) for form controls");
         }

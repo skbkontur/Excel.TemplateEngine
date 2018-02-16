@@ -62,7 +62,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                descriptionParts[0] != "Template" ||
                string.IsNullOrEmpty(descriptionParts[1]))
                 return false;
-            
+
             return exactCellReferenceRegex.IsMatch(descriptionParts[2]) &&
                    exactCellReferenceRegex.IsMatch(descriptionParts[3]);
         }

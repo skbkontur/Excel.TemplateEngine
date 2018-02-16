@@ -91,14 +91,14 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
         private static object ExtractChildIfCorrectDescription(string expression, object model, object onNullReplacement)
         {
-            if (TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression) || TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
+            if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression) || TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
             {
                 var excelTemplateExpression = new ExcelTemplateExpression(expression);
                 try
                 {
                     return ObjectPropertiesExtractor.Instance.ExtractChildObject(model, excelTemplateExpression) ?? onNullReplacement;
                 }
-                catch (ObjectPropertyExtractionException exception)
+                catch(ObjectPropertyExtractionException exception)
                 {
                     throw new InvalidExcelTemplateException($"Failed to extract child by path '{excelTemplateExpression.ChildObjectPath.RawPath}' in model of type {model.GetType()}", exception);
                 }

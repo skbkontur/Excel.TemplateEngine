@@ -9,15 +9,18 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions
         {
         }
 
-        public InvalidExcelTemplateException(string message) : base(message)
+        public InvalidExcelTemplateException(string message)
+            : base(message)
         {
         }
 
-        public InvalidExcelTemplateException(string message, Exception inner) : base(message, inner)
+        public InvalidExcelTemplateException(string message, Exception inner)
+            : base(message, inner)
         {
         }
 
-        protected InvalidExcelTemplateException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected InvalidExcelTemplateException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

@@ -10,15 +10,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
 {
     public class TableParser : ITableParser
     {
-        private readonly ITableNavigator navigator;
-
         public TableParser(ITableNavigator navigator)
         {
             this.navigator = navigator;
         }
 
         /// <summary>
-        /// Be careful! Result can be both null and "" when cell is empty (seems like it depends on the way of file creation)
+        ///     Be careful! Result can be both null and "" when cell is empty (seems like it depends on the way of file creation)
         /// </summary>
         /// <param name="result"></param>
         /// <returns></returns>
@@ -77,7 +75,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
             where T : struct
         {
             var cellValue = Target.GetCell(CurrentState.Cursor)?.StringValue;
-            if (string.IsNullOrEmpty(cellValue))
+            if(string.IsNullOrEmpty(cellValue))
             {
                 result = null;
                 return true;
@@ -102,7 +100,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
         public bool TryParseDropDownValue(string name, out string result)
         {
             var formControl = Target.TryGetFormControl<IExcelDropDownControlInfo>(name);
-            if (formControl == null)
+            if(formControl == null)
             {
                 result = null;
                 return false;
@@ -157,6 +155,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
         private ITable Target => navigator.Target;
 
         private const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign;
+        private readonly ITableNavigator navigator;
         private static readonly CultureInfo russianCultureInfo = CultureInfo.GetCultureInfo("ru-RU");
     }
 }

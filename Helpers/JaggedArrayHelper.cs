@@ -13,7 +13,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return (T)InitializeJaggedArray(typeof(T).GetElementType(), 0, lengths);
         }
 
-        public static JaggedArrayHelper Instance { get { return instance; } }
+        public static JaggedArrayHelper Instance { get; } = new JaggedArrayHelper();
 
         private static object InitializeJaggedArray(Type type, int index, int[] lengths)
         {
@@ -31,7 +31,5 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
             return array;
         }
-
-        private static readonly JaggedArrayHelper instance = new JaggedArrayHelper();
     }
 }

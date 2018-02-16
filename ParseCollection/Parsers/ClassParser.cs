@@ -4,7 +4,6 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
@@ -18,34 +17,33 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 {
     public class ClassParser : IClassParser
     {
-        private readonly IParserCollection parserCollection;
-        private const int maxIEnumerableLen = 200;
-
         public ClassParser(IParserCollection parserCollection)
         {
             this.parserCollection = parserCollection;
         }
+
+        private const int maxIEnumerableLen = 200;
 
         [NotNull]
         public TModel Parse<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template, Action<string, string> addFieldMapping)
             where TModel : new()
         {
             var model = new TModel();
-            
-            foreach (var row in template.Content.Cells)
+
+            foreach(var row in template.Content.Cells)
             {
-                foreach (var cell in row)
+                foreach(var cell in row)
                 {
                     tableParser.PushState(cell.CellPosition, new Styler(cell));
 
                     var expression = cell.StringValue;
 
-                    if (TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
+                    if(TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
                     {
                         ParseValue(tableParser, addFieldMapping, model, cell, new ExcelTemplateExpression(expression));
                         continue;
                     }
-                    if (TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression))
+                    if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression))
                     {
                         ParseFormValue(tableParser, addFieldMapping, model, cell, new ExcelTemplateExpression(expression));
                         continue;
@@ -61,11 +59,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         private void ParseValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplateExpression expression)
         {
             var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression.ChildObjectPath);
-            
+
             var childModelPath = expression.ChildObjectPath;
             var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), childModelPath);
-            
-            if (childModelPath.HasArrayAccess)
+
+            if(childModelPath.HasArrayAccess)
             {
                 ParseEnumerableValue(tableParser, addFieldMapping, model, expression, childSetter, childModelType);
             }
@@ -94,18 +92,18 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             var pathToEnumerable = ExcelTemplatePath.FromRawPath(rawPathToEnumerable);
 
             var cleanPathToEnumerable = pathToEnumerable.WithoutArrayAccess();
-            
+
             var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), cleanPathToEnumerable);
-            if (!typeof(IList).IsAssignableFrom(childEnumerableType))
+            if(!typeof(IList).IsAssignableFrom(childEnumerableType))
                 throw new Exception($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
 
             var childObject = ObjectPropertiesExtractor.Instance.ExtractChildObjectViaPath(model, pathToEnumerable);
-            if (childObject != null && !(childObject is IList))
+            if(childObject != null && !(childObject is IList))
                 throw new InvalidProgramStateException("Failed to cast child to IList, although we checked that it should be IList");
             var childEnumerable = (IList)childObject;
-            
+
             var parser = parserCollection.GetEnumerableParser(childEnumerableType);
-            
+
             var limit = childEnumerable?.Count ?? -1;
             var parsedList = parser.Parse(tableParser, childModelType, limit, (name, value) => addFieldMapping($"{cleanPathToEnumerable.RawPath}{name}.{childPath}", value));
 
@@ -114,7 +112,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
             if(parsedList.Count > maxIEnumerableLen)
                 throw new EnumerableTooLongException(maxIEnumerableLen);
-            
+
             childSetter(parsedList);
         }
 
@@ -151,5 +149,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             return TemplateDescriptionHelper.Instance.GetFormControlTypeFromValueDescription(cell.StringValue) ??
                    throw new InvalidExcelTemplateException($"Invalid xlsx template. '{cell.StringValue}' is not a valid form control description.");
         }
+
+        private readonly IParserCollection parserCollection;
     }
 }

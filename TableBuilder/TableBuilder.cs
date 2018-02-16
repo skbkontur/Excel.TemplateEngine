@@ -5,7 +5,6 @@ using System.Linq;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DataTypes;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
-using SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 using SKBKontur.Catalogue.Objects;
@@ -14,8 +13,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 {
     public class TableBuilder : ITableBuilder
     {
-        private readonly ITableNavigator navigator;
-        
         public TableBuilder(ITableNavigator navigator)
         {
             this.navigator = navigator;
@@ -44,7 +41,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         public ITableBuilder RenderCheckBoxValue(string name, bool value)
         {
             var formControl = Target.TryGetFormControl<IExcelCheckBoxControlInfo>(name);
-            if (formControl == null)
+            if(formControl == null)
                 throw new ArgumentException($"CheckBox with name {name} not found");
             formControl.IsChecked = value;
             return this;
@@ -53,7 +50,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         public ITableBuilder RenderDropDownValue(string name, string value)
         {
             var formControl = Target.TryGetFormControl<IExcelDropDownControlInfo>(name);
-            if (formControl == null)
+            if(formControl == null)
                 throw new ArgumentException($"DropDown with name {name} not found");
             formControl.SelectedValue = value;
             return this;
@@ -111,7 +108,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
                 Target.ResizeColumn(globalIndex, width);
             return this;
         }
-        
 
         public ITableBuilder MergeCells(IRectangle rectangle)
         {
@@ -135,5 +131,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 
         public TableNavigatorState CurrentState => navigator.CurrentState;
         private ITable Target => navigator.Target;
+        private readonly ITableNavigator navigator;
     }
 }

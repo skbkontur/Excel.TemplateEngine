@@ -8,9 +8,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
     {
         public void Render(ITableBuilder tableBuilder, string name, object model)
         {
-            if (!(model is bool boolToRender))
+            if(!(model is bool boolToRender))
                 throw new ArgumentException("model is not bool");
-            
+
             tableBuilder.RenderCheckBoxValue(name, boolToRender);
         }
     }

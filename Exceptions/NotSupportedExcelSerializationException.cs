@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions
 {
@@ -9,11 +8,13 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions
         {
         }
 
-        public NotSupportedExcelSerializationException(string message) : base(message)
+        public NotSupportedExcelSerializationException(string message)
+            : base(message)
         {
         }
 
-        public NotSupportedExcelSerializationException(string message, Exception inner) : base(message, inner)
+        public NotSupportedExcelSerializationException(string message, Exception inner)
+            : base(message, inner)
         {
         }
     }

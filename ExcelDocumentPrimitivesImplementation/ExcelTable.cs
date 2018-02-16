@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
@@ -71,7 +70,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
         {
             return internalTable.GetFormControlInfo<TExcelFormControlInfo>(name);
         }
-        
+
         public IFormControls GetFormControlsInfo()
         {
             return new ExcelFormControls(internalTable.GetFormControlsInfo());

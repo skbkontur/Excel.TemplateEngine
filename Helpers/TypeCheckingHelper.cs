@@ -56,35 +56,35 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         private (Type keyType, Type valueType) GetDictionaryGenericTypeArguments(Type type)
         {
-            if (!IsDictionary(type))
+            if(!IsDictionary(type))
                 throw new ArgumentException($"{nameof(type)} ({type}) should implement IDictionary<,> or IDictionary");
             var genericArguments = GetImplementedDictionaryInterface(type).GetGenericArguments();
-            if (!genericArguments.Any())
+            if(!genericArguments.Any())
                 return (typeof(object), typeof(object));
-            if (genericArguments.Length != 2)
+            if(genericArguments.Length != 2)
                 throw new InvalidProgramStateException($"Dict can have only 0 or 2 generic arguments, but here is {genericArguments.Length} of them ({string.Join(", ", genericArguments.Select(x => x.ToString()))}). Type is '{type}'.");
             return (genericArguments[0], genericArguments[1]);
         }
 
         private Type GetImplementedEnumerableInterface(Type type)
         {
-            if (type == typeof(string))
+            if(type == typeof(string))
                 return null;
-            if (IsGenericEnumerableDirectly(type))
+            if(IsGenericEnumerableDirectly(type))
                 return type;
             return type.GetInterfaces().FirstOrDefault(IsGenericEnumerableDirectly) ?? type.GetInterfaces().FirstOrDefault(IsEnumerableDirectly);
         }
 
         private Type GetImplementedDictionaryInterface(Type type)
         {
-            if (IsGenericDictionaryDirectly(type))
+            if(IsGenericDictionaryDirectly(type))
                 return type;
             return type.GetInterfaces().FirstOrDefault(IsGenericDictionaryDirectly) ?? type.GetInterfaces().FirstOrDefault(IsDictionaryDirectly);
         }
 
         private Type GetImplementedIListInterface(Type type)
         {
-            if (IsGenericIListDirectly(type))
+            if(IsGenericIListDirectly(type))
                 return type;
             return type.GetInterfaces().FirstOrDefault(IsGenericIListDirectly) ?? type.GetInterfaces().FirstOrDefault(IsIListDirectly);
         }

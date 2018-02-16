@@ -20,9 +20,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
                     CurrentLayerStartRowIndex = startPosition.RowIndex,
                     Styler = styler
                 };
-            states = new Stack<TableNavigatorState>(new[] { initialState });
+            states = new Stack<TableNavigatorState>(new[] {initialState});
         }
-        
+
         public void PushState(ICellPosition newOrigin, IStyler styler)
         {
             var newState = new TableNavigatorState
@@ -47,7 +47,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
 
         public void PopState()
         {
-            if (states.Count == 1)
+            if(states.Count == 1)
             {
                 logger.Warn("Unexpected attempt to pop state.");
                 return;
@@ -74,7 +74,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
             CurrentState.Cursor = CurrentState.Cursor.Add(new ObjectSize(1, 0));
             UpdateCurrentState();
         }
-        
+
         public void SetCurrentStyle()
         {
             var cell = Target.GetCell(CurrentState.Cursor) ?? Target.InsertCell(CurrentState.Cursor);

@@ -2,7 +2,8 @@
 {
     public class EnumerableTooLongException : BaseExcelSerializationException
     {
-        public EnumerableTooLongException(int limit) : base($"IEnumerable was longer than {limit}")
+        public EnumerableTooLongException(int limit)
+            : base($"IEnumerable was longer than {limit}")
         {
             Limit = limit;
         }

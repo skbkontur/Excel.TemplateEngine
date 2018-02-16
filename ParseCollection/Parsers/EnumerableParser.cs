@@ -17,14 +17,14 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         [NotNull]
         public List<object> Parse([NotNull] ITableParser tableParser, [NotNull] Type modelType, int count, [NotNull] Action<string, string> addFieldMapping)
         {
-            if (count > maxEnumerableLength)
+            if(count > maxEnumerableLength)
                 throw new NotSupportedException($"Lists longer than {maxEnumerableLength} are not supported");
 
             var parser = parserCollection.GetAtomicValueParser(modelType);
             var result = new List<object>();
-            for (var i = 0; (count == -1 || i < count) && i < maxEnumerableLength; i++)
+            for(var i = 0; (count == -1 || i < count) && i < maxEnumerableLength; i++)
             {
-                if (i != 0)
+                if(i != 0)
                     tableParser.MoveToNextLayer();
 
                 tableParser.PushState();
@@ -40,7 +40,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
                 result.Add(item);
                 tableParser.PopState();
             }
-            
+
             return result;
         }
 
@@ -51,7 +51,8 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             return null;
         }
 
-        private readonly IParserCollection parserCollection;
         private const int maxEnumerableLength = (int)1e4;
+
+        private readonly IParserCollection parserCollection;
     }
 }

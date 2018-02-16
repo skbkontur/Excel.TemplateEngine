@@ -11,7 +11,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
         public IRectangle Range { get; set; }
         public ITablePart Content { get; set; }
         public IEnumerable<IRectangle> MergedCells { get; set; }
-        public IEnumerable<IColumn> Columns { get; set; } 
+        public IEnumerable<IColumn> Columns { get; set; }
     }
 
     public static class RenderingTemplateExtensions
