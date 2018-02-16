@@ -55,6 +55,8 @@
     <Compile Include="Exceptions\ObjectPropertyExtractionException.cs" />
     <Compile Include="Helpers\ExcelTemplateExpression.cs" />
     <Compile Include="Helpers\ExcelTemplatePath.cs" />
+    <Compile Include="Helpers\ExpressionPrimitives.cs" />
+    <Compile Include="Helpers\ObjectPropertySettersExtractor.cs" />
     <Compile Include="NavigationPrimitives\IRectangle.cs" />
     <Compile Include="NavigationPrimitives\Rectangle.cs" />
     <Compile Include="DataTypes\CellType.cs" />

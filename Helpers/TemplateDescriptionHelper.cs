@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using JetBrains.Annotations;
+
+using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
@@ -124,6 +127,24 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             if(!match.Success)
                 throw new ArgumentException($"{nameof(pathPart)} should be collection access path part");
             return (match.Groups[1].Value, match.Groups[2].Value);
+        }
+
+        [NotNull]
+        public static object ParseCollectionIndexer([NotNull] string collectionIndexer, [NotNull] Type collectionKeyType)
+        {
+            if (collectionIndexer.StartsWith("\"") && collectionIndexer.EndsWith("\""))
+            {
+                if (collectionKeyType != typeof(string))
+                    throw new ObjectPropertyExtractionException($"Collection with '{collectionKeyType}' keys was indexed by {typeof(string)}");
+                return collectionIndexer.Substring(1, collectionIndexer.Length - 2);
+            }
+            if (int.TryParse(collectionIndexer, out var intIndexer))
+            {
+                if (collectionKeyType != typeof(int))
+                    throw new ObjectPropertyExtractionException($"Collection with '{collectionKeyType}' keys was indexed by {typeof(int)}");
+                return intIndexer;
+            }
+            throw new ObjectPropertyExtractionException("Only strings and ints are supported as collection indexers");
         }
 
         public static TemplateDescriptionHelper Instance { get; } = new TemplateDescriptionHelper();

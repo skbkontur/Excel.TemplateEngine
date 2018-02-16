@@ -58,7 +58,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
         private void ParseValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplateExpression expression)
         {
-            var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression.ChildObjectPath);
+            var childSetter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(model, expression.ChildObjectPath);
 
             var childModelPath = expression.ChildObjectPath;
             var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), childModelPath);
@@ -87,7 +87,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
         private void ParseEnumerableValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ExcelTemplateExpression expression, Action<object> childSetter, Type childModelType)
         {
-            var (rawPathToEnumerable, childPath) = ObjectPropertiesExtractor.SplitForEnumerableExpansion(expression);
+            var (rawPathToEnumerable, childPath) = expression.ChildObjectPath.SplitForEnumerableExpansion();
 
             var pathToEnumerable = ExcelTemplatePath.FromRawPath(rawPathToEnumerable);
 
@@ -97,7 +97,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             if(!typeof(IList).IsAssignableFrom(childEnumerableType))
                 throw new Exception($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
 
-            var childObject = ObjectPropertiesExtractor.Instance.ExtractChildObjectViaPath(model, pathToEnumerable);
+            var childObject = ObjectPropertiesExtractor.ExtractChildObject(model, pathToEnumerable);
             if(childObject != null && !(childObject is IList))
                 throw new InvalidProgramStateException("Failed to cast child to IList, although we checked that it should be IList");
             var childEnumerable = (IList)childObject;
@@ -118,7 +118,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
         private void ParseFormValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplateExpression expression)
         {
-            var childSetter = ObjectPropertiesExtractor.ExtractChildObjectSetter(model, expression.ChildObjectPath);
+            var childSetter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(model, expression.ChildObjectPath);
 
             var childModelPath = expression.ChildObjectPath;
             var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), childModelPath);

@@ -96,7 +96,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
                 var excelTemplateExpression = new ExcelTemplateExpression(expression);
                 try
                 {
-                    return ObjectPropertiesExtractor.Instance.ExtractChildObject(model, excelTemplateExpression) ?? onNullReplacement;
+                    return ObjectPropertiesExtractor.ExtractChildObject(model, excelTemplateExpression) ?? onNullReplacement;
                 }
                 catch(ObjectPropertyExtractionException exception)
                 {

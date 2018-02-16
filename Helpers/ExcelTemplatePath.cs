@@ -32,6 +32,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return new ExcelTemplatePath(string.Join(".", PartsWithoutArrayAccess));
         }
 
+        public (string, string) SplitForEnumerableExpansion()
+        {
+            if (!HasArrayAccess)
+                throw new BaseExcelSerializationException($"Expression needs enumerable expansion but has no part with '[]' (path - '{RawPath}')");
+            var parts = PartsWithIndexers;
+            var firstPartLen = parts.TakeWhile(x => !x.EndsWith("[]")).Count() + 1;
+            return (string.Join(".", parts.Take(firstPartLen)), string.Join(".", parts.Skip(firstPartLen)));
+        }
+
         public bool HasArrayAccess { get; }
         public string RawPath { get; }
         public string[] PartsWithIndexers { get; }
