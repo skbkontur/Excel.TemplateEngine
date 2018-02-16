@@ -37,6 +37,33 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         }
 
         [Test]
+        public void TestEnumerableWithPrimaryKey()
+        {
+            var (model, mappingForErrors) = Parse("enumerableWithPrimaryKey_template.xlsx", "enumerableWithPrimaryKey_target.xlsx");
+
+            Assert.AreEqual("C3", mappingForErrors["Type"]);
+            for(var i = 0; i < 7; i++)
+            {
+                Assert.AreEqual($"B{i + 13}", mappingForErrors[$"Items[{i}].Id"]);
+                Assert.AreEqual($"C{i + 13}", mappingForErrors[$"Items[{i}].Name"]);
+                Assert.AreEqual($"D{i + 13}", mappingForErrors[$"Items[{i}].BuyerProductId"]);
+                Assert.AreEqual($"E{i + 13}", mappingForErrors[$"Items[{i}].Articul"]);
+            }
+
+            Assert.AreEqual("Основной", model.Type);
+            Assert.AreEqual(new[]
+                {
+                    new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ", BuyerProductId = "000074467", Articul = "123456"},
+                    new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ", BuyerProductId = "000074468", Articul = "123457"},
+                    new Item {Id = null, Name = "Товар 3"},
+                    new Item {Id = "123", Articul = "3123123"},
+                    new Item {Id = "111", Articul = "111111"},
+                    new Item {Name = "Товар 6"},
+                    new Item {Id = "222", Name = "Товар 7", Articul = "123"},
+                }, model.Items);
+        }
+
+        [Test]
         public void TestCheckBoxes()
         {
             var (model, mappingForErrors) = Parse("сheckBoxes_template.xlsx", "сheckBoxes_target.xlsx");
@@ -176,22 +203,24 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public int Index { get; set; }
         public string Id { get; set; }
         public string Name { get; set; }
+        public string BuyerProductId { get; set; }
+        public string Articul { get; set; }
 
         public override string ToString()
         {
-            return $"{nameof(Index)}: {Index}, {nameof(Id)}: {Id}, {nameof(Name)}: {Name}";
+            return $"{nameof(Index)}: {Index}, {nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(BuyerProductId)}: {BuyerProductId}, {nameof(Articul)}: {Articul}";
         }
 
         protected bool Equals(Item other)
         {
-            return Index == other.Index && string.Equals(Id, other.Id) && string.Equals(Name, other.Name);
+            return Index == other.Index && string.Equals(Id, other.Id) && string.Equals(Name, other.Name) && string.Equals(BuyerProductId, other.BuyerProductId) && string.Equals(Articul, other.Articul);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if(ReferenceEquals(null, obj)) return false;
+            if(ReferenceEquals(this, obj)) return true;
+            if(obj.GetType() != this.GetType()) return false;
             return Equals((Item)obj);
         }
 
@@ -202,6 +231,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var hashCode = Index;
                 hashCode = (hashCode * 397) ^ (Id != null ? Id.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Name != null ? Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (BuyerProductId != null ? BuyerProductId.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Articul != null ? Articul.GetHashCode() : 0);
                 return hashCode;
             }
         }
