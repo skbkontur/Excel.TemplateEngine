@@ -5,7 +5,6 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
@@ -23,22 +22,20 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
             foreach(var primaryPart in primaryParts)
             {
-                tableParser.PushState(primaryPart.CellPosition, new Styler(primaryPart));
-
-                var childModelPath = new ExcelTemplateExpression(primaryPart.StringValue).ChildObjectPath;
+                var childModelPath = ExcelTemplatePath.FromRawExpression(primaryPart.StringValue);
                 var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, childModelPath);
-                
-                var parser = parserCollection.GetAtomicValueParser(childModelType);
+
+                var parser = parserCollection.GetAtomicValueParser();
 
                 parserState.Add((parser, primaryPart, childModelType));
             }
-            
-            for (var i = 0; i <= maxEnumerableLength; i++)
+
+            for(var i = 0; i <= ParsingParameters.MaxEnumerableLength; i++)
             {
                 var parsed = false;
                 foreach(var (parser, cell, type) in parserState)
                 {
-                    tableParser.PushState(cell.CellPosition.Add(new ObjectSize(0, i)), new Styler(cell));
+                    tableParser.PushState(cell.CellPosition.Add(new ObjectSize(0, i)));
                     if(parser.TryParse(tableParser, type, out var result) && result != null)
                         parsed = true;
                     tableParser.PopState();
@@ -46,9 +43,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
                 if(!parsed)
                     return i;
             }
-            throw new EnumerableTooLongException(maxEnumerableLength);
+            throw new EnumerableTooLongException(ParsingParameters.MaxEnumerableLength);
         }
+
         private readonly ParserCollection parserCollection;
-        private const int maxEnumerableLength = 200;
     }
 }

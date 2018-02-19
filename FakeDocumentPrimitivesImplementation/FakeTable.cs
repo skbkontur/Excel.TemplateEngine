@@ -15,7 +15,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
             this.width = width;
             this.height = height;
 
-            cells = JaggedArrayHelper.Instance.CreateJaggedArray<ICell[][]>(height, width);
+            cells = JaggedArrayHelper.CreateJaggedArray<ICell[][]>(height, width);
             mergedCells = new List<IRectangle>();
         }
 
@@ -52,7 +52,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
                 return null;
 
             var subTableSize = rectangle.Size;
-            var subTable = JaggedArrayHelper.Instance.CreateJaggedArray<ICell[][]>(subTableSize.Height, subTableSize.Width);
+            var subTable = JaggedArrayHelper.CreateJaggedArray<ICell[][]>(subTableSize.Height, subTableSize.Width);
             for(var y = 0; y < subTableSize.Height; ++y)
             {
                 for(var x = 0; x < subTableSize.Width; ++x)
@@ -72,18 +72,18 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
             mergedCells.Add(rectangle);
         }
 
-        public TFormControl TryGetFormControl<TFormControl>(string name) where TFormControl : class, IExcelFormControlInfo
+        public void CopyFormControlsFrom(ITable template)
+        {
+        }
+
+        public IExcelCheckBoxControlInfo TryGetCheckBoxFormControl(string name)
         {
             return null;
         }
 
-        public IFormControls GetFormControlsInfo()
+        public IExcelDropDownControlInfo TryGetDropDownFormControl(string name)
         {
             return null;
-        }
-
-        public void AddFormControls(IFormControls formControls)
-        {
         }
 
         public void ResizeColumn(int columnIndex, double columnWidth)

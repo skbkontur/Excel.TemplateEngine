@@ -8,9 +8,7 @@ using JetBrains.Annotations;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
 using SKBKontur.Catalogue.Objects;
 using SKBKontur.Catalogue.ServiceLib.Logging;
@@ -24,32 +22,30 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             this.parserCollection = parserCollection;
         }
 
-        private const int maxIEnumerableLen = 200;
-
         [NotNull]
         public TModel Parse<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template, Action<string, string> addFieldMapping)
             where TModel : new()
         {
             var model = new TModel();
 
-            var lengths = GetEnumerablesLengths<TModel>(tableParser, template);
+            var enumerablesLengths = GetEnumerablesLengths<TModel>(tableParser, template);
 
-            foreach (var row in template.Content.Cells)
+            foreach(var row in template.Content.Cells)
             {
                 foreach(var cell in row)
                 {
-                    tableParser.PushState(cell.CellPosition, new Styler(cell));
+                    tableParser.PushState(cell.CellPosition);
 
                     var expression = cell.StringValue;
 
-                    if(TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
+                    if(TemplateDescriptionHelper.IsCorrectValueDescription(expression))
                     {
-                        ParseValue(tableParser, addFieldMapping, model, cell, new ExcelTemplateExpression(expression), lengths);
+                        ParseCellularValue(tableParser, addFieldMapping, model, ExcelTemplatePath.FromRawExpression(expression), enumerablesLengths);
                         continue;
                     }
-                    if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression))
+                    if(TemplateDescriptionHelper.IsCorrectFormValueDescription(expression))
                     {
-                        ParseFormValue(tableParser, addFieldMapping, model, cell, new ExcelTemplateExpression(expression));
+                        ParseFormValue(tableParser, addFieldMapping, model, cell, ExcelTemplatePath.FromRawExpression(expression));
                         continue;
                     }
 
@@ -61,138 +57,113 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         }
 
         [NotNull]
-        public Dictionary<string, int> GetEnumerablesLengths<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template)
+        private Dictionary<ExcelTemplatePath, int> GetEnumerablesLengths<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template)
         {
-            var enumerableCellsGroups = new Dictionary<string, List<ICell>>();
-            foreach (var row in template.Content.Cells)
+            var enumerableCellsGroups = new Dictionary<ExcelTemplatePath, List<ICell>>();
+            foreach(var row in template.Content.Cells)
             {
-                foreach (var cell in row)
+                foreach(var cell in row)
                 {
-                    tableParser.PushState(cell.CellPosition, new Styler(cell));
-
                     var expression = cell.StringValue;
 
-                    if (TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
+                    if(TemplateDescriptionHelper.IsCorrectValueDescription(expression) && ExcelTemplatePath.FromRawExpression(expression).HasArrayAccess)
                     {
-                        if(new ExcelTemplateExpression(expression).ChildObjectPath.HasArrayAccess)
-                        {
-                            var (rawPathToEnumerable, _) = new ExcelTemplateExpression(expression).ChildObjectPath.SplitForEnumerableExpansion();
-                            rawPathToEnumerable = ExcelTemplatePath.FromRawPath(rawPathToEnumerable).WithoutArrayAccess().RawPath;
-                            if(!enumerableCellsGroups.ContainsKey(rawPathToEnumerable))
-                                enumerableCellsGroups[rawPathToEnumerable] = new List<ICell>();
-                            enumerableCellsGroups[rawPathToEnumerable].Add(cell);
-                        }
+                        var cleanPathToEnumerable = ExcelTemplatePath.FromRawExpression(expression)
+                                                                     .SplitForEnumerableExpansion()
+                                                                     .pathToEnumerable
+                                                                     .WithoutArrayAccess();
+                        if(!enumerableCellsGroups.ContainsKey(cleanPathToEnumerable))
+                            enumerableCellsGroups[cleanPathToEnumerable] = new List<ICell>();
+                        enumerableCellsGroups[cleanPathToEnumerable].Add(cell);
                     }
-                    
-                    tableParser.PopState();
                 }
             }
 
-            var lengths = new Dictionary<string, int>();
+            var enumerablesLengths = new Dictionary<ExcelTemplatePath, int>();
 
             foreach(var enumerableCells in enumerableCellsGroups)
             {
-                var cleanPathToEnumerable = ExcelTemplatePath.FromRawPath(enumerableCells.Key);
+                var cleanPathToEnumerable = enumerableCells.Key;
 
                 var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(typeof(TModel), cleanPathToEnumerable);
-                if (!typeof(IList).IsAssignableFrom(childEnumerableType))
-                    throw new Exception($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
+                if(!TypeCheckingHelper.IsIList(childEnumerableType))
+                    throw new InvalidProgramStateException($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
 
-                var primaryParts = enumerableCells.Value.Where(x => new ExcelTemplateExpression(x.StringValue).ChildObjectPath.HasPrimaryArrayAccess).ToList();
+                var primaryParts = enumerableCells.Value.Where(x => ExcelTemplatePath.FromRawExpression(x.StringValue).HasPrimaryKeyArrayAccess).ToList();
                 if(primaryParts.Count == 0)
                     primaryParts = enumerableCells.Value.Take(1).ToList();
 
                 var measurer = parserCollection.GetEnumerableMeasurer();
-                lengths[enumerableCells.Key] = measurer.GetLength(tableParser, typeof(TModel), primaryParts);
+                enumerablesLengths[cleanPathToEnumerable] = measurer.GetLength(tableParser, typeof(TModel), primaryParts);
             }
 
-            return lengths;
+            return enumerablesLengths;
         }
 
-        private void ParseValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplateExpression expression, Dictionary<string, int> lengths)
+        private void ParseCellularValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ExcelTemplatePath path, Dictionary<ExcelTemplatePath, int> enumerablesLengths)
         {
-            var childSetter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(model, expression.ChildObjectPath);
+            var leafSetter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(model, path);
+            var leafModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), path);
 
-            var childModelPath = expression.ChildObjectPath;
-            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), childModelPath);
-
-            if(childModelPath.HasArrayAccess)
-            {
-                ParseEnumerableValue(tableParser, addFieldMapping, model, expression, childSetter, childModelType, lengths);
-            }
+            if(path.HasArrayAccess)
+                ParseEnumerableValue(tableParser, addFieldMapping, model, path, leafSetter, leafModelType, enumerablesLengths);
             else
-            {
-                ParseSingleValue(tableParser, addFieldMapping, cell, childSetter, childModelPath, childModelType);
-            }
+                ParseSingleValue(tableParser, addFieldMapping, leafSetter, path, leafModelType);
         }
 
-        private void ParseSingleValue(ITableParser tableParser, Action<string, string> addFieldMapping, ICell cell, Action<object> childSetter, ExcelTemplatePath childModelPath, Type childModelType)
+        private void ParseSingleValue(ITableParser tableParser, Action<string, string> addFieldMapping, Action<object> leafSetter, ExcelTemplatePath childModelPath, Type childModelType)
         {
-            var parser = parserCollection.GetAtomicValueParser(childModelType);
+            var parser = parserCollection.GetAtomicValueParser();
+            addFieldMapping(childModelPath.RawPath, tableParser.CurrentState.Cursor.CellReference);
             if(!parser.TryParse(tableParser, childModelType, out var parsedObject))
             {
-                Log.For(this).Error($"Failed to parse value '{cell.StringValue}' with childModelType='{childModelType}' via AtomicValueParser");
+                Log.For(this).Error($"Failed to parse value from '{tableParser.CurrentState.Cursor.CellReference}' with childModelType='{childModelType}' via AtomicValueParser");
                 return;
             }
-            childSetter(parsedObject);
-            addFieldMapping(childModelPath.RawPath, cell.CellPosition.CellReference);
+            leafSetter(parsedObject);
         }
 
-        private void ParseEnumerableValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ExcelTemplateExpression expression, Action<object> childSetter, Type childModelType, Dictionary<string, int> lengths)
+        private void ParseEnumerableValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ExcelTemplatePath path, Action<object> leafSetter, Type leafModelType, Dictionary<ExcelTemplatePath, int> enumerablesLengths)
         {
-            var (rawPathToEnumerable, childPath) = expression.ChildObjectPath.SplitForEnumerableExpansion();
+            var (rawPathToEnumerable, childPath) = path.SplitForEnumerableExpansion();
 
-            var pathToEnumerable = ExcelTemplatePath.FromRawPath(rawPathToEnumerable);
+            var cleanPathToEnumerable = rawPathToEnumerable.WithoutArrayAccess();
 
-            var cleanPathToEnumerable = pathToEnumerable.WithoutArrayAccess();
+            var enumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), cleanPathToEnumerable);
+            if(!typeof(IList).IsAssignableFrom(enumerableType))
+                throw new Exception($"Only ILists are supported as collections, but tried to use '{enumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
 
-            var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), cleanPathToEnumerable);
-            if(!typeof(IList).IsAssignableFrom(childEnumerableType))
-                throw new Exception($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
-            
-            var parser = parserCollection.GetEnumerableParser(childEnumerableType);
+            var parser = parserCollection.GetEnumerableParser(enumerableType);
 
-            var count = lengths[cleanPathToEnumerable.RawPath];
-            var parsedList = parser.Parse(tableParser, childModelType, count, (name, value) => addFieldMapping($"{cleanPathToEnumerable.RawPath}{name}.{childPath}", value));
+            var count = enumerablesLengths[cleanPathToEnumerable];
+            var parsedList = parser.Parse(tableParser, leafModelType, count, (name, value) => addFieldMapping($"{cleanPathToEnumerable.RawPath}{name}.{childPath.RawPath}", value));
 
-            if(parsedList.Count > maxIEnumerableLen)
-                throw new EnumerableTooLongException(maxIEnumerableLen);
-
-            childSetter(parsedList);
+            leafSetter(parsedList);
         }
 
-        private void ParseFormValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplateExpression expression)
+        private void ParseFormValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplatePath path)
         {
-            var childSetter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(model, expression.ChildObjectPath);
+            var childSetter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(model, path);
+            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), path);
+            var (childFormControlType, childFormControlName) = GetFormControlDescription(cell);
 
-            var childModelPath = expression.ChildObjectPath;
-            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), childModelPath);
-            var childFormControlType = ExtractFormControlType(cell);
-            var childFormControlName = ExtractFormControlName(cell);
-
-            if(childModelPath.HasArrayAccess)
-                throw new NotSupportedExcelSerializationException("Enumerables are not supported for form controls");
+            if(path.HasArrayAccess)
+                throw new InvalidProgramStateException("Enumerables are not supported for form controls");
 
             var parser = parserCollection.GetFormValueParser(childFormControlType, childModelType);
             if(!parser.TryParse(tableParser, childFormControlName, childModelType, out var parsedObject))
                 throw new FormControlParsingException(childFormControlName);
 
             childSetter(parsedObject);
-            addFieldMapping(childModelPath.RawPath, childFormControlName);
+            addFieldMapping(path.RawPath, childFormControlName);
         }
 
-        [NotNull]
-        private static string ExtractFormControlName([NotNull] ICell cell)
+        private static (string formControlType, string formControlName) GetFormControlDescription([NotNull] ICell cell)
         {
-            return TemplateDescriptionHelper.Instance.GetFormControlNameFromValueDescription(cell.StringValue) ??
-                   throw new InvalidExcelTemplateException($"Invalid xlsx template. '{cell.StringValue}' is not a valid form control description.");
-        }
-
-        [NotNull]
-        private static string ExtractFormControlType([NotNull] ICell cell)
-        {
-            return TemplateDescriptionHelper.Instance.GetFormControlTypeFromValueDescription(cell.StringValue) ??
-                   throw new InvalidExcelTemplateException($"Invalid xlsx template. '{cell.StringValue}' is not a valid form control description.");
+            var formControlDescription = TemplateDescriptionHelper.TryGetFormControlFromValueDescription(cell.StringValue);
+            if(string.IsNullOrEmpty(formControlDescription.formControlType) || formControlDescription.formControlName == null)
+                throw new InvalidProgramStateException($"Invalid xlsx template. '{cell.StringValue}' is not a valid form control description.");
+            return formControlDescription;
         }
 
         private readonly IParserCollection parserCollection;

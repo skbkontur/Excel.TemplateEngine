@@ -1,8 +1,9 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+using JetBrains.Annotations;
+
 using SKBKontur.Catalogue.ExcelObjectPrinter.DataTypes;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
@@ -13,9 +14,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 {
     public class TableBuilder : ITableBuilder
     {
-        public TableBuilder(ITableNavigator navigator)
+        public TableBuilder([NotNull] ITable target, [NotNull] ITableNavigator navigator, [CanBeNull] IStyle style = null)
         {
+            this.target = target;
             this.navigator = navigator;
+            styles = new Stack<IStyle>(new[] {style});
         }
 
         public ITableBuilder RenderAtomicValue(string value)
@@ -38,45 +41,51 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
             return RenderAtomicValue(value.ToString(CultureInfo.InvariantCulture), CellType.Number);
         }
 
-        public ITableBuilder RenderCheckBoxValue(string name, bool value)
+        [NotNull]
+        public ITableBuilder RenderCheckBoxValue([NotNull] string name, bool value)
         {
-            var formControl = Target.TryGetFormControl<IExcelCheckBoxControlInfo>(name);
+            var formControl = target.TryGetCheckBoxFormControl(name);
             if(formControl == null)
-                throw new ArgumentException($"CheckBox with name {name} not found");
+                throw new InvalidProgramStateException($"CheckBox with name {name} not found");
             formControl.IsChecked = value;
             return this;
         }
 
-        public ITableBuilder RenderDropDownValue(string name, string value)
+        [NotNull]
+        public ITableBuilder RenderDropDownValue([NotNull] string name, [CanBeNull] string value)
         {
-            var formControl = Target.TryGetFormControl<IExcelDropDownControlInfo>(name);
+            var formControl = target.TryGetDropDownFormControl(name);
             if(formControl == null)
-                throw new ArgumentException($"DropDown with name {name} not found");
+                throw new InvalidProgramStateException($"DropDown with name {name} not found");
             formControl.SelectedValue = value;
             return this;
         }
 
-        public ITableBuilder PushState(ICellPosition newOrigin, IStyler styler)
+        public ITableBuilder PushState(ICellPosition newOrigin, IStyle style)
         {
-            navigator.PushState(newOrigin, styler);
+            navigator.PushState(newOrigin);
+            styles.Push(style);
             return this;
         }
 
-        public ITableBuilder PushState(IStyler styler)
+        public ITableBuilder PushState(IStyle style)
         {
-            navigator.PushState(styler);
+            navigator.PushState();
+            styles.Push(style);
             return this;
         }
 
         public ITableBuilder PushState()
         {
             navigator.PushState();
+            styles.Push(CurrentStyle);
             return this;
         }
 
         public ITableBuilder PopState()
         {
             navigator.PopState();
+            styles.Pop();
             return this;
         }
 
@@ -94,43 +103,46 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 
         public ITableBuilder SetCurrentStyle()
         {
-            navigator.SetCurrentStyle();
+            var cell = target.GetCell(navigator.CurrentState.Cursor) ?? target.InsertCell(navigator.CurrentState.Cursor);
+            CurrentStyle.ApplyTo(cell);
             return this;
         }
 
         public ITableBuilder ExpandColumn(int relativeColumnIndex, double width)
         {
-            var globalIndex = relativeColumnIndex + CurrentState.Origin.ColumnIndex - 1;
-            var currentWidth = Target.Columns
+            var globalIndex = relativeColumnIndex + navigator.CurrentState.Origin.ColumnIndex - 1;
+            var currentWidth = target.Columns
                                      .FirstOrDefault(col => col.Index == globalIndex)?.Width ?? 0.0;
 
             if(currentWidth < width)
-                Target.ResizeColumn(globalIndex, width);
+                target.ResizeColumn(globalIndex, width);
             return this;
         }
 
         public ITableBuilder MergeCells(IRectangle rectangle)
         {
-            Target.MergeCells(rectangle.ToGlobalCoordinates(CurrentState.Origin));
+            target.MergeCells(rectangle.ToGlobalCoordinates(navigator.CurrentState.Origin));
             return this;
         }
 
-        public ITableBuilder AddFormControlInfos(IFormControls formControls)
+        public ITableBuilder CopyFormControlsFrom([NotNull] ITable template)
         {
-            Target.AddFormControls(formControls);
+            target.CopyFormControlsFrom(template);
             return this;
         }
 
         private ITableBuilder RenderAtomicValue(string value, CellType cellType)
         {
-            var cell = Target.GetCell(CurrentState.Cursor) ?? Target.InsertCell(CurrentState.Cursor);
+            var cell = target.GetCell(navigator.CurrentState.Cursor) ?? target.InsertCell(navigator.CurrentState.Cursor);
             cell.StringValue = value;
             cell.CellType = cellType;
             return this;
         }
 
         public TableNavigatorState CurrentState => navigator.CurrentState;
-        private ITable Target => navigator.Target;
+        private IStyle CurrentStyle => styles.Peek();
+        private readonly ITable target;
         private readonly ITableNavigator navigator;
+        private readonly Stack<IStyle> styles;
     }
 }

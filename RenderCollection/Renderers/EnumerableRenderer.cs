@@ -17,7 +17,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
         public void Render(ITableBuilder tableBuilder, object model, RenderingTemplate template)
         {
-            if(!TypeCheckingHelper.Instance.IsEnumerable(model.GetType()))
+            if(!TypeCheckingHelper.IsEnumerable(model.GetType()))
                 throw new ArgumentException("model is not IEnumerable");
 
             var enumerableToRender = ((IEnumerable)model).Cast<object>().ToArray();

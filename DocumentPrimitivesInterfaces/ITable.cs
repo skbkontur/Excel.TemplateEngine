@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using JetBrains.Annotations;
+
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 
@@ -15,8 +17,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
         IEnumerable<IRectangle> MergedCells { get; }
         IEnumerable<IColumn> Columns { get; }
         void MergeCells(IRectangle rectangle);
-        TExcelFormControlInfo TryGetFormControl<TExcelFormControlInfo>(string name) where TExcelFormControlInfo : class, IExcelFormControlInfo;
-        IFormControls GetFormControlsInfo();
-        void AddFormControls(IFormControls formControls);
+        void CopyFormControlsFrom([NotNull] ITable template);
+
+        [CanBeNull]
+        IExcelCheckBoxControlInfo TryGetCheckBoxFormControl([NotNull] string name);
+
+        [CanBeNull]
+        IExcelDropDownControlInfo TryGetDropDownFormControl([NotNull] string name);
     }
 }

@@ -1,26 +1,26 @@
 ﻿using System;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
 {
     public class ParserCollection : IParserCollection
     {
-        public IClassParser GetClassParser(Type modelType)
+        public IClassParser GetClassParser()
         {
             return new ClassParser(this);
         }
 
         public IEnumerableParser GetEnumerableParser(Type modelType)
         {
-            if(TypeCheckingHelper.Instance.IsEnumerable(modelType))
+            if(TypeCheckingHelper.IsEnumerable(modelType))
                 return new EnumerableParser(this);
-            throw new ArgumentException();
+            throw new InvalidProgramStateException($"{modelType} is not IEnumerable");
         }
 
-        public IAtomicValueParser GetAtomicValueParser(Type valueType)
+        public IAtomicValueParser GetAtomicValueParser()
         {
             return new AtomicValueParser();
         }
@@ -31,7 +31,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
                 return new CheckBoxValueParser();
             if(formControlTypeName == "DropDown" && valueType == typeof(string))
                 return new DropDownValueParser();
-            throw new NotSupportedExcelSerializationException($"Unsupported pair of {nameof(formControlTypeName)} ({formControlTypeName}) and {nameof(valueType)} ({valueType}) for form controls");
+            throw new InvalidProgramStateException($"Unsupported pair of {nameof(formControlTypeName)} ({formControlTypeName}) and {nameof(valueType)} ({valueType}) for form controls");
         }
 
         public IEnumerableMeasurer GetEnumerableMeasurer()

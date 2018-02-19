@@ -6,6 +6,7 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 {
@@ -24,29 +25,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
             {
                 foreach(var cell in row)
                 {
-                    tableBuilder.PushState(new Styler(cell));
+                    tableBuilder.PushState(new Style(cell));
 
-                    var childModel = ExtractChildModel(model, cell);
-
-                    if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(cell.StringValue))
-                    {
-                        childModel = StrictExtractChildModel(model, cell);
-                        if(childModel != null)
-                        {
-                            var typeName = TemplateDescriptionHelper.Instance.GetFormControlTypeFromValueDescription(cell.StringValue);
-                            var name = TemplateDescriptionHelper.Instance.GetFormControlNameFromValueDescription(cell.StringValue);
-                            var renderer = rendererCollection.GetFormControlRenderer(typeName, childModel.GetType());
-                            renderer.Render(tableBuilder, name, childModel);
-                        }
-                        tableBuilder.SetCurrentStyle();
-                        tableBuilder.MoveToNextColumn();
-                    }
+                    if(TemplateDescriptionHelper.IsCorrectFormValueDescription(cell.StringValue))
+                        RenderFormControl(tableBuilder, model, cell);
                     else
-                    {
-                        var childTemplateName = ExtractTemplateName(cell);
-                        var renderer = rendererCollection.GetRenderer(childModel.GetType());
-                        renderer.Render(tableBuilder, childModel, templateCollection.GetTemplate(childTemplateName));
-                    }
+                        RenderCellularValue(tableBuilder, model, cell);
 
                     tableBuilder.PopState();
                 }
@@ -55,6 +39,27 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
             }
             MergeCells(tableBuilder, template);
             ResizeColumns(tableBuilder, template);
+        }
+
+        private void RenderCellularValue(ITableBuilder tableBuilder, object model, ICell cell)
+        {
+            var childModel = ExtractChildModel(model, cell);
+            var childTemplateName = ExtractTemplateName(cell);
+            var renderer = rendererCollection.GetRenderer(childModel.GetType());
+            renderer.Render(tableBuilder, childModel, templateCollection.GetTemplate(childTemplateName));
+        }
+
+        private void RenderFormControl(ITableBuilder tableBuilder, object model, ICell cell)
+        {
+            var childModel = StrictExtractChildModel(model, cell);
+            if(childModel != null)
+            {
+                var (controlType, controlName) = TemplateDescriptionHelper.TryGetFormControlFromValueDescription(cell.StringValue);
+                var renderer = rendererCollection.GetFormControlRenderer(controlType, childModel.GetType());
+                renderer.Render(tableBuilder, controlName, childModel);
+            }
+            tableBuilder.SetCurrentStyle();
+            tableBuilder.MoveToNextColumn();
         }
 
         private static void ResizeColumns(ITableBuilder tableBuilder, RenderingTemplate template)
@@ -74,36 +79,34 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
         private static string ExtractTemplateName(ICell cell)
         {
-            return TemplateDescriptionHelper.Instance.GetTemplateNameFromValueDescription(cell.StringValue);
+            return TemplateDescriptionHelper.GetTemplateNameFromValueDescription(cell.StringValue);
         }
 
         private static object ExtractChildModel(object model, ICell cell)
         {
             var expression = cell.StringValue;
-            return ExtractChildIfCorrectDescription(expression, model, "") ?? expression ?? "";
+            if(!TemplateDescriptionHelper.IsCorrectValueDescription(expression))
+                return expression ?? "";
+            return ExtractChildIfCorrectDescription(expression, model) ?? "";
         }
 
         private static object StrictExtractChildModel(object model, ICell cell)
         {
             var expression = cell.StringValue;
-            return ExtractChildIfCorrectDescription(expression, model, null);
+            return ExtractChildIfCorrectDescription(expression, model);
         }
 
-        private static object ExtractChildIfCorrectDescription(string expression, object model, object onNullReplacement)
+        private static object ExtractChildIfCorrectDescription(string expression, object model)
         {
-            if(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(expression) || TemplateDescriptionHelper.Instance.IsCorrectValueDescription(expression))
+            var excelTemplatePath = ExcelTemplatePath.FromRawExpression(expression);
+            try
             {
-                var excelTemplateExpression = new ExcelTemplateExpression(expression);
-                try
-                {
-                    return ObjectPropertiesExtractor.ExtractChildObject(model, excelTemplateExpression) ?? onNullReplacement;
-                }
-                catch(ObjectPropertyExtractionException exception)
-                {
-                    throw new InvalidExcelTemplateException($"Failed to extract child by path '{excelTemplateExpression.ChildObjectPath.RawPath}' in model of type {model.GetType()}", exception);
-                }
+                return ObjectPropertiesExtractor.ExtractChildObject(model, excelTemplatePath);
             }
-            return null;
+            catch(ObjectPropertyExtractionException exception)
+            {
+                throw new InvalidProgramStateException($"Failed to extract child by path '{excelTemplatePath.RawPath}' in model of type {model.GetType()}", exception);
+            }
         }
 
         private readonly ITemplateCollection templateCollection;

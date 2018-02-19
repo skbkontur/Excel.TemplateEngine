@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using JetBrains.Annotations;
+
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
@@ -41,7 +43,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
                 .ToDictionary(cell => cell.CellPosition.CellReference);
 
             var subTableSize = rectangle.Size;
-            var subTable = JaggedArrayHelper.Instance.CreateJaggedArray<ICell[][]>(subTableSize.Height, subTableSize.Width);
+            var subTable = JaggedArrayHelper.CreateJaggedArray<ICell[][]>(subTableSize.Height, subTableSize.Width);
             for(var x = rectangle.UpperLeft.ColumnIndex; x <= rectangle.LowerRight.ColumnIndex; ++x)
             {
                 for(var y = rectangle.UpperLeft.RowIndex; y <= rectangle.LowerRight.RowIndex; ++y)
@@ -65,20 +67,21 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
                                      new ExcelCellIndex(rectangle.LowerRight.CellReference));
         }
 
-        public TExcelFormControlInfo TryGetFormControl<TExcelFormControlInfo>(string name)
-            where TExcelFormControlInfo : class, IExcelFormControlInfo
+        public void CopyFormControlsFrom([NotNull] ITable template)
         {
-            return internalTable.GetFormControlInfo<TExcelFormControlInfo>(name);
+            internalTable.CopyFormControlsFrom(((ExcelTable)template).internalTable);
         }
 
-        public IFormControls GetFormControlsInfo()
+        [CanBeNull]
+        public IExcelCheckBoxControlInfo TryGetCheckBoxFormControl([NotNull] string name)
         {
-            return new ExcelFormControls(internalTable.GetFormControlsInfo());
+            return internalTable.TryGetCheckBoxFormControlInfo(name);
         }
 
-        public void AddFormControls(IFormControls formControls)
+        [CanBeNull]
+        public IExcelDropDownControlInfo TryGetDropDownFormControl([NotNull] string name)
         {
-            internalTable.AddFormControlInfos(formControls.ExcelFormControlsInfo);
+            return internalTable.TryGetDropDownFormControlInfo(name);
         }
 
         public void ResizeColumn(int columnIndex, double width)

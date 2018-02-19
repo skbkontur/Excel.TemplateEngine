@@ -45,15 +45,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DocumentPrimitivesInterfaces\IFormControls.cs" />
-    <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelFormControls.cs" />
     <Compile Include="Exceptions\BaseExcelSerializationException.cs" />
     <Compile Include="Exceptions\EnumerableTooLongException.cs" />
     <Compile Include="Exceptions\FormControlParsingException.cs" />
-    <Compile Include="Exceptions\InvalidExcelTemplateException.cs" />
-    <Compile Include="Exceptions\NotSupportedExcelSerializationException.cs" />
     <Compile Include="Exceptions\ObjectPropertyExtractionException.cs" />
-    <Compile Include="Helpers\ExcelTemplateExpression.cs" />
     <Compile Include="Helpers\ExcelTemplatePath.cs" />
     <Compile Include="Helpers\ExpressionPrimitives.cs" />
     <Compile Include="Helpers\ObjectPropertySettersExtractor.cs" />
@@ -81,10 +76,11 @@
     <Compile Include="ParseCollection\Parsers\AtomicValueParser.cs" />
     <Compile Include="ParseCollection\Parsers\IClassParser.cs" />
     <Compile Include="ParseCollection\Parsers\EnumerableParser.cs" />
+    <Compile Include="ParseCollection\Parsers\ParsingParameters.cs" />
     <Compile Include="RenderCollection\Renderers\CheckBoxRenderer.cs" />
     <Compile Include="RenderCollection\Renderers\DropDownRenderer.cs" />
     <Compile Include="RenderCollection\Renderers\IFormControlRenderer.cs" />
-    <Compile Include="TableNavigator\IStyler.cs" />
+    <Compile Include="TableNavigator\IStyle.cs" />
     <Compile Include="NavigationPrimitives\ICellPosition.cs" />
     <Compile Include="NavigationPrimitives\CellPosition.cs" />
     <Compile Include="NavigationPrimitives\IObjectSize.cs" />
@@ -106,7 +102,7 @@
     <Compile Include="RenderCollection\Renderers\StringRenderer.cs" />
     <Compile Include="TableNavigator\ITableNavigator.cs" />
     <Compile Include="TableParser\ITableParser.cs" />
-    <Compile Include="TableNavigator\Styler.cs" />
+    <Compile Include="TableNavigator\Style.cs" />
     <Compile Include="TableNavigator\TableNavigator.cs" />
     <Compile Include="TableParser\TableParser.cs" />
     <Compile Include="TemplateEngine.cs" />

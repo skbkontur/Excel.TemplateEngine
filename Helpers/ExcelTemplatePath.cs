@@ -8,19 +8,23 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
     {
         private ExcelTemplatePath(string rawPath)
         {
-            if(!TemplateDescriptionHelper.Instance.IsCorrectModelPath(rawPath))
+            if(!TemplateDescriptionHelper.IsCorrectModelPath(rawPath))
                 throw new ObjectPropertyExtractionException($"Invalid excel template path '{rawPath}'");
             PartsWithIndexers = rawPath.Split('.');
-            PartsWithoutArrayAccess = PartsWithIndexers.Select(TemplateDescriptionHelper.Instance.GetArrayPathPartName).ToArray();
-            PartsWithoutIndexers = PartsWithIndexers.Select(TemplateDescriptionHelper.Instance.GetPathPartName).ToArray();
+            PartsWithoutArrayAccess = PartsWithIndexers.Select(TemplateDescriptionHelper.GetArrayPathPartName).ToArray();
             RawPath = rawPath;
-            HasArrayAccess = PartsWithIndexers.Any(TemplateDescriptionHelper.Instance.IsArrayPathPart);
-            HasPrimaryArrayAccess = PartsWithIndexers.Any(TemplateDescriptionHelper.Instance.IsPrimaryArrayPathPart);
+            HasArrayAccess = PartsWithIndexers.Any(TemplateDescriptionHelper.IsArrayPathPart);
+            HasPrimaryKeyArrayAccess = PartsWithIndexers.Any(TemplateDescriptionHelper.IsPrimaryArrayPathPart);
         }
 
-        public static ExcelTemplatePath FromRawPath(string rawPath)
+        public static ExcelTemplatePath FromRawExpression(string expression)
         {
-            return new ExcelTemplatePath(rawPath);
+            if(expression == null || !TemplateDescriptionHelper.IsCorrectAbstractValueDescription(expression))
+                throw new ObjectPropertyExtractionException($"Invalid description '{expression}'");
+            var parts = TemplateDescriptionHelper.GetDescriptionParts(expression);
+            if(parts.Length != 3)
+                throw new ObjectPropertyExtractionException($"Invalid description '{expression}'");
+            return new ExcelTemplatePath(parts[2]);
         }
 
         public ExcelTemplatePath WithoutArrayAccess()
@@ -28,32 +32,32 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return new ExcelTemplatePath(string.Join(".", PartsWithoutArrayAccess));
         }
 
-        public (string, string) SplitForEnumerableExpansion()
+        public (ExcelTemplatePath pathToEnumerable, ExcelTemplatePath relativePathToItem) SplitForEnumerableExpansion()
         {
-            if (!HasArrayAccess)
+            if(!HasArrayAccess)
                 throw new BaseExcelSerializationException($"Expression needs enumerable expansion but has no part with '[]' or '[#]' (path - '{RawPath}')");
-            var parts = PartsWithIndexers;
-            var firstPartLen = parts.TakeWhile(x => !TemplateDescriptionHelper.Instance.IsArrayPathPart(x)).Count() + 1;
-            return (string.Join(".", parts.Take(firstPartLen)), string.Join(".", parts.Skip(firstPartLen)));
+            var pathToEnumerableLength = PartsWithIndexers.TakeWhile(x => !TemplateDescriptionHelper.IsArrayPathPart(x)).Count() + 1;
+            var pathToEnumerable = new ExcelTemplatePath(string.Join(".", PartsWithIndexers.Take(pathToEnumerableLength)));
+            var relativePathToItem = new ExcelTemplatePath(string.Join(".", PartsWithIndexers.Skip(pathToEnumerableLength)));
+            return (pathToEnumerable, relativePathToItem);
         }
 
         public bool HasArrayAccess { get; }
-        public bool HasPrimaryArrayAccess { get; set; }
+        public bool HasPrimaryKeyArrayAccess { get; }
         public string RawPath { get; }
         public string[] PartsWithIndexers { get; }
-        public string[] PartsWithoutArrayAccess { get; }
-        public string[] PartsWithoutIndexers { get; }
-        
-        protected bool Equals(ExcelTemplatePath other)
+        private string[] PartsWithoutArrayAccess { get; }
+
+        private bool Equals(ExcelTemplatePath other)
         {
             return string.Equals(RawPath, other.RawPath);
         }
 
         public override bool Equals(object obj)
         {
-            if(ReferenceEquals(null, obj)) return false;
+            if(obj is null) return false;
             if(ReferenceEquals(this, obj)) return true;
-            if(obj.GetType() != this.GetType()) return false;
+            if(obj.GetType() != GetType()) return false;
             return Equals((ExcelTemplatePath)obj);
         }
 

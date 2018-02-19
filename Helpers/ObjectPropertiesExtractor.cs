@@ -13,17 +13,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
     public static class ObjectPropertiesExtractor
     {
         [CanBeNull]
-        public static object ExtractChildObject([NotNull] object model, [NotNull] ExcelTemplateExpression expression)
-        {
-            return ExtractChildObject(model, expression.ChildObjectPath);
-        }
-
-        [CanBeNull]
         public static object ExtractChildObject([NotNull] object model, [NotNull] ExcelTemplatePath path)
         {
             var pathParts = path.PartsWithIndexers;
             var (succeed, result) = TryExtractChildObject(model, pathParts, 0);
-            if (!succeed)
+            if(!succeed)
                 throw new ObjectPropertyExtractionException($"Can't find path '{string.Join(".", pathParts)}' in model of type '{model.GetType()}'");
 
             return result;
@@ -31,23 +25,23 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         private static (bool succeed, object result) TryExtractChildObject([NotNull] object model, [NotNull, ItemNotNull] string[] pathParts, int pathPartIndex)
         {
-            if (pathPartIndex == pathParts.Length)
+            if(pathPartIndex == pathParts.Length)
                 return (true, model);
 
             if(!TryExtractDirectChild(model, pathParts[pathPartIndex], out var currentChild))
                 return (false, null);
-            
-            if (currentChild == null)
+
+            if(currentChild == null)
                 return (true, null);
-            
-            if (TemplateDescriptionHelper.Instance.IsArrayPathPart(pathParts[pathPartIndex]))
+
+            if(TemplateDescriptionHelper.IsArrayPathPart(pathParts[pathPartIndex]))
             {
-                if (!TypeCheckingHelper.Instance.IsEnumerable(currentChild.GetType()))
+                if(!TypeCheckingHelper.IsEnumerable(currentChild.GetType()))
                     throw new ObjectPropertyExtractionException($"Trying to extract enumerable from non-enumerable property {string.Join(".", pathParts)}");
                 var resultList = new List<object>();
-                foreach (var element in ((IEnumerable)currentChild).Cast<object>())
+                foreach(var element in ((IEnumerable)currentChild).Cast<object>())
                 {
-                    if (element == null)
+                    if(element == null)
                         resultList.Add(null);
                     else
                     {
@@ -66,33 +60,33 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         private static bool TryExtractDirectChild([NotNull] object model, [NotNull] string pathPart, out object child)
         {
             child = null;
-            if (TemplateDescriptionHelper.Instance.IsCollectionAccessPathPart(pathPart))
+            if(TemplateDescriptionHelper.IsCollectionAccessPathPart(pathPart))
             {
-                var name = TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartName(pathPart);
-                var key = TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartIndex(pathPart);
-                if (!TryExtractCurrentChildPropertyInfo(model, name, out var collectionPropertyInfo))
+                var name = TemplateDescriptionHelper.GetCollectionAccessPathPartName(pathPart);
+                var key = TemplateDescriptionHelper.GetCollectionAccessPathPartIndex(pathPart);
+                if(!TryExtractCurrentChildPropertyInfo(model, name, out var collectionPropertyInfo))
                     return false;
-                if (TypeCheckingHelper.Instance.IsDictionary(collectionPropertyInfo.PropertyType))
+                if(TypeCheckingHelper.IsDictionary(collectionPropertyInfo.PropertyType))
                 {
-                    var indexer = TemplateDescriptionHelper.ParseCollectionIndexer(key, TypeCheckingHelper.Instance.GetDictionaryKeyType(collectionPropertyInfo.PropertyType));
+                    var indexer = TemplateDescriptionHelper.ParseCollectionIndexerOrThrow(key, TypeCheckingHelper.GetDictionaryGenericTypeArguments(collectionPropertyInfo.PropertyType).keyType);
                     var dict = collectionPropertyInfo.GetValue(model, null);
-                    if (dict == null)
+                    if(dict == null)
                         return true;
                     child = ((IDictionary)dict)[indexer];
                     return true;
                 }
-                if (TypeCheckingHelper.Instance.IsIList(collectionPropertyInfo.PropertyType))
+                if(TypeCheckingHelper.IsIList(collectionPropertyInfo.PropertyType))
                 {
-                    var indexer = (int)TemplateDescriptionHelper.ParseCollectionIndexer(key, typeof(int));
+                    var indexer = (int)TemplateDescriptionHelper.ParseCollectionIndexerOrThrow(key, typeof(int));
                     var list = collectionPropertyInfo.GetValue(model, null);
-                    if (list == null)
+                    if(list == null)
                         return true;
                     child = ((IList)list)[indexer];
                     return true;
                 }
                 throw new ObjectPropertyExtractionException($"Unexpected child type: expected dictionary or array (pathPath='{pathPart}'), but model is '{collectionPropertyInfo.PropertyType}' in '{model.GetType()}'");
             }
-            if (!TryExtractCurrentChildPropertyInfo(model, pathPart, out var propertyInfo))
+            if(!TryExtractCurrentChildPropertyInfo(model, pathPart, out var propertyInfo))
                 return false;
             child = propertyInfo.GetValue(model, null);
             return true;
@@ -100,7 +94,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         private static bool TryExtractCurrentChildPropertyInfo([NotNull] object model, [NotNull] string pathPart, out PropertyInfo childPropertyInfo)
         {
-            var propertyName = TemplateDescriptionHelper.Instance.GetPathPartName(pathPart);
+            var propertyName = TemplateDescriptionHelper.GetPathPartName(pathPart);
             childPropertyInfo = model.GetType().GetProperty(propertyName);
             return childPropertyInfo != null;
         }
@@ -108,9 +102,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         [NotNull]
         private static PropertyInfo ExtractPropertyInfo([NotNull] Type type, [NotNull] string pathPart)
         {
-            var propertyName = TemplateDescriptionHelper.Instance.GetPathPartName(pathPart);
+            var propertyName = TemplateDescriptionHelper.GetPathPartName(pathPart);
             var childPropertyInfo = type.GetProperty(propertyName);
-            if (childPropertyInfo == null)
+            if(childPropertyInfo == null)
                 throw new ObjectPropertyExtractionException($"Property with name '{propertyName}' not found in type '{type}'");
             return childPropertyInfo;
         }
@@ -124,25 +118,26 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             {
                 var childPropertyType = ExtractPropertyInfo(currType, part).PropertyType;
 
-                if(TemplateDescriptionHelper.Instance.IsCollectionAccessPathPart(part))
+                if(TemplateDescriptionHelper.IsCollectionAccessPathPart(part))
                 {
-                    if(TypeCheckingHelper.Instance.IsDictionary(childPropertyType))
+                    if(TypeCheckingHelper.IsDictionary(childPropertyType))
                     {
-                        TemplateDescriptionHelper.ParseCollectionIndexer(TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartIndex(part), TypeCheckingHelper.Instance.GetDictionaryKeyType(childPropertyType));
-                        currType = TypeCheckingHelper.Instance.GetDictionaryValueType(childPropertyType);
+                        var (keyType, valueType) = TypeCheckingHelper.GetDictionaryGenericTypeArguments(childPropertyType);
+                        TemplateDescriptionHelper.ParseCollectionIndexerOrThrow(TemplateDescriptionHelper.GetCollectionAccessPathPartIndex(part), keyType);
+                        currType = valueType;
                     }
-                    else if(TypeCheckingHelper.Instance.IsIList(childPropertyType))
+                    else if(TypeCheckingHelper.IsIList(childPropertyType))
                     {
-                        TemplateDescriptionHelper.ParseCollectionIndexer(TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartIndex(part), typeof(int));
-                        currType = TypeCheckingHelper.Instance.GetEnumerableItemType(childPropertyType);
+                        TemplateDescriptionHelper.ParseCollectionIndexerOrThrow(TemplateDescriptionHelper.GetCollectionAccessPathPartIndex(part), typeof(int));
+                        currType = TypeCheckingHelper.GetEnumerableItemType(childPropertyType);
                     }
                     else
                         throw new ObjectPropertyExtractionException($"Not supported collection type {childPropertyType}");
                 }
-                else if(TemplateDescriptionHelper.Instance.IsArrayPathPart(part))
+                else if(TemplateDescriptionHelper.IsArrayPathPart(part))
                 {
-                    if(TypeCheckingHelper.Instance.IsIList(childPropertyType))
-                        currType = TypeCheckingHelper.Instance.GetIListItemType(childPropertyType);
+                    if(TypeCheckingHelper.IsIList(childPropertyType))
+                        currType = TypeCheckingHelper.GetIListItemType(childPropertyType);
                     else
                         throw new ObjectPropertyExtractionException($"Not supported collection type {childPropertyType}");
                 }

@@ -3,46 +3,37 @@ using System.Collections.Generic;
 
 using log4net;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
 {
     public class TableNavigator : ITableNavigator
     {
-        public TableNavigator(ITable target, ICellPosition startPosition, IStyler styler = null)
+        public TableNavigator(ICellPosition startPosition)
         {
-            Target = target;
             var initialState = new TableNavigatorState
                 {
                     Origin = startPosition,
                     Cursor = startPosition,
                     CurrentLayerStartRowIndex = startPosition.RowIndex,
-                    Styler = styler
                 };
             states = new Stack<TableNavigatorState>(new[] {initialState});
         }
 
-        public void PushState(ICellPosition newOrigin, IStyler styler)
+        public void PushState(ICellPosition newOrigin)
         {
             var newState = new TableNavigatorState
                 {
                     Origin = newOrigin,
                     Cursor = newOrigin,
                     CurrentLayerStartRowIndex = newOrigin.RowIndex,
-                    Styler = styler
                 };
             states.Push(newState);
         }
 
-        public void PushState(IStyler styler)
-        {
-            PushState(CurrentState.Cursor, styler);
-        }
-
         public void PushState()
         {
-            PushState(CurrentState.Cursor, CurrentState.Styler);
+            PushState(CurrentState.Cursor);
         }
 
         public void PopState()
@@ -75,14 +66,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
             UpdateCurrentState();
         }
 
-        public void SetCurrentStyle()
-        {
-            var cell = Target.GetCell(CurrentState.Cursor) ?? Target.InsertCell(CurrentState.Cursor);
-            CurrentState.Styler.ApplyStyle(cell);
-        }
-
         public TableNavigatorState CurrentState => states.Peek();
-        public ITable Target { get; }
 
         private void UpdateCurrentState()
         {

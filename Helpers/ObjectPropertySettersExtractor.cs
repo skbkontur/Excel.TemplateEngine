@@ -8,7 +8,6 @@ using System.Linq.Expressions;
 using JetBrains.Annotations;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
-using SKBKontur.Catalogue.Linq;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 {
@@ -17,7 +16,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         [NotNull]
         public static Action<object> ExtractChildObjectSetter([NotNull] object model, [NotNull] ExcelTemplatePath path)
         {
-            var action = childObjectSettersCache.GetOrAdd((model.GetType(), path), x => ExtractChildModelSetter(x.Item1, x.Item2.PartsWithIndexers));
+            var action = childObjectSettersCache.GetOrAdd((model.GetType(), path), x => ExtractChildModelSetter(x.type, x.path.PartsWithIndexers));
             return x => action(model, x);
         }
 
@@ -40,55 +39,46 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         {
             var statements = new List<Expression>();
 
-            foreach(var (i, part) in pathParts.WithIndices())
+            for(var partIndex = 0; partIndex < pathParts.Length; ++partIndex)
             {
-                var name = TemplateDescriptionHelper.Instance.GetPathPartName(part);
+                var name = TemplateDescriptionHelper.GetPathPartName(pathParts[partIndex]);
 
                 var newNodeType = currNodeType.GetProperty(name)?.PropertyType;
                 currNodeType = newNodeType ?? throw new ObjectPropertyExtractionException($"Type '{currNodeType}' has no property '{name}'");
                 currNodeExpression = Expression.Property(currNodeExpression, name);
 
-                if(TemplateDescriptionHelper.Instance.IsCollectionAccessPathPart(part))
+                if(TemplateDescriptionHelper.IsCollectionAccessPathPart(pathParts[partIndex]))
                 {
                     List<Expression> statementsToAdd;
-                    (currNodeExpression, currNodeType, statementsToAdd) = BuildExpandingOfCollectionAccessPart(currNodeExpression, currNodeType, part);
+                    (currNodeExpression, currNodeType, statementsToAdd) = BuildExpandingOfCollectionAccessPart(currNodeExpression, currNodeType, pathParts[partIndex]);
                     statements.AddRange(statementsToAdd);
                 }
-                else if(TemplateDescriptionHelper.Instance.IsArrayPathPart(part))
+                else if(TemplateDescriptionHelper.IsArrayPathPart(pathParts[partIndex]))
                 {
-                    var statementsToAdd = BuildExpandingOfArrayPart(currNodeExpression, currNodeType, valueToSetExpression, pathParts.Skip(i + 1).ToArray());
+                    var statementsToAdd = BuildExpandingOfArrayPart(currNodeExpression, currNodeType, valueToSetExpression, pathParts.Skip(partIndex + 1).ToArray());
                     statements.AddRange(statementsToAdd);
                     return statements;
                 }
-                else if(!TypeCheckingHelper.Instance.IsNullable(currNodeType) && i != pathParts.Length - 1)
+                else if(!TypeCheckingHelper.IsNullable(currNodeType) && partIndex != pathParts.Length - 1)
                 {
-                    if(currNodeType.IsArray)
-                    {
-                        var getLenExpression = Expression.Property(Expression.Convert(valueToSetExpression, typeof(List<object>)), "Count");
-                        statements.Add(ExpressionPrimitives.CreateArrayInitStatement(currNodeExpression, currNodeType.GetElementType(), getLenExpression));
-                    }
-                    else
-                    {
-                        statements.Add(ExpressionPrimitives.CreateValueInitStatement(currNodeExpression, currNodeType));
-                    }
+                    statements.Add(ExpressionPrimitives.CreateValueInitStatement(currNodeExpression, currNodeType));
                 }
             }
             statements.Add(ExpressionPrimitives.AssignWithTypeCheckings(currNodeExpression, currNodeType, valueToSetExpression));
             return statements;
         }
-        
+
         private static (Expression currNodeExpression, Type currNodeType, List<Expression> statements) BuildExpandingOfCollectionAccessPart([NotNull] Expression currNodeExpression, [NotNull] Type currNodeType, [NotNull] string part)
         {
             var statements = new List<Expression>();
-            if(TypeCheckingHelper.Instance.IsDictionary(currNodeType))
+            if(TypeCheckingHelper.IsDictionary(currNodeType))
             {
                 statements.Add(ExpressionPrimitives.CreateValueInitStatement(currNodeExpression, currNodeType));
 
-                var dictKeyType = TypeCheckingHelper.Instance.GetDictionaryKeyType(currNodeType);
-                var indexer = TemplateDescriptionHelper.ParseCollectionIndexer(TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartIndex(part), dictKeyType);
+                var (dictKeyType, dictValueType) = TypeCheckingHelper.GetDictionaryGenericTypeArguments(currNodeType);
+                var indexer = TemplateDescriptionHelper.ParseCollectionIndexerOrThrow(TemplateDescriptionHelper.GetCollectionAccessPathPartIndex(part), dictKeyType);
 
                 var dictElementExpression = Expression.Property(currNodeExpression, "Item", Expression.Constant(indexer));
-                var dictValueType = TypeCheckingHelper.Instance.GetDictionaryValueType(currNodeType);
 
                 statements.Add(ExpressionPrimitives.CreateDictValueInitStatement(currNodeExpression, dictKeyType, dictValueType, indexer));
 
@@ -98,7 +88,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             else if(currNodeType.IsArray)
             {
                 var arrayItemType = currNodeType.GetElementType() ?? throw new ObjectPropertyExtractionException($"Array of type '{currNodeType}' has no item type");
-                var indexer = TemplateDescriptionHelper.ParseCollectionIndexer(TemplateDescriptionHelper.Instance.GetCollectionAccessPathPartIndex(part), typeof(int));
+                var indexer = TemplateDescriptionHelper.ParseCollectionIndexerOrThrow(TemplateDescriptionHelper.GetCollectionAccessPathPartIndex(part), typeof(int));
                 statements.Add(ExpressionPrimitives.CreateArrayExtendStatement(currNodeExpression, Expression.Constant((int)indexer + 1), arrayItemType));
                 var arrayItemExpression = Expression.ArrayAccess(currNodeExpression, Expression.Constant(indexer));
 
@@ -120,7 +110,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             var statements = new List<Expression>();
             if(currNodeType.IsArray)
             {
-                var itemType = TypeCheckingHelper.Instance.GetEnumerableItemType(currNodeType);
+                var itemType = TypeCheckingHelper.GetEnumerableItemType(currNodeType);
 
                 var getLenExpression = Expression.Property(Expression.Convert(valueToSetExpression, typeof(ICollection)), "Count");
                 statements.Add(ExpressionPrimitives.CreateArrayInitStatement(currNodeExpression, itemType, getLenExpression));
@@ -141,7 +131,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             throw new ObjectPropertyExtractionException("Only array is supported as iterated collection");
         }
 
-        [NotNull, ItemNotNull]
-        private static readonly ConcurrentDictionary<(Type, ExcelTemplatePath), Action<object, object>> childObjectSettersCache = new ConcurrentDictionary<(Type, ExcelTemplatePath), Action<object, object>>();
+        [NotNull]
+        private static readonly ConcurrentDictionary<(Type type, ExcelTemplatePath path), Action<object, object>> childObjectSettersCache = new ConcurrentDictionary<(Type, ExcelTemplatePath), Action<object, object>>();
     }
 }

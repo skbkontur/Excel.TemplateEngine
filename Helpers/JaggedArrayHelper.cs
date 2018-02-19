@@ -2,18 +2,12 @@
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 {
-    public sealed class JaggedArrayHelper
+    public static class JaggedArrayHelper
     {
-        private JaggedArrayHelper()
-        {
-        }
-
-        public T CreateJaggedArray<T>(params int[] lengths)
+        public static T CreateJaggedArray<T>(params int[] lengths)
         {
             return (T)InitializeJaggedArray(typeof(T).GetElementType(), 0, lengths);
         }
-
-        public static JaggedArrayHelper Instance { get; } = new JaggedArrayHelper();
 
         private static object InitializeJaggedArray(Type type, int index, int[] lengths)
         {

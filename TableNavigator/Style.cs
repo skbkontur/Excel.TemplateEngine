@@ -2,14 +2,14 @@
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
 {
-    public class Styler : IStyler
+    public class Style : IStyle
     {
-        public Styler(ICell templateCell)
+        public Style(ICell templateCell)
         {
             this.templateCell = templateCell;
         }
 
-        public void ApplyStyle(ICell cell)
+        public void ApplyTo(ICell cell)
         {
             cell.CopyStyle(templateCell);
         }

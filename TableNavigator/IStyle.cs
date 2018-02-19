@@ -2,8 +2,8 @@
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
 {
-    public interface IStyler
+    public interface IStyle
     {
-        void ApplyStyle(ICell cell);
+        void ApplyTo(ICell cell);
     }
 }

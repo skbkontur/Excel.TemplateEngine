@@ -1,9 +1,11 @@
-﻿using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
+﻿using JetBrains.Annotations;
+
+using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 {
     public interface IFormControlRenderer
     {
-        void Render(ITableBuilder tableBuilder, string name, object model);
+        void Render([NotNull] ITableBuilder tableBuilder, [NotNull] string name, [NotNull] object model);
     }
 }

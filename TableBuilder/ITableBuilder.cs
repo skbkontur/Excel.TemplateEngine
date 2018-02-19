@@ -1,4 +1,6 @@
-﻿using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
+﻿using JetBrains.Annotations;
+
+using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 
@@ -10,10 +12,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         ITableBuilder RenderAtomicValue(int value);
         ITableBuilder RenderAtomicValue(double value);
         ITableBuilder RenderAtomicValue(decimal value);
-        ITableBuilder RenderCheckBoxValue(string name, bool value);
-        ITableBuilder RenderDropDownValue(string name, string value);
-        ITableBuilder PushState(ICellPosition newOrigin, IStyler styler);
-        ITableBuilder PushState(IStyler styler);
+
+        [NotNull]
+        ITableBuilder RenderCheckBoxValue([NotNull] string name, bool value);
+
+        [NotNull]
+        ITableBuilder RenderDropDownValue([NotNull] string name, [CanBeNull] string value);
+
+        ITableBuilder PushState(ICellPosition newOrigin, IStyle style);
+        ITableBuilder PushState(IStyle style);
         ITableBuilder PushState();
         ITableBuilder PopState();
         ITableBuilder MoveToNextLayer();
@@ -21,7 +28,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         ITableBuilder ExpandColumn(int relativeColumnIndex, double width);
         ITableBuilder SetCurrentStyle();
         ITableBuilder MergeCells(IRectangle rectangle);
-        ITableBuilder AddFormControlInfos(IFormControls excelFormControlsInfo);
-        TableNavigatorState CurrentState { get; }
+        ITableBuilder CopyFormControlsFrom([NotNull] ITable template);
     }
 }

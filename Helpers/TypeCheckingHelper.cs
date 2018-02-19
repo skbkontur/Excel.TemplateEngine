@@ -7,57 +7,43 @@ using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 {
-    public sealed class TypeCheckingHelper
+    public static class TypeCheckingHelper
     {
-        private TypeCheckingHelper()
-        {
-        }
-
-        public bool IsEnumerable(Type type)
+        public static bool IsEnumerable(Type type)
         {
             return type != typeof(string) &&
                    (IsEnumerableDirectly(type) || type.GetInterfaces().Any(IsEnumerableDirectly));
         }
 
-        public bool IsDictionary(Type type)
+        public static bool IsDictionary(Type type)
         {
             return IsDictionaryDirectly(type) || type.GetInterfaces().Any(IsDictionaryDirectly);
         }
 
-        public bool IsIList(Type type)
+        public static bool IsIList(Type type)
         {
             return type != typeof(string) && (IsIListDirectly(type) || type.GetInterfaces().Any(IsIListDirectly));
         }
 
-        public bool IsNullable(Type type)
+        public static bool IsNullable(Type type)
         {
             return Nullable.GetUnderlyingType(type) != null;
         }
 
-        public Type GetEnumerableItemType(Type type)
+        public static Type GetEnumerableItemType(Type type)
         {
             return GetImplementedEnumerableInterface(type).GetGenericArguments().SingleOrDefault() ?? typeof(object);
         }
 
-        public Type GetDictionaryKeyType(Type type)
-        {
-            return GetDictionaryGenericTypeArguments(type).keyType;
-        }
-
-        public Type GetDictionaryValueType(Type type)
-        {
-            return GetDictionaryGenericTypeArguments(type).valueType;
-        }
-
-        public Type GetIListItemType(Type type)
+        public static Type GetIListItemType(Type type)
         {
             return GetImplementedIListInterface(type).GetGenericArguments().SingleOrDefault() ?? typeof(object);
         }
 
-        private (Type keyType, Type valueType) GetDictionaryGenericTypeArguments(Type type)
+        public static (Type keyType, Type valueType) GetDictionaryGenericTypeArguments(Type type)
         {
             if(!IsDictionary(type))
-                throw new ArgumentException($"{nameof(type)} ({type}) should implement IDictionary<,> or IDictionary");
+                throw new InvalidProgramStateException($"{nameof(type)} ({type}) should implement IDictionary<,> or IDictionary");
             var genericArguments = GetImplementedDictionaryInterface(type).GetGenericArguments();
             if(!genericArguments.Any())
                 return (typeof(object), typeof(object));
@@ -66,7 +52,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return (genericArguments[0], genericArguments[1]);
         }
 
-        private Type GetImplementedEnumerableInterface(Type type)
+        private static Type GetImplementedEnumerableInterface(Type type)
         {
             if(type == typeof(string))
                 return null;
@@ -75,21 +61,19 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return type.GetInterfaces().FirstOrDefault(IsGenericEnumerableDirectly) ?? type.GetInterfaces().FirstOrDefault(IsEnumerableDirectly);
         }
 
-        private Type GetImplementedDictionaryInterface(Type type)
+        private static Type GetImplementedDictionaryInterface(Type type)
         {
             if(IsGenericDictionaryDirectly(type))
                 return type;
             return type.GetInterfaces().FirstOrDefault(IsGenericDictionaryDirectly) ?? type.GetInterfaces().FirstOrDefault(IsDictionaryDirectly);
         }
 
-        private Type GetImplementedIListInterface(Type type)
+        private static Type GetImplementedIListInterface(Type type)
         {
             if(IsGenericIListDirectly(type))
                 return type;
             return type.GetInterfaces().FirstOrDefault(IsGenericIListDirectly) ?? type.GetInterfaces().FirstOrDefault(IsIListDirectly);
         }
-
-        public static TypeCheckingHelper Instance { get; } = new TypeCheckingHelper();
 
         private static bool IsGenericEnumerableDirectly(Type type)
         {

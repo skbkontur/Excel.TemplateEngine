@@ -10,40 +10,32 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 {
-    public sealed class TemplateDescriptionHelper
+    public static class TemplateDescriptionHelper
     {
-        private TemplateDescriptionHelper()
-        {
-        }
-
-        public string GetTemplateNameFromValueDescription(string expression)
+        public static string GetTemplateNameFromValueDescription(string expression)
         {
             return !IsCorrectValueDescription(expression) ? null : GetDescriptionParts(expression)[1];
         }
 
-        public string GetFormControlNameFromValueDescription(string expression)
+        public static (string formControlType, string formControlName) TryGetFormControlFromValueDescription(string expression)
         {
-            return !IsCorrectFormValueDescription(expression) ? null : GetDescriptionParts(expression)[1];
+            var descriptionParts = GetDescriptionParts(expression);
+            return !IsCorrectFormValueDescription(expression) ? (null, null) : (descriptionParts[0], descriptionParts[1]);
         }
 
-        public string GetFormControlTypeFromValueDescription(string expression)
-        {
-            return !IsCorrectFormValueDescription(expression) ? null : GetDescriptionParts(expression)[0];
-        }
-
-        public bool IsCorrectValueDescription(string expression)
+        public static bool IsCorrectValueDescription(string expression)
         {
             var descriptionParts = GetDescriptionParts(expression);
             return IsCorrectAbstractValueDescription(expression) && descriptionParts[0] == "Value";
         }
 
-        public bool IsCorrectFormValueDescription(string expression)
+        public static bool IsCorrectFormValueDescription(string expression)
         {
             var descriptionParts = GetDescriptionParts(expression);
             return IsCorrectAbstractValueDescription(expression) && !string.IsNullOrEmpty(descriptionParts[1]) && formControlTypes.Contains(descriptionParts[0]);
         }
 
-        public bool IsCorrectAbstractValueDescription(string expression)
+        public static bool IsCorrectAbstractValueDescription(string expression)
         {
             var descriptionParts = GetDescriptionParts(expression);
             if(descriptionParts.Count() != 3 ||
@@ -53,12 +45,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return IsCorrectModelPath(descriptionParts[2]);
         }
 
-        public bool IsCorrectModelPath(string pathParts)
+        public static bool IsCorrectModelPath(string pathParts)
         {
             return pathRegex.IsMatch(pathParts);
         }
 
-        public bool IsCorrectTemplateDescription(string expression)
+        public static bool IsCorrectTemplateDescription(string expression)
         {
             var descriptionParts = GetDescriptionParts(expression);
             if(descriptionParts.Count() != 4 ||
@@ -70,7 +62,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                    exactCellReferenceRegex.IsMatch(descriptionParts[3]);
         }
 
-        public bool TryExtractCoordinates(string templateDescription, out IRectangle rectangle)
+        public static bool TryExtractCoordinates(string templateDescription, out IRectangle rectangle)
         {
             rectangle = null;
             if(!IsCorrectTemplateDescription(templateDescription))
@@ -87,12 +79,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return new Rectangle(upperLeft, lowerRight);
         }
 
-        public string[] GetDescriptionParts(string filedDescription)
+        public static string[] GetDescriptionParts(string filedDescription)
         {
             return string.IsNullOrEmpty(filedDescription) ? new string[0] : filedDescription.Split(':').ToArray();
         }
 
-        public string GetPathPartName(string pathPart)
+        public static string GetPathPartName(string pathPart)
         {
             if(IsArrayPathPart(pathPart))
                 return GetArrayPathPartName(pathPart);
@@ -101,37 +93,37 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             return pathPart;
         }
 
-        public string GetArrayPathPartName(string pathPart)
+        public static string GetArrayPathPartName(string pathPart)
         {
-             return pathPart.Replace("[]", "").Replace("[#]", "");
+            return pathPart.Replace("[]", "").Replace("[#]", "");
         }
 
-        public bool IsArrayPathPart(string pathPart)
+        public static bool IsArrayPathPart(string pathPart)
         {
             return arrayPathPartRegex.IsMatch(pathPart);
         }
 
-        public bool IsPrimaryArrayPathPart(string pathPart)
+        public static bool IsPrimaryArrayPathPart(string pathPart)
         {
             return arrayPrimaryPathPartRegex.IsMatch(pathPart);
         }
 
-        public string GetCollectionAccessPathPartName(string pathPart)
+        public static string GetCollectionAccessPathPartName(string pathPart)
         {
             return GetCollectionAccessPathPart(pathPart).name;
         }
 
-        public string GetCollectionAccessPathPartIndex(string pathPart)
+        public static string GetCollectionAccessPathPartIndex(string pathPart)
         {
             return GetCollectionAccessPathPart(pathPart).index;
         }
 
-        public bool IsCollectionAccessPathPart(string pathPart)
+        public static bool IsCollectionAccessPathPart(string pathPart)
         {
             return collectionAccessPathPartRegex.IsMatch(pathPart);
         }
 
-        private (string name, string index) GetCollectionAccessPathPart(string pathPart)
+        private static (string name, string index) GetCollectionAccessPathPart(string pathPart)
         {
             var match = collectionAccessPathPartRegex.Match(pathPart);
             if(!match.Success)
@@ -140,24 +132,22 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         }
 
         [NotNull]
-        public static object ParseCollectionIndexer([NotNull] string collectionIndexer, [NotNull] Type collectionKeyType)
+        public static object ParseCollectionIndexerOrThrow([NotNull] string collectionIndexer, [NotNull] Type collectionKeyType)
         {
-            if (collectionIndexer.StartsWith("\"") && collectionIndexer.EndsWith("\""))
+            if(collectionIndexer.StartsWith("\"") && collectionIndexer.EndsWith("\""))
             {
-                if (collectionKeyType != typeof(string))
+                if(collectionKeyType != typeof(string))
                     throw new ObjectPropertyExtractionException($"Collection with '{collectionKeyType}' keys was indexed by {typeof(string)}");
                 return collectionIndexer.Substring(1, collectionIndexer.Length - 2);
             }
-            if (int.TryParse(collectionIndexer, out var intIndexer))
+            if(int.TryParse(collectionIndexer, out var intIndexer))
             {
-                if (collectionKeyType != typeof(int))
+                if(collectionKeyType != typeof(int))
                     throw new ObjectPropertyExtractionException($"Collection with '{collectionKeyType}' keys was indexed by {typeof(int)}");
                 return intIndexer;
             }
             throw new ObjectPropertyExtractionException("Only strings and ints are supported as collection indexers");
         }
-
-        public static TemplateDescriptionHelper Instance { get; } = new TemplateDescriptionHelper();
 
         private static readonly Regex collectionAccessPathPartRegex = new Regex(@"^(\w+)\[([^\[\]#]+)\]$", RegexOptions.Compiled);
         private static readonly Regex arrayPathPartRegex = new Regex(@"^(\w+)\[#?\]$", RegexOptions.Compiled);
@@ -165,6 +155,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         private static readonly Regex pathRegex = new Regex(@"^[A-Za-z]\w*(\[[^\[\]]*\])?(\.[A-Za-z]\w*(\[[^\[\]]*\])?)*$", RegexOptions.Compiled);
         private static readonly Regex cellReferenceRegex = new Regex("[A-Z]+[1-9][0-9]*", RegexOptions.Compiled);
         private static readonly Regex exactCellReferenceRegex = new Regex("^[A-Z]+[1-9][0-9]*$", RegexOptions.Compiled);
-        private readonly HashSet<string> formControlTypes = new HashSet<string>(new[] {"CheckBox", "DropDown"});
+        private static readonly HashSet<string> formControlTypes = new HashSet<string>(new[] {"CheckBox", "DropDown"});
     }
 }

@@ -38,7 +38,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
                 return;
 
             IRectangle range;
-            if(!TemplateDescriptionHelper.Instance.TryExtractCoordinates(cell.StringValue, out range))
+            if(!TemplateDescriptionHelper.TryExtractCoordinates(cell.StringValue, out range))
                 return;
 
             var newTemplate = BuildNewRenderingTemplate(range);

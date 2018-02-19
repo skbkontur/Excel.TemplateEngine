@@ -16,13 +16,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
         bool TryParseAtomicValue(out long? result);
         bool TryParseCheckBoxValue(string name, out bool result);
         bool TryParseDropDownValue(string name, out string result);
-        ITableParser PushState(ICellPosition newOrigin, IStyler styler);
-        ITableParser PushState(IStyler styler);
+        ITableParser PushState(ICellPosition newOrigin);
         ITableParser PushState();
         ITableParser PopState();
         ITableParser MoveToNextLayer();
         ITableParser MoveToNextColumn();
-        ITableParser SetCurrentStyle();
         TableNavigatorState CurrentState { get; }
     }
 }

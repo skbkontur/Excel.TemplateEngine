@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 {
@@ -18,11 +19,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         public List<object> Parse([NotNull] ITableParser tableParser, [NotNull] Type modelType, int count, [NotNull] Action<string, string> addFieldMapping)
         {
             if(count < 0)
-                throw new ArgumentException($"Count should be positive ({count} found)");
-            if(count > maxEnumerableLength)
-                throw new NotSupportedException($"Lists longer than {maxEnumerableLength} are not supported");
-            
-            var parser = parserCollection.GetAtomicValueParser(modelType);
+                throw new InvalidProgramStateException($"Count should be positive ({count} found)");
+            if(count > ParsingParameters.MaxEnumerableLength)
+                throw new InvalidProgramStateException($"Lists longer than {ParsingParameters.MaxEnumerableLength} are not supported");
+
+            var parser = parserCollection.GetAtomicValueParser();
             var result = new List<object>();
             for(var i = 0; i < count; i++)
             {
@@ -48,8 +49,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
                 return Activator.CreateInstance(type);
             return null;
         }
-
-        private const int maxEnumerableLength = (int)1e4;
 
         private readonly IParserCollection parserCollection;
     }

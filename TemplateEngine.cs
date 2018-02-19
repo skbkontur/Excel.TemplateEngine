@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
-using log4net;
+using JetBrains.Annotations;
+
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection;
@@ -15,49 +16,35 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
     {
         public TemplateEngine(ITable templateTable)
         {
-            formControlsInfo = templateTable.GetFormControlsInfo();
+            this.templateTable = templateTable;
             templateCollection = new TemplateCollection(templateTable);
             rendererCollection = new RendererCollection(templateCollection);
             parserCollection = new ParserCollection();
         }
 
-        public void Render(ITableBuilder tableBuilder, object model)
+        public void Render<TModel>([NotNull] ITableBuilder tableBuilder, [NotNull] TModel model)
         {
-            var renderingTemplate = templateCollection.GetTemplate(rootTemplateName);
-            if(renderingTemplate == null)
-            {
-                RenderError(tableBuilder);
-                return;
-            }
-            tableBuilder.AddFormControlInfos(formControlsInfo);
+            var renderingTemplate = templateCollection.GetTemplate(rootTemplateName)
+                                    ?? throw new InvalidProgramStateException($"Template with name {rootTemplateName} not found in xlsx");
+            tableBuilder.CopyFormControlsFrom(templateTable);
             var render = rendererCollection.GetRenderer(model.GetType());
             render.Render(tableBuilder, model, renderingTemplate);
         }
 
-        public (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(ITableParser tableParser)
+        public (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>([NotNull] ITableParser tableParser)
             where TModel : new()
         {
-            var renderingTemplate = templateCollection.GetTemplate(rootTemplateName);
-
-            if(renderingTemplate == null)
-                throw new InvalidProgramStateException($"Template with name {rootTemplateName} not found in xlsx");
-
-            var parser = parserCollection.GetClassParser(typeof(TModel));
+            var renderingTemplate = templateCollection.GetTemplate(rootTemplateName)
+                                    ?? throw new InvalidProgramStateException($"Template with name {rootTemplateName} not found in xlsx");
+            var parser = parserCollection.GetClassParser();
             var fieldsMappingForErrors = new Dictionary<string, string>();
-            return (parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), fieldsMappingForErrors);
-        }
-
-        private void RenderError(ITableBuilder tableBuilder)
-        {
-            tableBuilder.RenderAtomicValue("Error: Root template description not found!");
-            logger.Error("Excel document generation failed: root template description not found.");
+            return (model : parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors: fieldsMappingForErrors);
         }
 
         private const string rootTemplateName = "RootTemplate";
+        private readonly ITable templateTable;
         private readonly ITemplateCollection templateCollection;
         private readonly IRendererCollection rendererCollection;
-        private readonly ILog logger = LogManager.GetLogger(typeof(TemplateEngine));
         private readonly IParserCollection parserCollection;
-        private readonly IFormControls formControlsInfo;
     }
 }
