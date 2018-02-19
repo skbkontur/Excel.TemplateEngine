@@ -6,16 +6,16 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation
     {
         public ExcelCellIndex(int row, int column)
         {
-            this.row = row;
-            this.column = column;
-            cellReference = ToCellReference(row, column);
+            this.RowIndex = row;
+            this.ColumnIndex = column;
+            CellReference = ToCellReference(row, column);
         }
 
         public ExcelCellIndex(string cellReference)
         {
-            this.cellReference = cellReference;
-            row = ToRowIndex(cellReference);
-            column = ToColumnIndex(cellReference);
+            this.CellReference = cellReference;
+            RowIndex = ToRowIndex(cellReference);
+            ColumnIndex = ToColumnIndex(cellReference);
         }
 
         public ExcelCellIndex Add(ExcelCellIndex other)
@@ -28,9 +28,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation
             return new ExcelCellIndex(RowIndex - other.RowIndex + 1, ColumnIndex - other.ColumnIndex + 1);
         }
 
-        public string CellReference { get { return cellReference; } }
-        public int RowIndex { get { return row; } }
-        public int ColumnIndex { get { return column; } }
+        public string CellReference { get; }
+        public int RowIndex { get; }
+        public int ColumnIndex { get; }
 
         private static string ToCellReference(int rowIndex, int columnIndex)
         {
@@ -66,9 +66,5 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation
             var tail = ((char)(columnIndex % 26 + 'A')).ToString();
             return prefixIndex > 0 ? ToColumnName(prefixIndex) + tail : tail;
         }
-
-        private readonly string cellReference;
-        private readonly int row;
-        private readonly int column;
     }
 }

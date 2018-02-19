@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 {
@@ -67,7 +68,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
             case ExcelBorderType.Double:
                 return new EnumValue<BorderStyleValues>(BorderStyleValues.Double);
             default:
-                throw new Exception($"Unknown border type: {borderType}");
+                throw new InvalidProgramStateException($"Unknown border type: {borderType}");
             }
         }
 

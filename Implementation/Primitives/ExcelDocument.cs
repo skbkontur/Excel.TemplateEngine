@@ -15,12 +15,14 @@ using MoreLinq;
 using SKBKontur.Catalogue.ExcelFileGenerator.Helpers;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+using SKBKontur.Catalogue.Objects;
+using SKBKontur.Catalogue.ServiceLib.Logging;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
     public class ExcelDocument : IExcelDocument
     {
-        public ExcelDocument(byte[] template)
+        public ExcelDocument([NotNull] byte[] template)
         {
             worksheetsCache = new ConcurrentDictionary<string, WorksheetPart>();
 
@@ -49,6 +51,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             spreadsheetDisposed = true;
         }
 
+        [NotNull]
         public byte[] CloseAndGetDocumentBytes() //Закрывает документ OpenXml и делает все методы недоступными
         {
             ThrowIfSpreadsheetDisposed();
@@ -63,82 +66,101 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().Count();
         }
 
-        public IExcelWorksheet FindWorksheet(string name)
+        [CanBeNull]
+        public IExcelWorksheet FindWorksheet([NotNull] string name)
         {
             ThrowIfSpreadsheetDisposed();
             var sheet = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().FirstOrDefault(x => x?.Name?.Value == name);
             if(sheet == null)
                 return null;
-            var sheetId = sheet.Id.Value;
-            return GetWorksheetById(sheetId);
+            return GetWorksheetById(sheet.Id.Value);
         }
 
+        [CanBeNull]
+        public IExcelWorksheet TryGetWorksheet(int index)
+        {
+            ThrowIfSpreadsheetDisposed();
+            try
+            {
+                var sheetId = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index).Id.Value;
+                return GetWorksheetById(sheetId);
+            }
+            catch(Exception ex)
+            {
+                Log.For(this).Error($"An error occurred while getting of an excel worksheet: {ex}");
+                return null;
+            }
+        }
+
+        [NotNull]
         public IExcelWorksheet GetWorksheet(int index)
         {
             ThrowIfSpreadsheetDisposed();
-            var sheetId = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index).Id.Value;
-            return GetWorksheetById(sheetId);
+            var result = TryGetWorksheet(index);
+            return result ?? throw new InvalidProgramStateException("An error occurred while getting of an excel worksheet");
         }
 
+        [NotNull]
         public string GetWorksheetName(int index)
         {
             ThrowIfSpreadsheetDisposed();
             return spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index).Name;
         }
 
-        [CanBeNull]
-        public IExcelVbaInfo GetVbaInfo()
+        public void CopyVbaInfoFrom([NotNull] IExcelDocument excelDocument)
         {
-            var part = spreadsheetDocument.WorkbookPart.VbaProjectPart;
-            return part == null ? null : new ExcelVbaInfo(part);
-        }
-
-        public void AddVbaInfo([CanBeNull] IExcelVbaInfo excelVbaInfo)
-        {
-            if(excelVbaInfo == null)
+            ThrowIfSpreadsheetDisposed();
+            var part = ((ExcelDocument)excelDocument).spreadsheetDocument.WorkbookPart.VbaProjectPart;
+            if(part == null)
                 return;
-            spreadsheetDocument.WorkbookPart.AddPart(excelVbaInfo.VbaProjectPart);
+            spreadsheetDocument.WorkbookPart.AddPart(part);
         }
 
         [CanBeNull]
         public string GetDescription()
         {
+            ThrowIfSpreadsheetDisposed();
             return spreadsheetDocument.PackageProperties.Description;
         }
 
         public void AddDescription([NotNull] string text)
         {
+            ThrowIfSpreadsheetDisposed();
             spreadsheetDocument.PackageProperties.Description = text;
         }
 
-        public void SetDefaultCreatorAndEditor()
+        private void SetDefaultCreatorAndEditor()
         {
+            ThrowIfSpreadsheetDisposed();
             spreadsheetDocument.PackageProperties.Creator = "Контур.EDI";
             spreadsheetDocument.PackageProperties.Created = XmlConvert.ToDateTime("2014-01-01T00:00:00Z", XmlDateTimeSerializationMode.RoundtripKind);
             spreadsheetDocument.PackageProperties.Modified = XmlConvert.ToDateTime("2014-01-01T00:00:00Z", XmlDateTimeSerializationMode.RoundtripKind);
             spreadsheetDocument.PackageProperties.LastModifiedBy = "Контур.EDI";
         }
 
-        private IExcelWorksheet GetWorksheetById(string sheetId)
+        [NotNull]
+        private IExcelWorksheet GetWorksheetById([NotNull] string sheetId)
         {
+            ThrowIfSpreadsheetDisposed();
             var worksheetPart = worksheetsCache.GetOrAdd(sheetId, x => (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(x));
             return new ExcelWorksheet(this, worksheetPart, documentStyle, excelSharedStrings);
         }
 
-        public void RenameWorksheet(int index, string name)
+        public void RenameWorksheet(int index, [NotNull] string name)
         {
             ThrowIfSpreadsheetDisposed();
             AssertWorksheetNameValid(name);
             spreadsheetDocument.WorkbookPart.Workbook.Sheets.Elements<Sheet>().ElementAt(index).Name = name;
         }
 
-        public IExcelWorksheet AddWorksheet(string worksheetName)
+        [NotNull]
+        public IExcelWorksheet AddWorksheet([NotNull] string worksheetName)
         {
             ThrowIfSpreadsheetDisposed();
             AssertWorksheetNameValid(worksheetName);
 
             if(FindWorksheet(worksheetName) != null)
-                throw new ArgumentException($"Sheet with name {worksheetName} already exists");
+                throw new InvalidProgramStateException($"Sheet with name {worksheetName} already exists");
 
             var worksheetPart = spreadsheetDocument.WorkbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = new Worksheet(new SheetData());
@@ -160,10 +182,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return new ExcelWorksheet(this, spreadsheetDocument.WorkbookPart.WorksheetParts.Last(), documentStyle, excelSharedStrings);
         }
 
-        private void AssertWorksheetNameValid(string worksheetName)
+        private static void AssertWorksheetNameValid([NotNull] string worksheetName)
         {
             if(worksheetName.Length > 31)
-                throw new ArgumentException($"Worksheet name ('{worksheetName}') is too long (allowed <=31 symbols, current - {worksheetName.Length})");
+                throw new InvalidProgramStateException($"Worksheet name ('{worksheetName}') is too long (allowed <=31 symbols, current - {worksheetName.Length})");
         }
 
         public override string ToString()

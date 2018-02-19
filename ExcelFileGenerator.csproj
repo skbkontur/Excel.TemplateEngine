@@ -70,9 +70,6 @@
     <Compile Include="DataTypes\ExcelPageMargins.cs" />
     <Compile Include="DataTypes\ExcelPrinterSettings.cs" />
     <Compile Include="DataTypes\ExcelPrintingOrientation.cs" />
-    <Compile Include="Exceptions\BaseExcelException.cs" />
-    <Compile Include="Exceptions\InvalidExcelDocumentException.cs" />
-    <Compile Include="Exceptions\NotSupportedExcelDocumentException.cs" />
     <Compile Include="Helpers\ExcelCellStyleHelpers.cs" />
     <Compile Include="Implementation\CacheItems\BordersStyleCacheItem.cs" />
     <Compile Include="Implementation\CacheItems\BorderCacheItem.cs" />
@@ -106,8 +103,6 @@
     <Compile Include="Implementation\Primitives\ExcelCheckBoxControlInfo.cs" />
     <Compile Include="Implementation\Primitives\ExcelColumn.cs" />
     <Compile Include="Implementation\Primitives\ExcelDropDownControlInfo.cs" />
-    <Compile Include="Implementation\Primitives\ExcelFormControlsInfo.cs" />
-    <Compile Include="Implementation\Primitives\ExcelVbaInfo.cs" />
     <Compile Include="Implementation\Primitives\ExcelWorksheet.cs" />
     <Compile Include="Implementation\Primitives\ExcelRow.cs" />
     <Compile Include="Implementation\Primitives\ExcelCell.cs" />
@@ -120,8 +115,6 @@
     <Compile Include="Helpers\SpreadsheetDocumentHelper.cs" />
     <Compile Include="Interfaces\IExcelDropDownControlInfo.cs" />
     <Compile Include="Interfaces\IExcelFormControlInfo.cs" />
-    <Compile Include="Interfaces\IExcelFormControlsInfo.cs" />
-    <Compile Include="Interfaces\IExcelVbaInfo.cs" />
     <Compile Include="Interfaces\IExcelCheckBoxControlInfo.cs" />
     <Compile Include="Interfaces\IExcelCell.cs" />
     <Compile Include="Interfaces\IExcelColumn.cs" />

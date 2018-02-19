@@ -7,15 +7,15 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 using JetBrains.Annotations;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.Exceptions;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
     public class ExcelCheckBoxControlInfo : BaseExcelFormControlInfo, IExcelCheckBoxControlInfo
     {
-        public ExcelCheckBoxControlInfo([NotNull] IExcelWorksheet excelWorksheet, [NotNull] Control control, [NotNull] ControlPropertiesPart controlPropertiesPart, [NotNull] VmlDrawingPart vmlDrawingPart, [NotNull] DrawingsPart drawingsPart)
-            : base(excelWorksheet, control, controlPropertiesPart, vmlDrawingPart, drawingsPart)
+        public ExcelCheckBoxControlInfo([NotNull] IExcelWorksheet excelWorksheet, [NotNull] Control control, [NotNull] ControlPropertiesPart controlPropertiesPart, [NotNull] VmlDrawingPart vmlDrawingPart)
+            : base(excelWorksheet, control, controlPropertiesPart, vmlDrawingPart)
         {
         }
 
@@ -32,11 +32,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                     ControlPropertiesPart.FormControlProperties.Checked = null;
                 lock(GlobalVmlDrawingPart)
                 {
-                    var ns = "urn:schemas-microsoft-com:office:excel";
+                    const string ns = "urn:schemas-microsoft-com:office:excel";
                     var xdoc = XDocument.Load(GlobalVmlDrawingPart.GetStream());
-                    var clientData = xdoc.Root?.Elements()?.Single(x => x.Attribute("id")?.Value == Control.Name)?.Element(XName.Get("ClientData", ns));
+                    // ReSharper disable once ConstantConditionalAccessQualifier
+                    var clientData = xdoc.Root?.Elements()?.SingleOrDefault(x => x.Attribute("id")?.Value == Control.Name)?.Element(XName.Get("ClientData", ns));
                     if(clientData == null)
-                        throw new InvalidExcelDocumentException($"ClientData element is not found for control with name '{Control.Name}'");
+                        throw new InvalidProgramStateException($"ClientData element is not found for control with name '{Control.Name}'");
                     var checkedElement = clientData.Element(XName.Get("Checked", ns));
                     checkedElement?.Remove();
                     if(value)

@@ -14,9 +14,9 @@ using JetBrains.Annotations;
 using MoreLinq;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
-using SKBKontur.Catalogue.ExcelFileGenerator.Exceptions;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+using SKBKontur.Catalogue.Objects;
 using SKBKontur.Catalogue.ServiceLib.Logging;
 
 using Tuple = System.Tuple;
@@ -110,50 +110,56 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         }
 
         [CanBeNull]
-        public TExcelFormControlInfo GetFormControlInfo<TExcelFormControlInfo>(string name)
-            where TExcelFormControlInfo : class, IExcelFormControlInfo
+        public IExcelCheckBoxControlInfo TryGetCheckBoxFormControlInfo([NotNull] string name)
         {
-            var control = worksheet.Descendants<Control>().FirstOrDefault(c => c.Name == name);
-            if(control == null)
-                return null;
-            var controlPropertiesPart = (ControlPropertiesPart)worksheet.WorksheetPart.GetPartById(control.Id);
-            var vmlDrawingPart = worksheet.WorksheetPart.VmlDrawingParts.Single();
-            var drawingsPart = worksheet.WorksheetPart.DrawingsPart;
-            if(new ExcelCheckBoxControlInfo(this, control, controlPropertiesPart, vmlDrawingPart, drawingsPart) is TExcelFormControlInfo checkBoxControlInfo)
-                return checkBoxControlInfo;
-            if(new ExcelDropDownControlInfo(this, control, controlPropertiesPart, vmlDrawingPart, drawingsPart) is TExcelFormControlInfo dropDownControlInfo)
-                return dropDownControlInfo;
-            throw new NotSupportedExcelDocumentException($"Type {typeof(TExcelFormControlInfo)} is not a supported ExcelFormControlInfo");
+            return TryGetFormControlInfo(name, (control, controlPropertiesPart, vmlDrawingPart) => new ExcelCheckBoxControlInfo(this, control, controlPropertiesPart, vmlDrawingPart));
         }
 
-        public IExcelFormControlsInfo GetFormControlsInfo()
+        [CanBeNull]
+        public IExcelDropDownControlInfo TryGetDropDownFormControlInfo([NotNull] string name)
         {
-            return new ExcelFormControlsInfo(worksheet.WorksheetPart);
-        }
-
-        private void SafelyAddPart<TPart>([NotNull] WorksheetPart target, [CanBeNull] TPart part, [CanBeNull] string id)
-            where TPart : OpenXmlPart
-        {
-            if(part == null || id == null)
-                Log.For(this).Warn($"Tried to add null part of type '{typeof(TPart)}'");
-            else
-                target.AddPart(part, id);
+            return TryGetFormControlInfo(name, (control, controlPropertiesPart, vmlDrawingPart) => new ExcelDropDownControlInfo(this, control, controlPropertiesPart, vmlDrawingPart));
         }
 
         [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
-        public void AddFormControlInfos(IExcelFormControlsInfo formControlInfos)
+        public void CopyFormControlsFrom([NotNull] IExcelWorksheet template)
         {
-            if(formControlInfos.Controls == null)
+            var templateWorksheet = ((ExcelWorksheet)template).worksheet;
+            var controls = templateWorksheet.GetFirstChild<AlternateContent>()?.GetFirstChild<AlternateContentChoice>()?.GetFirstChild<Controls>();
+            if(controls == null)
                 return;
 
-            var targetWsPart = worksheet.WorksheetPart;
+            AddFormControlsNamespaces(worksheet);
+            CopyControlPropertiesParts(templateWorksheet.WorksheetPart, worksheet.WorksheetPart);
+            CopyDrawingsPartAndGetId(templateWorksheet.WorksheetPart, worksheet);
+            CopyVmlDrawingPartAndGetId(templateWorksheet.WorksheetPart, worksheet);
+            CopyAlternateContent(controls, worksheet);
+        }
 
-            foreach(var (controlPropertiesPart, id) in formControlInfos.ControlPropertiesParts)
-                SafelyAddPart(targetWsPart, controlPropertiesPart, id);
+        [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
+        private static void CopyAlternateContent([NotNull] Controls controls, [NotNull] Worksheet targetWorksheet)
+        {
+            var alternateContents = controls.ChildElements
+                                            .Where(x => x is AlternateContent)
+                                            .Select(x => x.GetFirstChild<AlternateContentChoice>().GetFirstChild<Control>())
+                                            .Select(x => (Control: (Control)x.CloneNode(true), CorrectId: x.Id))
+                                            .Pipe(x => x.Control.Id = x.CorrectId)
+                                            .Select(x => new AlternateContent(new AlternateContentChoice(x.Control) {Requires = "x14"}))
+                                            .Pipe(x => x.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006"))
+                                            .Cast<OpenXmlElement>()
+                                            .ToArray();
 
-            SafelyAddPart(targetWsPart, formControlInfos.VmlDrawingPart.part, formControlInfos.VmlDrawingPart.id);
-            SafelyAddPart(targetWsPart, formControlInfos.DrawingsPart.part, formControlInfos.DrawingsPart.id);
+            var alternateContentChoice = new AlternateContentChoice(new Controls(alternateContents)) {Requires = "x14"};
 
+            var alternateContent = new AlternateContent(alternateContentChoice);
+            alternateContent.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+
+            targetWorksheet.RemoveAllChildren<AlternateContent>();
+            targetWorksheet.Append(alternateContent);
+        }
+
+        private static void AddFormControlsNamespaces([NotNull] Worksheet targetWorksheet)
+        {
             var requiedNamespaces = new[]
                 {
                     ("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships"),
@@ -163,31 +169,61 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                     ("x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac"),
                 };
             foreach(var (prefix, uri) in requiedNamespaces)
-                if(worksheet.LookupNamespace(prefix) == null)
-                    worksheet.AddNamespaceDeclaration(prefix, uri);
+                if(targetWorksheet.LookupNamespace(prefix) == null)
+                    targetWorksheet.AddNamespaceDeclaration(prefix, uri);
+        }
 
-            var alternateContents = formControlInfos.Controls.ChildElements
-                                                    .Where(x => x is AlternateContent)
-                                                    .Select(x => x.GetFirstChild<AlternateContentChoice>().GetFirstChild<Control>())
-                                                    .Select(x => (Control: (Control)x.CloneNode(true), CorrectId: x.Id))
-                                                    .Pipe(x => x.Control.Id = x.CorrectId)
-                                                    .Select(x => new AlternateContent(new AlternateContentChoice(x.Control) {Requires = "x14"}))
-                                                    .Pipe(x => x.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006"))
-                                                    .Cast<OpenXmlElement>()
-                                                    .ToArray();
+        private static void CopyControlPropertiesParts([NotNull] WorksheetPart templateWorksheetPart, [NotNull] WorksheetPart targetWorksheetPart)
+        {
+            var controlPropertiesParts = templateWorksheetPart.ControlPropertiesParts?.Select(x => (x, x == null ? null : templateWorksheetPart.GetIdOfPart(x))).ToList() ?? new List<(ControlPropertiesPart x, string)>();
+            foreach(var (controlPropertiesPart, id) in controlPropertiesParts)
+                SafelyAddPart(targetWorksheetPart, controlPropertiesPart, id);
+        }
 
-            var alternateContentChoice = new AlternateContentChoice(new Controls(alternateContents)) {Requires = "x14"};
+        [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
+        private static void CopyDrawingsPartAndGetId([NotNull] WorksheetPart templateWorksheetPart, [NotNull] Worksheet targetWorksheet)
+        {
+            var drawingsPart = templateWorksheetPart.DrawingsPart;
+            var drawingsPartId = templateWorksheetPart.DrawingsPart == null ? null : templateWorksheetPart.GetIdOfPart(templateWorksheetPart.DrawingsPart);
+            SafelyAddPart(targetWorksheet.WorksheetPart, drawingsPart, drawingsPartId);
+            targetWorksheet.RemoveAllChildren<Drawing>();
+            targetWorksheet.Append(new Drawing {Id = drawingsPartId});
+        }
 
-            var alternateContent = new AlternateContent(alternateContentChoice);
-            alternateContent.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+        [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
+        private static void CopyVmlDrawingPartAndGetId([NotNull] WorksheetPart templateWorksheetPart, [NotNull] Worksheet targetWorksheet)
+        {
+            var vmlDrawingParts = templateWorksheetPart.VmlDrawingParts.ToList();
+            if(vmlDrawingParts.Count > 1)
+                throw new InvalidProgramStateException("More than one VmlDrawingPart found");
+            var vmlDrawingPart = vmlDrawingParts.SingleOrDefault();
+            var vmlDrawingPartId = vmlDrawingPart == null ? null : templateWorksheetPart.GetIdOfPart(vmlDrawingPart);
+            SafelyAddPart(targetWorksheet.WorksheetPart, vmlDrawingPart, vmlDrawingPartId);
+            targetWorksheet.RemoveAllChildren<LegacyDrawing>();
+            targetWorksheet.Append(new LegacyDrawing {Id = vmlDrawingPartId});
+        }
 
-            worksheet.RemoveAllChildren<Drawing>();
-            worksheet.Append(new Drawing {Id = formControlInfos.DrawingsPart.id});
-            worksheet.RemoveAllChildren<LegacyDrawing>();
-            worksheet.Append(new LegacyDrawing {Id = formControlInfos.VmlDrawingPart.id});
+        [CanBeNull]
+        private TExcelControlInfo TryGetFormControlInfo<TExcelControlInfo>([NotNull] string name, [NotNull] Func<Control, ControlPropertiesPart, VmlDrawingPart, TExcelControlInfo> create)
+            where TExcelControlInfo : class, IExcelFormControlInfo
+        {
+            var control = worksheet.Descendants<Control>().FirstOrDefault(c => c.Name == name);
+            if(control == null)
+                return null;
+            var controlPropertiesPart = (ControlPropertiesPart)worksheet.WorksheetPart.GetPartById(control.Id);
+            var vmlDrawingPart = worksheet.WorksheetPart.VmlDrawingParts.SingleOrDefault();
+            if(controlPropertiesPart == null || vmlDrawingPart == null)
+                return null;
+            return create(control, controlPropertiesPart, vmlDrawingPart);
+        }
 
-            worksheet.RemoveAllChildren<AlternateContent>();
-            worksheet.Append(alternateContent);
+        private static void SafelyAddPart<TPart>([NotNull] WorksheetPart target, [CanBeNull] TPart part, [CanBeNull] string id)
+            where TPart : OpenXmlPart
+        {
+            if(part == null || id == null)
+                Log.For<ExcelWorksheet>().Warn($"Tried to add null part of type '{typeof(TPart)}'");
+            else
+                target.AddPart(part, id);
         }
 
         public IEnumerable<IExcelCell> SearchCellsByText(string text)

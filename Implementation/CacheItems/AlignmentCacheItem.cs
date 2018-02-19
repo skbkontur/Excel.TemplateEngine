@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 {
@@ -70,7 +71,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
                 result = null;
                 break;
             default:
-                throw new Exception(string.Format("Unknown vertical alignment: {0}", verticalAlignment));
+                throw new InvalidProgramStateException($"Unknown vertical alignment: {verticalAlignment}");
             }
             return result;
         }
@@ -93,7 +94,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
                 result = null;
                 break;
             default:
-                throw new Exception(string.Format("Unknown horizontal alignment: {0}", horizontalAlignment));
+                throw new InvalidProgramStateException($"Unknown horizontal alignment: {horizontalAlignment}");
             }
             return result;
         }

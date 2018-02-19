@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using JetBrains.Annotations;
+
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
 
@@ -15,16 +17,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         void ResizeColumn(int columnIndex, double width);
         IEnumerable<IExcelCell> GetSortedCellsInRange(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight);
         IExcelCell GetCell(ExcelCellIndex position);
-
-        TExcelFormControlInfo GetFormControlInfo<TExcelFormControlInfo>(string name)
-            where TExcelFormControlInfo : class, IExcelFormControlInfo;
-
         IEnumerable<IExcelCell> SearchCellsByText(string text);
         IEnumerable<IExcelRow> Rows { get; }
         IEnumerable<IExcelColumn> Columns { get; }
         IEnumerable<Tuple<ExcelCellIndex, ExcelCellIndex>> MergedCells { get; }
-        IExcelFormControlsInfo GetFormControlsInfo();
-        void AddFormControlInfos(IExcelFormControlsInfo formControlInfos);
         IExcelDocument ExcelDocument { get; }
+
+        [CanBeNull]
+        IExcelCheckBoxControlInfo TryGetCheckBoxFormControlInfo([NotNull] string name);
+
+        [CanBeNull]
+        IExcelDropDownControlInfo TryGetDropDownFormControlInfo([NotNull] string name);
+
+        void CopyFormControlsFrom([NotNull] IExcelWorksheet template);
     }
 }

@@ -7,25 +7,24 @@ using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
-    public class BaseExcelFormControlInfo
+    public class BaseExcelFormControlInfo : IExcelFormControlInfo
     {
-        public BaseExcelFormControlInfo([NotNull] IExcelWorksheet excelWorksheet, [NotNull] Control control, [NotNull] ControlPropertiesPart controlPropertiesPart, [NotNull] VmlDrawingPart vmlDrawingPart, [NotNull] DrawingsPart drawingsPart)
+        protected BaseExcelFormControlInfo([NotNull] IExcelWorksheet excelWorksheet, [NotNull] Control control, [NotNull] ControlPropertiesPart controlPropertiesPart, [NotNull] VmlDrawingPart vmlDrawingPart)
         {
             this.excelWorksheet = excelWorksheet;
             Control = control;
-            GlobalDrawingsPart = drawingsPart;
             GlobalVmlDrawingPart = vmlDrawingPart;
             ControlPropertiesPart = controlPropertiesPart;
         }
 
-        public DrawingsPart GlobalDrawingsPart { get; }
-        public VmlDrawingPart GlobalVmlDrawingPart { get; }
+        [NotNull]
+        protected VmlDrawingPart GlobalVmlDrawingPart { get; }
 
         [NotNull]
-        public Control Control { get; }
+        protected Control Control { get; }
 
         [NotNull]
-        public ControlPropertiesPart ControlPropertiesPart { get; }
+        protected ControlPropertiesPart ControlPropertiesPart { get; }
 
         [NotNull]
         protected readonly IExcelWorksheet excelWorksheet;
