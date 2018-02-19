@@ -21,7 +21,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/printingDropDownFromTheOtherWorksheet.xlsx")))
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsx")))
             {
-                targetDocument.AddVbaInfo(templateDocument.GetVbaInfo());
+                targetDocument.CopyVbaInfoFrom(templateDocument);
 
                 foreach (var index in Enumerable.Range(1, templateDocument.GetWorksheetCount() - 1))
                 {
@@ -29,7 +29,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                     var name = templateDocument.GetWorksheetName(index);
                     var innterTemplateEngine = new TemplateEngine(new ExcelTable(worksheet));
                     var targetWorksheet = targetDocument.AddWorksheet(name);
-                    var innerTableBuilder = new TableBuilder(new TableNavigator(new ExcelTable(targetWorksheet), new CellPosition("A1")));
+                    var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1")));
                     innterTemplateEngine.Render(innerTableBuilder, new { });
                 }
 
@@ -37,8 +37,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var templateEngine = new TemplateEngine(template);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
-                var tableBuilder = new TableBuilder(tableNavigator);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new { Type = "Значение 2" });
 
                 var filename = "output.xlsx";
@@ -54,15 +54,15 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/printingVbaMacros.xlsm")))
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsm")))
             {
-                targetDocument.AddVbaInfo(templateDocument.GetVbaInfo());
+                targetDocument.CopyVbaInfoFrom(templateDocument);
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
                 var templateEngine = new TemplateEngine(template);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
-                var tableBuilder = new TableBuilder(tableNavigator);
-                templateEngine.Render(tableBuilder, new { });
+                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
+                templateEngine.Render(tableBuilder, new {Type = "123"});
 
                 var filename = "output.xlsm";
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
@@ -81,8 +81,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var templateEngine = new TemplateEngine(template);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
-                var tableBuilder = new TableBuilder(tableNavigator);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new { A = "First", B = true, C = "Third", D = new [] {1, 2, 3}, E = "Fifth" });
 
                 var filename = "output.xlsx";

@@ -24,7 +24,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         {
             const string valueDesription = "Value::Bs[].Cs[].S";
 
-            var child = ObjectPropertiesExtractor.ExtractChildObject(model, new ExcelTemplateExpression(valueDesription));
+            var child = ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesription));
             var childArray = child as object[];
             Assert.NotNull(childArray);
             
@@ -38,7 +38,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public void ComplexObjectsArrayExtractionTest()
         {
             const string valueDesription = "Value::Bs[].Cs[]";
-            var child = ObjectPropertiesExtractor.ExtractChildObject(model, new ExcelTemplateExpression(valueDesription));
+            var child = ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesription));
             var childArray = child as object[];
             Assert.NotNull(childArray);
 
@@ -52,7 +52,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public void NullArrayExtractionTest()
         {
             const string valueDesription = "Value::Bs";
-            var child = ObjectPropertiesExtractor.ExtractChildObject(new A(), new ExcelTemplateExpression(valueDesription));
+            var child = ObjectPropertiesExtractor.ExtractChildObject(new A(), ExcelTemplatePath.FromRawExpression(valueDesription));
             Assert.Null(child);
         }
 
@@ -61,7 +61,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public void NullArrayExtractionTestWithBraces()
         {
             const string valueDesription = "Value::Bs[]";
-            var child = ObjectPropertiesExtractor.ExtractChildObject(new A(), new ExcelTemplateExpression(valueDesription));
+            var child = ObjectPropertiesExtractor.ExtractChildObject(new A(), ExcelTemplatePath.FromRawExpression(valueDesription));
             Assert.Null(child);
         }
 
@@ -74,7 +74,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 {
                     Bs = new [] {null, new B(), null}
                 };
-            var child = ObjectPropertiesExtractor.ExtractChildObject(localModel, new ExcelTemplateExpression(valueDesription));
+            var child = ObjectPropertiesExtractor.ExtractChildObject(localModel, ExcelTemplatePath.FromRawExpression(valueDesription));
             var childArray = child as object[];
             CollectionAssert.AreEqual(localModel.Bs, childArray);
         }
@@ -88,7 +88,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 {
                     Bs = new B[] { null, null, null }
                 };
-            var child = ObjectPropertiesExtractor.ExtractChildObject(localModel, new ExcelTemplateExpression(valueDesription));
+            var child = ObjectPropertiesExtractor.ExtractChildObject(localModel, ExcelTemplatePath.FromRawExpression(valueDesription));
             var childArray = child as object[];
             CollectionAssert.AreEqual(localModel.Bs, childArray);
         }
@@ -141,7 +141,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                             List = new List<string> { "first", "inner_second", "inner_third" },
                         }
                 };
-            var child = ObjectPropertiesExtractor.ExtractChildObject(localModel, new ExcelTemplateExpression(valueDesription));
+            var child = ObjectPropertiesExtractor.ExtractChildObject(localModel, ExcelTemplatePath.FromRawExpression(valueDesription));
             Assert.AreEqual(expectedElementProvider(localModel), child);
         }
 
@@ -149,14 +149,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public void NonexistentObjectsArrayExtractionTest()
         {
             const string valueDesription = "Value::Bs[].Cs[].NULL";
-            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObject(model, new ExcelTemplateExpression(valueDesription)));
+            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesription)));
         }
 
         [Test]
         public void NonexistentObjectExtractionTest()
         {
             const string valueDesription = "Value::NULL";
-            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObject(model, new ExcelTemplateExpression(valueDesription)));
+            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesription)));
         }
 
         [Test]
@@ -167,7 +167,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                     S = "Test"
                 };
             const string valueDescription = "Value::S";
-            var child = ObjectPropertiesExtractor.ExtractChildObject(simpleModel, new ExcelTemplateExpression(valueDescription));
+            var child = ObjectPropertiesExtractor.ExtractChildObject(simpleModel, ExcelTemplatePath.FromRawExpression(valueDescription));
             Assert.AreNotEqual(null, child);
             Assert.AreEqual("Test", child);
         }
@@ -179,7 +179,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [TestCase("Value::DictProperty[123123]", TestName = "Access to dict with index of wrong type")]
         public void TypeExtractionTestOnInvalidExpressions(string expression)
         {
-            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest.GetType(), new ExcelTemplateExpression(expression).ChildObjectPath));
+            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest.GetType(), ExcelTemplatePath.FromRawExpression(expression)));
         }
 
         public static IEnumerable TypeExtractionTestTestCases
@@ -204,7 +204,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [TestCaseSource(nameof(TypeExtractionTestTestCases))]
         public void TypeExtractionTest(string expression, Type expectedType)
         {
-            var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest.GetType(), new ExcelTemplateExpression(expression).ChildObjectPath);
+            var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest.GetType(), ExcelTemplatePath.FromRawExpression(expression));
             Assert.AreEqual(expectedType, type);
         }
 
@@ -213,7 +213,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         {
             var modelToGetType = new ComplexModel();
             
-            var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelToGetType.GetType(), new ExcelTemplateExpression(expression).ChildObjectPath);
+            var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelToGetType.GetType(), ExcelTemplatePath.FromRawExpression(expression));
             Assert.AreEqual(expectedType, type);
         }
 
@@ -241,7 +241,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public void ExtractChildObjectSetterTest(string expression, Func<ComplexModel, object> getter, object valueToSet)
         {
             var modelToSet = new ComplexModel();
-            var s = ObjectPropertySettersExtractor.ExtractChildObjectSetter(modelToSet, new ExcelTemplateExpression(expression).ChildObjectPath);
+            var s = ObjectPropertySettersExtractor.ExtractChildObjectSetter(modelToSet, ExcelTemplatePath.FromRawExpression(expression));
             s(valueToSet);
             Assert.AreEqual(valueToSet, getter(modelToSet));
         }

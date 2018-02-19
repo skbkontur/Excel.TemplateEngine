@@ -151,8 +151,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var templateEngine = new TemplateEngine(template);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
-                var tableBuilder = new TableBuilder(tableNavigator);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
 
                 templateEngine.Render(tableBuilder, new { Type = "Значение 2", TestFlag1 = false, TestFlag2 = true });
                 
@@ -189,8 +189,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var templateEngine = new TemplateEngine(template);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(target, new CellPosition("A1"), new Styler(template.GetCell(new CellPosition("A1"))));
-                var tableParser = new TableParser(tableNavigator);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableParser = new TableParser(target, tableNavigator);
                 return templateEngine.Parse<PriceList>(tableParser);
             }
         }

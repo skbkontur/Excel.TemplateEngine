@@ -11,45 +11,45 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void TemplateDescriptionCorrectnessTest()
         {
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("Template:TemplateName:A1:B2"));
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("Template:TemplateName:ABCD122:BER22"));
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("Template:TemplateName:ABCDEFGHIJKLMNOPQRSTUVWXYZ1:B1234567890"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("TemplateTemplateName:A1:B2"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription(":TemplateName::"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("::"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("Template::A2:BCD33"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("Template:Name::"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("Template:Name:B:33"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("Template:Name:33:33"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("Template:Name:QWE:EWQ"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("Template::A1:A2"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("Template:Name:A0:A2"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("Template:Name:A02:A2"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription("Template:Name:A02:a2"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectTemplateDescription(""));
+            Assert.IsTrue(TemplateDescriptionHelper.IsCorrectTemplateDescription("Template:TemplateName:A1:B2"));
+            Assert.IsTrue(TemplateDescriptionHelper.IsCorrectTemplateDescription("Template:TemplateName:ABCD122:BER22"));
+            Assert.IsTrue(TemplateDescriptionHelper.IsCorrectTemplateDescription("Template:TemplateName:ABCDEFGHIJKLMNOPQRSTUVWXYZ1:B1234567890"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription("TemplateTemplateName:A1:B2"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription(":TemplateName::"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription("::"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription("Template::A2:BCD33"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription("Template:Name::"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription("Template:Name:B:33"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription("Template:Name:33:33"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription("Template:Name:QWE:EWQ"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription("Template::A1:A2"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription("Template:Name:A0:A2"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription("Template:Name:A02:A2"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription("Template:Name:A02:a2"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectTemplateDescription(""));
         }
 
         [Test]
         public void ValueDescriptionCorrectnessTest()
         {
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::Property"));
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::P"));
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::A.B"));
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::aa.bb"));
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::Property[]"));
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::A[].B[].Cc.ddd[]"));
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::B52"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::9das"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::[]"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::Asdf["));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::asdf]"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::A[]B[]"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::sdf.[]"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::128[]"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value::asd,vcd"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Value:Template:"));
-            Assert.IsFalse(TemplateDescriptionHelper.Instance.IsCorrectValueDescription("Val::A"));
+            Assert.IsTrue(TemplateDescriptionHelper.IsCorrectValueDescription("Value::Property"));
+            Assert.IsTrue(TemplateDescriptionHelper.IsCorrectValueDescription("Value::P"));
+            Assert.IsTrue(TemplateDescriptionHelper.IsCorrectValueDescription("Value::A.B"));
+            Assert.IsTrue(TemplateDescriptionHelper.IsCorrectValueDescription("Value::aa.bb"));
+            Assert.IsTrue(TemplateDescriptionHelper.IsCorrectValueDescription("Value::Property[]"));
+            Assert.IsTrue(TemplateDescriptionHelper.IsCorrectValueDescription("Value::A[].B[].Cc.ddd[]"));
+            Assert.IsTrue(TemplateDescriptionHelper.IsCorrectValueDescription("Value::B52"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectValueDescription("Value::"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectValueDescription("Value::9das"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectValueDescription("Value::[]"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectValueDescription("Value::Asdf["));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectValueDescription("Value::asdf]"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectValueDescription("Value::A[]B[]"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectValueDescription("Value::sdf.[]"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectValueDescription("Value::128[]"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectValueDescription("Value::asd,vcd"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectValueDescription("Value:Template:"));
+            Assert.IsFalse(TemplateDescriptionHelper.IsCorrectValueDescription("Val::A"));
         }
 
         [TestCase("CheckBox:CheckBoxName:Path")]
@@ -59,7 +59,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [TestCase("CheckBox:very[strange] name\"with quote:Path")]
         public void TestIsCorrectFormValueDescriptionReturnsTrue(string description)
         {
-            Assert.True(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(description));
+            Assert.True(TemplateDescriptionHelper.IsCorrectFormValueDescription(description));
         }
 
         [TestCase("Lalala:CheckBoxName:Path")]
@@ -73,7 +73,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [TestCase("CheckBox:abc:Path:Test")]
         public void TestIsCorrectFormValueDescriptionReturnsFalse(string description)
         {
-            Assert.False(TemplateDescriptionHelper.Instance.IsCorrectFormValueDescription(description));
+            Assert.False(TemplateDescriptionHelper.IsCorrectFormValueDescription(description));
         }
 
         [TestCase("Test[123]")]
@@ -83,7 +83,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [TestCase("Test[1.5]")]
         public void TestIsCollectionAccessPathPartReturnsTrue(string pathPart)
         {
-            Assert.True(TemplateDescriptionHelper.Instance.IsCollectionAccessPathPart(pathPart));
+            Assert.True(TemplateDescriptionHelper.IsCollectionAccessPathPart(pathPart));
         }
 
         [TestCase("Test")]
@@ -94,13 +94,13 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [TestCase("Test[123]abc")]
         public void TestIsCollectionAccessPathPartReturnsFalse(string pathPart)
         {
-            Assert.False(TemplateDescriptionHelper.Instance.IsCollectionAccessPathPart(pathPart));
+            Assert.False(TemplateDescriptionHelper.IsCollectionAccessPathPart(pathPart));
         }
 
         [TestCase("Test[]")]
         public void TestIsIsArrayPathPartReturnsTrue(string pathPart)
         {
-            Assert.True(TemplateDescriptionHelper.Instance.IsArrayPathPart(pathPart));
+            Assert.True(TemplateDescriptionHelper.IsArrayPathPart(pathPart));
         }
 
         [TestCase("Test")]
@@ -112,14 +112,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [TestCase("Test[][]")]
         public void TestIsArrayPathPartReturnsFalse(string pathPart)
         {
-            Assert.False(TemplateDescriptionHelper.Instance.IsArrayPathPart(pathPart));
+            Assert.False(TemplateDescriptionHelper.IsArrayPathPart(pathPart));
         }
 
         [Test]
         public void TemplateCoordinatesTest()
         {
             IRectangle range;
-            Assert.IsTrue(TemplateDescriptionHelper.Instance.TryExtractCoordinates("Template:qwe:QWE123:ASD987", out range));
+            Assert.IsTrue(TemplateDescriptionHelper.TryExtractCoordinates("Template:qwe:QWE123:ASD987", out range));
             Assert.AreEqual(26 * 26 + 19 * 26 + 4, range.UpperLeft.ColumnIndex);
             Assert.AreEqual(123, range.UpperLeft.RowIndex);
             Assert.AreEqual(17 * 26 * 26 + 23 * 26 + 5, range.LowerRight.ColumnIndex);
