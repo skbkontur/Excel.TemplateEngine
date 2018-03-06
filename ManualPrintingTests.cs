@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 
 using NUnit.Framework;
@@ -43,8 +44,9 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
                 var filename = "output.xlsx";
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
-                
-                Assert.Fail($"Please manually open file '{Path.GetFullPath(filename)}' and check that dropdown on the first sheet has value 'Значение 2'");
+
+                var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
+                Assert.Fail($"Please manually open file '{path}' and check that dropdown on the first sheet has value 'Значение 2'");
             }
         }
 
@@ -67,7 +69,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var filename = "output.xlsm";
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
 
-                Assert.Fail($"Please manually open file '{Path.GetFullPath(filename)}' and check that clicking on the right checkbox leads to changes in both checkbox");
+                var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
+                Assert.Fail($"Please manually open file '{path}' and check that clicking on the right checkbox leads to changes in both checkbox");
             }
         }
 
@@ -88,7 +91,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var filename = "output.xlsx";
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
 
-                Assert.Fail($"Please manually open file '{Path.GetFullPath(filename)}' and check values:\n" +
+                var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
+                Assert.Fail($"Please manually open file '{path}' and check values:\n" +
                             string.Join("\n", new[]
                                 {
                                     "C5: First",
