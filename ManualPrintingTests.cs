@@ -106,5 +106,29 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                                 }) + "\n");
             }
         }
+
+        [Test]
+        public void TestDataValidations()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/dataValidations.xlsx")))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsx")))
+            {
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
+                templateEngine.Render(tableBuilder, new {Test = "b"});
+
+                var filename = "output.xlsx";
+                File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
+                
+                var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
+                Assert.Fail($"Please manually open file '{path}' and check that:\n\n" +
+                            $"Cell C4 has validation with variants abc, cde and lalala\n" +
+                            $"Cell E6 has validation with variants a, b, c and value b\n");
+            }
+        }
     }
 }
