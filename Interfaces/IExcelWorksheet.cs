@@ -30,5 +30,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
         IExcelDropDownControlInfo TryGetDropDownFormControlInfo([NotNull] string name);
 
         void CopyFormControlsFrom([NotNull] IExcelWorksheet template);
+        void CopyDataValidationsFrom([NotNull] IExcelWorksheet template);
     }
 }

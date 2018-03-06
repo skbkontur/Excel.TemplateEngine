@@ -135,6 +135,15 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             CopyVmlDrawingPartAndGetId(templateWorksheet.WorksheetPart, worksheet);
             CopyAlternateContent(controls, worksheet);
         }
+        
+        public void CopyDataValidationsFrom([NotNull] IExcelWorksheet template)
+        {
+            var templateWorksheet = ((ExcelWorksheet)template).worksheet;
+            var dataValidations = templateWorksheet.GetFirstChild<DataValidations>();
+            if(dataValidations == null)
+                return;
+            worksheet.InsertBefore(dataValidations.CloneNode(true), worksheet.GetFirstChild<PageMargins>());
+        }
 
         [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
         private static void CopyAlternateContent([NotNull] Controls controls, [NotNull] Worksheet targetWorksheet)
