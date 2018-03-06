@@ -29,5 +29,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         ITableBuilder SetCurrentStyle();
         ITableBuilder MergeCells(IRectangle rectangle);
         ITableBuilder CopyFormControlsFrom([NotNull] ITable template);
+        ITableBuilder CopyDataValidationsFrom([NotNull] ITable template);
     }
 }

@@ -72,6 +72,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
             internalTable.CopyFormControlsFrom(((ExcelTable)template).internalTable);
         }
 
+        public void CopyDataValidationsFrom([NotNull] ITable template)
+        {
+            internalTable.CopyDataValidationsFrom(((ExcelTable)template).internalTable);
+        }
+
         [CanBeNull]
         public IExcelCheckBoxControlInfo TryGetCheckBoxFormControl([NotNull] string name)
         {

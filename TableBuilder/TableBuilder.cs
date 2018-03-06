@@ -131,6 +131,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
             return this;
         }
 
+        public ITableBuilder CopyDataValidationsFrom([NotNull] ITable template)
+        {
+            target.CopyDataValidationsFrom(template);
+            return this;
+        }
+
         private ITableBuilder RenderAtomicValue(string value, CellType cellType)
         {
             var cell = target.GetCell(navigator.CurrentState.Cursor) ?? target.InsertCell(navigator.CurrentState.Cursor);

@@ -27,6 +27,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName)
                                     ?? throw new InvalidProgramStateException($"Template with name {rootTemplateName} not found in xlsx");
             tableBuilder.CopyFormControlsFrom(templateTable);
+            tableBuilder.CopyDataValidationsFrom(templateTable);
             var render = rendererCollection.GetRenderer(model.GetType());
             render.Render(tableBuilder, model, renderingTemplate);
         }

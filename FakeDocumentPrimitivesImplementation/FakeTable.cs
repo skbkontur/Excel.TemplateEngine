@@ -76,6 +76,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
         {
         }
 
+        public void CopyDataValidationsFrom(ITable template)
+        {
+            
+        }
+
         public IExcelCheckBoxControlInfo TryGetCheckBoxFormControl(string name)
         {
             return null;
