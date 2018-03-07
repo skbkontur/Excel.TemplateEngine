@@ -130,5 +130,28 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                             $"Cell E6 has validation with variants a, b, c and value b\n");
             }
         }
+
+        [Test]
+        public void TestColors()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/colors.xlsx")))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsx")))
+            {
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
+                templateEngine.Render(tableBuilder, new { });
+
+                var filename = "output.xlsx";
+                File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
+
+                var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
+                var templatePath = "file:///" + Path.GetFullPath("ExcelObjectPrinterTests/Files/colors.xlsx").Replace("\\", "/");
+                Assert.Fail($"Please manually open file:\n{path}\nand check that cells has same colors as in\n{templatePath}\n");
+            }
+        }
     }
 }
