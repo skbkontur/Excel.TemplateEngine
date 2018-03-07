@@ -3,23 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 
 using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Spreadsheet;
 
+using JetBrains.Annotations;
+
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+using SKBKontur.Catalogue.ExcelFileGenerator.Helpers;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems;
 using SKBKontur.Catalogue.Objects;
+using SKBKontur.Catalogue.ServiceLib.Logging;
+
+using ColorType = DocumentFormat.OpenXml.Spreadsheet.ColorType;
+using Fill = DocumentFormat.OpenXml.Spreadsheet.Fill;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 {
     internal class ExcelDocumentStyle : IExcelDocumentStyle
     {
-        public ExcelDocumentStyle(Stylesheet stylesheet)
+        public ExcelDocumentStyle(Stylesheet stylesheet, Theme theme)
         {
             this.stylesheet = stylesheet;
             numberingFormats = new ExcelDocumentNumberingFormats(stylesheet);
             fillStyles = new ExcelDocumentFillStyles(stylesheet);
             bordersStyles = new ExcelDocumentBordersStyles(stylesheet);
             fontStyles = new ExcelDocumentFontStyles(stylesheet);
+            // Not using theme.ThemeElements.ColorScheme.Elements<Color2Type>() here because of wrong order.
+            colorSchemeElements = new List<Color2Type>
+                {
+                    theme.ThemeElements.ColorScheme.Light1Color,
+                    theme.ThemeElements.ColorScheme.Dark1Color,
+                    theme.ThemeElements.ColorScheme.Light2Color,
+                    theme.ThemeElements.ColorScheme.Dark2Color,
+                    theme.ThemeElements.ColorScheme.Accent1Color,
+                    theme.ThemeElements.ColorScheme.Accent2Color,
+                    theme.ThemeElements.ColorScheme.Accent3Color,
+                    theme.ThemeElements.ColorScheme.Accent4Color,
+                    theme.ThemeElements.ColorScheme.Accent5Color,
+                    theme.ThemeElements.ColorScheme.Accent6Color,
+                    theme.ThemeElements.ColorScheme.Hyperlink,
+                    theme.ThemeElements.ColorScheme.FollowedHyperlinkColor,
+                };
             cache = new Dictionary<CellStyleCacheItem, uint>();
             inverseCache = new Dictionary<uint, ExcelCellStyle>();
         }
@@ -120,11 +144,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
                 };
         }
 
-        private static ExcelCellBorderStyle GetBorderStyle(BorderPropertiesType border)
+        private ExcelCellBorderStyle GetBorderStyle(BorderPropertiesType border)
         {
             return new ExcelCellBorderStyle
                 {
-                    Color = border?.Color?.Rgb == null ? null : ToExcelColor(border.Color.Rgb),
+                    Color = ToExcelColor(border?.Color),
                     BorderType = border?.Style == null ? ExcelBorderType.None : ToExcelBorderType(border.Style)
                 };
         }
@@ -183,32 +207,71 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
                     Bold = internalFont?.Bold != null,
                     Size = internalFont?.FontSize == null ? (int?)null : Convert.ToInt32(internalFont.FontSize?.Val.Value),
                     Underlined = internalFont?.Underline != null,
-                    Color = internalFont?.Color?.Rgb == null ? null : ToExcelColor(internalFont.Color.Rgb)
+                    Color = ToExcelColor(internalFont?.Color)
                 };
         }
 
         private ExcelCellFillStyle GetCellFillStyle(uint fillId)
         {
             var fill = stylesheet?.Fills?.ChildElements?.Count > fillId ? (Fill)stylesheet.Fills.ChildElements[(int)fillId] : null;
-            var internalColor = fill?.PatternFill?.ForegroundColor?.Rgb;
+            var color = ToExcelColor(fill?.PatternFill?.ForegroundColor);
 
-            if(internalColor == null)
+            if(color == null)
                 return null;
-
-            var color = ToExcelColor(internalColor);
 
             return new ExcelCellFillStyle {Color = color};
         }
 
-        private static ExcelColor ToExcelColor(HexBinaryValue color)
+        [CanBeNull]
+        private ExcelColor ToExcelColor([CanBeNull] ColorType color)
         {
+            if(color == null)
+                return null;
+            if(color.Rgb?.HasValue == true)
+            {
+                return RgbStringToExcelColor(color.Rgb.Value);
+            }
+            if(color.Theme?.HasValue == true)
+            {
+                var theme = color.Theme.Value;
+                var tint = color.Tint?.Value ?? 0;
+                return ThemeToExcelColor(theme, tint);
+            }
+            return null;
+        }
+
+        [CanBeNull]
+        private ExcelColor RgbStringToExcelColor([NotNull] string hexRgbColor)
+        {
+            if(hexRgbColor.Length == 6)
+                hexRgbColor = "FF" + hexRgbColor;
             return new ExcelColor
                 {
-                    Alpha = Convert.ToInt32(color.Value.Substring(0, 2), 16),
-                    Red = Convert.ToInt32(color.Value.Substring(2, 2), 16),
-                    Green = Convert.ToInt32(color.Value.Substring(4, 2), 16),
-                    Blue = Convert.ToInt32(color.Value.Substring(6, 2), 16),
+                    Alpha = Convert.ToInt32(hexRgbColor.Substring(0, 2), 16),
+                    Red = Convert.ToInt32(hexRgbColor.Substring(2, 2), 16),
+                    Green = Convert.ToInt32(hexRgbColor.Substring(4, 2), 16),
+                    Blue = Convert.ToInt32(hexRgbColor.Substring(6, 2), 16),
                 };
+        }
+
+        [CanBeNull]
+        private ExcelColor ThemeToExcelColor(uint theme, double tint)
+        {
+            if(theme >= colorSchemeElements.Count)
+                throw new InvalidProgramStateException($"Theme with id '{theme}' not found");
+            var color2Type = colorSchemeElements[(int)theme];
+            var rgbColor = color2Type?.RgbColorModelHex?.Val?.Value ?? color2Type?.SystemColor?.LastColor?.Value;
+            if(rgbColor == null)
+            {
+                Log.For(this).Error("Failed to get rgbColor from theme");
+                return null;
+            }
+            var hls = ColorConverter.RgbToHls(RgbStringToExcelColor(rgbColor));
+            if(tint < 0)
+                hls.L = hls.L * (1.0 + tint);
+            else
+                hls.L = hls.L * (1.0 - tint) + tint;
+            return ColorConverter.HslToRgb(hls);
         }
 
         private static AlignmentCacheItem Alignment(ExcelCellAlignment cellAlignment)
@@ -225,6 +288,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         private readonly ExcelDocumentFillStyles fillStyles;
         private readonly ExcelDocumentBordersStyles bordersStyles;
         private readonly IExcelDocumentFontStyles fontStyles;
+        private readonly List<Color2Type> colorSchemeElements;
         private readonly IDictionary<CellStyleCacheItem, uint> cache;
         private readonly IDictionary<uint, ExcelCellStyle> inverseCache;
     }

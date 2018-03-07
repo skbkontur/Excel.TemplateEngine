@@ -92,6 +92,7 @@
     <Compile Include="DataTypes\FormattedStringValueBlock.cs" />
     <Compile Include="Implementation\CacheItems\AlignmentCacheItem.cs" />
     <Compile Include="Implementation\CacheItems\CellStyleCacheItem.cs" />
+    <Compile Include="Helpers\ColorConverter.cs" />
     <Compile Include="Implementation\Caches\ExcelDocumentBordersStyles.cs" />
     <Compile Include="Implementation\Caches\ExcelDocumentFillStyles.cs" />
     <Compile Include="Implementation\Caches\ExcelDocumentFontStyles.cs" />
