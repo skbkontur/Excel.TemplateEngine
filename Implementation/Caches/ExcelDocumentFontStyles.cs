@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -13,7 +13,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         public ExcelDocumentFontStyles(Stylesheet stylesheet)
         {
             this.stylesheet = stylesheet;
-            cache = new Dictionary<FontStyleCacheItem, uint>();
+            cache = new ConcurrentDictionary<FontStyleCacheItem, uint>();
         }
 
         public uint AddFont(ExcelCellFontStyle style)
@@ -21,8 +21,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             if(style == null)
                 return 0;
             var cacheItem = new FontStyleCacheItem(style);
-            uint result;
-            if(cache.TryGetValue(cacheItem, out result))
+            if(cache.TryGetValue(cacheItem, out var result))
                 return result;
             if(stylesheet.Fonts == null)
             {
@@ -35,11 +34,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             result = stylesheet.Fonts.Count;
             stylesheet.Fonts.AppendChild(cacheItem.ToFont());
             stylesheet.Fonts.Count++;
-            cache.Add(cacheItem, result);
+            cache.TryAdd(cacheItem, result);
             return result;
         }
 
         private readonly Stylesheet stylesheet;
-        private readonly Dictionary<FontStyleCacheItem, uint> cache;
+        private readonly ConcurrentDictionary<FontStyleCacheItem, uint> cache;
     }
 }

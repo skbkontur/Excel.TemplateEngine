@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -13,7 +13,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         public ExcelDocumentFillStyles(Stylesheet stylesheet)
         {
             this.stylesheet = stylesheet;
-            cache = new Dictionary<FillStyleCacheItem, uint>();
+            cache = new ConcurrentDictionary<FillStyleCacheItem, uint>();
         }
 
         public uint AddStyle(ExcelCellFillStyle format)
@@ -21,8 +21,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             if(format == null)
                 return 0;
             var cacheItem = new FillStyleCacheItem(format);
-            uint result;
-            if(cache.TryGetValue(cacheItem, out result))
+            if(cache.TryGetValue(cacheItem, out var result))
                 return result;
             if(stylesheet.Fills == null)
             {
@@ -37,12 +36,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             result = stylesheet.Fills.Count;
             stylesheet.Fills.AppendChild(cacheItem.ToFill());
             stylesheet.Fills.Count++;
-            cache.Add(cacheItem, result);
+            cache.TryAdd(cacheItem, result);
             return result;
         }
 
         private readonly Stylesheet stylesheet;
 
-        private readonly Dictionary<FillStyleCacheItem, uint> cache;
+        private readonly ConcurrentDictionary<FillStyleCacheItem, uint> cache;
     }
 }

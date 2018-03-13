@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading;
 
 using C5;
 
@@ -18,6 +19,7 @@ using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.Objects;
 using SKBKontur.Catalogue.ServiceLib.Logging;
+using SKBKontur.Catalogue.Threading;
 
 using Tuple = System.Tuple;
 
@@ -31,10 +33,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             this.ExcelDocument = excelDocument;
             this.documentStyle = documentStyle;
             this.excelSharedStrings = excelSharedStrings;
+            rowsCacheLock = new ReaderWriterLockSlim();
             rowsCache = new TreeDictionary<uint, Row>();
             var sheetData = worksheet.GetFirstChild<SheetData>();
             if(sheetData != null)
-                rowsCache.AddAll(sheetData.Elements<Row>().Select(x => new C5.KeyValuePair<uint, Row>(x.RowIndex, x)));
+                using(rowsCacheLock.TakeWriteLock())
+                    rowsCache.AddAll(sheetData.Elements<Row>().Select(x => new C5.KeyValuePair<uint, Row>(x.RowIndex, x)));
         }
 
         public void SetPrinterSettings(ExcelPrinterSettings excelPrinterSettings)
@@ -88,20 +92,23 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public IEnumerable<IExcelCell> GetSortedCellsInRange(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
         {
-            return rowsCache.RangeFromTo((uint)upperLeft.RowIndex, (uint)lowerRight.RowIndex + 1)
-                            .Select(x => x.Value)
-                            .SelectMany(row => row.Elements<Cell>()
-                                                  .Where(cell =>
-                                                      {
-                                                          var columnIndex = new ExcelCellIndex(cell.CellReference).ColumnIndex;
-                                                          return columnIndex >= upperLeft.ColumnIndex && columnIndex <= lowerRight.ColumnIndex;
-                                                      }))
-                            .OrderBy(cell =>
-                                {
-                                    var cellIndex = new ExcelCellIndex(cell.CellReference);
-                                    return (cellIndex.RowIndex - upperLeft.RowIndex) * (lowerRight.ColumnIndex - upperLeft.ColumnIndex) + cellIndex.ColumnIndex;
-                                })
-                            .Select(cell => new ExcelCell(cell, documentStyle, excelSharedStrings));
+            using(rowsCacheLock.TakeReadLock())
+            {
+                return rowsCache.RangeFromTo((uint)upperLeft.RowIndex, (uint)lowerRight.RowIndex + 1)
+                                .Select(x => x.Value)
+                                .SelectMany(row => row.Elements<Cell>()
+                                                      .Where(cell =>
+                                                          {
+                                                              var columnIndex = new ExcelCellIndex(cell.CellReference).ColumnIndex;
+                                                              return columnIndex >= upperLeft.ColumnIndex && columnIndex <= lowerRight.ColumnIndex;
+                                                          }))
+                                .OrderBy(cell =>
+                                    {
+                                        var cellIndex = new ExcelCellIndex(cell.CellReference);
+                                        return (cellIndex.RowIndex - upperLeft.RowIndex) * (lowerRight.ColumnIndex - upperLeft.ColumnIndex) + cellIndex.ColumnIndex;
+                                    })
+                                .Select(cell => new ExcelCell(cell, documentStyle, excelSharedStrings));
+            }
         }
 
         public IExcelCell GetCell(ExcelCellIndex position)
@@ -237,13 +244,25 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public IEnumerable<IExcelCell> SearchCellsByText(string text)
         {
-            return rowsCache.Select(x => x.Value)
-                            .SelectMany(row => row.Elements<Cell>())
-                            .Select(internalCell => new ExcelCell(internalCell, documentStyle, excelSharedStrings))
-                            .Where(cell => cell.GetStringValue()?.Contains(text) ?? false);
+            using(rowsCacheLock.TakeReadLock())
+            {
+                return rowsCache.Select(x => x.Value)
+                                .SelectMany(row => row.Elements<Cell>())
+                                .Select(internalCell => new ExcelCell(internalCell, documentStyle, excelSharedStrings))
+                                .Where(cell => cell.GetStringValue()?.Contains(text) ?? false);
+            }
         }
 
-        public IEnumerable<IExcelRow> Rows { get { return rowsCache.Select(x => new ExcelRow(x.Value, documentStyle, excelSharedStrings)); } }
+        public IEnumerable<IExcelRow> Rows
+        {
+            get
+            {
+                using(rowsCacheLock.TakeReadLock())
+                {
+                    return rowsCache.Select(x => new ExcelRow(x.Value, documentStyle, excelSharedStrings));
+                }
+            }
+        }
 
         public IEnumerable<IExcelColumn> Columns
         {
@@ -286,14 +305,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 {
                     RowIndex = new UInt32Value((uint)rowIndex),
                 };
-            if(rowsCache.TryWeakSuccessor(unsignedRowIndex, out var successor))
+            using(rowsCacheLock.TakeReadLock())
             {
-                if(successor.Key == unsignedRowIndex)
-                    return new ExcelRow(successor.Value, documentStyle, excelSharedStrings);
-                refRow = successor.Value;
+                if(rowsCache.TryWeakSuccessor(unsignedRowIndex, out var successor))
+                {
+                    if(successor.Key == unsignedRowIndex)
+                        return new ExcelRow(successor.Value, documentStyle, excelSharedStrings);
+                    refRow = successor.Value;
+                }
             }
             sheetData.InsertBefore(newRow, refRow);
-            rowsCache.Add(unsignedRowIndex, newRow);
+            using(rowsCacheLock.TakeWriteLock())
+                rowsCache.Add(unsignedRowIndex, newRow);
             return new ExcelRow(newRow, documentStyle, excelSharedStrings);
         }
 
@@ -345,6 +368,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private readonly IExcelDocumentStyle documentStyle;
         private readonly IExcelSharedStrings excelSharedStrings;
         private readonly Worksheet worksheet;
+        private readonly ReaderWriterLockSlim rowsCacheLock;
         private readonly TreeDictionary<uint, Row> rowsCache;
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -12,21 +12,20 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         public ExcelSharedStrings(SharedStringTable sharedStringTable)
         {
             this.sharedStringTable = sharedStringTable;
-            cache = new Dictionary<SharedStringCacheItem, uint>();
+            cache = new ConcurrentDictionary<SharedStringCacheItem, uint>();
         }
 
         public uint AddSharedString(FormattedStringValue value)
         {
             var cacheItem = new SharedStringCacheItem(value);
-            uint result;
-            if(!cache.TryGetValue(cacheItem, out result))
+            if(!cache.TryGetValue(cacheItem, out var result))
             {
                 if(sharedStringTable.UniqueCount == null)
                     sharedStringTable.UniqueCount = 0;
                 result = sharedStringTable.UniqueCount;
                 sharedStringTable.UniqueCount++;
                 sharedStringTable.AppendChild(cacheItem.ToSharedStringItem());
-                cache.Add(cacheItem, result);
+                cache.TryAdd(cacheItem, result);
             }
             return result;
         }
@@ -37,7 +36,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             return a.FirstChild.InnerText;
         }
 
-        private readonly IDictionary<SharedStringCacheItem, uint> cache;
+        private readonly ConcurrentDictionary<SharedStringCacheItem, uint> cache;
 
         private readonly SharedStringTable sharedStringTable;
     }
