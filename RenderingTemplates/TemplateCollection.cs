@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
@@ -12,7 +12,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
         public TemplateCollection(ITable templateTable)
         {
             this.templateTable = templateTable;
-            cache = new ConcurrentDictionary<string, RenderingTemplate>();
+            cache = new Dictionary<string, RenderingTemplate>();
         }
 
         public RenderingTemplate GetTemplate(string templateName)
@@ -20,7 +20,8 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
             if(string.IsNullOrEmpty(templateName))
                 return null;
 
-            if(cache.TryGetValue(templateName, out var template))
+            RenderingTemplate template;
+            if(cache.TryGetValue(templateName, out template))
                 return template;
 
             AddNewTemplateIntoCache(templateName);
@@ -30,13 +31,14 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
 
         private void AddNewTemplateIntoCache(string templateName)
         {
-            cache.TryAdd(templateName, null);
+            cache.Add(templateName, null);
 
             var cell = SearchTemplateDescription(templateName);
             if(cell == null)
                 return;
 
-            if(!TemplateDescriptionHelper.TryExtractCoordinates(cell.StringValue, out var range))
+            IRectangle range;
+            if(!TemplateDescriptionHelper.TryExtractCoordinates(cell.StringValue, out range))
                 return;
 
             var newTemplate = BuildNewRenderingTemplate(range);
@@ -67,6 +69,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
         }
 
         private readonly ITable templateTable;
-        private readonly ConcurrentDictionary<string, RenderingTemplate> cache;
+        private readonly Dictionary<string, RenderingTemplate> cache;
     }
 }
