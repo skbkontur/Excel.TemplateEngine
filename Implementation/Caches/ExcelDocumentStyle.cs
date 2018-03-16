@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -45,8 +44,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
                     theme.ThemeElements.ColorScheme.Hyperlink,
                     theme.ThemeElements.ColorScheme.FollowedHyperlinkColor,
                 };
-            cache = new ConcurrentDictionary<CellStyleCacheItem, uint>();
-            inverseCache = new ConcurrentDictionary<uint, ExcelCellStyle>();
+            cache = new Dictionary<CellStyleCacheItem, uint>();
+            inverseCache = new Dictionary<uint, ExcelCellStyle>();
         }
 
         public uint AddStyle(ExcelCellStyle style)
@@ -69,7 +68,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
                 result = stylesheet.CellFormats.Count;
                 stylesheet.CellFormats.Count++;
                 stylesheet.CellFormats.AppendChild(cacheItem.ToCellFormat());
-                cache.TryAdd(cacheItem, result);
+                cache.Add(cacheItem, result);
             }
             return result;
         }
@@ -88,7 +87,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
                     BordersStyle = cellFormat?.BorderId == null ? null : GetCellBordersStyle(cellFormat.BorderId.Value),
                     Alignment = cellFormat?.Alignment == null ? null : GetCellAlignment(cellFormat.Alignment)
                 };
-            inverseCache.TryAdd((uint)styleIndex, result);
+            inverseCache.Add((uint)styleIndex, result);
 
             return result;
         }
@@ -290,7 +289,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         private readonly ExcelDocumentBordersStyles bordersStyles;
         private readonly IExcelDocumentFontStyles fontStyles;
         private readonly List<Color2Type> colorSchemeElements;
-        private readonly ConcurrentDictionary<CellStyleCacheItem, uint> cache;
-        private readonly ConcurrentDictionary<uint, ExcelCellStyle> inverseCache;
+        private readonly IDictionary<CellStyleCacheItem, uint> cache;
+        private readonly IDictionary<uint, ExcelCellStyle> inverseCache;
     }
 }

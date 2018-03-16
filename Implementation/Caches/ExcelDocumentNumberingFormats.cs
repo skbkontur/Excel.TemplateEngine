@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections.Generic;
 
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -13,7 +13,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         public ExcelDocumentNumberingFormats(Stylesheet stylesheet)
         {
             this.stylesheet = stylesheet;
-            cache = new ConcurrentDictionary<NumberingFormatCacheItem, uint>();
+            cache = new Dictionary<NumberingFormatCacheItem, uint>();
         }
 
         public uint AddFormat(ExcelCellNumberingFormat format)
@@ -21,7 +21,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             if(format == null)
                 return 0;
             var cacheItem = new NumberingFormatCacheItem(format);
-            if(cache.TryGetValue(cacheItem, out var formatId))
+            uint formatId;
+            if(cache.TryGetValue(cacheItem, out formatId))
                 return formatId;
             if(stylesheet.NumberingFormats == null)
             {
@@ -30,12 +31,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             }
             formatId = ++stylesheet.NumberingFormats.Count;
             stylesheet.NumberingFormats.AppendChild(cacheItem.ToNumberingFormat(formatId));
-            cache.TryAdd(cacheItem, formatId);
+            cache.Add(cacheItem, formatId);
             return formatId;
         }
 
         private readonly Stylesheet stylesheet;
 
-        private readonly ConcurrentDictionary<NumberingFormatCacheItem, uint> cache;
+        private readonly Dictionary<NumberingFormatCacheItem, uint> cache;
     }
 }

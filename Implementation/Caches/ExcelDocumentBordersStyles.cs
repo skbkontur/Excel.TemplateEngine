@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections.Generic;
 
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -13,7 +13,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         public ExcelDocumentBordersStyles(Stylesheet stylesheet)
         {
             this.stylesheet = stylesheet;
-            cache = new ConcurrentDictionary<BordersStyleCacheItem, uint>();
+            cache = new Dictionary<BordersStyleCacheItem, uint>();
         }
 
         public uint AddStyle(ExcelCellBordersStyle format)
@@ -21,7 +21,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             if(format == null)
                 return 0;
             var cacheItem = new BordersStyleCacheItem(format);
-            if(cache.TryGetValue(cacheItem, out var result))
+            uint result;
+            if(cache.TryGetValue(cacheItem, out result))
                 return result;
             if(stylesheet.Borders == null)
             {
@@ -38,12 +39,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             result = stylesheet.Borders.Count;
             stylesheet.Borders.AppendChild(cacheItem.ToBorder());
             stylesheet.Borders.Count++;
-            cache.TryAdd(cacheItem, result);
+            cache.Add(cacheItem, result);
             return result;
         }
 
         private readonly Stylesheet stylesheet;
 
-        private readonly ConcurrentDictionary<BordersStyleCacheItem, uint> cache;
+        private readonly Dictionary<BordersStyleCacheItem, uint> cache;
     }
 }
