@@ -128,6 +128,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
                    position.ColumnIndex < 1 || position.ColumnIndex > width;
         }
 
+        public void Dispose()
+        {
+            
+        }
+
         private readonly List<IRectangle> mergedCells;
         private readonly int width;
         private readonly int height;

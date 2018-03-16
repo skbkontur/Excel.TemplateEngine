@@ -14,7 +14,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
 {
     public class TemplateEngine : ITemplateEngine
     {
-        public TemplateEngine(ITable templateTable)
+        public TemplateEngine([NotNull] ITable templateTable)
         {
             this.templateTable = templateTable;
             templateCollection = new TemplateCollection(templateTable);
@@ -42,10 +42,23 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
             return (model : parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors: fieldsMappingForErrors);
         }
 
+        public void Dispose()
+        {
+            templateTable.Dispose();
+        }
+
         private const string rootTemplateName = "RootTemplate";
+
+        [NotNull]
         private readonly ITable templateTable;
+
+        [NotNull]
         private readonly ITemplateCollection templateCollection;
+
+        [NotNull]
         private readonly IRendererCollection rendererCollection;
+
+        [NotNull]
         private readonly IParserCollection parserCollection;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
@@ -7,7 +8,7 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
 {
-    public interface ITable
+    public interface ITable : IDisposable
     {
         ICell GetCell(ICellPosition position);
         ICell InsertCell(ICellPosition position);

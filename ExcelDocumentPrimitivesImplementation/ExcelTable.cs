@@ -13,7 +13,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
 {
     public class ExcelTable : ITable
     {
-        public ExcelTable(IExcelWorksheet excelWotksheet)
+        public ExcelTable([NotNull] IExcelWorksheet excelWotksheet)
         {
             internalTable = excelWotksheet;
         }
@@ -104,6 +104,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
             }
         }
 
+        public void Dispose()
+        {
+            internalTable.ExcelDocument.Dispose();
+        }
+
+        [NotNull]
         private readonly IExcelWorksheet internalTable;
     }
 }
