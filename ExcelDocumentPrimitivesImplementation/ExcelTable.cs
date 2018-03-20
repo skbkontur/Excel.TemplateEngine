@@ -103,12 +103,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
                                                                    new CellPosition(tuple.Item2)));
             }
         }
-
-        public void Dispose()
-        {
-            internalTable.ExcelDocument.Dispose();
-        }
-
+        
         [NotNull]
         private readonly IExcelWorksheet internalTable;
     }

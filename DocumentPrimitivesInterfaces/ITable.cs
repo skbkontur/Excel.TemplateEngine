@@ -8,7 +8,7 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
 {
-    public interface ITable : IDisposable
+    public interface ITable
     {
         ICell GetCell(ICellPosition position);
         ICell InsertCell(ICellPosition position);

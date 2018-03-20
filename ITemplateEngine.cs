@@ -8,7 +8,7 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter
 {
-    public interface ITemplateEngine : IDisposable
+    public interface ITemplateEngine
     {
         void Render<TModel>([NotNull] ITableBuilder tableBuilder, [NotNull] TModel model);
 
