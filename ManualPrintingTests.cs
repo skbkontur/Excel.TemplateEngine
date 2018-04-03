@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 
 using NUnit.Framework;
@@ -30,7 +31,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                     var innterTemplateEngine = new TemplateEngine(new ExcelTable(worksheet));
                     var targetWorksheet = targetDocument.AddWorksheet(name);
                     var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1")));
-                    innterTemplateEngine.Render(innerTableBuilder, new {});
+                    innterTemplateEngine.Render(innerTableBuilder, new { });
                 }
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
@@ -39,7 +40,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"));
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
-                templateEngine.Render(tableBuilder, new {Type = "Значение 2"});
+                templateEngine.Render(tableBuilder, new { Type = "Значение 2" });
 
                 var filename = "output.xlsx";
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
@@ -85,7 +86,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"));
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
-                templateEngine.Render(tableBuilder, new {A = "First", B = true, C = "Third", D = new[] {1, 2, 3}, E = "Fifth"});
+                templateEngine.Render(tableBuilder, new { A = "First", B = true, C = "Third", D = new [] {1, 2, 3}, E = "Fifth" });
 
                 var filename = "output.xlsx";
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
@@ -122,7 +123,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
                 var filename = "output.xlsx";
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
-
+                
                 var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
                 Assert.Fail($"Please manually open file '{path}' and check that:\n\n" +
                             $"Cell C4 has validation with variants abc, cde and lalala\n" +
@@ -142,7 +143,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"));
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
-                templateEngine.Render(tableBuilder, new {});
+                templateEngine.Render(tableBuilder, new { });
 
                 var filename = "output.xlsx";
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Linq.Expressions;
 
 using JetBrains.Annotations;
 
@@ -10,6 +11,7 @@ using NUnit.Framework;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
+using SKBKontur.Catalogue.Expressions;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
@@ -25,7 +27,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var child = ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesription));
             var childArray = child as object[];
             Assert.NotNull(childArray);
-
+            
             Assert.AreEqual(2, childArray.Length);
             CollectionAssert.AreEqual(model.Bs[0].Cs.Select(x => x.S), childArray[0] as object[]);
             CollectionAssert.AreEqual(model.Bs[1].Cs.Select(x => x.S), childArray[1] as object[]);
@@ -70,7 +72,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const string valueDesription = "Value::Bs[]";
             var localModel = new A
                 {
-                    Bs = new[] {null, new B(), null}
+                    Bs = new [] {null, new B(), null}
                 };
             var child = ObjectPropertiesExtractor.ExtractChildObject(localModel, ExcelTemplatePath.FromRawExpression(valueDesription));
             var childArray = child as object[];
@@ -84,7 +86,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const string valueDesription = "Value::Bs[]";
             var localModel = new A
                 {
-                    Bs = new B[] {null, null, null}
+                    Bs = new B[] { null, null, null }
                 };
             var child = ObjectPropertiesExtractor.ExtractChildObject(localModel, ExcelTemplatePath.FromRawExpression(valueDesription));
             var childArray = child as object[];
@@ -127,16 +129,16 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         {
             var localModel = new ModelWithCollections
                 {
-                    IntToStringDict = new Dictionary<int, string> {{10, "abc"}, {25, "def"}},
-                    StringToIntDict = new Dictionary<string, int> {{"lalala", 123}, {"abracadabra", 321}},
-                    Array = new[] {"a", "lalaa", "test"},
-                    List = new List<string> {"first", "second", "third"},
+                    IntToStringDict = new Dictionary<int, string> { { 10, "abc" }, { 25, "def" } },
+                    StringToIntDict = new Dictionary<string, int> { { "lalala", 123 }, { "abracadabra", 321 } },
+                    Array = new[] { "a", "lalaa", "test" },
+                    List = new List<string> { "first", "second", "third" },
                     InnerModel = new InnerModelWithCollections
                         {
-                            IntToStringDict = new Dictionary<int, string> {{10010, "inner_abc"}, {10025, "inner_def"}},
-                            StringToIntDict = new Dictionary<string, int> {{"inner_lalala", 100123}, {"inner_abracadabra", 100321}},
-                            Array = new[] {"inner_a", "inner_inner_lalaa", "inner_test"},
-                            List = new List<string> {"first", "inner_second", "inner_third"},
+                            IntToStringDict = new Dictionary<int, string> { { 10010, "inner_abc" }, { 10025, "inner_def" } },
+                            StringToIntDict = new Dictionary<string, int> { { "inner_lalala", 100123 }, { "inner_abracadabra", 100321 } },
+                            Array = new[] { "inner_a", "inner_inner_lalaa", "inner_test" },
+                            List = new List<string> { "first", "inner_second", "inner_third" },
                         }
                 };
             var child = ObjectPropertiesExtractor.ExtractChildObject(localModel, ExcelTemplatePath.FromRawExpression(valueDesription));
@@ -169,7 +171,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.AreNotEqual(null, child);
             Assert.AreEqual("Test", child);
         }
-
+        
         [TestCase("Value::lalala", TestName = "Non-existent property")]
         [TestCase("Value::InnerObject.A[].Value", TestName = "Array-access to non-array property")]
         [TestCase("Value::InnerObject[\"Test\"]", TestName = "Dict-access to non-dict property")]
@@ -210,7 +212,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public void TypeExtractionTestWithNotFullyInitializedModel(string expression, Type expectedType)
         {
             var modelToGetType = new ComplexModel();
-
+            
             var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelToGetType.GetType(), ExcelTemplatePath.FromRawExpression(expression));
             Assert.AreEqual(expectedType, type);
         }
@@ -323,23 +325,13 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                     {
                         {123, new MarkerD()},
                     },
-            };
+        };
 
-        public class MarkerA
-        {
-        }
+        public class MarkerA { }
+        public class MarkerB { }
+        public class MarkerC { }
+        public class MarkerD { }
 
-        public class MarkerB
-        {
-        }
-
-        public class MarkerC
-        {
-        }
-
-        public class MarkerD
-        {
-        }
 
         private readonly A model = new A
             {
@@ -400,9 +392,9 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
             public override bool Equals(object obj)
             {
-                if (ReferenceEquals(null, obj)) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != this.GetType()) return false;
+                if(ReferenceEquals(null, obj)) return false;
+                if(ReferenceEquals(this, obj)) return true;
+                if(obj.GetType() != this.GetType()) return false;
                 return Equals((B)obj);
             }
 
@@ -423,9 +415,9 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
             public override bool Equals(object obj)
             {
-                if (ReferenceEquals(null, obj)) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != this.GetType()) return false;
+                if(ReferenceEquals(null, obj)) return false;
+                if(ReferenceEquals(this, obj)) return true;
+                if(obj.GetType() != this.GetType()) return false;
                 return Equals((C)obj);
             }
 

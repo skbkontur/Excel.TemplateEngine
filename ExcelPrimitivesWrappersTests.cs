@@ -23,7 +23,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                             .Select(row => row.ToArray())
                             .ToArray();
 
-            foreach (var cell in rows.SelectMany(row => row))
+            foreach(var cell in rows.SelectMany(row => row))
                 Assert.AreNotEqual(null, cell);
 
             Assert.AreEqual("Template:RootTemplate:B10:D11", rows[0][0].StringValue);

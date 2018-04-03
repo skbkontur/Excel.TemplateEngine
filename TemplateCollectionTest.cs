@@ -25,10 +25,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var rootTemplate = templateCollection.GetTemplate("RootTemplate");
 
             var rowNumber = 0;
-            foreach (var row in rootTemplate.Content.Cells)
+            foreach(var row in rootTemplate.Content.Cells)
             {
                 var cellNumber = 0;
-                foreach (var cell in row)
+                foreach(var cell in row)
                 {
                     Assert.AreEqual(rootTemplateContent[rowNumber][cellNumber], cell.StringValue);
                     ++cellNumber;

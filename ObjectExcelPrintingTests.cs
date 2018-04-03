@@ -197,23 +197,23 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public void FormControlsPrintingTest()
         {
             var model = new
-                {
-                    BoolValue1 = false,
-                    BoolValue2 = true,
-                    String1 = "Value1",
-                    Dict = new Dictionary<string, bool> {{"TestKey", false}},
-                };
+            {
+                BoolValue1 = false,
+                BoolValue2 = true,
+                String1 = "Value1",
+                Dict = new Dictionary<string, bool> {{"TestKey", false}},
+            };
 
             var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(formControlsTemplate));
             var template = new ExcelTable(templateDocument.GetWorksheet(0));
             var templateEngine = new TemplateEngine(template);
 
             var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(emptyDocumentName));
-
+            
             var target = new ExcelTable(targetDocument.GetWorksheet(0));
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1")), new Style(template.GetCell(new CellPosition("A1"))));
             templateEngine.Render(tableBuilder, model);
-
+            
             var result = targetDocument.CloseAndGetDocumentBytes();
             File.WriteAllBytes("output.xlsx", result);
 
@@ -230,12 +230,12 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                     B = true,
                 };
 
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(simpleTemplateFileName)))
+            using(var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(simpleTemplateFileName)))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
                 var templateEngine = new TemplateEngine(template);
 
-                using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(emptyDocumentName)))
+                using(var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(emptyDocumentName)))
                 {
                     var target = new ExcelTable(targetDocument.GetWorksheet(0));
                     var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1")), new Style(template.GetCell(new CellPosition("A1"))));
@@ -260,7 +260,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var result = targetDocument.CloseAndGetDocumentBytes();
             File.WriteAllBytes("output.xlsx", result);
 
-            if (resultValidationFunc != null)
+            if(resultValidationFunc != null)
                 resultValidationFunc(target);
 
             templateDocument.Dispose();
@@ -274,6 +274,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         private const string emptyDocumentName = filenamePrefix + "empty.xlsx";
         private const string formControlsTemplate = filenamePrefix + "formControlsTemplate.xlsx";
         private const string filenamePrefix = @"ExcelObjectPrinterTests\Files\";
+
 
         public class DocumentWithArray
         {

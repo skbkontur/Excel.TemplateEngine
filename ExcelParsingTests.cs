@@ -21,7 +21,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public void TestSimpleWithEnumerable()
         {
             var(model, mappingForErrors) = Parse("simpleWithEnumerable_template.xlsx", "simpleWithEnumerable_target.xlsx");
-
+            
             Assert.AreEqual("C3", mappingForErrors["Type"]);
             Assert.AreEqual("B13", mappingForErrors["Items[0].Id"]);
             Assert.AreEqual("C13", mappingForErrors["Items[0].Name"]);
@@ -42,7 +42,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var (model, mappingForErrors) = Parse("enumerableWithPrimaryKey_template.xlsx", "enumerableWithPrimaryKey_target.xlsx");
 
             Assert.AreEqual("C3", mappingForErrors["Type"]);
-            for (var i = 0; i < 7; i++)
+            for(var i = 0; i < 7; i++)
             {
                 Assert.AreEqual($"B{i + 13}", mappingForErrors[$"Items[{i}].Id"]);
                 Assert.AreEqual($"C{i + 13}", mappingForErrors[$"Items[{i}].Name"]);
@@ -87,9 +87,9 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.AreEqual("E7", mappingForErrors["IntStringDict[42]"]);
             Assert.AreEqual("E9", mappingForErrors["InnerPriceList.IntStringDict[25]"]);
             Assert.AreEqual("E10", mappingForErrors["InnerPriceList.PriceListsDict[\"price\"].Type"]);
-            Assert.AreEqual(new Dictionary<string, string> {{"testKey", "testValue"}}, model.StringStringDict);
-            Assert.AreEqual(new Dictionary<int, string> {{42, "testValueInt"}}, model.IntStringDict);
-            Assert.AreEqual(new Dictionary<int, string> {{25, "222222222"}}, model.InnerPriceList.IntStringDict);
+            Assert.AreEqual(new Dictionary<string, string> { { "testKey", "testValue" } }, model.StringStringDict);
+            Assert.AreEqual(new Dictionary<int, string> { { 42, "testValueInt" } }, model.IntStringDict);
+            Assert.AreEqual(new Dictionary<int, string> { { 25, "222222222" } }, model.InnerPriceList.IntStringDict);
             Assert.AreEqual(1, model.InnerPriceList.PriceListsDict.Count);
             Assert.AreEqual("720306001", model.InnerPriceList.PriceListsDict["price"].Type);
         }
@@ -102,9 +102,9 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.AreEqual("E7", mappingForErrors["IntStringDict[42]"]);
             Assert.AreEqual("TestCheckBox1", mappingForErrors["IntBoolDict[25]"]);
             Assert.AreEqual("TestCheckBox2", mappingForErrors["IntBoolDict[27]"]);
-            Assert.AreEqual(new Dictionary<string, string> {{"testKey", "testValue"}}, model.StringStringDict);
-            Assert.AreEqual(new Dictionary<int, string> {{42, "testValueInt"}}, model.IntStringDict);
-            Assert.AreEqual(new Dictionary<int, bool> {{25, false}, {27, true}}, model.IntBoolDict);
+            Assert.AreEqual(new Dictionary<string, string> { { "testKey", "testValue" } }, model.StringStringDict);
+            Assert.AreEqual(new Dictionary<int, string> { { 42, "testValueInt" } }, model.IntStringDict);
+            Assert.AreEqual(new Dictionary<int, bool> { { 25, false }, { 27, true } }, model.IntBoolDict);
         }
 
         [Test]
@@ -114,8 +114,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.AreEqual("C7", mappingForErrors["StringStringDict[\"testKey\"]"]);
             Assert.AreEqual("E7", mappingForErrors["IntStringDict[42]"]);
             Assert.AreEqual("TestDropDown1", mappingForErrors["IntStringDict[15]"]);
-            Assert.AreEqual(new Dictionary<string, string> {{"testKey", "testValue"}}, model.StringStringDict);
-            Assert.AreEqual(new Dictionary<int, string> {{42, "testValueInt"}, {15, "Value2"}}, model.IntStringDict);
+            Assert.AreEqual(new Dictionary<string, string> { { "testKey", "testValue" } }, model.StringStringDict);
+            Assert.AreEqual(new Dictionary<int, string> { { 42, "testValueInt" }, { 15, "Value2" } }, model.IntStringDict);
         }
 
         [Test]
@@ -154,8 +154,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var tableNavigator = new TableNavigator(new CellPosition("A1"));
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
 
-                templateEngine.Render(tableBuilder, new {Type = "Значение 2", TestFlag1 = false, TestFlag2 = true});
-
+                templateEngine.Render(tableBuilder, new { Type = "Значение 2", TestFlag1 = false, TestFlag2 = true });
+                
                 target.InsertCell(new CellPosition("C16"));
 
                 bytes = targetDocument.CloseAndGetDocumentBytes();
@@ -218,9 +218,9 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if(ReferenceEquals(null, obj)) return false;
+            if(ReferenceEquals(this, obj)) return true;
+            if(obj.GetType() != this.GetType()) return false;
             return Equals((Item)obj);
         }
 

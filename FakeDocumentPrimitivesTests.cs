@@ -93,7 +93,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var positions = new[] {new CellPosition(1, 1), new CellPosition(40, 20), new CellPosition(10, 10)};
             var stringValues = new[] {"Test Value", "Test Test", "Another text"};
 
-            for (var i = 0; i < positions.Count(); ++i)
+            for(var i = 0; i < positions.Count(); ++i)
             {
                 var cell = table.InsertCell(positions[i]);
                 cell.StringValue = stringValues[i];
@@ -119,16 +119,16 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const int height = 40;
             var table = new FakeTable(width, height);
 
-            for (var x = 0; x < width; ++x)
+            for(var x = 0; x < width; ++x)
             {
-                for (var y = 0; y < height; ++y)
+                for(var y = 0; y < height; ++y)
                     table.InsertCell(new CellPosition(y + 1, x + 1));
             }
 
             var positions = new[] {new CellPosition(1, 1), new CellPosition(40, 20), new CellPosition(10, 10)};
             var stringValues = new[] {"Test Value", "Test Test", "Another text"};
 
-            for (var i = 0; i < positions.Count(); ++i)
+            for(var i = 0; i < positions.Count(); ++i)
             {
                 var cell = table.InsertCell(positions[i]);
                 cell.StringValue = stringValues[i];
@@ -138,7 +138,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
             Assert.AreEqual(32, tablePart.Cells.Count());
 
-            foreach (var row in tablePart.Cells)
+            foreach(var row in tablePart.Cells)
                 Assert.AreEqual(12, row.Count());
 
             var targetRow = tablePart.Cells.FirstOrDefault(row => row.FirstOrDefault(cell => cell.StringValue == "Another text") != null);
