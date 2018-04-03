@@ -298,10 +298,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         public void WithNullArrayTest()
         {
             var model = new DocumentWithArray
-            {
-                Array = null,
-                NonArray = "StringValue"
-            };
+                {
+                    Array = null,
+                    NonArray = "StringValue"
+                };
             var stringTemplate = new[]
                 {
                     new[] {"", "Template:RootTemplate:A2:D4", "", ""},
@@ -396,12 +396,12 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                                 .SelectMany(row => row)
                                 .Select(cell => cell.StringValue)
                                 .Max(value => string.IsNullOrEmpty(value) ? 0 : value.Length);
-            foreach(var row in table.GetTablePart(new Rectangle(upperLeft, lowerRight)).Cells)
+            foreach (var row in table.GetTablePart(new Rectangle(upperLeft, lowerRight)).Cells)
             {
-                foreach(var cell in row)
+                foreach (var cell in row)
                 {
                     var val = cell.StringValue + "";
-                    while(val.Length < maxWidth)
+                    while (val.Length < maxWidth)
                         val = val + " ";
                     Console.Write(val);
                 }
