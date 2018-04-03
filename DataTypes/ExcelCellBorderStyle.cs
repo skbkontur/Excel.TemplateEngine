@@ -10,7 +10,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.DataTypes
         public override string ToString()
         {
             var lines = new List<string>();
-            if (Color != null)
+            if(Color != null)
                 lines.Add(string.Format("Color = {0}", Color));
             lines.Add(string.Format("BorderType = {0}", BorderType));
 

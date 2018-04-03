@@ -18,20 +18,20 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         public uint AddStyle(ExcelCellBordersStyle format)
         {
-            if (format == null)
+            if(format == null)
                 return 0;
             var cacheItem = new BordersStyleCacheItem(format);
             uint result;
-            if (cache.TryGetValue(cacheItem, out result))
+            if(cache.TryGetValue(cacheItem, out result))
                 return result;
-            if (stylesheet.Borders == null)
+            if(stylesheet.Borders == null)
             {
                 var borders = new Borders {Count = new UInt32Value(0u)};
-                if (stylesheet.Fills != null)
+                if(stylesheet.Fills != null)
                     stylesheet.InsertAfter(borders, stylesheet.Fills);
-                else if (stylesheet.Fonts != null)
+                else if(stylesheet.Fonts != null)
                     stylesheet.InsertAfter(borders, stylesheet.Fonts);
-                else if (stylesheet.NumberingFormats != null)
+                else if(stylesheet.NumberingFormats != null)
                     stylesheet.InsertAfter(borders, stylesheet.NumberingFormats);
                 else
                     stylesheet.InsertAt(borders, 0);

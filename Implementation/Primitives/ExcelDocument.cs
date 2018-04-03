@@ -39,13 +39,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         private void ThrowIfSpreadsheetDisposed()
         {
-            if (spreadsheetDisposed)
+            if(spreadsheetDisposed)
                 throw new ObjectDisposedException(spreadsheetDocument.GetType().Name);
         }
 
         public void Dispose()
         {
-            if (!spreadsheetDisposed)
+            if(!spreadsheetDisposed)
                 spreadsheetDocument.Dispose();
             documentMemoryStream.Dispose();
             spreadsheetDisposed = true;
@@ -71,7 +71,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             ThrowIfSpreadsheetDisposed();
             var sheet = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().FirstOrDefault(x => x?.Name?.Value == name);
-            if (sheet == null)
+            if(sheet == null)
                 return null;
             return GetWorksheetById(sheet.Id.Value);
         }
@@ -85,7 +85,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 var sheetId = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().ElementAt(index).Id.Value;
                 return GetWorksheetById(sheetId);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Log.For(this).Error($"An error occurred while getting of an excel worksheet: {ex}");
                 return null;
@@ -111,7 +111,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             ThrowIfSpreadsheetDisposed();
             var part = ((ExcelDocument)excelDocument).spreadsheetDocument.WorkbookPart.VbaProjectPart;
-            if (part == null)
+            if(part == null)
                 return;
             spreadsheetDocument.WorkbookPart.AddPart(part);
         }
@@ -159,7 +159,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             ThrowIfSpreadsheetDisposed();
             AssertWorksheetNameValid(worksheetName);
 
-            if (FindWorksheet(worksheetName) != null)
+            if(FindWorksheet(worksheetName) != null)
                 throw new InvalidProgramStateException($"Sheet with name {worksheetName} already exists");
 
             var worksheetPart = spreadsheetDocument.WorkbookPart.AddNewPart<WorksheetPart>();
@@ -168,7 +168,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             var sheets = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>();
 
             var sheetId = 1u;
-            if (sheets.Elements<Sheet>().Any())
+            if(sheets.Elements<Sheet>().Any())
                 sheetId = sheets.Elements<Sheet>().Select(s => s.SheetId.Value).Max() + 1;
 
             var sheet = new Sheet
@@ -184,14 +184,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         private static void AssertWorksheetNameValid([NotNull] string worksheetName)
         {
-            if (worksheetName.Length > 31)
+            if(worksheetName.Length > 31)
                 throw new InvalidProgramStateException($"Worksheet name ('{worksheetName}') is too long (allowed <=31 symbols, current - {worksheetName.Length})");
         }
 
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
-            for (var worksheetId = 0; worksheetId < GetWorksheetCount(); ++worksheetId)
+            for(var worksheetId = 0; worksheetId < GetWorksheetCount(); ++worksheetId)
             {
                 var worksheet = GetWorksheet(worksheetId);
 

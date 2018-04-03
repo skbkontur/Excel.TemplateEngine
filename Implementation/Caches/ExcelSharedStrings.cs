@@ -19,9 +19,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         {
             var cacheItem = new SharedStringCacheItem(value);
             uint result;
-            if (!cache.TryGetValue(cacheItem, out result))
+            if(!cache.TryGetValue(cacheItem, out result))
             {
-                if (sharedStringTable.UniqueCount == null)
+                if(sharedStringTable.UniqueCount == null)
                     sharedStringTable.UniqueCount = 0;
                 result = sharedStringTable.UniqueCount;
                 sharedStringTable.UniqueCount++;

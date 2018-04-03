@@ -55,7 +55,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public IExcelCell SetStyle(ExcelCellStyle style)
         {
-            if (style != null)
+            if(style != null)
                 cell.StyleIndex = documentStyle.AddStyle(style);
             return this;
         }
@@ -67,7 +67,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public string GetStringValue()
         {
-            if (cell?.DataType?.Value == CellValues.SharedString)
+            if(cell?.DataType?.Value == CellValues.SharedString)
                 return excelSharedStrings.GetSharedString(uint.Parse(cell.CellValue.Text));
             return cell?.CellValue?.Text;
         }

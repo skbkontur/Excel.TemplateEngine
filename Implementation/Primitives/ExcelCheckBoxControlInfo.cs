@@ -24,23 +24,23 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             get => ControlPropertiesPart.FormControlProperties?.Checked != null && ControlPropertiesPart.FormControlProperties.Checked.HasValue && ControlPropertiesPart.FormControlProperties.Checked.Value == CheckedValues.Checked;
             set
             {
-                if (ControlPropertiesPart.FormControlProperties == null)
+                if(ControlPropertiesPart.FormControlProperties == null)
                     ControlPropertiesPart.FormControlProperties = new FormControlProperties();
-                if (value)
+                if(value)
                     ControlPropertiesPart.FormControlProperties.Checked = CheckedValues.Checked;
                 else
                     ControlPropertiesPart.FormControlProperties.Checked = null;
-                lock (GlobalVmlDrawingPart)
+                lock(GlobalVmlDrawingPart)
                 {
                     const string ns = "urn:schemas-microsoft-com:office:excel";
                     var xdoc = XDocument.Load(GlobalVmlDrawingPart.GetStream());
                     // ReSharper disable once ConstantConditionalAccessQualifier
                     var clientData = xdoc.Root?.Elements()?.SingleOrDefault(x => x.Attribute("id")?.Value == Control.Name)?.Element(XName.Get("ClientData", ns));
-                    if (clientData == null)
+                    if(clientData == null)
                         throw new InvalidProgramStateException($"ClientData element is not found for control with name '{Control.Name}'");
                     var checkedElement = clientData.Element(XName.Get("Checked", ns));
                     checkedElement?.Remove();
-                    if (value)
+                    if(value)
                         clientData.Add(new XElement(XName.Get("Checked", ns), "1"));
                     xdoc.Save(GlobalVmlDrawingPart.GetStream());
                 }

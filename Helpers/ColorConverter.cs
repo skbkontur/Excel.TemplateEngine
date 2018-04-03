@@ -26,7 +26,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
             var min = Math.Min(r, Math.Min(g, b));
             var max = Math.Max(r, Math.Max(g, b));
             var delta = max - min;
-            if (max == min)
+            if(max == min)
             {
                 hslColor.A = a;
                 hslColor.H = 0;
@@ -35,7 +35,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
                 return hslColor;
             }
             hslColor.L = (min + max) / 2;
-            if (hslColor.L < 0.5)
+            if(hslColor.L < 0.5)
             {
                 hslColor.S = delta / (max + min);
             }
@@ -43,18 +43,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
             {
                 hslColor.S = delta / (2.0 - max - min);
             }
-            if (r == max) hslColor.H = (g - b) / delta;
-            if (g == max) hslColor.H = 2.0 + (b - r) / delta;
-            if (b == max) hslColor.H = 4.0 + (r - g) / delta;
+            if(r == max) hslColor.H = (g - b) / delta;
+            if(g == max) hslColor.H = 2.0 + (b - r) / delta;
+            if(b == max) hslColor.H = 4.0 + (r - g) / delta;
             hslColor.H *= 60;
-            if (hslColor.H < 0) hslColor.H += 360;
+            if(hslColor.H < 0) hslColor.H += 360;
             hslColor.A = a;
             return hslColor;
         }
 
         public static ExcelColor HslToRgb(HslColor hslColor)
         {
-            if (hslColor.S == 0)
+            if(hslColor.S == 0)
             {
                 return new ExcelColor
                     {
@@ -65,7 +65,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
                     };
             }
             double t1;
-            if (hslColor.L < 0.5)
+            if(hslColor.L < 0.5)
             {
                 t1 = hslColor.L * (1.0 + hslColor.S);
             }
@@ -92,18 +92,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
 
         private static double SetColor(double t1, double t2, double t3)
         {
-            if (t3 < 0) t3 += 1.0;
-            if (t3 > 1) t3 -= 1.0;
+            if(t3 < 0) t3 += 1.0;
+            if(t3 > 1) t3 -= 1.0;
             double color;
-            if (6.0 * t3 < 1)
+            if(6.0 * t3 < 1)
             {
                 color = t2 + (t1 - t2) * 6.0 * t3;
             }
-            else if (2.0 * t3 < 1)
+            else if(2.0 * t3 < 1)
             {
                 color = t1;
             }
-            else if (3.0 * t3 < 2)
+            else if(3.0 * t3 < 2)
             {
                 color = t2 + (t1 - t2) * ((2.0 / 3.0) - t3) * 6.0;
             }

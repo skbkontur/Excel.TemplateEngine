@@ -18,7 +18,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
             {
                 return new ExcelDocument(template);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Log.For<ExcelDocument>().Error($"An error occurred while creating of {nameof(ExcelDocument)}: {ex}");
                 return null;
@@ -35,7 +35,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
         [NotNull]
         public static IExcelDocument CreateEmpty(bool useXlsm)
         {
-            if (useXlsm)
+            if(useXlsm)
                 return CreateFromTemplate(GetFileBytes("empty.xlsm"));
             return CreateFromTemplate(GetFileBytes("empty.xlsx"));
         }

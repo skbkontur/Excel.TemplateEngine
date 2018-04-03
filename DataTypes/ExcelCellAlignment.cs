@@ -16,7 +16,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.DataTypes
                     string.Format("VerticalAlignment = {0}", VerticalAlignment)
                 };
 
-            if (WrapText)
+            if(WrapText)
                 lines.Add("WrapText");
 
             return "\n\t\t\t" + string.Join("\n\t\t\t", lines) + "\n\t\t";
