@@ -9,7 +9,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
     {
         public void Render(ITableBuilder tableBuilder, object model, RenderingTemplate template)
         {
-            if (!(model is string))
+            if(!(model is string))
                 throw new ArgumentException("model is not string");
 
             var stringToRender = model as string;

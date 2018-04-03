@@ -38,7 +38,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
 
         public void PopState()
         {
-            if (states.Count == 1)
+            if(states.Count == 1)
             {
                 logger.Warn("Unexpected attempt to pop state.");
                 return;

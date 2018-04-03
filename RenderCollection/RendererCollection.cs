@@ -19,15 +19,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection
         [NotNull]
         public IRenderer GetRenderer([NotNull] Type modelType)
         {
-            if (modelType == typeof(string))
+            if(modelType == typeof(string))
                 return new StringRenderer();
-            if (modelType == typeof(int))
+            if(modelType == typeof(int))
                 return new IntRenderer();
-            if (modelType == typeof(decimal))
+            if(modelType == typeof(decimal))
                 return new DecimalRenderer();
-            if (modelType == typeof(double))
+            if(modelType == typeof(double))
                 return new DoubleRenderer();
-            if (TypeCheckingHelper.IsEnumerable(modelType))
+            if(TypeCheckingHelper.IsEnumerable(modelType))
                 return new EnumerableRenderer(this);
             return new ClassRenderer(templateCollection, this);
         }
@@ -35,9 +35,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection
         [NotNull]
         public IFormControlRenderer GetFormControlRenderer([NotNull] string typeName, [NotNull] Type modelType)
         {
-            if (typeName == "CheckBox" && modelType == typeof(bool))
+            if(typeName == "CheckBox" && modelType == typeof(bool))
                 return new CheckBoxRenderer();
-            if (typeName == "DropDown" && modelType == typeof(string))
+            if(typeName == "DropDown" && modelType == typeof(string))
                 return new DropDownRenderer();
             throw new InvalidProgramStateException($"Unsupported pair of typeName ({typeName}) and modelType ({modelType}) for form controls");
         }

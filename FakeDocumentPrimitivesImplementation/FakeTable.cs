@@ -26,7 +26,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
 
         public ICell InsertCell(ICellPosition position)
         {
-            if (OutOfBounds(position))
+            if(OutOfBounds(position))
                 return null;
 
             var newCell = new FakeCell(position)
@@ -48,14 +48,14 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
 
         public ITablePart GetTablePart(IRectangle rectangle)
         {
-            if (OutOfBounds(rectangle.UpperLeft) || OutOfBounds(rectangle.LowerRight))
+            if(OutOfBounds(rectangle.UpperLeft) || OutOfBounds(rectangle.LowerRight))
                 return null;
 
             var subTableSize = rectangle.Size;
             var subTable = JaggedArrayHelper.CreateJaggedArray<ICell[][]>(subTableSize.Height, subTableSize.Width);
-            for (var y = 0; y < subTableSize.Height; ++y)
+            for(var y = 0; y < subTableSize.Height; ++y)
             {
-                for (var x = 0; x < subTableSize.Width; ++x)
+                for(var x = 0; x < subTableSize.Width; ++x)
                 {
                     var sourceCell = cells[rectangle.UpperLeft.RowIndex + y - 1][rectangle.UpperLeft.ColumnIndex + x - 1];
                     subTable[y][x] = sourceCell ?? new FakeCell(new CellPosition(y + 1, x + 1));
@@ -78,6 +78,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
 
         public void CopyDataValidationsFrom(ITable template)
         {
+            
         }
 
         public IExcelCheckBoxControlInfo TryGetCheckBoxFormControl(string name)
@@ -96,15 +97,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
 
         public static FakeTable GenerateFromStringArray(string[][] template)
         {
-            if (!CheckArrayDimentions(template))
+            if(!CheckArrayDimentions(template))
                 return null;
             var height = template.Count();
             var width = template[0].Count();
 
             var table = new FakeTable(width, height);
-            for (var y = 0; y < height; ++y)
+            for(var y = 0; y < height; ++y)
             {
-                for (var x = 0; x < width; ++x)
+                for(var x = 0; x < width; ++x)
                 {
                     var cell = table.InsertCell(new CellPosition(y + 1, x + 1));
                     cell.StringValue = template[y][x];
@@ -115,7 +116,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
 
         private static bool CheckArrayDimentions(string[][] array)
         {
-            if (array == null || !array.Any() || !array[0].Any())
+            if(array == null || !array.Any() || !array[0].Any())
                 return false;
             var width = array[0].Count();
             return array.All(row => row.Any() && row.Count() == width);

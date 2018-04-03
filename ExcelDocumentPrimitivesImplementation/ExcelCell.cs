@@ -18,7 +18,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
         {
             set
             {
-                if (value == CellType.String)
+                if(value == CellType.String)
                     internalCell.SetStringValue(StringValue);
                 else
                     internalCell.SetNumericValue(StringValue);

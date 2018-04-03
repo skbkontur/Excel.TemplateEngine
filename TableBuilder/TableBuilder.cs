@@ -45,7 +45,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         public ITableBuilder RenderCheckBoxValue([NotNull] string name, bool value)
         {
             var formControl = target.TryGetCheckBoxFormControl(name);
-            if (formControl == null)
+            if(formControl == null)
                 throw new InvalidProgramStateException($"CheckBox with name {name} not found");
             formControl.IsChecked = value;
             return this;
@@ -55,7 +55,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         public ITableBuilder RenderDropDownValue([NotNull] string name, [CanBeNull] string value)
         {
             var formControl = target.TryGetDropDownFormControl(name);
-            if (formControl == null)
+            if(formControl == null)
                 throw new InvalidProgramStateException($"DropDown with name {name} not found");
             formControl.SelectedValue = value;
             return this;
@@ -114,7 +114,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
             var currentWidth = target.Columns
                                      .FirstOrDefault(col => col.Index == globalIndex)?.Width ?? 0.0;
 
-            if (currentWidth < width)
+            if(currentWidth < width)
                 target.ResizeColumn(globalIndex, width);
             return this;
         }

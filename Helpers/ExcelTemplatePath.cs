@@ -8,7 +8,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
     {
         private ExcelTemplatePath(string rawPath)
         {
-            if (!TemplateDescriptionHelper.IsCorrectModelPath(rawPath))
+            if(!TemplateDescriptionHelper.IsCorrectModelPath(rawPath))
                 throw new ObjectPropertyExtractionException($"Invalid excel template path '{rawPath}'");
             PartsWithIndexers = rawPath.Split('.');
             PartsWithoutArrayAccess = PartsWithIndexers.Select(TemplateDescriptionHelper.GetArrayPathPartName).ToArray();
@@ -19,10 +19,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         public static ExcelTemplatePath FromRawExpression(string expression)
         {
-            if (expression == null || !TemplateDescriptionHelper.IsCorrectAbstractValueDescription(expression))
+            if(expression == null || !TemplateDescriptionHelper.IsCorrectAbstractValueDescription(expression))
                 throw new ObjectPropertyExtractionException($"Invalid description '{expression}'");
             var parts = TemplateDescriptionHelper.GetDescriptionParts(expression);
-            if (parts.Length != 3)
+            if(parts.Length != 3)
                 throw new ObjectPropertyExtractionException($"Invalid description '{expression}'");
             return new ExcelTemplatePath(parts[2]);
         }
@@ -34,7 +34,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         public (ExcelTemplatePath pathToEnumerable, ExcelTemplatePath relativePathToItem) SplitForEnumerableExpansion()
         {
-            if (!HasArrayAccess)
+            if(!HasArrayAccess)
                 throw new BaseExcelSerializationException($"Expression needs enumerable expansion but has no part with '[]' or '[#]' (path - '{RawPath}')");
             var pathToEnumerableLength = PartsWithIndexers.TakeWhile(x => !TemplateDescriptionHelper.IsArrayPathPart(x)).Count() + 1;
             var pathToEnumerable = new ExcelTemplatePath(string.Join(".", PartsWithIndexers.Take(pathToEnumerableLength)));
@@ -55,9 +55,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         public override bool Equals(object obj)
         {
-            if (obj is null) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if(obj is null) return false;
+            if(ReferenceEquals(this, obj)) return true;
+            if(obj.GetType() != GetType()) return false;
             return Equals((ExcelTemplatePath)obj);
         }
 

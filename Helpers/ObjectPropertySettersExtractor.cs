@@ -39,7 +39,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         {
             var statements = new List<Expression>();
 
-            for (var partIndex = 0; partIndex < pathParts.Length; ++partIndex)
+            for(var partIndex = 0; partIndex < pathParts.Length; ++partIndex)
             {
                 var name = TemplateDescriptionHelper.GetPathPartName(pathParts[partIndex]);
 
@@ -47,19 +47,19 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                 currNodeType = newNodeType ?? throw new ObjectPropertyExtractionException($"Type '{currNodeType}' has no property '{name}'");
                 currNodeExpression = Expression.Property(currNodeExpression, name);
 
-                if (TemplateDescriptionHelper.IsCollectionAccessPathPart(pathParts[partIndex]))
+                if(TemplateDescriptionHelper.IsCollectionAccessPathPart(pathParts[partIndex]))
                 {
                     List<Expression> statementsToAdd;
                     (currNodeExpression, currNodeType, statementsToAdd) = BuildExpandingOfCollectionAccessPart(currNodeExpression, currNodeType, pathParts[partIndex]);
                     statements.AddRange(statementsToAdd);
                 }
-                else if (TemplateDescriptionHelper.IsArrayPathPart(pathParts[partIndex]))
+                else if(TemplateDescriptionHelper.IsArrayPathPart(pathParts[partIndex]))
                 {
                     var statementsToAdd = BuildExpandingOfArrayPart(currNodeExpression, currNodeType, valueToSetExpression, pathParts.Skip(partIndex + 1).ToArray());
                     statements.AddRange(statementsToAdd);
                     return statements;
                 }
-                else if (!TypeCheckingHelper.IsNullable(currNodeType) && partIndex != pathParts.Length - 1)
+                else if(!TypeCheckingHelper.IsNullable(currNodeType) && partIndex != pathParts.Length - 1)
                 {
                     statements.Add(ExpressionPrimitives.CreateValueInitStatement(currNodeExpression, currNodeType));
                 }
@@ -71,7 +71,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         private static (Expression currNodeExpression, Type currNodeType, List<Expression> statements) BuildExpandingOfCollectionAccessPart([NotNull] Expression currNodeExpression, [NotNull] Type currNodeType, [NotNull] string part)
         {
             var statements = new List<Expression>();
-            if (TypeCheckingHelper.IsDictionary(currNodeType))
+            if(TypeCheckingHelper.IsDictionary(currNodeType))
             {
                 statements.Add(ExpressionPrimitives.CreateValueInitStatement(currNodeExpression, currNodeType));
 
@@ -85,7 +85,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
                 currNodeExpression = dictElementExpression;
                 currNodeType = dictValueType;
             }
-            else if (currNodeType.IsArray)
+            else if(currNodeType.IsArray)
             {
                 var arrayItemType = currNodeType.GetElementType() ?? throw new ObjectPropertyExtractionException($"Array of type '{currNodeType}' has no item type");
                 var indexer = TemplateDescriptionHelper.ParseCollectionIndexerOrThrow(TemplateDescriptionHelper.GetCollectionAccessPathPartIndex(part), typeof(int));
@@ -108,7 +108,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         private static List<Expression> BuildExpandingOfArrayPart([NotNull] Expression currNodeExpression, [NotNull] Type currNodeType, [NotNull] Expression valueToSetExpression, [NotNull, ItemNotNull] string[] pathParts)
         {
             var statements = new List<Expression>();
-            if (currNodeType.IsArray)
+            if(currNodeType.IsArray)
             {
                 var itemType = TypeCheckingHelper.GetEnumerableItemType(currNodeType);
 

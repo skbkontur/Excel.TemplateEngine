@@ -14,9 +14,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
             var array = Array.CreateInstance(type, lengths[index]);
             var elementType = type.GetElementType();
 
-            if (elementType != null)
+            if(elementType != null)
             {
-                for (var i = 0; i < lengths[index]; i++)
+                for(var i = 0; i < lengths[index]; i++)
                 {
                     array.SetValue(
                         InitializeJaggedArray(elementType, index + 1, lengths), i);

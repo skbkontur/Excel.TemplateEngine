@@ -17,12 +17,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
         public void Render(ITableBuilder tableBuilder, object model, RenderingTemplate template)
         {
-            if (!TypeCheckingHelper.IsEnumerable(model.GetType()))
+            if(!TypeCheckingHelper.IsEnumerable(model.GetType()))
                 throw new ArgumentException("model is not IEnumerable");
 
             var enumerableToRender = ((IEnumerable)model).Cast<object>().ToArray();
 
-            for (var i = 0; i < enumerableToRender.Length; ++i)
+            for(var i = 0; i < enumerableToRender.Length; ++i)
             {
                 var element = enumerableToRender[i];
 
@@ -35,7 +35,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
                 tableBuilder.PopState();
 
-                if (i != enumerableToRender.Length - 1)
+                if(i != enumerableToRender.Length - 1)
                     tableBuilder.MoveToNextLayer();
             }
         }

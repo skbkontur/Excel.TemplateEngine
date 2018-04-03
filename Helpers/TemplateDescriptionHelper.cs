@@ -38,8 +38,8 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         public static bool IsCorrectAbstractValueDescription(string expression)
         {
             var descriptionParts = GetDescriptionParts(expression);
-            if (descriptionParts.Count() != 3 ||
-                string.IsNullOrEmpty(descriptionParts[2]))
+            if(descriptionParts.Count() != 3 ||
+               string.IsNullOrEmpty(descriptionParts[2]))
                 return false;
 
             return IsCorrectModelPath(descriptionParts[2]);
@@ -53,9 +53,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         public static bool IsCorrectTemplateDescription(string expression)
         {
             var descriptionParts = GetDescriptionParts(expression);
-            if (descriptionParts.Count() != 4 ||
-                descriptionParts[0] != "Template" ||
-                string.IsNullOrEmpty(descriptionParts[1]))
+            if(descriptionParts.Count() != 4 ||
+               descriptionParts[0] != "Template" ||
+               string.IsNullOrEmpty(descriptionParts[1]))
                 return false;
 
             return exactCellReferenceRegex.IsMatch(descriptionParts[2]) &&
@@ -65,7 +65,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         public static bool TryExtractCoordinates(string templateDescription, out IRectangle rectangle)
         {
             rectangle = null;
-            if (!IsCorrectTemplateDescription(templateDescription))
+            if(!IsCorrectTemplateDescription(templateDescription))
                 return false;
 
             rectangle = ExctractCoordinates(templateDescription);
@@ -86,9 +86,9 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 
         public static string GetPathPartName(string pathPart)
         {
-            if (IsArrayPathPart(pathPart))
+            if(IsArrayPathPart(pathPart))
                 return GetArrayPathPartName(pathPart);
-            if (IsCollectionAccessPathPart(pathPart))
+            if(IsCollectionAccessPathPart(pathPart))
                 return GetCollectionAccessPathPartName(pathPart);
             return pathPart;
         }
@@ -126,7 +126,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         private static (string name, string index) GetCollectionAccessPathPart(string pathPart)
         {
             var match = collectionAccessPathPartRegex.Match(pathPart);
-            if (!match.Success)
+            if(!match.Success)
                 throw new ArgumentException($"{nameof(pathPart)} should be collection access path part");
             return (match.Groups[1].Value, match.Groups[2].Value);
         }
@@ -134,15 +134,15 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
         [NotNull]
         public static object ParseCollectionIndexerOrThrow([NotNull] string collectionIndexer, [NotNull] Type collectionKeyType)
         {
-            if (collectionIndexer.StartsWith("\"") && collectionIndexer.EndsWith("\""))
+            if(collectionIndexer.StartsWith("\"") && collectionIndexer.EndsWith("\""))
             {
-                if (collectionKeyType != typeof(string))
+                if(collectionKeyType != typeof(string))
                     throw new ObjectPropertyExtractionException($"Collection with '{collectionKeyType}' keys was indexed by {typeof(string)}");
                 return collectionIndexer.Substring(1, collectionIndexer.Length - 2);
             }
-            if (int.TryParse(collectionIndexer, out var intIndexer))
+            if(int.TryParse(collectionIndexer, out var intIndexer))
             {
-                if (collectionKeyType != typeof(int))
+                if(collectionKeyType != typeof(int))
                     throw new ObjectPropertyExtractionException($"Collection with '{collectionKeyType}' keys was indexed by {typeof(int)}");
                 return intIndexer;
             }
