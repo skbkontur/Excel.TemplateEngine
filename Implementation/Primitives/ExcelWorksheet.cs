@@ -33,13 +33,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             this.excelSharedStrings = excelSharedStrings;
             rowsCache = new TreeDictionary<uint, Row>();
             var sheetData = worksheet.GetFirstChild<SheetData>();
-            if(sheetData != null)
+            if (sheetData != null)
                 rowsCache.AddAll(sheetData.Elements<Row>().Select(x => new C5.KeyValuePair<uint, Row>(x.RowIndex, x)));
         }
 
         public void SetPrinterSettings(ExcelPrinterSettings excelPrinterSettings)
         {
-            if(excelPrinterSettings.PageMargins != null)
+            if (excelPrinterSettings.PageMargins != null)
             {
                 var pageMargins = worksheet.Elements<PageMargins>().FirstOrDefault() ?? new PageMargins();
                 pageMargins.Left = excelPrinterSettings.PageMargins.Left;
@@ -49,14 +49,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 pageMargins.Header = excelPrinterSettings.PageMargins.Header;
                 pageMargins.Footer = excelPrinterSettings.PageMargins.Footer;
 
-                if(!worksheet.Elements<PageMargins>().Any())
+                if (!worksheet.Elements<PageMargins>().Any())
                     worksheet.AppendChild(pageMargins);
             }
 
             var pageSetup = worksheet.Elements<PageSetup>().FirstOrDefault() ?? new PageSetup();
             pageSetup.Orientation = excelPrinterSettings.PrintingOrientation == ExcelPrintingOrientation.Landscape ? OrientationValues.Landscape : OrientationValues.Portrait;
 
-            if(!worksheet.Elements<PageSetup>().Any())
+            if (!worksheet.Elements<PageSetup>().Any())
                 worksheet.AppendChild(pageSetup);
         }
 
@@ -69,7 +69,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         public void ResizeColumn(int columnIndex, double width)
         {
             var columns = worksheet.GetFirstChild<Columns>() ?? CreateColumns();
-            while(columns.ChildElements.Count < columnIndex)
+            while (columns.ChildElements.Count < columnIndex)
             {
                 columns.AppendChild(new Column
                     {
@@ -82,7 +82,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             }
             var column = (Column)columns.ChildElements.Skip(columnIndex - 1).First();
             column.Width = width;
-            if(Math.Abs(width - 0) < 1e-9)
+            if (Math.Abs(width - 0) < 1e-9)
                 column.Hidden = true;
         }
 
@@ -126,7 +126,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             var templateWorksheet = ((ExcelWorksheet)template).worksheet;
             var controls = templateWorksheet.GetFirstChild<AlternateContent>()?.GetFirstChild<AlternateContentChoice>()?.GetFirstChild<Controls>();
-            if(controls == null)
+            if (controls == null)
                 return;
 
             AddFormControlsNamespaces(worksheet);
@@ -135,12 +135,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             CopyVmlDrawingPartAndGetId(templateWorksheet.WorksheetPart, worksheet);
             CopyAlternateContent(controls, worksheet);
         }
-        
+
         public void CopyDataValidationsFrom([NotNull] IExcelWorksheet template)
         {
             var templateWorksheet = ((ExcelWorksheet)template).worksheet;
             var dataValidations = templateWorksheet.GetFirstChild<DataValidations>();
-            if(dataValidations == null)
+            if (dataValidations == null)
                 return;
             worksheet.InsertBefore(dataValidations.CloneNode(true), worksheet.GetFirstChild<PageMargins>());
         }
@@ -177,15 +177,15 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                     ("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006"),
                     ("x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac"),
                 };
-            foreach(var (prefix, uri) in requiedNamespaces)
-                if(targetWorksheet.LookupNamespace(prefix) == null)
+            foreach (var (prefix, uri) in requiedNamespaces)
+                if (targetWorksheet.LookupNamespace(prefix) == null)
                     targetWorksheet.AddNamespaceDeclaration(prefix, uri);
         }
 
         private static void CopyControlPropertiesParts([NotNull] WorksheetPart templateWorksheetPart, [NotNull] WorksheetPart targetWorksheetPart)
         {
             var controlPropertiesParts = templateWorksheetPart.ControlPropertiesParts?.Select(x => (x, x == null ? null : templateWorksheetPart.GetIdOfPart(x))).ToList() ?? new List<(ControlPropertiesPart x, string)>();
-            foreach(var (controlPropertiesPart, id) in controlPropertiesParts)
+            foreach (var (controlPropertiesPart, id) in controlPropertiesParts)
                 SafelyAddPart(targetWorksheetPart, controlPropertiesPart, id);
         }
 
@@ -203,7 +203,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private static void CopyVmlDrawingPartAndGetId([NotNull] WorksheetPart templateWorksheetPart, [NotNull] Worksheet targetWorksheet)
         {
             var vmlDrawingParts = templateWorksheetPart.VmlDrawingParts.ToList();
-            if(vmlDrawingParts.Count > 1)
+            if (vmlDrawingParts.Count > 1)
                 throw new InvalidProgramStateException("More than one VmlDrawingPart found");
             var vmlDrawingPart = vmlDrawingParts.SingleOrDefault();
             var vmlDrawingPartId = vmlDrawingPart == null ? null : templateWorksheetPart.GetIdOfPart(vmlDrawingPart);
@@ -217,11 +217,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             where TExcelControlInfo : class, IExcelFormControlInfo
         {
             var control = worksheet.Descendants<Control>().FirstOrDefault(c => c.Name == name);
-            if(control == null)
+            if (control == null)
                 return null;
             var controlPropertiesPart = (ControlPropertiesPart)worksheet.WorksheetPart.GetPartById(control.Id);
             var vmlDrawingPart = worksheet.WorksheetPart.VmlDrawingParts.SingleOrDefault();
-            if(controlPropertiesPart == null || vmlDrawingPart == null)
+            if (controlPropertiesPart == null || vmlDrawingPart == null)
                 return null;
             return create(control, controlPropertiesPart, vmlDrawingPart);
         }
@@ -229,7 +229,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private static void SafelyAddPart<TPart>([NotNull] WorksheetPart target, [CanBeNull] TPart part, [CanBeNull] string id)
             where TPart : OpenXmlPart
         {
-            if(part == null || id == null)
+            if (part == null || id == null)
                 Log.For<ExcelWorksheet>().Warn($"Tried to add null part of type '{typeof(TPart)}'");
             else
                 target.AddPart(part, id);
@@ -249,12 +249,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             get
             {
-                if(worksheet.GetFirstChild<Columns>() == null)
+                if (worksheet.GetFirstChild<Columns>() == null)
                     return Enumerable.Empty<IExcelColumn>();
                 return worksheet.GetFirstChild<Columns>().ChildElements.OfType<Column>().SelectMany(x =>
                     {
                         var list = new List<IExcelColumn>();
-                        for(var index = x.Min; index <= x.Max; ++index)
+                        for (var index = x.Min; index <= x.Max; ++index)
                             list.Add(new ExcelColumn(x.Width, (int)index.Value));
                         return list.ToArray();
                     });
@@ -286,9 +286,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 {
                     RowIndex = new UInt32Value((uint)rowIndex),
                 };
-            if(rowsCache.TryWeakSuccessor(unsignedRowIndex, out var successor))
+            if (rowsCache.TryWeakSuccessor(unsignedRowIndex, out var successor))
             {
-                if(successor.Key == unsignedRowIndex)
+                if (successor.Key == unsignedRowIndex)
                     return new ExcelRow(successor.Value, documentStyle, excelSharedStrings);
                 refRow = successor.Value;
             }
@@ -303,21 +303,21 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             // см. http://msdn.microsoft.com/en-us/library/office/cc880096(v=office.15).aspx
 
             var mergeCells = new MergeCells();
-            if(worksheet.Elements<CustomSheetView>().Any())
+            if (worksheet.Elements<CustomSheetView>().Any())
                 worksheet.InsertAfter(mergeCells, worksheet.Elements<CustomSheetView>().First());
-            else if(worksheet.Elements<DataConsolidate>().Any())
+            else if (worksheet.Elements<DataConsolidate>().Any())
                 worksheet.InsertAfter(mergeCells, worksheet.Elements<DataConsolidate>().First());
-            else if(worksheet.Elements<SortState>().Any())
+            else if (worksheet.Elements<SortState>().Any())
                 worksheet.InsertAfter(mergeCells, worksheet.Elements<SortState>().First());
-            else if(worksheet.Elements<AutoFilter>().Any())
+            else if (worksheet.Elements<AutoFilter>().Any())
                 worksheet.InsertAfter(mergeCells, worksheet.Elements<AutoFilter>().First());
-            else if(worksheet.Elements<Scenarios>().Any())
+            else if (worksheet.Elements<Scenarios>().Any())
                 worksheet.InsertAfter(mergeCells, worksheet.Elements<Scenarios>().First());
-            else if(worksheet.Elements<ProtectedRanges>().Any())
+            else if (worksheet.Elements<ProtectedRanges>().Any())
                 worksheet.InsertAfter(mergeCells, worksheet.Elements<ProtectedRanges>().First());
-            else if(worksheet.Elements<SheetProtection>().Any())
+            else if (worksheet.Elements<SheetProtection>().Any())
                 worksheet.InsertAfter(mergeCells, worksheet.Elements<SheetProtection>().First());
-            else if(worksheet.Elements<SheetCalculationProperties>().Any())
+            else if (worksheet.Elements<SheetCalculationProperties>().Any())
                 worksheet.InsertAfter(mergeCells, worksheet.Elements<SheetCalculationProperties>().First());
             else
                 worksheet.InsertAfter(mergeCells, worksheet.Elements<SheetData>().First());
@@ -327,13 +327,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private Columns CreateColumns()
         {
             var columns = new Columns();
-            if(worksheet.Elements<SheetFormatProperties>().Any())
+            if (worksheet.Elements<SheetFormatProperties>().Any())
                 worksheet.InsertAfter(columns, worksheet.Elements<SheetFormatProperties>().First());
-            else if(worksheet.Elements<SheetViews>().Any())
+            else if (worksheet.Elements<SheetViews>().Any())
                 worksheet.InsertAfter(columns, worksheet.Elements<SheetViews>().First());
-            else if(worksheet.Elements<Dimensions>().Any())
+            else if (worksheet.Elements<Dimensions>().Any())
                 worksheet.InsertAfter(columns, worksheet.Elements<Dimensions>().First());
-            else if(worksheet.Elements<SheetProperties>().Any())
+            else if (worksheet.Elements<SheetProperties>().Any())
                 worksheet.InsertAfter(columns, worksheet.Elements<SheetProperties>().First());
             else
                 worksheet.InsertAt(columns, 0);

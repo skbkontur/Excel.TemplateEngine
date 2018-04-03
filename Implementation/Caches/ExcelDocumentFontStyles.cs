@@ -18,16 +18,16 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         public uint AddFont(ExcelCellFontStyle style)
         {
-            if(style == null)
+            if (style == null)
                 return 0;
             var cacheItem = new FontStyleCacheItem(style);
             uint result;
-            if(cache.TryGetValue(cacheItem, out result))
+            if (cache.TryGetValue(cacheItem, out result))
                 return result;
-            if(stylesheet.Fonts == null)
+            if (stylesheet.Fonts == null)
             {
                 var fonts = new Fonts {Count = new UInt32Value(0u)};
-                if(stylesheet.NumberingFormats != null)
+                if (stylesheet.NumberingFormats != null)
                     stylesheet.InsertAfter(fonts, stylesheet.NumberingFormats);
                 else
                     stylesheet.InsertAt(fonts, 0);

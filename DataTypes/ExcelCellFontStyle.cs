@@ -12,16 +12,16 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.DataTypes
         public override string ToString()
         {
             var lines = new List<string>();
-            if(Size != null)
+            if (Size != null)
                 lines.Add(string.Format("Size = {0}", Size.Value));
-            if(Color != null)
+            if (Color != null)
                 lines.Add(string.Format("Color = {0}", Color));
-            if(Underlined)
+            if (Underlined)
                 lines.Add("Underlined");
-            if(Bold)
+            if (Bold)
                 lines.Add("Bold");
 
-            if(lines.Count != 0)
+            if (lines.Count != 0)
                 return "\n\t\t\t" + string.Join("\n\t\t\t", lines) + "\n\t\t";
 
             return "";

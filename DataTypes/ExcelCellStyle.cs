@@ -13,15 +13,15 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.DataTypes
         public override string ToString()
         {
             var lines = new List<string>();
-            if(NumberingFormat != null && !string.IsNullOrEmpty(NumberingFormat.ToString()))
+            if (NumberingFormat != null && !string.IsNullOrEmpty(NumberingFormat.ToString()))
                 lines.Add(string.Format("\tNumberingFormat = {{{0}}}", NumberingFormat));
-            if(FillStyle != null && !string.IsNullOrEmpty(FillStyle.ToString()))
+            if (FillStyle != null && !string.IsNullOrEmpty(FillStyle.ToString()))
                 lines.Add(string.Format("\tFillStyle = {{{0}}}", FillStyle));
-            if(FontStyle != null && !string.IsNullOrEmpty(FontStyle.ToString()))
+            if (FontStyle != null && !string.IsNullOrEmpty(FontStyle.ToString()))
                 lines.Add(string.Format("\tFontStyle = {{{0}}}", FontStyle));
-            if(BordersStyle != null && !string.IsNullOrEmpty(BordersStyle.ToString()))
+            if (BordersStyle != null && !string.IsNullOrEmpty(BordersStyle.ToString()))
                 lines.Add(string.Format("\tBordersStyle = {{{0}}}", BordersStyle));
-            if(Alignment != null && !string.IsNullOrEmpty(Alignment.ToString()))
+            if (Alignment != null && !string.IsNullOrEmpty(Alignment.ToString()))
                 lines.Add(string.Format("\tAlignment = {{{0}}}", Alignment));
             return string.Join("\n", lines);
         }

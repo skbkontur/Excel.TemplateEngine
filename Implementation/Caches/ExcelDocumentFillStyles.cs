@@ -18,18 +18,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         public uint AddStyle(ExcelCellFillStyle format)
         {
-            if(format == null)
+            if (format == null)
                 return 0;
             var cacheItem = new FillStyleCacheItem(format);
             uint result;
-            if(cache.TryGetValue(cacheItem, out result))
+            if (cache.TryGetValue(cacheItem, out result))
                 return result;
-            if(stylesheet.Fills == null)
+            if (stylesheet.Fills == null)
             {
                 var fills = new Fills {Count = new UInt32Value(0u)};
-                if(stylesheet.Fonts != null)
+                if (stylesheet.Fonts != null)
                     stylesheet.InsertAfter(fills, stylesheet.Fonts);
-                else if(stylesheet.NumberingFormats != null)
+                else if (stylesheet.NumberingFormats != null)
                     stylesheet.InsertAfter(fills, stylesheet.NumberingFormats);
                 else
                     stylesheet.InsertAt(fills, 0);

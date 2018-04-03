@@ -19,8 +19,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 
         public bool Equals(AlignmentCacheItem other)
         {
-            if(ReferenceEquals(null, other)) return false;
-            if(ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
             return verticalAlignment == other.verticalAlignment && horizontalAlignment == other.horizontalAlignment && wrapText.Equals(other.wrapText);
         }
 
@@ -36,9 +36,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 
         public override bool Equals(object obj)
         {
-            if(ReferenceEquals(null, obj)) return false;
-            if(ReferenceEquals(this, obj)) return true;
-            if(obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
             return Equals((AlignmentCacheItem)obj);
         }
 
@@ -56,7 +56,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
         private EnumValue<VerticalAlignmentValues> GetVerticalAlignment()
         {
             EnumValue<VerticalAlignmentValues> result;
-            switch(verticalAlignment)
+            switch (verticalAlignment)
             {
             case ExcelVerticalAlignment.Top:
                 result = new EnumValue<VerticalAlignmentValues>(VerticalAlignmentValues.Top);
@@ -79,7 +79,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
         private EnumValue<HorizontalAlignmentValues> GetHorizontalAlignment()
         {
             EnumValue<HorizontalAlignmentValues> result;
-            switch(horizontalAlignment)
+            switch (horizontalAlignment)
             {
             case ExcelHorizontalAlignment.Left:
                 result = new EnumValue<HorizontalAlignmentValues>(HorizontalAlignmentValues.Left);
