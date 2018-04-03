@@ -4,6 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 
 using SKBKontur.Catalogue.ExcelFileGenerator;
+using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
 {
