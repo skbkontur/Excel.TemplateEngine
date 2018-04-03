@@ -41,7 +41,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
             var fieldsMappingForErrors = new Dictionary<string, string>();
             return (model : parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors: fieldsMappingForErrors);
         }
-        
+
         private const string rootTemplateName = "RootTemplate";
 
         [NotNull]

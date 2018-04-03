@@ -21,20 +21,20 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
         public void Render(ITableBuilder tableBuilder, object model, RenderingTemplate template)
         {
             var lastRow = template.Content.Cells.LastOrDefault();
-            foreach(var row in template.Content.Cells)
+            foreach (var row in template.Content.Cells)
             {
-                foreach(var cell in row)
+                foreach (var cell in row)
                 {
                     tableBuilder.PushState(new Style(cell));
 
-                    if(TemplateDescriptionHelper.IsCorrectFormValueDescription(cell.StringValue))
+                    if (TemplateDescriptionHelper.IsCorrectFormValueDescription(cell.StringValue))
                         RenderFormControl(tableBuilder, model, cell);
                     else
                         RenderCellularValue(tableBuilder, model, cell);
 
                     tableBuilder.PopState();
                 }
-                if(!row.Equals(lastRow))
+                if (!row.Equals(lastRow))
                     tableBuilder.MoveToNextLayer();
             }
             MergeCells(tableBuilder, template);
@@ -52,7 +52,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
         private void RenderFormControl(ITableBuilder tableBuilder, object model, ICell cell)
         {
             var childModel = StrictExtractChildModel(model, cell);
-            if(childModel != null)
+            if (childModel != null)
             {
                 var (controlType, controlName) = TemplateDescriptionHelper.TryGetFormControlFromValueDescription(cell.StringValue);
                 var renderer = rendererCollection.GetFormControlRenderer(controlType, childModel.GetType());
@@ -64,7 +64,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
         private static void ResizeColumns(ITableBuilder tableBuilder, RenderingTemplate template)
         {
-            foreach(var column in template.Columns)
+            foreach (var column in template.Columns)
             {
                 tableBuilder.ExpandColumn(column.Index - template.Range.UpperLeft.ColumnIndex + 1,
                                           column.Width);
@@ -73,7 +73,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 
         private static void MergeCells(ITableBuilder tableBuilder, RenderingTemplate template)
         {
-            foreach(var mergedCells in template.MergedCells)
+            foreach (var mergedCells in template.MergedCells)
                 tableBuilder.MergeCells(mergedCells);
         }
 
@@ -85,7 +85,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
         private static object ExtractChildModel(object model, ICell cell)
         {
             var expression = cell.StringValue;
-            if(!TemplateDescriptionHelper.IsCorrectValueDescription(expression))
+            if (!TemplateDescriptionHelper.IsCorrectValueDescription(expression))
                 return expression ?? "";
             return ExtractChildIfCorrectDescription(expression, model) ?? "";
         }
@@ -103,7 +103,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
             {
                 return ObjectPropertiesExtractor.ExtractChildObject(model, excelTemplatePath);
             }
-            catch(ObjectPropertyExtractionException exception)
+            catch (ObjectPropertyExtractionException exception)
             {
                 throw new InvalidProgramStateException($"Failed to extract child by path '{excelTemplatePath.RawPath}' in model of type {model.GetType()}", exception);
             }

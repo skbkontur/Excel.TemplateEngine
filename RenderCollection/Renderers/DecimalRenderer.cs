@@ -9,7 +9,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
     {
         public void Render(ITableBuilder tableBuilder, object model, RenderingTemplate template)
         {
-            if(!(model is decimal))
+            if (!(model is decimal))
                 throw new ArgumentException("model is not decimal");
 
             var decimalToRender = (decimal)model;

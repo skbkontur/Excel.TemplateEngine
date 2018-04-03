@@ -77,7 +77,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
             where T : struct
         {
             var cellValue = target.GetCell(CurrentState.Cursor)?.StringValue;
-            if(string.IsNullOrEmpty(cellValue))
+            if (string.IsNullOrEmpty(cellValue))
             {
                 result = null;
                 return true;
@@ -90,7 +90,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
         public bool TryParseCheckBoxValue([NotNull] string name, out bool result)
         {
             var formControl = target.TryGetCheckBoxFormControl(name);
-            if(formControl == null)
+            if (formControl == null)
             {
                 result = false;
                 return false;
@@ -102,7 +102,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
         public bool TryParseDropDownValue([NotNull] string name, [CanBeNull] out string result)
         {
             var formControl = target.TryGetDropDownFormControl(name);
-            if(formControl == null)
+            if (formControl == null)
             {
                 result = null;
                 return false;

@@ -9,7 +9,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
     {
         public void Render(ITableBuilder tableBuilder, object model, RenderingTemplate template)
         {
-            if(!(model is int))
+            if (!(model is int))
                 throw new ArgumentException("model is not int");
 
             var intToRender = (int)model;
