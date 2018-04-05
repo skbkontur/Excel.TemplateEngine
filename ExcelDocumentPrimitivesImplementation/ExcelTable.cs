@@ -44,12 +44,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
 
             var subTableSize = rectangle.Size;
             var subTable = JaggedArrayHelper.CreateJaggedArray<ICell[][]>(subTableSize.Height, subTableSize.Width);
-            for(var x = rectangle.UpperLeft.ColumnIndex; x <= rectangle.LowerRight.ColumnIndex; ++x)
+            for (var x = rectangle.UpperLeft.ColumnIndex; x <= rectangle.LowerRight.ColumnIndex; ++x)
             {
-                for(var y = rectangle.UpperLeft.RowIndex; y <= rectangle.LowerRight.RowIndex; ++y)
+                for (var y = rectangle.UpperLeft.RowIndex; y <= rectangle.LowerRight.RowIndex; ++y)
                 {
                     ExcelCell cell;
-                    if(!excelReferenceToCell.TryGetValue(new CellPosition(y, x).CellReference, out cell))
+                    if (!excelReferenceToCell.TryGetValue(new CellPosition(y, x).CellReference, out cell))
                         cell = new ExcelCell(internalTable.InsertCell(new ExcelCellIndex(y, x)));
 
                     subTable[y - rectangle.UpperLeft.RowIndex][x - rectangle.UpperLeft.ColumnIndex] = cell;
@@ -103,7 +103,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
                                                                    new CellPosition(tuple.Item2)));
             }
         }
-        
+
         [NotNull]
         private readonly IExcelWorksheet internalTable;
     }

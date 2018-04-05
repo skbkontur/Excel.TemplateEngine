@@ -30,20 +30,20 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
             var enumerablesLengths = GetEnumerablesLengths<TModel>(tableParser, template);
 
-            foreach(var row in template.Content.Cells)
+            foreach (var row in template.Content.Cells)
             {
-                foreach(var cell in row)
+                foreach (var cell in row)
                 {
                     tableParser.PushState(cell.CellPosition);
 
                     var expression = cell.StringValue;
 
-                    if(TemplateDescriptionHelper.IsCorrectValueDescription(expression))
+                    if (TemplateDescriptionHelper.IsCorrectValueDescription(expression))
                     {
                         ParseCellularValue(tableParser, addFieldMapping, model, ExcelTemplatePath.FromRawExpression(expression), enumerablesLengths);
                         continue;
                     }
-                    if(TemplateDescriptionHelper.IsCorrectFormValueDescription(expression))
+                    if (TemplateDescriptionHelper.IsCorrectFormValueDescription(expression))
                     {
                         ParseFormValue(tableParser, addFieldMapping, model, cell, ExcelTemplatePath.FromRawExpression(expression));
                         continue;
@@ -60,19 +60,19 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         private Dictionary<ExcelTemplatePath, int> GetEnumerablesLengths<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template)
         {
             var enumerableCellsGroups = new Dictionary<ExcelTemplatePath, List<ICell>>();
-            foreach(var row in template.Content.Cells)
+            foreach (var row in template.Content.Cells)
             {
-                foreach(var cell in row)
+                foreach (var cell in row)
                 {
                     var expression = cell.StringValue;
 
-                    if(TemplateDescriptionHelper.IsCorrectValueDescription(expression) && ExcelTemplatePath.FromRawExpression(expression).HasArrayAccess)
+                    if (TemplateDescriptionHelper.IsCorrectValueDescription(expression) && ExcelTemplatePath.FromRawExpression(expression).HasArrayAccess)
                     {
                         var cleanPathToEnumerable = ExcelTemplatePath.FromRawExpression(expression)
                                                                      .SplitForEnumerableExpansion()
                                                                      .pathToEnumerable
                                                                      .WithoutArrayAccess();
-                        if(!enumerableCellsGroups.ContainsKey(cleanPathToEnumerable))
+                        if (!enumerableCellsGroups.ContainsKey(cleanPathToEnumerable))
                             enumerableCellsGroups[cleanPathToEnumerable] = new List<ICell>();
                         enumerableCellsGroups[cleanPathToEnumerable].Add(cell);
                     }
@@ -81,16 +81,16 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 
             var enumerablesLengths = new Dictionary<ExcelTemplatePath, int>();
 
-            foreach(var enumerableCells in enumerableCellsGroups)
+            foreach (var enumerableCells in enumerableCellsGroups)
             {
                 var cleanPathToEnumerable = enumerableCells.Key;
 
                 var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(typeof(TModel), cleanPathToEnumerable);
-                if(!TypeCheckingHelper.IsIList(childEnumerableType))
+                if (!TypeCheckingHelper.IsIList(childEnumerableType))
                     throw new InvalidProgramStateException($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
 
                 var primaryParts = enumerableCells.Value.Where(x => ExcelTemplatePath.FromRawExpression(x.StringValue).HasPrimaryKeyArrayAccess).ToList();
-                if(primaryParts.Count == 0)
+                if (primaryParts.Count == 0)
                     primaryParts = enumerableCells.Value.Take(1).ToList();
 
                 var measurer = parserCollection.GetEnumerableMeasurer();
@@ -105,7 +105,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             var leafSetter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(model, path);
             var leafModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), path);
 
-            if(path.HasArrayAccess)
+            if (path.HasArrayAccess)
                 ParseEnumerableValue(tableParser, addFieldMapping, model, path, leafSetter, leafModelType, enumerablesLengths);
             else
                 ParseSingleValue(tableParser, addFieldMapping, leafSetter, path, leafModelType);
@@ -115,7 +115,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         {
             var parser = parserCollection.GetAtomicValueParser();
             addFieldMapping(childModelPath.RawPath, tableParser.CurrentState.Cursor.CellReference);
-            if(!parser.TryParse(tableParser, childModelType, out var parsedObject))
+            if (!parser.TryParse(tableParser, childModelType, out var parsedObject))
             {
                 Log.For(this).Error($"Failed to parse value from '{tableParser.CurrentState.Cursor.CellReference}' with childModelType='{childModelType}' via AtomicValueParser");
                 return;
@@ -130,7 +130,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             var cleanPathToEnumerable = rawPathToEnumerable.WithoutArrayAccess();
 
             var enumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), cleanPathToEnumerable);
-            if(!typeof(IList).IsAssignableFrom(enumerableType))
+            if (!typeof(IList).IsAssignableFrom(enumerableType))
                 throw new Exception($"Only ILists are supported as collections, but tried to use '{enumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
 
             var parser = parserCollection.GetEnumerableParser(enumerableType);
@@ -147,11 +147,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), path);
             var (childFormControlType, childFormControlName) = GetFormControlDescription(cell);
 
-            if(path.HasArrayAccess)
+            if (path.HasArrayAccess)
                 throw new InvalidProgramStateException("Enumerables are not supported for form controls");
 
             var parser = parserCollection.GetFormValueParser(childFormControlType, childModelType);
-            if(!parser.TryParse(tableParser, childFormControlName, childModelType, out var parsedObject))
+            if (!parser.TryParse(tableParser, childFormControlName, childModelType, out var parsedObject))
                 throw new FormControlParsingException(childFormControlName);
 
             childSetter(parsedObject);
@@ -161,7 +161,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         private static (string formControlType, string formControlName) GetFormControlDescription([NotNull] ICell cell)
         {
             var formControlDescription = TemplateDescriptionHelper.TryGetFormControlFromValueDescription(cell.StringValue);
-            if(string.IsNullOrEmpty(formControlDescription.formControlType) || formControlDescription.formControlName == null)
+            if (string.IsNullOrEmpty(formControlDescription.formControlType) || formControlDescription.formControlName == null)
                 throw new InvalidProgramStateException($"Invalid xlsx template. '{cell.StringValue}' is not a valid form control description.");
             return formControlDescription;
         }

@@ -17,11 +17,11 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
 
         public RenderingTemplate GetTemplate(string templateName)
         {
-            if(string.IsNullOrEmpty(templateName))
+            if (string.IsNullOrEmpty(templateName))
                 return null;
 
             RenderingTemplate template;
-            if(cache.TryGetValue(templateName, out template))
+            if (cache.TryGetValue(templateName, out template))
                 return template;
 
             AddNewTemplateIntoCache(templateName);
@@ -34,16 +34,16 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
             cache.Add(templateName, null);
 
             var cell = SearchTemplateDescription(templateName);
-            if(cell == null)
+            if (cell == null)
                 return;
 
             IRectangle range;
-            if(!TemplateDescriptionHelper.TryExtractCoordinates(cell.StringValue, out range))
+            if (!TemplateDescriptionHelper.TryExtractCoordinates(cell.StringValue, out range))
                 return;
 
             var newTemplate = BuildNewRenderingTemplate(range);
 
-            if(newTemplate.IsValid())
+            if (newTemplate.IsValid())
                 cache[templateName] = newTemplate;
         }
 
