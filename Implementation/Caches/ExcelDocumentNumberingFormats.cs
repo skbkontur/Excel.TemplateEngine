@@ -18,13 +18,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         public uint AddFormat(ExcelCellNumberingFormat format)
         {
-            if(format == null)
+            if (format == null)
                 return 0;
             var cacheItem = new NumberingFormatCacheItem(format);
             uint formatId;
-            if(cache.TryGetValue(cacheItem, out formatId))
+            if (cache.TryGetValue(cacheItem, out formatId))
                 return formatId;
-            if(stylesheet.NumberingFormats == null)
+            if (stylesheet.NumberingFormats == null)
             {
                 var numberingFormats = new NumberingFormats {Count = new UInt32Value(0u)};
                 stylesheet.InsertAt(numberingFormats, 0);

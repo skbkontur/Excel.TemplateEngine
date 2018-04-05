@@ -9,16 +9,16 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
     {
         public bool Equals(CellStyleCacheItem other)
         {
-            if(ReferenceEquals(null, other)) return false;
-            if(ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
             return FillId == other.FillId && FontId == other.FontId && BorderId == other.BorderId && NumberFormatId == other.NumberFormatId && Equals(Alignment, other.Alignment);
         }
 
         public override bool Equals(object obj)
         {
-            if(ReferenceEquals(null, obj)) return false;
-            if(ReferenceEquals(this, obj)) return true;
-            if(obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
             return Equals((CellStyleCacheItem)obj);
         }
 

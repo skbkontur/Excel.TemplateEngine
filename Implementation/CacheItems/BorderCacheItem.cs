@@ -18,16 +18,16 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 
         public bool Equals(BorderCacheItem other)
         {
-            if(ReferenceEquals(null, other)) return false;
-            if(ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
             return borderType == other.borderType && Equals(color, other.color);
         }
 
         public override bool Equals(object obj)
         {
-            if(ReferenceEquals(null, obj)) return false;
-            if(ReferenceEquals(this, obj)) return true;
-            if(obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
             return Equals((BorderCacheItem)obj);
         }
 
@@ -55,7 +55,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 
         private EnumValue<BorderStyleValues> GetStyle()
         {
-            switch(borderType)
+            switch (borderType)
             {
             case ExcelBorderType.None:
                 return new EnumValue<BorderStyleValues>(BorderStyleValues.None);

@@ -17,16 +17,16 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 
         public bool Equals(FormattedStringValueBlockCacheItem other)
         {
-            if(ReferenceEquals(null, other)) return false;
-            if(ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
             return string.Equals(value, other.value) && Equals(color, other.color);
         }
 
         public override bool Equals(object obj)
         {
-            if(ReferenceEquals(null, obj)) return false;
-            if(ReferenceEquals(this, obj)) return true;
-            if(obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
             return Equals((FormattedStringValueBlockCacheItem)obj);
         }
 

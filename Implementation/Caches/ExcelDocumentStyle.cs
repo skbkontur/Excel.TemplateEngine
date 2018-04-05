@@ -63,7 +63,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
                     NumberFormatId = numberFormatId,
                     Alignment = alignment
                 };
-            if(!cache.TryGetValue(cacheItem, out var result))
+            if (!cache.TryGetValue(cacheItem, out var result))
             {
                 result = stylesheet.CellFormats.Count;
                 stylesheet.CellFormats.Count++;
@@ -75,7 +75,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         public ExcelCellStyle GetStyle(int styleIndex)
         {
-            if(inverseCache.TryGetValue((uint)styleIndex, out var result))
+            if (inverseCache.TryGetValue((uint)styleIndex, out var result))
                 return result;
 
             var cellFormat = stylesheet?.CellFormats?.ChildElements?.Count > styleIndex ? (CellFormat)stylesheet.CellFormats.ChildElements[styleIndex] : null;
@@ -104,7 +104,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         private ExcelVerticalAlignment ToExcelVerticalAlignment(EnumValue<VerticalAlignmentValues> vertical)
         {
-            switch(vertical.Value)
+            switch (vertical.Value)
             {
             case VerticalAlignmentValues.Bottom:
                 return ExcelVerticalAlignment.Bottom;
@@ -119,7 +119,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         private ExcelHorizontalAlignment ToExcelHorizontalAlignment(EnumValue<HorizontalAlignmentValues> horizontal)
         {
-            switch(horizontal.Value)
+            switch (horizontal.Value)
             {
             case HorizontalAlignmentValues.Center:
                 return ExcelHorizontalAlignment.Center;
@@ -155,7 +155,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         private static ExcelBorderType ToExcelBorderType(EnumValue<BorderStyleValues> borderStyle)
         {
-            switch(borderStyle.Value)
+            switch (borderStyle.Value)
             {
             case BorderStyleValues.None:
                 return ExcelBorderType.None;
@@ -174,13 +174,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         private ExcelCellNumberingFormat GetCellNumberingFormat(uint numberFormatId)
         {
-            if(TryExtractStandartNumberingFormat(numberFormatId, out var result))
+            if (TryExtractStandartNumberingFormat(numberFormatId, out var result))
                 return result;
 
             var numberFormat = (NumberingFormat)stylesheet?.NumberingFormats?.ChildElements
                                                           ?.FirstOrDefault(ce => ((NumberingFormat)ce)?.NumberFormatId != null &&
                                                                                  ((NumberingFormat)ce).NumberFormatId.Value == numberFormatId);
-            if(numberFormat?.FormatCode?.Value == null)
+            if (numberFormat?.FormatCode?.Value == null)
                 return null;
 
             // ReSharper disable once PossibleNullReferenceException
@@ -190,7 +190,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         private static bool TryExtractStandartNumberingFormat(uint numberingFormat, out ExcelCellNumberingFormat result)
         {
             result = null;
-            if(numberingFormat == 2)
+            if (numberingFormat == 2)
             {
                 result = new ExcelCellNumberingFormat("0.00");
                 return true;
@@ -216,7 +216,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             var fill = stylesheet?.Fills?.ChildElements?.Count > fillId ? (Fill)stylesheet.Fills.ChildElements[(int)fillId] : null;
             var color = ToExcelColor(fill?.PatternFill?.ForegroundColor);
 
-            if(color == null)
+            if (color == null)
                 return null;
 
             return new ExcelCellFillStyle {Color = color};
@@ -225,13 +225,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         [CanBeNull]
         private ExcelColor ToExcelColor([CanBeNull] ColorType color)
         {
-            if(color == null)
+            if (color == null)
                 return null;
-            if(color.Rgb?.HasValue == true)
+            if (color.Rgb?.HasValue == true)
             {
                 return RgbStringToExcelColor(color.Rgb.Value);
             }
-            if(color.Theme?.HasValue == true)
+            if (color.Theme?.HasValue == true)
             {
                 var theme = color.Theme.Value;
                 var tint = color.Tint?.Value ?? 0;
@@ -243,7 +243,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         [CanBeNull]
         private ExcelColor RgbStringToExcelColor([NotNull] string hexRgbColor)
         {
-            if(hexRgbColor.Length == 6)
+            if (hexRgbColor.Length == 6)
                 hexRgbColor = "FF" + hexRgbColor;
             return new ExcelColor
                 {
@@ -257,17 +257,17 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         [CanBeNull]
         private ExcelColor ThemeToExcelColor(uint theme, double tint)
         {
-            if(theme >= colorSchemeElements.Count)
+            if (theme >= colorSchemeElements.Count)
                 throw new InvalidProgramStateException($"Theme with id '{theme}' not found");
             var color2Type = colorSchemeElements[(int)theme];
             var rgbColor = color2Type?.RgbColorModelHex?.Val?.Value ?? color2Type?.SystemColor?.LastColor?.Value;
-            if(rgbColor == null)
+            if (rgbColor == null)
             {
                 Log.For(this).Error("Failed to get rgbColor from theme");
                 return null;
             }
             var hls = ColorConverter.RgbToHls(RgbStringToExcelColor(rgbColor));
-            if(tint < 0)
+            if (tint < 0)
                 hls.L = hls.L * (1.0 + tint);
             else
                 hls.L = hls.L * (1.0 - tint) + tint;
@@ -276,9 +276,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 
         private static AlignmentCacheItem Alignment(ExcelCellAlignment cellAlignment)
         {
-            if(cellAlignment == null)
+            if (cellAlignment == null)
                 return null;
-            if(cellAlignment.HorizontalAlignment == ExcelHorizontalAlignment.Default && cellAlignment.VerticalAlignment == ExcelVerticalAlignment.Default && !cellAlignment.WrapText)
+            if (cellAlignment.HorizontalAlignment == ExcelHorizontalAlignment.Default && cellAlignment.VerticalAlignment == ExcelVerticalAlignment.Default && !cellAlignment.WrapText)
                 return null;
             return new AlignmentCacheItem(cellAlignment);
         }

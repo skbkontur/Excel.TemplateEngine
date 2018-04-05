@@ -16,9 +16,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 
         public bool Equals(SharedStringCacheItem other)
         {
-            if(ReferenceEquals(null, other)) return false;
-            if(ReferenceEquals(this, other)) return true;
-            if(blocks.Length != other.blocks.Length)
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            if (blocks.Length != other.blocks.Length)
                 return false;
             return blocks.Zip(other.blocks, (block, otherBlock) => block.Equals(otherBlock)).All(x => x);
         }
@@ -30,9 +30,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 
         public override bool Equals(object obj)
         {
-            if(ReferenceEquals(null, obj)) return false;
-            if(ReferenceEquals(this, obj)) return true;
-            if(obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
             return Equals((SharedStringCacheItem)obj);
         }
 

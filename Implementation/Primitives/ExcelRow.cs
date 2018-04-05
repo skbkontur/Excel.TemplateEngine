@@ -23,7 +23,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             var cellRefernce = new ExcelCellIndex((int)row.RowIndex.Value, index).CellReference;
 
-            if(row.Elements<Cell>().Any(c => c.CellReference.Value == cellRefernce))
+            if (row.Elements<Cell>().Any(c => c.CellReference.Value == cellRefernce))
                 return new ExcelCell(row.Elements<Cell>().First(c => c.CellReference.Value == cellRefernce), documentStyle, excelSharedStrings);
 
             var refCell = row.Elements<Cell>().FirstOrDefault(cell => String.Compare(cell.CellReference.Value, cellRefernce, StringComparison.OrdinalIgnoreCase) > 0);
@@ -42,10 +42,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             get
             {
                 var currentIndex = 1;
-                foreach(var cell in row.ChildElements.OfType<Cell>())
+                foreach (var cell in row.ChildElements.OfType<Cell>())
                 {
                     var index = GetCellXIndex(cell);
-                    while(currentIndex < index)
+                    while (currentIndex < index)
                     {
                         yield return null;
                         currentIndex++;

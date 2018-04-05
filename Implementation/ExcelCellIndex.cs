@@ -51,7 +51,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation
         {
             var prefix = new Regex("[0-9]+").Replace(cellReference, "");
             var result = 0;
-            foreach(var c in prefix)
+            foreach (var c in prefix)
             {
                 result *= 26;
                 result += c - 'A' + 1;

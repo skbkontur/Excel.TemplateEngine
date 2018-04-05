@@ -19,16 +19,16 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 
         public bool Equals(ColorCacheItem other)
         {
-            if(ReferenceEquals(null, other)) return false;
-            if(ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
             return Red == other.Red && Green == other.Green && Blue == other.Blue && Alpha == other.Alpha;
         }
 
         public override bool Equals(object obj)
         {
-            if(ReferenceEquals(null, obj)) return false;
-            if(ReferenceEquals(this, obj)) return true;
-            if(obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
             return Equals((ColorCacheItem)obj);
         }
 
