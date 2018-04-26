@@ -19,6 +19,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
         void MergeCells(IRectangle rectangle);
         void CopyFormControlsFrom([NotNull] ITable template);
         void CopyDataValidationsFrom([NotNull] ITable template);
+        void CopyWorksheetExtensionListFrom([NotNull] ITable template);
 
         [CanBeNull]
         IExcelCheckBoxControlInfo TryGetCheckBoxFormControl([NotNull] string name);

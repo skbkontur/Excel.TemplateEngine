@@ -28,6 +28,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
                                     ?? throw new InvalidProgramStateException($"Template with name {rootTemplateName} not found in xlsx");
             tableBuilder.CopyFormControlsFrom(templateTable);
             tableBuilder.CopyDataValidationsFrom(templateTable);
+            tableBuilder.CopyWorksheetExtensionListFrom(templateTable); // WorksheetExtensionList contains info about data validations with ranges from other sheets, so copying it to support them.
             var render = rendererCollection.GetRenderer(model.GetType());
             render.Render(tableBuilder, model, renderingTemplate);
         }
