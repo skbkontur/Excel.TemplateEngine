@@ -151,7 +151,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             var worksheetExtensionList = templateWorksheet.GetFirstChild<WorksheetExtensionList>();
             if (worksheetExtensionList == null)
                 return;
-            worksheet.InsertAfter(worksheetExtensionList.CloneNode(true), worksheet.GetFirstChild<PageMargins>());
+            worksheet.AppendChild(worksheetExtensionList.CloneNode(true));
         }
 
         [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
