@@ -31,5 +31,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
 
         void CopyFormControlsFrom([NotNull] IExcelWorksheet template);
         void CopyDataValidationsFrom([NotNull] IExcelWorksheet template);
+        void CopyWorksheetExtensionListFrom([NotNull] IExcelWorksheet template);
     }
 }

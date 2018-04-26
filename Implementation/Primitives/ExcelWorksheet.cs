@@ -145,6 +145,15 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             worksheet.InsertBefore(dataValidations.CloneNode(true), worksheet.GetFirstChild<PageMargins>());
         }
 
+        public void CopyWorksheetExtensionListFrom(IExcelWorksheet template)
+        {
+            var templateWorksheet = ((ExcelWorksheet)template).worksheet;
+            var worksheetExtensionList = templateWorksheet.GetFirstChild<WorksheetExtensionList>();
+            if (worksheetExtensionList == null)
+                return;
+            worksheet.InsertAfter(worksheetExtensionList.CloneNode(true), worksheet.GetFirstChild<PageMargins>());
+        }
+
         [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
         private static void CopyAlternateContent([NotNull] Controls controls, [NotNull] Worksheet targetWorksheet)
         {
