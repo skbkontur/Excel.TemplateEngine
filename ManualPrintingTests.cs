@@ -152,5 +152,39 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 Assert.Fail($"Please manually open file:\n{path}\nand check that cells has same colors as in\n{templatePath}\n");
             }
         }
+
+        [Test]
+        public void TestPrintingDropDownFromTheOtherWorksheet123()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/otherSheetDataValidations.xlsx")))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/empty.xlsx")))
+            {
+                targetDocument.CopyVbaInfoFrom(templateDocument);
+
+                foreach (var index in Enumerable.Range(1, templateDocument.GetWorksheetCount() - 1))
+                {
+                    var worksheet = templateDocument.GetWorksheet(index);
+                    var name = templateDocument.GetWorksheetName(index);
+                    var innterTemplateEngine = new TemplateEngine(new ExcelTable(worksheet));
+                    var targetWorksheet = targetDocument.AddWorksheet(name);
+                    var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1")));
+                    innterTemplateEngine.Render(innerTableBuilder, new { });
+                }
+
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
+                templateEngine.Render(tableBuilder, new { });
+
+                var filename = "output.xlsx";
+                File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
+
+                var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
+                Assert.Fail($"Please manually open file '{path}' and check that D4-D7 has data validation with values from the second worksheet and G4-G7 has data validation with values from K1:K6");
+            }
+        }
     }
 }
