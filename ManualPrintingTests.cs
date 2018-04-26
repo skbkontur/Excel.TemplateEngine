@@ -168,7 +168,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                     var innterTemplateEngine = new TemplateEngine(new ExcelTable(worksheet));
                     var targetWorksheet = targetDocument.AddWorksheet(name);
                     var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1")));
-                    innterTemplateEngine.Render(innerTableBuilder, new { });
+                    innterTemplateEngine.Render(innerTableBuilder, new {});
                 }
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
@@ -177,7 +177,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"));
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
-                templateEngine.Render(tableBuilder, new { });
+                templateEngine.Render(tableBuilder, new {});
 
                 var filename = "output.xlsx";
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
