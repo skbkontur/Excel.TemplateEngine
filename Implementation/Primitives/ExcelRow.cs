@@ -26,7 +26,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             if (row.Elements<Cell>().Any(c => c.CellReference.Value == cellRefernce))
                 return new ExcelCell(row.Elements<Cell>().First(c => c.CellReference.Value == cellRefernce), documentStyle, excelSharedStrings);
 
-            var refCell = row.Elements<Cell>().FirstOrDefault(cell => String.Compare(cell.CellReference.Value, cellRefernce, StringComparison.OrdinalIgnoreCase) > 0);
+            var refCell = row.Elements<Cell>().FirstOrDefault(cell =>
+                {
+                    if(cell.CellReference.Value.Length == cellRefernce.Length)
+                        return String.Compare(cell.CellReference.Value, cellRefernce, StringComparison.OrdinalIgnoreCase) > 0;
+                    return cell.CellReference.Value.Length > cellRefernce.Length;
+                });
             var newCell = new Cell
                 {
                     CellReference = new ExcelCellIndex((int)row.RowIndex.Value, index).CellReference
