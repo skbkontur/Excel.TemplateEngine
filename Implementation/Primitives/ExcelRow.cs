@@ -26,7 +26,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             if (row.Elements<Cell>().Any(c => c.CellReference.Value == cellRefernce))
                 return new ExcelCell(row.Elements<Cell>().First(c => c.CellReference.Value == cellRefernce), documentStyle, excelSharedStrings);
 
-            var refCell = row.Elements<Cell>().FirstOrDefault(cell => String.Compare(cell.CellReference.Value, cellRefernce, StringComparison.OrdinalIgnoreCase) > 0);
+            var refCell = row.Elements<Cell>().FirstOrDefault(cell => IsCellReferenceGreaterThan(cell.CellReference.Value, cellRefernce));
             var newCell = new Cell
                 {
                     CellReference = new ExcelCellIndex((int)row.RowIndex.Value, index).CellReference
@@ -35,6 +35,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             row.InsertBefore(newCell, refCell);
 
             return new ExcelCell(newCell, documentStyle, excelSharedStrings);
+        }
+
+        private static bool IsCellReferenceGreaterThan(string first, string second)
+        {
+            if (first.Length == second.Length)
+                return string.Compare(first, second, StringComparison.OrdinalIgnoreCase) > 0;
+            return first.Length > second.Length;
         }
 
         public IEnumerable<IExcelCell> Cells
