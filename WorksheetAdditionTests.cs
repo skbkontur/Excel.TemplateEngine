@@ -12,7 +12,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void WorksheetAdditionTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(emptyFileName));
+            var document = ExcelDocumentFactory.CreateFromTemplate(GetFileBytes());
             document.AddWorksheet("Лист2");
             var worksheet = document.GetWorksheet(1);
             Assert.AreNotEqual(null, worksheet);
@@ -23,6 +23,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
             document.Dispose();
         }
 
-        private const string emptyFileName = @"ExcelFileGeneratorTests\Files\empty.xlsx";
+        private static byte[] GetFileBytes()
+        {
+            const string fileName = @"ExcelFileGeneratorTests\Files\empty.xlsx";
+            return File.ReadAllBytes(TestContext.CurrentContext.TestDirectory + "\\" + fileName);
+        }
     }
 }

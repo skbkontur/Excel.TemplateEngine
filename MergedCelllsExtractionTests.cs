@@ -13,7 +13,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void MergedCellsExtractionTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(templateFileName));
+            var document = ExcelDocumentFactory.CreateFromTemplate(GetFileBytes("template.xlsx"));
             var worksheet = document.GetWorksheet(0);
 
             var cells = worksheet.MergedCells.ToArray();
@@ -30,7 +30,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void MergedCellsExtractionEmptyTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(emptyFileName));
+            var document = ExcelDocumentFactory.CreateFromTemplate(GetFileBytes("empty.xlsx"));
             var worksheet = document.GetWorksheet(0);
 
             var cells = worksheet.MergedCells.ToArray();
@@ -40,7 +40,9 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
             document.Dispose();
         }
 
-        private const string templateFileName = @"ExcelFileGeneratorTests\Files\template.xlsx";
-        private const string emptyFileName = @"ExcelFileGeneratorTests\Files\empty.xlsx";
+        private static byte[] GetFileBytes(string file)
+        {
+            return File.ReadAllBytes($@"{TestContext.CurrentContext.TestDirectory}\ExcelFileGeneratorTests\Files\{file}");
+        }
     }
 }

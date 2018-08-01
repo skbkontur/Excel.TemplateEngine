@@ -14,7 +14,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void CellsInRangeTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(fileName));
+            var document = ExcelDocumentFactory.CreateFromTemplate(GetFileBytes());
             var worksheet = document.GetWorksheet(0);
 
             var upperLeft = new ExcelCellIndex("A22");
@@ -31,7 +31,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void GetCellTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(fileName));
+            var document = ExcelDocumentFactory.CreateFromTemplate(GetFileBytes());
             var worksheet = document.GetWorksheet(0);
 
             var position = new ExcelCellIndex("B9");
@@ -44,7 +44,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void SearchCellsByTextTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(fileName));
+            var document = ExcelDocumentFactory.CreateFromTemplate(GetFileBytes());
             var worksheet = document.GetWorksheet(0);
 
             var cell = worksheet.SearchCellsByText("Value:String").FirstOrDefault();
@@ -56,6 +56,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
             document.Dispose();
         }
 
-        private const string fileName = @"ExcelFileGeneratorTests\Files\template.xlsx";
+        private static byte[] GetFileBytes()
+        {
+            const string fileName = @"ExcelFileGeneratorTests\Files\template.xlsx";
+            return File.ReadAllBytes(TestContext.CurrentContext.TestDirectory + "\\" + fileName);
+        }
     }
 }
