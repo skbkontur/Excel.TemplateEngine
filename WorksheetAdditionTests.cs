@@ -6,13 +6,12 @@ using SKBKontur.Catalogue.ExcelFileGenerator;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
 {
-    [TestFixture]
-    public class WorksheetAdditionTests
+    public class WorksheetAdditionTests : FileBasedTestBase
     {
         [Test]
         public void WorksheetAdditionTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(GetFileBytes());
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")));
             document.AddWorksheet("Лист2");
             var worksheet = document.GetWorksheet(1);
             Assert.AreNotEqual(null, worksheet);
@@ -21,12 +20,6 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
             File.WriteAllBytes("output.xlsx", result);
 
             document.Dispose();
-        }
-
-        private static byte[] GetFileBytes()
-        {
-            const string fileName = @"ExcelFileGeneratorTests\Files\empty.xlsx";
-            return File.ReadAllBytes(TestContext.CurrentContext.TestDirectory + "\\" + fileName);
         }
     }
 }

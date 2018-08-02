@@ -8,13 +8,12 @@ using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
 {
-    [TestFixture]
-    public class DocumentPartsExtractionTests
+    public class DocumentPartsExtractionTests : FileBasedTestBase
     {
         [Test]
         public void CellsInRangeTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(GetFileBytes());
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")));
             var worksheet = document.GetWorksheet(0);
 
             var upperLeft = new ExcelCellIndex("A22");
@@ -31,7 +30,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void GetCellTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(GetFileBytes());
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")));
             var worksheet = document.GetWorksheet(0);
 
             var position = new ExcelCellIndex("B9");
@@ -44,7 +43,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void SearchCellsByTextTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(GetFileBytes());
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")));
             var worksheet = document.GetWorksheet(0);
 
             var cell = worksheet.SearchCellsByText("Value:String").FirstOrDefault();
@@ -54,12 +53,6 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
 // ReSharper restore PossibleNullReferenceException
 
             document.Dispose();
-        }
-
-        private static byte[] GetFileBytes()
-        {
-            const string fileName = @"ExcelFileGeneratorTests\Files\template.xlsx";
-            return File.ReadAllBytes(TestContext.CurrentContext.TestDirectory + "\\" + fileName);
         }
     }
 }
