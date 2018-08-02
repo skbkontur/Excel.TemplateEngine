@@ -144,8 +144,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         {
             byte[] bytes;
 
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes("ExcelObjectPrinterTests/Files/importAfterCreate_template.xlsx")))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes($"ExcelObjectPrinterTests/Files/empty.{extension}")))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("importAfterCreate_template.xlsx"))))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath($"empty.{extension}"))))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
                 var templateEngine = new TemplateEngine(template);
@@ -161,7 +161,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 bytes = targetDocument.CloseAndGetDocumentBytes();
             }
 
-            var (model, mappingForErrors) = Parse(File.ReadAllBytes("ExcelObjectPrinterTests/Files/importAfterCreate_template.xlsx"), bytes);
+            var (model, mappingForErrors) = Parse(File.ReadAllBytes(GetFilePath("importAfterCreate_template.xlsx")), bytes);
             Assert.AreEqual("CheckBoxName1", mappingForErrors["TestFlag1"]);
             Assert.AreEqual("CheckBoxName2", mappingForErrors["TestFlag2"]);
             Assert.AreEqual("C3", mappingForErrors["Type"]);
@@ -172,12 +172,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
         private (PriceList model, Dictionary<string, string> mappingForErrors) Parse(string templateFileName, string targetFileName)
         {
-            return Parse(GetFile(templateFileName), GetFile(targetFileName));
-        }
-
-        private byte[] GetFile(string filename)
-        {
-            return File.ReadAllBytes($"ExcelObjectPrinterTests/Files/{filename}");
+            return Parse(File.ReadAllBytes(GetFilePath(templateFileName)), File.ReadAllBytes(GetFilePath(targetFileName)));
         }
 
         private (PriceList model, Dictionary<string, string> mappingForErrors) Parse(byte[] templateBytes, byte[] targetBytes)
@@ -193,6 +188,11 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var tableParser = new TableParser(target, tableNavigator);
                 return templateEngine.Parse<PriceList>(tableParser);
             }
+        }
+
+        private static string GetFilePath(string filename)
+        {
+            return $"{TestContext.CurrentContext.TestDirectory}/ExcelObjectPrinterTests/Files/{filename}";
         }
     }
 

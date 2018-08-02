@@ -15,7 +15,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void ExcelTablePartExtractionTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(fileName));
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")));
             var table = new ExcelTable(document.GetWorksheet(0));
 
             var rows = table.GetTablePart(new Rectangle(new CellPosition("B9"), new CellPosition("D11")))
@@ -40,7 +40,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void ExcelCellExtractionTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(fileName));
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")));
             var table = new ExcelTable(document.GetWorksheet(0));
 
             var cell = table.GetCell(new CellPosition("B9"));
@@ -51,6 +51,9 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.AreEqual(null, cell);
         }
 
-        private const string fileName = @"ExcelObjectPrinterTests\Files\template.xlsx";
+        private static string GetFilePath(string filename)
+        {
+            return $"{TestContext.CurrentContext.TestDirectory}/ExcelObjectPrinterTests/Files/{filename}";
+        }
     }
 }
