@@ -16,7 +16,7 @@ using SKBKontur.Catalogue.Objects;
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
     [TestFixture]
-    public class ObjectExcelPrintingTests
+    public class ObjectExcelPrintingTests : FileBasedTestBase
     {
         [Test]
         public void PrintStringTest()
@@ -244,7 +244,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             }
         }
 
-        private static void MakeTest(object model, string templateFileName, Action<ExcelTable> resultValidationFunc = null)
+        private void MakeTest(object model, string templateFileName, Action<ExcelTable> resultValidationFunc = null)
         {
             var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath(templateFileName)));
             var template = new ExcelTable(templateDocument.GetWorksheet(0));
@@ -263,11 +263,6 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
             templateDocument.Dispose();
             targetDocument.Dispose();
-        }
-
-        private static string GetFilePath(string filename)
-        {
-            return $"{TestContext.CurrentContext.TestDirectory}/ExcelObjectPrinterTests/Files/{filename}";
         }
 
         public class DocumentWithArray

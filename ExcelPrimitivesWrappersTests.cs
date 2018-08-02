@@ -10,7 +10,7 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
     [TestFixture]
-    public class ExcelPrimitivesWrappersTests
+    public class ExcelPrimitivesWrappersTests : FileBasedTestBase
     {
         [Test]
         public void ExcelTablePartExtractionTest()
@@ -49,11 +49,6 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
             cell = table.GetCell(new CellPosition("ABCD4234"));
             Assert.AreEqual(null, cell);
-        }
-
-        private static string GetFilePath(string filename)
-        {
-            return $"{TestContext.CurrentContext.TestDirectory}/ExcelObjectPrinterTests/Files/{filename}";
         }
     }
 }

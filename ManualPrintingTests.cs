@@ -13,7 +13,7 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
     [Ignore("These tests can be used only for manual testing")]
-    public class ManualPrintingTests
+    public class ManualPrintingTests : FileBasedTestBase
     {
         [Test]
         public void TestPrintingDropDownFromTheOtherWorksheet()
@@ -185,11 +185,6 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
                 Assert.Fail($"Please manually open file '{path}' and check that D4-D7 has data validation with values from the second worksheet and G4-G7 has data validation with values from K1:K6");
             }
-        }
-
-        private static string GetFilePath(string filename)
-        {
-            return $"{TestContext.CurrentContext.TestDirectory}/ExcelObjectPrinterTests/Files/{filename}";
         }
     }
 }

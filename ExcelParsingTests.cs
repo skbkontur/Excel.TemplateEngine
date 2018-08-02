@@ -15,7 +15,7 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
     [TestFixture]
-    public class ExcelParsingTests
+    public class ExcelParsingTests : FileBasedTestBase
     {
         [Test]
         public void TestSimpleWithEnumerable()
@@ -188,11 +188,6 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 var tableParser = new TableParser(target, tableNavigator);
                 return templateEngine.Parse<PriceList>(tableParser);
             }
-        }
-
-        private static string GetFilePath(string filename)
-        {
-            return $"{TestContext.CurrentContext.TestDirectory}/ExcelObjectPrinterTests/Files/{filename}";
         }
     }
 
