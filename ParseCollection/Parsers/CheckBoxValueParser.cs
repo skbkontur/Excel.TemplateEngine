@@ -16,5 +16,12 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             result = parseResult;
             return true;
         }
+
+        public object ParseOrDefault(ITableParser tableParser, string name, Type modelType)
+        {
+            if (!TryParse(tableParser, name, modelType, out var result))
+                result = false;
+            return result;
+        }
     }
 }

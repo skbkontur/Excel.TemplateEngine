@@ -6,7 +6,6 @@ using System.Linq;
 using JetBrains.Annotations;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
-using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
@@ -151,8 +150,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
                 throw new InvalidProgramStateException("Enumerables are not supported for form controls");
 
             var parser = parserCollection.GetFormValueParser(childFormControlType, childModelType);
-            if (!parser.TryParse(tableParser, childFormControlName, childModelType, out var parsedObject))
-                throw new FormControlParsingException(childFormControlName);
+            var parsedObject = parser.ParseOrDefault(tableParser, childFormControlName, childModelType);
 
             childSetter(parsedObject);
             addFieldMapping(path.RawPath, childFormControlName);

@@ -8,6 +8,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 {
     public interface IFormValueParser
     {
-        bool TryParse([NotNull] ITableParser tableParser, [NotNull] string name, [NotNull] Type modelType, out object result);
+        object ParseOrDefault([NotNull] ITableParser tableParser, [NotNull] string name, [NotNull] Type modelType);
     }
 }

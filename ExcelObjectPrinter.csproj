@@ -39,7 +39,6 @@
   <ItemGroup>
     <Compile Include="Exceptions\BaseExcelSerializationException.cs" />
     <Compile Include="Exceptions\EnumerableTooLongException.cs" />
-    <Compile Include="Exceptions\FormControlParsingException.cs" />
     <Compile Include="Exceptions\ObjectPropertyExtractionException.cs" />
     <Compile Include="Helpers\ExcelTemplatePath.cs" />
     <Compile Include="Helpers\ExpressionPrimitives.cs" />
