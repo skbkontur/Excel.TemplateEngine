@@ -154,7 +154,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         }
 
         [Test]
-        public void TestPrintingDropDownFromTheOtherWorksheet123()
+        public void TestDataValidatonsFromTheOtherWorksheet()
         {
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("otherSheetDataValidations.xlsx"))))
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx"))))

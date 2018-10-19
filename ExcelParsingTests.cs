@@ -74,6 +74,16 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         }
 
         [Test]
+        public void TestNonexistentCheckBoxes()
+        {
+            var (model, mappingForErrors) = Parse("nonexistent_сheckBoxes_template.xlsx", "nonexistent_сheckBoxes_target.xlsx");
+            Assert.AreEqual("CheckBoxName1", mappingForErrors["TestFlag1"]);
+            Assert.AreEqual("NonexistentInTarget", mappingForErrors["TestFlag2"]);
+            Assert.AreEqual(true, model.TestFlag1);
+            Assert.AreEqual(false, model.TestFlag2);
+        }
+
+        [Test]
         public void TestNonexistentField()
         {
             Assert.Throws<ObjectPropertyExtractionException>(() => Parse("nonexistentField_template.xlsx", "empty.xlsx"));
