@@ -31,5 +31,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
         ITableBuilder CopyFormControlsFrom([NotNull] ITable template);
         ITableBuilder CopyDataValidationsFrom([NotNull] ITable template);
         ITableBuilder CopyWorksheetExtensionListFrom([NotNull] ITable template);
+        ITableBuilder CopyCommentsFrom([NotNull] ITable template);
     }
 }

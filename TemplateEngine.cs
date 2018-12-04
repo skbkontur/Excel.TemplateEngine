@@ -29,6 +29,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
             tableBuilder.CopyFormControlsFrom(templateTable);
             tableBuilder.CopyDataValidationsFrom(templateTable);
             tableBuilder.CopyWorksheetExtensionListFrom(templateTable); // WorksheetExtensionList contains info about data validations with ranges from other sheets, so copying it to support them.
+            tableBuilder.CopyCommentsFrom(templateTable);
             var render = rendererCollection.GetRenderer(model.GetType());
             render.Render(tableBuilder, model, renderingTemplate);
         }

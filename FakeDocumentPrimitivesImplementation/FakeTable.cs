@@ -65,7 +65,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
         }
 
         public IEnumerable<IColumn> Columns { get { return Enumerable.Range(0, cells[0].Count()).Select(index => new FakeColumn {Index = index}); } }
-        public IEnumerable<IRectangle> MergedCells { get { return mergedCells; } }
+        public IEnumerable<IRectangle> MergedCells => mergedCells;
 
         public void MergeCells(IRectangle rectangle)
         {
@@ -81,6 +81,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
         }
 
         public void CopyWorksheetExtensionListFrom(ITable template)
+        {
+        }
+
+        public void CopyCommentsFrom(ITable template)
         {
         }
 
@@ -100,7 +104,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
 
         public static FakeTable GenerateFromStringArray(string[][] template)
         {
-            if (!CheckArrayDimentions(template))
+            if (!CheckArrayDimensions(template))
                 return null;
             var height = template.Count();
             var width = template[0].Count();
@@ -117,7 +121,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplement
             return table;
         }
 
-        private static bool CheckArrayDimentions(string[][] array)
+        private static bool CheckArrayDimensions(string[][] array)
         {
             if (array == null || !array.Any() || !array[0].Any())
                 return false;
