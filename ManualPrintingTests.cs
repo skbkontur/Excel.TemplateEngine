@@ -27,10 +27,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 {
                     var worksheet = templateDocument.GetWorksheet(index);
                     var name = templateDocument.GetWorksheetName(index);
-                    var innterTemplateEngine = new TemplateEngine(new ExcelTable(worksheet));
+                    var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet));
                     var targetWorksheet = targetDocument.AddWorksheet(name);
                     var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1")));
-                    innterTemplateEngine.Render(innerTableBuilder, new {});
+                    innerTemplateEngine.Render(innerTableBuilder, new {});
                 }
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
@@ -154,7 +154,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         }
 
         [Test]
-        public void TestDataValidatonsFromTheOtherWorksheet()
+        public void TestDataValidationsFromTheOtherWorksheet()
         {
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("otherSheetDataValidations.xlsx"))))
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx"))))
@@ -165,10 +165,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 {
                     var worksheet = templateDocument.GetWorksheet(index);
                     var name = templateDocument.GetWorksheetName(index);
-                    var innterTemplateEngine = new TemplateEngine(new ExcelTable(worksheet));
+                    var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet));
                     var targetWorksheet = targetDocument.AddWorksheet(name);
                     var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1")));
-                    innterTemplateEngine.Render(innerTableBuilder, new {});
+                    innerTemplateEngine.Render(innerTableBuilder, new {});
                 }
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
@@ -184,6 +184,29 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
                 var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
                 Assert.Fail($"Please manually open file '{path}' and check that D4-D7 has data validation with values from the second worksheet and G4-G7 has data validation with values from K1:K6");
+            }
+        }
+
+        [Test]
+        public void TestPrintingComments()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("comments.xlsx"))))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx"))))
+            {
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
+                templateEngine.Render(tableBuilder, new {});
+
+                var filename = "output.xlsx";
+                File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
+
+                var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
+                var templatePath = "file:///" + Path.GetFullPath("ExcelObjectPrinterTests/Files/comments.xlsx").Replace("\\", "/");
+                Assert.Fail($"Please manually open file:\n{path}\nand check that cells has same comments as in\n{templatePath}\n");
             }
         }
     }
