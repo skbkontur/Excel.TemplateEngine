@@ -28,7 +28,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         public ExcelWorksheet(IExcelDocument excelDocument, WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings)
         {
             worksheet = worksheetPart.Worksheet;
-            this.ExcelDocument = excelDocument;
+            ExcelDocument = excelDocument;
             this.documentStyle = documentStyle;
             this.excelSharedStrings = excelSharedStrings;
             rowsCache = new TreeDictionary<uint, Row>();
@@ -154,6 +154,33 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             worksheet.AppendChild(worksheetExtensionList.CloneNode(true));
         }
 
+        public void CopyComments([NotNull] IExcelWorksheet template)
+        {
+            var templateWorksheetPart = ((ExcelWorksheet)template).worksheet.WorksheetPart;
+            var commentsPart = templateWorksheetPart.WorksheetCommentsPart;
+            if (commentsPart == null)
+                return;
+
+            var commentPartId = templateWorksheetPart.GetIdOfPart(commentsPart);
+            SafelyAddPart(worksheet.WorksheetPart, commentsPart, commentPartId);
+            ChangeAllAuthorsToEdi(worksheet.WorksheetPart.WorksheetCommentsPart.Comments);
+            if (worksheet.WorksheetPart.VmlDrawingParts == null || !worksheet.WorksheetPart.VmlDrawingParts.Any())
+                CopyVmlDrawingPartAndGetId(templateWorksheetPart, worksheet);
+        }
+
+        private static void ChangeAllAuthorsToEdi([CanBeNull] Comments comments)
+        {
+            if (comments == null)
+                return;
+            const string edi = "Kontur.EDI";
+            foreach (var author in comments.Authors.ChildElements
+                                           .Where(x => x is Author)
+                                           .Cast<Author>())
+            {
+                author.Text = edi;
+            }
+        }
+
         [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
         private static void CopyAlternateContent([NotNull] Controls controls, [NotNull] Worksheet targetWorksheet)
         {
@@ -178,7 +205,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         private static void AddFormControlsNamespaces([NotNull] Worksheet targetWorksheet)
         {
-            var requiedNamespaces = new[]
+            var requiredNamespaces = new[]
                 {
                     ("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships"),
                     ("xdr", "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"),
@@ -186,7 +213,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                     ("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006"),
                     ("x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac"),
                 };
-            foreach (var (prefix, uri) in requiedNamespaces)
+            foreach (var (prefix, uri) in requiredNamespaces)
                 if (targetWorksheet.LookupNamespace(prefix) == null)
                     targetWorksheet.AddNamespaceDeclaration(prefix, uri);
         }
