@@ -56,13 +56,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
         {
             if (hslColor.S == 0)
             {
-                return new ExcelColor
-                    {
-                        Alpha = (int)(hslColor.A * 255),
-                        Red = (int)(hslColor.L * 255),
-                        Green = (int)(hslColor.L * 255),
-                        Blue = (int)(hslColor.L * 255),
-                    };
+                return new ExcelColor(alpha : (int)(hslColor.A * 255),
+                                      red : (int)(hslColor.L * 255),
+                                      green : (int)(hslColor.L * 255),
+                                      blue : (int)(hslColor.L * 255));
             }
             double t1;
             if (hslColor.L < 0.5)
@@ -81,13 +78,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
             var g = SetColor(t1, t2, tG);
             var tB = h - (1.0 / 3.0);
             var b = SetColor(t1, t2, tB);
-            return new ExcelColor
-                {
-                    Alpha = (int)(hslColor.A * 255),
-                    Red = (int)(r * 255),
-                    Green = (int)(g * 255),
-                    Blue = (int)(b * 255),
-                };
+            return new ExcelColor(alpha : (int)(hslColor.A * 255),
+                                  red : (int)(r * 255),
+                                  green : (int)(g * 255),
+                                  blue : (int)(b * 255));
         }
 
         private static double SetColor(double t1, double t2, double t3)

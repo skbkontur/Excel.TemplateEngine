@@ -245,13 +245,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         {
             if (hexRgbColor.Length == 6)
                 hexRgbColor = "FF" + hexRgbColor;
-            return new ExcelColor
-                {
-                    Alpha = Convert.ToInt32(hexRgbColor.Substring(0, 2), 16),
-                    Red = Convert.ToInt32(hexRgbColor.Substring(2, 2), 16),
-                    Green = Convert.ToInt32(hexRgbColor.Substring(4, 2), 16),
-                    Blue = Convert.ToInt32(hexRgbColor.Substring(6, 2), 16),
-                };
+            return new ExcelColor(alpha : Convert.ToInt32(hexRgbColor.Substring(0, 2), 16),
+                                  red : Convert.ToInt32(hexRgbColor.Substring(2, 2), 16),
+                                  green : Convert.ToInt32(hexRgbColor.Substring(4, 2), 16),
+                                  blue : Convert.ToInt32(hexRgbColor.Substring(6, 2), 16));
         }
 
         [CanBeNull]

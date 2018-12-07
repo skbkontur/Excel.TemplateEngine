@@ -2,9 +2,9 @@
 {
     public static class ExcelColors
     {
-        public static ExcelColor Black = new ExcelColor {Red = 0, Green = 0, Blue = 0, Alpha = 0};
-        public static ExcelColor White = new ExcelColor {Red = 255, Green = 255, Blue = 255, Alpha = 0};
-        public static ExcelColor Gray = new ExcelColor {Red = 128, Green = 128, Blue = 128, Alpha = 0};
-        public static ExcelColor Red = new ExcelColor {Red = 255, Green = 0, Blue = 0, Alpha = 0};
+        public static readonly ExcelColor Black = new ExcelColor(alpha : 0, red : 0, green : 0, blue : 0);
+        public static readonly ExcelColor White = new ExcelColor(alpha : 0, red : 255, green : 255, blue : 255);
+        public static readonly ExcelColor Gray = new ExcelColor(alpha : 0, red : 128, green : 128, blue : 128);
+        public static readonly ExcelColor Red = new ExcelColor(alpha : 0, red : 255, green : 0, blue : 0);
     }
 }
