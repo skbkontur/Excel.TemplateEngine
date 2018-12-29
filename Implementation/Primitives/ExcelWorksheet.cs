@@ -164,6 +164,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             var commentPartId = templateWorksheetPart.GetIdOfPart(commentsPart);
             SafelyAddPart(worksheet.WorksheetPart, commentsPart, commentPartId);
             ChangeAllAuthorsToEdi(worksheet.WorksheetPart.WorksheetCommentsPart.Comments);
+            RemoveShapeIdFromComments(worksheet.WorksheetPart.WorksheetCommentsPart.Comments);
             if (worksheet.WorksheetPart.VmlDrawingParts == null || !worksheet.WorksheetPart.VmlDrawingParts.Any())
                 CopyVmlDrawingPartAndGetId(templateWorksheetPart, worksheet);
         }
@@ -178,6 +179,18 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                                            .Cast<Author>())
             {
                 author.Text = edi;
+            }
+        }
+
+        private static void RemoveShapeIdFromComments([CanBeNull] Comments comments) //Комментарии с shapeId открываются с ошибкой в Excel 2007
+        {
+            if (comments == null)
+                return;
+            foreach (var comment in comments.CommentList.ChildElements
+                                            .Where(x => x is Comment)
+                                            .Cast<Comment>())
+            {
+                comment.ShapeId = null;
             }
         }
 
