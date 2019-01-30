@@ -16,21 +16,23 @@ using SKBKontur.Catalogue.ExcelFileGenerator.Helpers;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.Objects;
-using SKBKontur.Catalogue.ServiceLib.Logging;
+
+using Vostok.Logging.Abstractions;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
     public class ExcelDocument : IExcelDocument
     {
-        public ExcelDocument([NotNull] byte[] template)
+        public ExcelDocument([NotNull] byte[] template, [NotNull] ILog logger)
         {
+            this.logger = logger.ForContext("ExcelFileGenerator");
             worksheetsCache = new ConcurrentDictionary<string, WorksheetPart>();
 
             documentMemoryStream = new MemoryStream();
             documentMemoryStream.Write(template, 0, template.Length);
             spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true);
 
-            documentStyle = new ExcelDocumentStyle(spreadsheetDocument.GetOrCreateSpreadsheetStyles(), spreadsheetDocument.WorkbookPart.ThemePart.Theme);
+            documentStyle = new ExcelDocumentStyle(spreadsheetDocument.GetOrCreateSpreadsheetStyles(), spreadsheetDocument.WorkbookPart.ThemePart.Theme, this.logger);
             excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.GetOrCreateSpreadsheetSharedStrings());
             spreadsheetDisposed = false;
 
@@ -87,7 +89,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             }
             catch (Exception ex)
             {
-                Log.For(this).Error($"An error occurred while getting of an excel worksheet: {ex}");
+                logger.Error($"An error occurred while getting of an excel worksheet: {ex}");
                 return null;
             }
         }
@@ -143,7 +145,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         {
             ThrowIfSpreadsheetDisposed();
             var worksheetPart = worksheetsCache.GetOrAdd(sheetId, x => (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(x));
-            return new ExcelWorksheet(this, worksheetPart, documentStyle, excelSharedStrings);
+            return new ExcelWorksheet(this, worksheetPart, documentStyle, excelSharedStrings, logger);
         }
 
         public void RenameWorksheet(int index, [NotNull] string name)
@@ -179,7 +181,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 };
 
             sheets.AppendChild(sheet);
-            return new ExcelWorksheet(this, spreadsheetDocument.WorkbookPart.WorksheetParts.Last(), documentStyle, excelSharedStrings);
+            return new ExcelWorksheet(this, spreadsheetDocument.WorkbookPart.WorksheetParts.Last(), documentStyle, excelSharedStrings, logger);
         }
 
         private static void AssertWorksheetNameValid([NotNull] string worksheetName)
@@ -219,5 +221,6 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private readonly IExcelDocumentStyle documentStyle;
         private readonly IExcelSharedStrings excelSharedStrings;
         private bool spreadsheetDisposed;
+        private readonly ILog logger;
     }
 }

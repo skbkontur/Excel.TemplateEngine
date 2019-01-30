@@ -10,15 +10,17 @@ using JetBrains.Annotations;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.Objects;
-using SKBKontur.Catalogue.ServiceLib.Logging;
+
+using Vostok.Logging.Abstractions;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
     public class ExcelDropDownControlInfo : BaseExcelFormControlInfo, IExcelDropDownControlInfo
     {
-        public ExcelDropDownControlInfo([NotNull] IExcelWorksheet excelWorksheet, [NotNull] Control control, [NotNull] ControlPropertiesPart controlPropertiesPart, [NotNull] VmlDrawingPart vmlDrawingPart)
+        public ExcelDropDownControlInfo([NotNull] IExcelWorksheet excelWorksheet, [NotNull] Control control, [NotNull] ControlPropertiesPart controlPropertiesPart, [NotNull] VmlDrawingPart vmlDrawingPart, [NotNull] ILog logger)
             : base(excelWorksheet, control, controlPropertiesPart, vmlDrawingPart)
         {
+            this.logger = logger;
         }
 
         [CanBeNull]
@@ -38,7 +40,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             {
                 var index = GetDropDownCells().Select(x => x.GetStringValue()).ToList().IndexOf(value);
                 if (index == -1)
-                    Log.For(this).Error($"Tried to set unknown dropbox value: '{value}'. Setting empty value instead");
+                    logger.Error($"Tried to set unknown dropbox value: '{value}'. Setting empty value instead");
 
                 if (ControlPropertiesPart.FormControlProperties == null)
                     ControlPropertiesPart.FormControlProperties = new FormControlProperties();
@@ -95,5 +97,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 throw new InvalidProgramStateException($"Invalid relative range: '{relativeRange}'");
             return (new ExcelCellIndex(parts[0]), new ExcelCellIndex(parts[1]));
         }
+
+        private readonly ILog logger;
     }
 }

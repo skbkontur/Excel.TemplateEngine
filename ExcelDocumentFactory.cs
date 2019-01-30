@@ -5,39 +5,40 @@ using JetBrains.Annotations;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.Objects;
-using SKBKontur.Catalogue.ServiceLib.Logging;
+
+using Vostok.Logging.Abstractions;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator
 {
     public static class ExcelDocumentFactory
     {
         [CanBeNull]
-        public static IExcelDocument TryCreateFromTemplate([NotNull] byte[] template)
+        public static IExcelDocument TryCreateFromTemplate([NotNull] byte[] template, [NotNull] ILog logger)
         {
             try
             {
-                return new ExcelDocument(template);
+                return new ExcelDocument(template, logger);
             }
             catch (Exception ex)
             {
-                Log.For<ExcelDocument>().Error($"An error occurred while creating of {nameof(ExcelDocument)}: {ex}");
+                logger.ForContext("ExcelFileGenerator").Error($"An error occurred while creating of {nameof(ExcelDocument)}: {ex}");
                 return null;
             }
         }
 
         [NotNull]
-        public static IExcelDocument CreateFromTemplate([NotNull] byte[] template)
+        public static IExcelDocument CreateFromTemplate([NotNull] byte[] template, [NotNull] ILog logger)
         {
-            var result = TryCreateFromTemplate(template);
+            var result = TryCreateFromTemplate(template, logger);
             return result ?? throw new InvalidProgramStateException($"An error occurred while creating of {nameof(ExcelDocument)}");
         }
 
         [NotNull]
-        public static IExcelDocument CreateEmpty(bool useXlsm)
+        public static IExcelDocument CreateEmpty(bool useXlsm, [NotNull] ILog logger)
         {
             if (useXlsm)
-                return CreateFromTemplate(GetFileBytes("empty.xlsm"));
-            return CreateFromTemplate(GetFileBytes("empty.xlsx"));
+                return CreateFromTemplate(GetFileBytes("empty.xlsm"), logger);
+            return CreateFromTemplate(GetFileBytes("empty.xlsx"), logger);
         }
 
         private static byte[] GetFileBytes(string filename)

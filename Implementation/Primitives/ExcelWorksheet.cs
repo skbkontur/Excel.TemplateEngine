@@ -17,7 +17,8 @@ using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.Objects;
-using SKBKontur.Catalogue.ServiceLib.Logging;
+
+using Vostok.Logging.Abstractions;
 
 using Tuple = System.Tuple;
 
@@ -25,12 +26,13 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
     public class ExcelWorksheet : IExcelWorksheet
     {
-        public ExcelWorksheet(IExcelDocument excelDocument, WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings)
+        public ExcelWorksheet(IExcelDocument excelDocument, WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings, ILog logger)
         {
             worksheet = worksheetPart.Worksheet;
             ExcelDocument = excelDocument;
             this.documentStyle = documentStyle;
             this.excelSharedStrings = excelSharedStrings;
+            this.logger = logger.ForContext("ExcelFileGenerator");
             rowsCache = new TreeDictionary<uint, Row>();
             var sheetData = worksheet.GetFirstChild<SheetData>();
             if (sheetData != null)
@@ -118,7 +120,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         [CanBeNull]
         public IExcelDropDownControlInfo TryGetDropDownFormControlInfo([NotNull] string name)
         {
-            return TryGetFormControlInfo(name, (control, controlPropertiesPart, vmlDrawingPart) => new ExcelDropDownControlInfo(this, control, controlPropertiesPart, vmlDrawingPart));
+            return TryGetFormControlInfo(name, (control, controlPropertiesPart, vmlDrawingPart) => new ExcelDropDownControlInfo(this, control, controlPropertiesPart, vmlDrawingPart, logger));
         }
 
         [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
@@ -231,7 +233,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                     targetWorksheet.AddNamespaceDeclaration(prefix, uri);
         }
 
-        private static void CopyControlPropertiesParts([NotNull] WorksheetPart templateWorksheetPart, [NotNull] WorksheetPart targetWorksheetPart)
+        private void CopyControlPropertiesParts([NotNull] WorksheetPart templateWorksheetPart, [NotNull] WorksheetPart targetWorksheetPart)
         {
             var controlPropertiesParts = templateWorksheetPart.ControlPropertiesParts?.Select(x => (x, x == null ? null : templateWorksheetPart.GetIdOfPart(x))).ToList() ?? new List<(ControlPropertiesPart x, string)>();
             foreach (var (controlPropertiesPart, id) in controlPropertiesParts)
@@ -239,7 +241,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         }
 
         [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
-        private static void CopyDrawingsPartAndGetId([NotNull] WorksheetPart templateWorksheetPart, [NotNull] Worksheet targetWorksheet)
+        private void CopyDrawingsPartAndGetId([NotNull] WorksheetPart templateWorksheetPart, [NotNull] Worksheet targetWorksheet)
         {
             var drawingsPart = templateWorksheetPart.DrawingsPart;
             var drawingsPartId = templateWorksheetPart.DrawingsPart == null ? null : templateWorksheetPart.GetIdOfPart(templateWorksheetPart.DrawingsPart);
@@ -249,7 +251,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         }
 
         [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
-        private static void CopyVmlDrawingPartAndGetId([NotNull] WorksheetPart templateWorksheetPart, [NotNull] Worksheet targetWorksheet)
+        private void CopyVmlDrawingPartAndGetId([NotNull] WorksheetPart templateWorksheetPart, [NotNull] Worksheet targetWorksheet)
         {
             var vmlDrawingParts = templateWorksheetPart.VmlDrawingParts.ToList();
             if (vmlDrawingParts.Count > 1)
@@ -275,11 +277,11 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             return create(control, controlPropertiesPart, vmlDrawingPart);
         }
 
-        private static void SafelyAddPart<TPart>([NotNull] WorksheetPart target, [CanBeNull] TPart part, [CanBeNull] string id)
+        private void SafelyAddPart<TPart>([NotNull] WorksheetPart target, [CanBeNull] TPart part, [CanBeNull] string id)
             where TPart : OpenXmlPart
         {
             if (part == null || id == null)
-                Log.For<ExcelWorksheet>().Warn($"Tried to add null part of type '{typeof(TPart)}'");
+                logger.Warn($"Tried to add null part of type '{typeof(TPart)}'");
             else
                 target.AddPart(part, id);
         }
@@ -393,6 +395,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         private readonly IExcelDocumentStyle documentStyle;
         private readonly IExcelSharedStrings excelSharedStrings;
+        private readonly ILog logger;
         private readonly Worksheet worksheet;
         private readonly TreeDictionary<uint, Row> rowsCache;
     }

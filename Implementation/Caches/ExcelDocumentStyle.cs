@@ -12,7 +12,8 @@ using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Helpers;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems;
 using SKBKontur.Catalogue.Objects;
-using SKBKontur.Catalogue.ServiceLib.Logging;
+
+using Vostok.Logging.Abstractions;
 
 using ColorType = DocumentFormat.OpenXml.Spreadsheet.ColorType;
 using Fill = DocumentFormat.OpenXml.Spreadsheet.Fill;
@@ -21,9 +22,10 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 {
     internal class ExcelDocumentStyle : IExcelDocumentStyle
     {
-        public ExcelDocumentStyle(Stylesheet stylesheet, Theme theme)
+        public ExcelDocumentStyle(Stylesheet stylesheet, Theme theme, ILog logger)
         {
             this.stylesheet = stylesheet;
+            this.logger = logger;
             numberingFormats = new ExcelDocumentNumberingFormats(stylesheet);
             fillStyles = new ExcelDocumentFillStyles(stylesheet);
             bordersStyles = new ExcelDocumentBordersStyles(stylesheet);
@@ -260,7 +262,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             var rgbColor = color2Type?.RgbColorModelHex?.Val?.Value ?? color2Type?.SystemColor?.LastColor?.Value;
             if (rgbColor == null)
             {
-                Log.For(this).Error("Failed to get rgbColor from theme");
+                logger.Error("Failed to get rgbColor from theme");
                 return null;
             }
             var hls = ColorConverter.RgbToHls(RgbStringToExcelColor(rgbColor));
@@ -281,6 +283,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
         }
 
         private readonly Stylesheet stylesheet;
+        private readonly ILog logger;
         private readonly ExcelDocumentNumberingFormats numberingFormats;
         private readonly ExcelDocumentFillStyles fillStyles;
         private readonly ExcelDocumentBordersStyles bordersStyles;
