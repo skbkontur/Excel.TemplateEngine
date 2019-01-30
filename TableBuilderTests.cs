@@ -6,6 +6,9 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplementatio
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
+using SKBKontur.Catalogue.ServiceLib.Logging;
+
+using Vostok.Logging.Abstractions;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
@@ -19,7 +22,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const int height = 40;
             var table = new FakeTable(width, height);
 
-            var tableBuilder = new TableBuilder(table, new TableNavigator(new CellPosition("A1")));
+            var tableBuilder = new TableBuilder(table, new TableNavigator(new CellPosition("A1"), logger));
 
             tableBuilder.RenderAtomicValue("Test");
             tableBuilder.MoveToNextColumn();
@@ -47,7 +50,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const int height = 40;
             var table = new FakeTable(width, height);
 
-            var tableBuilder = new TableBuilder(table, new TableNavigator(new CellPosition("C4")));
+            var tableBuilder = new TableBuilder(table, new TableNavigator(new CellPosition("C4"), logger));
 
             tableBuilder.RenderAtomicValue("1");
             tableBuilder.MoveToNextColumn();
@@ -68,7 +71,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const int height = 40;
             var table = new FakeTable(width, height);
 
-            var tableBuilder = new TableBuilder(table, new TableNavigator(new CellPosition("A1")));
+            var tableBuilder = new TableBuilder(table, new TableNavigator(new CellPosition("A1"), logger));
 
             tableBuilder.PushState() //depth = 1
                         .PushState() //depth = 2
@@ -162,7 +165,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             const int height = 40;
             var table = new FakeTable(width, height);
 
-            var tableBuilder = new TableBuilder(table, new TableNavigator(new CellPosition("A1")));
+            var tableBuilder = new TableBuilder(table, new TableNavigator(new CellPosition("A1"), logger));
 
             tableBuilder.PushState() //depth = 1
                         .PushState() //depth = 2
@@ -239,5 +242,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             Assert.AreEqual(mergedCells[1].UpperLeft.CellReference, "D5");
             Assert.AreEqual(mergedCells[1].LowerRight.CellReference, "D6");
         }
+
+        private readonly ILog logger = Log.For(typeof(TableBuilderTests));
     }
 }

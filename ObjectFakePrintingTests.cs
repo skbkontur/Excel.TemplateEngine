@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 using NUnit.Framework;
 
@@ -9,6 +10,9 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplementatio
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
+using SKBKontur.Catalogue.ServiceLib.Logging;
+
+using Vostok.Logging.Abstractions;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
@@ -22,10 +26,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var cell = template.InsertCell(new CellPosition(1, 1));
             cell.StringValue = "Template:RootTemplate:A1:A1";
 
-            var templateEngine = new TemplateEngine(template);
+            var templateEngine = new TemplateEngine(template, logger);
 
             var target = new FakeTable(10, 10);
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2")), new Style(new FakeCell(new CellPosition("A1"))
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger), new Style(new FakeCell(new CellPosition("A1"))
                 {
                     StyleId = "(1,1)"
                 }));
@@ -46,10 +50,10 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var cell = template.InsertCell(new CellPosition(1, 1));
             cell.StringValue = "Template:RootTemplate:A1:A1";
 
-            var templateEngine = new TemplateEngine(template);
+            var templateEngine = new TemplateEngine(template, logger);
 
             var target = new FakeTable(10, 10);
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2")), new Style(new FakeCell(new CellPosition("A1"))
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger), new Style(new FakeCell(new CellPosition("A1"))
                 {
                     StyleId = "(1,1)"
                 }));
@@ -98,8 +102,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var template = FakeTable.GenerateFromStringArray(stringTemplate);
 
             var target = new FakeTable(100, 100);
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1")));
-            var templateEngine = new TemplateEngine(template);
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger));
+            var templateEngine = new TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             Assert.AreEqual("Покупатель:", target.GetCell(new CellPosition("A1")).StringValue);
@@ -182,8 +186,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var template = FakeTable.GenerateFromStringArray(stringTemplate);
 
             var target = new FakeTable(100, 100);
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1")));
-            var templateEngine = new TemplateEngine(template);
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger));
+            var templateEngine = new TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             Assert.AreEqual("Покупатель:", target.GetCell(new CellPosition("A1")).StringValue);
@@ -251,8 +255,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var template = FakeTable.GenerateFromStringArray(stringTemplate);
 
             var target = new FakeTable(100, 100);
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2")));
-            var templateEngine = new TemplateEngine(template);
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger));
+            var templateEngine = new TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             Assert.AreEqual("Адреса:", target.GetCell(new CellPosition("C2")).StringValue);
@@ -287,8 +291,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var template = FakeTable.GenerateFromStringArray(stringTemplate);
 
             var target = new FakeTable(100, 100);
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2")));
-            var templateEngine = new TemplateEngine(template);
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger));
+            var templateEngine = new TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             DebugPrinting(target, new CellPosition(1, 1), new CellPosition(20, 20));
@@ -313,8 +317,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var template = FakeTable.GenerateFromStringArray(stringTemplate);
 
             var target = new FakeTable(100, 100);
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2")));
-            var templateEngine = new TemplateEngine(template);
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger));
+            var templateEngine = new TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             Assert.AreEqual("Адреса:", target.GetCell(new CellPosition("C2")).StringValue);
@@ -368,8 +372,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             var template = FakeTable.GenerateFromStringArray(stringTemplate);
 
             var target = new FakeTable(100, 100);
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2")));
-            var templateEngine = new TemplateEngine(template);
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger));
+            var templateEngine = new TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             Assert.AreEqual("Адреса:", target.GetCell(new CellPosition("C2")).StringValue);
@@ -408,6 +412,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 Console.WriteLine();
             }
         }
+
+        private readonly ILog logger = Log.For(typeof(ObjectFakePrintingTests));
 
         public class DocumentWithArray
         {

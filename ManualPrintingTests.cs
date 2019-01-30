@@ -18,8 +18,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void TestPrintingDropDownFromTheOtherWorksheet()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("printingDropDownFromTheOtherWorksheet.xlsx"))))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx"))))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("printingDropDownFromTheOtherWorksheet.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 targetDocument.CopyVbaInfoFrom(templateDocument);
 
@@ -27,17 +27,17 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 {
                     var worksheet = templateDocument.GetWorksheet(index);
                     var name = templateDocument.GetWorksheetName(index);
-                    var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet));
+                    var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet), logger);
                     var targetWorksheet = targetDocument.AddWorksheet(name);
-                    var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1")));
+                    var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1"), logger));
                     innerTemplateEngine.Render(innerTableBuilder, new {});
                 }
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {Type = "Значение 2"});
 
@@ -52,16 +52,16 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void TestPrintingVbaMacros()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("printingVbaMacros.xlsm"))))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsm"))))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("printingVbaMacros.xlsm")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsm")), logger))
             {
                 targetDocument.CopyVbaInfoFrom(templateDocument);
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {Type = "123"});
 
@@ -76,14 +76,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void TestColumnsSwitching()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("columnsSwitching.xlsx"))))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx"))))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("columnsSwitching.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {A = "First", B = true, C = "Third", D = new[] {1, 2, 3}, E = "Fifth"});
 
@@ -109,14 +109,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void TestDataValidations()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("dataValidations.xlsx"))))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx"))))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("dataValidations.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {Test = "b"});
 
@@ -133,14 +133,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void TestColors()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("colors.xlsx"))))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx"))))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("colors.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {});
 
@@ -156,8 +156,8 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void TestDataValidationsFromTheOtherWorksheet()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("otherSheetDataValidations.xlsx"))))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx"))))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("otherSheetDataValidations.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 targetDocument.CopyVbaInfoFrom(templateDocument);
 
@@ -165,17 +165,17 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                 {
                     var worksheet = templateDocument.GetWorksheet(index);
                     var name = templateDocument.GetWorksheetName(index);
-                    var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet));
+                    var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet), logger);
                     var targetWorksheet = targetDocument.AddWorksheet(name);
-                    var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1")));
+                    var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1"), logger));
                     innerTemplateEngine.Render(innerTableBuilder, new {});
                 }
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {});
 
@@ -190,14 +190,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void TestPrintingComments()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("comments.xlsx"))))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx"))))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("comments.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {});
 

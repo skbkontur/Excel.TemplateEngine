@@ -170,19 +170,19 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                     TypeName = "ORDERS"
                 };
 
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("complexTemplate.xlsx")));
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("complexTemplate.xlsx")), logger);
             var template = new ExcelTable(templateDocument.GetWorksheet(0));
-            var templateEngine = new TemplateEngine(template);
+            var templateEngine = new TemplateEngine(template, logger);
 
-            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")));
+            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger);
             targetDocument.AddWorksheet("Лист2");
 
             var target = new ExcelTable(targetDocument.GetWorksheet(0));
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2")), new Style(template.GetCell(new CellPosition("A1"))));
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger), new Style(template.GetCell(new CellPosition("A1"))));
             templateEngine.Render(tableBuilder, model);
 
             target = new ExcelTable(targetDocument.GetWorksheet(1));
-            tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1")), new Style(template.GetCell(new CellPosition("A1"))));
+            tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger), new Style(template.GetCell(new CellPosition("A1"))));
             templateEngine.Render(tableBuilder, model);
 
             var result = targetDocument.CloseAndGetDocumentBytes();
@@ -203,14 +203,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                     Dict = new Dictionary<string, bool> {{"TestKey", false}},
                 };
 
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("formControlsTemplate.xlsx")));
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("formControlsTemplate.xlsx")), logger);
             var template = new ExcelTable(templateDocument.GetWorksheet(0));
-            var templateEngine = new TemplateEngine(template);
+            var templateEngine = new TemplateEngine(template, logger);
 
-            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")));
+            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger);
 
             var target = new ExcelTable(targetDocument.GetWorksheet(0));
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1")), new Style(template.GetCell(new CellPosition("A1"))));
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger), new Style(template.GetCell(new CellPosition("A1"))));
             templateEngine.Render(tableBuilder, model);
 
             var result = targetDocument.CloseAndGetDocumentBytes();
@@ -229,15 +229,15 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
                     B = true,
                 };
 
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx"))))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template);
+                var templateEngine = new TemplateEngine(template, logger);
 
-                using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx"))))
+                using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
                 {
                     var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                    var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1")), new Style(template.GetCell(new CellPosition("A1"))));
+                    var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger), new Style(template.GetCell(new CellPosition("A1"))));
 
                     Assert.Throws<InvalidProgramStateException>(() => templateEngine.Render(tableBuilder, model));
                 }
@@ -246,14 +246,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
         private void MakeTest(object model, string templateFileName, Action<ExcelTable> resultValidationFunc = null)
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath(templateFileName)));
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath(templateFileName)), logger);
             var template = new ExcelTable(templateDocument.GetWorksheet(0));
 
-            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")));
+            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger);
             var target = new ExcelTable(targetDocument.GetWorksheet(0));
 
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2")), new Style(template.GetCell(new CellPosition("A1"))));
-            var templateEngine = new TemplateEngine(template);
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger), new Style(template.GetCell(new CellPosition("A1"))));
+            var templateEngine = new TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             var result = targetDocument.CloseAndGetDocumentBytes();
