@@ -10,16 +10,18 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
 using SKBKontur.Catalogue.Objects;
 
+using Vostok.Logging.Abstractions;
+
 namespace SKBKontur.Catalogue.ExcelObjectPrinter
 {
     public class TemplateEngine : ITemplateEngine
     {
-        public TemplateEngine([NotNull] ITable templateTable)
+        public TemplateEngine([NotNull] ITable templateTable, [NotNull] ILog logger)
         {
             this.templateTable = templateTable;
             templateCollection = new TemplateCollection(templateTable);
             rendererCollection = new RendererCollection(templateCollection);
-            parserCollection = new ParserCollection();
+            parserCollection = new ParserCollection(logger);
         }
 
         public void Render<TModel>([NotNull] ITableBuilder tableBuilder, [NotNull] TModel model)

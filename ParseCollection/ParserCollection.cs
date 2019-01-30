@@ -4,13 +4,20 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers;
 using SKBKontur.Catalogue.Objects;
 
+using Vostok.Logging.Abstractions;
+
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
 {
     public class ParserCollection : IParserCollection
     {
+        public ParserCollection(ILog logger)
+        {
+            this.logger = logger;
+        }
+
         public IClassParser GetClassParser()
         {
-            return new ClassParser(this);
+            return new ClassParser(this, logger);
         }
 
         public IEnumerableParser GetEnumerableParser(Type modelType)
@@ -38,5 +45,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
         {
             return new EnumerableMeasurer(this);
         }
+
+        private readonly ILog logger;
     }
 }

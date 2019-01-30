@@ -10,15 +10,17 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
 using SKBKontur.Catalogue.Objects;
-using SKBKontur.Catalogue.ServiceLib.Logging;
+
+using Vostok.Logging.Abstractions;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 {
     public class ClassParser : IClassParser
     {
-        public ClassParser(IParserCollection parserCollection)
+        public ClassParser(IParserCollection parserCollection, ILog logger)
         {
             this.parserCollection = parserCollection;
+            this.logger = logger.ForContext("ExcelObjectPrinter");
         }
 
         [NotNull]
@@ -116,7 +118,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
             addFieldMapping(childModelPath.RawPath, tableParser.CurrentState.Cursor.CellReference);
             if (!parser.TryParse(tableParser, childModelType, out var parsedObject))
             {
-                Log.For(this).Error($"Failed to parse value from '{tableParser.CurrentState.Cursor.CellReference}' with childModelType='{childModelType}' via AtomicValueParser");
+                logger.Error($"Failed to parse value from '{tableParser.CurrentState.Cursor.CellReference}' with childModelType='{childModelType}' via AtomicValueParser");
                 return;
             }
             leafSetter(parsedObject);
@@ -165,5 +167,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         }
 
         private readonly IParserCollection parserCollection;
+        private readonly ILog logger;
     }
 }

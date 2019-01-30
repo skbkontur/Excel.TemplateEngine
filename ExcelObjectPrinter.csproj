@@ -117,15 +117,6 @@
       <Project>{24CB5CAE-413D-457D-8ECD-C5C689F6BD4D}</Project>
       <Name>ExcelFileGenerator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ServiceLib\ServiceLib.csproj">
-      <Project>{2F8F38DC-3CDA-48BB-9798-7B6F75B02BC8}</Project>
-      <Name>ServiceLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="log4net">
-      <Version>2.0.8</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

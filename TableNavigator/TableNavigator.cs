@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using log4net;
-
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
+
+using Vostok.Logging.Abstractions;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
 {
     public class TableNavigator : ITableNavigator
     {
-        public TableNavigator(ICellPosition startPosition)
+        public TableNavigator(ICellPosition startPosition, ILog logger)
         {
+            this.logger = logger.ForContext("ExcelObjectPrinter");
             var initialState = new TableNavigatorState
                 {
                     Origin = startPosition,
@@ -79,6 +80,6 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
         }
 
         private readonly Stack<TableNavigatorState> states;
-        private readonly ILog logger = LogManager.GetLogger(typeof(TableNavigator));
+        private readonly ILog logger;
     }
 }
