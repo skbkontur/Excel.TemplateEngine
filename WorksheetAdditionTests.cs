@@ -11,7 +11,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void WorksheetAdditionTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")));
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger);
             document.AddWorksheet("Лист2");
             var worksheet = document.GetWorksheet(1);
             Assert.AreNotEqual(null, worksheet);

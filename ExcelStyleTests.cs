@@ -13,7 +13,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void CellColorExtractionTest()
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")));
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
@@ -25,7 +25,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void CellFontExtractionTest()
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")));
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
@@ -41,7 +41,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void CellNumberFormatExtractionTest()
         {
-            var templateDoucument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")));
+            var templateDoucument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var cell = templateDoucument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
@@ -51,7 +51,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void CellBorderFormatExtractionTest()
         {
-            var templateDoucument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")));
+            var templateDoucument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var cell = templateDoucument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
@@ -64,7 +64,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void CellAlignmentExtractionTest()
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")));
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
@@ -75,7 +75,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void NullCellStyleAccessTest()
         {
-            var templateDoucument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")));
+            var templateDoucument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var cell = templateDoucument.GetWorksheet(0).GetCell(new ExcelCellIndex("A2"));
             cell.GetStyle();
         }
