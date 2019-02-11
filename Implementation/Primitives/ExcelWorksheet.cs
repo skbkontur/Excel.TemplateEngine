@@ -32,7 +32,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             ExcelDocument = excelDocument;
             this.documentStyle = documentStyle;
             this.excelSharedStrings = excelSharedStrings;
-            this.logger = logger.ForContext("ExcelFileGenerator");
+            this.logger = logger;
             rowsCache = new TreeDictionary<uint, Row>();
             var sheetData = worksheet.GetFirstChild<SheetData>();
             if (sheetData != null)

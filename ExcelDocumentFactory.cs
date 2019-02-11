@@ -15,13 +15,14 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator
         [CanBeNull]
         public static IExcelDocument TryCreateFromTemplate([NotNull] byte[] template, [NotNull] ILog logger)
         {
+            var excelFileGeneratorLogger = logger.ForContext("ExcelFileGenerator");
             try
             {
-                return new ExcelDocument(template, logger);
+                return new ExcelDocument(template, excelFileGeneratorLogger);
             }
             catch (Exception ex)
             {
-                logger.ForContext("ExcelFileGenerator").Error($"An error occurred while creating of {nameof(ExcelDocument)}: {ex}");
+                excelFileGeneratorLogger.Error($"An error occurred while creating of {nameof(ExcelDocument)}: {ex}");
                 return null;
             }
         }

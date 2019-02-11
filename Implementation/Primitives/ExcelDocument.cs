@@ -25,7 +25,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
     {
         public ExcelDocument([NotNull] byte[] template, [NotNull] ILog logger)
         {
-            this.logger = logger.ForContext("ExcelFileGenerator");
+            this.logger = logger;
             worksheetsCache = new ConcurrentDictionary<string, WorksheetPart>();
 
             documentMemoryStream = new MemoryStream();
