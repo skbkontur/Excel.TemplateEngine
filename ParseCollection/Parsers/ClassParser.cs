@@ -20,7 +20,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
         public ClassParser(IParserCollection parserCollection, ILog logger)
         {
             this.parserCollection = parserCollection;
-            this.logger = logger.ForContext("ExcelObjectPrinter");
+            this.logger = logger;
         }
 
         [NotNull]

@@ -21,7 +21,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
             this.templateTable = templateTable;
             templateCollection = new TemplateCollection(templateTable);
             rendererCollection = new RendererCollection(templateCollection);
-            parserCollection = new ParserCollection(logger);
+            parserCollection = new ParserCollection(logger.ForContext("ExcelObjectPrinter"));
         }
 
         public void Render<TModel>([NotNull] ITableBuilder tableBuilder, [NotNull] TModel model)
