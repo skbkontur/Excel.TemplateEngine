@@ -11,6 +11,7 @@ using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
+using SKBKontur.Catalogue.ServiceLib.Logging;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 {
@@ -154,14 +155,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         {
             byte[] bytes;
 
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("importAfterCreate_template.xlsx")), logger))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath($"empty.{extension}")), logger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("importAfterCreate_template.xlsx")), Log.DefaultLogger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath($"empty.{extension}")), Log.DefaultLogger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
+                var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), Log.DefaultLogger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
 
                 templateEngine.Render(tableBuilder, new {Type = "Значение 2", TestFlag1 = false, TestFlag2 = true});
@@ -187,14 +188,14 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
 
         private (PriceList model, Dictionary<string, string> mappingForErrors) Parse(byte[] templateBytes, byte[] targetBytes)
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(templateBytes, logger))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes, logger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(templateBytes, Log.DefaultLogger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes, Log.DefaultLogger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
+                var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), Log.DefaultLogger);
                 var tableParser = new TableParser(target, tableNavigator);
                 return templateEngine.Parse<PriceList>(tableParser);
             }
