@@ -4,16 +4,17 @@ using System.Linq;
 using NUnit.Framework;
 
 using SKBKontur.Catalogue.ExcelFileGenerator;
+using SKBKontur.Catalogue.ServiceLib.Logging;
 
 namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
 {
     [TestFixture]
-    public class MergedCelllsExtractionTests : FileBasedTestBase
+    public class MergedCellsExtractionTests : FileBasedTestBase
     {
         [Test]
         public void MergedCellsExtractionTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
             var worksheet = document.GetWorksheet(0);
 
             var cells = worksheet.MergedCells.ToArray();
@@ -30,7 +31,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
         [Test]
         public void MergedCellsExtractionEmptyTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger);
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger);
             var worksheet = document.GetWorksheet(0);
 
             var cells = worksheet.MergedCells.ToArray();
