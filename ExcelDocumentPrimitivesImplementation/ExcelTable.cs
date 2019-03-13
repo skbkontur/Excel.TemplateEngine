@@ -37,10 +37,10 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplemen
         public ITablePart GetTablePart(IRectangle rectangle)
         {
             var excelReferenceToCell = internalTable
-                .GetSortedCellsInRange(new ExcelCellIndex(rectangle.UpperLeft.CellReference),
-                                       new ExcelCellIndex(rectangle.LowerRight.CellReference))
-                .Select(cell => new ExcelCell(cell))
-                .ToDictionary(cell => cell.CellPosition.CellReference);
+                                       .GetSortedCellsInRange(new ExcelCellIndex(rectangle.UpperLeft.CellReference),
+                                                              new ExcelCellIndex(rectangle.LowerRight.CellReference))
+                                       .Select(cell => new ExcelCell(cell))
+                                       .ToDictionary(cell => cell.CellPosition.CellReference);
 
             var subTableSize = rectangle.Size;
             var subTable = JaggedArrayHelper.CreateJaggedArray<ICell[][]>(subTableSize.Height, subTableSize.Width);

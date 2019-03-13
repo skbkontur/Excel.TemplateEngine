@@ -43,7 +43,7 @@ namespace SKBKontur.Catalogue.ExcelObjectPrinter
                                     ?? throw new InvalidProgramStateException($"Template with name {rootTemplateName} not found in xlsx");
             var parser = parserCollection.GetClassParser();
             var fieldsMappingForErrors = new Dictionary<string, string>();
-            return (model : parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors: fieldsMappingForErrors);
+            return (model : parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors : fieldsMappingForErrors);
         }
 
         private const string rootTemplateName = "RootTemplate";
