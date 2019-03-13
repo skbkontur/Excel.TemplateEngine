@@ -96,28 +96,28 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
             get
             {
                 return new (string, Func<ModelWithCollections, object>)[]
-                    {
-                        ("IntToStringDict[10]", x => x.IntToStringDict[10]),
-                        ("IntToStringDict[25]", x => x.IntToStringDict[25]),
-                        ("StringToIntDict[\"lalala\"]", x => x.StringToIntDict["lalala"]),
-                        ("StringToIntDict[\"abracadabra\"]", x => x.StringToIntDict["abracadabra"]),
-                        ("Array[0]", x => x.Array[0]),
-                        ("Array[1]", x => x.Array[1]),
-                        ("Array[2]", x => x.Array[2]),
-                        ("List[0]", x => x.List[0]),
-                        ("List[1]", x => x.List[1]),
-                        ("List[2]", x => x.List[2]),
-                        ("InnerModel.IntToStringDict[10010]", x => x.InnerModel.IntToStringDict[10010]),
-                        ("InnerModel.IntToStringDict[10025]", x => x.InnerModel.IntToStringDict[10025]),
-                        ("InnerModel.StringToIntDict[\"inner_lalala\"]", x => x.InnerModel.StringToIntDict["inner_lalala"]),
-                        ("InnerModel.StringToIntDict[\"inner_abracadabra\"]", x => x.InnerModel.StringToIntDict["inner_abracadabra"]),
-                        ("InnerModel.Array[0]", x => x.InnerModel.Array[0]),
-                        ("InnerModel.Array[1]", x => x.InnerModel.Array[1]),
-                        ("InnerModel.Array[2]", x => x.InnerModel.Array[2]),
-                        ("InnerModel.List[0]", x => x.InnerModel.List[0]),
-                        ("InnerModel.List[1]", x => x.InnerModel.List[1]),
-                        ("InnerModel.List[2]", x => x.InnerModel.List[2]),
-                    }
+                        {
+                            ("IntToStringDict[10]", x => x.IntToStringDict[10]),
+                            ("IntToStringDict[25]", x => x.IntToStringDict[25]),
+                            ("StringToIntDict[\"lalala\"]", x => x.StringToIntDict["lalala"]),
+                            ("StringToIntDict[\"abracadabra\"]", x => x.StringToIntDict["abracadabra"]),
+                            ("Array[0]", x => x.Array[0]),
+                            ("Array[1]", x => x.Array[1]),
+                            ("Array[2]", x => x.Array[2]),
+                            ("List[0]", x => x.List[0]),
+                            ("List[1]", x => x.List[1]),
+                            ("List[2]", x => x.List[2]),
+                            ("InnerModel.IntToStringDict[10010]", x => x.InnerModel.IntToStringDict[10010]),
+                            ("InnerModel.IntToStringDict[10025]", x => x.InnerModel.IntToStringDict[10025]),
+                            ("InnerModel.StringToIntDict[\"inner_lalala\"]", x => x.InnerModel.StringToIntDict["inner_lalala"]),
+                            ("InnerModel.StringToIntDict[\"inner_abracadabra\"]", x => x.InnerModel.StringToIntDict["inner_abracadabra"]),
+                            ("InnerModel.Array[0]", x => x.InnerModel.Array[0]),
+                            ("InnerModel.Array[1]", x => x.InnerModel.Array[1]),
+                            ("InnerModel.Array[2]", x => x.InnerModel.Array[2]),
+                            ("InnerModel.List[0]", x => x.InnerModel.List[0]),
+                            ("InnerModel.List[1]", x => x.InnerModel.List[1]),
+                            ("InnerModel.List[2]", x => x.InnerModel.List[2]),
+                        }
                     .Select(x => new object[] {$"Value::{x.Item1}", x.Item2});
             }
         }
@@ -216,24 +216,24 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         }
 
         private static object[][] ExtractChildObjectSetterTestSource { [UsedImplicitly] get; } = new (string, Func<ComplexModel, object>, object)[]
-            {
-                ("Value::StrProp", x => x.StrProp, "123"),
-                ("Value::StrProp", x => x.StrProp, null),
-                ("Value::IntProp", x => x.IntProp, 42),
-                ("Value::DoubleProp", x => x.DoubleProp, 1.5),
-                ("Value::ObjectProp", x => x.ObjectProp, new MarkerA()),
-                ("Value::ArrayIntProp", x => x.ArrayIntProp, new[] {1, 2, 10}),
-                ("Value::NullableInt", x => x.NullableInt, (int?)10),
-                ("Value::InnerObject.A.Value", x => x.InnerObject.A.Value, new MarkerA()),
-                ("Value::InnerObject.InnerArray[1].ElementProp.A", x => x.InnerObject.InnerArray[1].ElementProp.A, new MarkerB()),
-                ("Value::DictProperty", x => x.DictProperty, new Dictionary<string, MarkerC>()),
-                ("Value::DictProperty[\"Test\"]", x => x.DictProperty["Test"], new MarkerC()),
-                ("Value::DictPropertyIntKeys[123]", x => x.DictPropertyIntKeys[123], new MarkerD()),
-                ("Value::DictPropertyClasses[\"Lalala\"].A.Value", x => x.DictPropertyClasses["Lalala"].A.Value, new MarkerA()),
-                ("Value::ArrayOfObjects[].A.SimpleValue", x => x.ArrayOfObjects.Select(y => y.A.SimpleValue).ToArray(), new[] {1, 2, 10}),
-                ("Value::ArrayOfObjects[].A.SimpleValue", x => x.ArrayOfObjects.Select(y => y.A.SimpleValue).ToArray(), new List<int> {1, 2, 10}.Cast<object>().ToList()),
-            }
-            .Select(x => new[] {x.Item1, x.Item2, x.Item3}).ToArray();
+                                                                                                     {
+                                                                                                         ("Value::StrProp", x => x.StrProp, "123"),
+                                                                                                         ("Value::StrProp", x => x.StrProp, null),
+                                                                                                         ("Value::IntProp", x => x.IntProp, 42),
+                                                                                                         ("Value::DoubleProp", x => x.DoubleProp, 1.5),
+                                                                                                         ("Value::ObjectProp", x => x.ObjectProp, new MarkerA()),
+                                                                                                         ("Value::ArrayIntProp", x => x.ArrayIntProp, new[] {1, 2, 10}),
+                                                                                                         ("Value::NullableInt", x => x.NullableInt, (int?)10),
+                                                                                                         ("Value::InnerObject.A.Value", x => x.InnerObject.A.Value, new MarkerA()),
+                                                                                                         ("Value::InnerObject.InnerArray[1].ElementProp.A", x => x.InnerObject.InnerArray[1].ElementProp.A, new MarkerB()),
+                                                                                                         ("Value::DictProperty", x => x.DictProperty, new Dictionary<string, MarkerC>()),
+                                                                                                         ("Value::DictProperty[\"Test\"]", x => x.DictProperty["Test"], new MarkerC()),
+                                                                                                         ("Value::DictPropertyIntKeys[123]", x => x.DictPropertyIntKeys[123], new MarkerD()),
+                                                                                                         ("Value::DictPropertyClasses[\"Lalala\"].A.Value", x => x.DictPropertyClasses["Lalala"].A.Value, new MarkerA()),
+                                                                                                         ("Value::ArrayOfObjects[].A.SimpleValue", x => x.ArrayOfObjects.Select(y => y.A.SimpleValue).ToArray(), new[] {1, 2, 10}),
+                                                                                                         ("Value::ArrayOfObjects[].A.SimpleValue", x => x.ArrayOfObjects.Select(y => y.A.SimpleValue).ToArray(), new List<int> {1, 2, 10}.Cast<object>().ToList()),
+                                                                                                     }
+                                                                                                 .Select(x => new[] {x.Item1, x.Item2, x.Item3}).ToArray();
 
         [TestCaseSource(nameof(ExtractChildObjectSetterTestSource))]
         public void ExtractChildObjectSetterTest(string expression, Func<ComplexModel, object> getter, object valueToSet)

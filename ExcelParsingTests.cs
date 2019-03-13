@@ -21,7 +21,7 @@ namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
         [Test]
         public void TestSimpleWithEnumerable()
         {
-            var(model, mappingForErrors) = Parse("simpleWithEnumerable_template.xlsx", "simpleWithEnumerable_target.xlsx");
+            var (model, mappingForErrors) = Parse("simpleWithEnumerable_template.xlsx", "simpleWithEnumerable_target.xlsx");
 
             Assert.AreEqual("C3", mappingForErrors["Type"]);
             Assert.AreEqual("B13", mappingForErrors["Items[0].Id"]);
