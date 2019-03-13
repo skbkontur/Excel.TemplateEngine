@@ -202,7 +202,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             var alternateContents = controls.ChildElements
                                             .Where(x => x is AlternateContent)
                                             .Select(x => x.GetFirstChild<AlternateContentChoice>().GetFirstChild<Control>())
-                                            .Select(x => (Control: (Control)x.CloneNode(true), CorrectId: x.Id))
+                                            .Select(x => (Control : (Control)x.CloneNode(true), CorrectId : x.Id))
                                             .Pipe(x => x.Control.Id = x.CorrectId)
                                             .Select(x => new AlternateContent(new AlternateContentChoice(x.Control) {Requires = "x14"}))
                                             .Pipe(x => x.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006"))
@@ -317,8 +317,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             get
             {
                 return (worksheet?.GetFirstChild<MergeCells>()?.Select(x => (MergeCell)x) ?? Enumerable.Empty<MergeCell>())
-                    .Select(mergeCell => mergeCell.Reference.Value.Split(':').ToArray())
-                    .Select(references => Tuple.Create(new ExcelCellIndex(references[0]), new ExcelCellIndex(references[1])));
+                       .Select(mergeCell => mergeCell.Reference.Value.Split(':').ToArray())
+                       .Select(references => Tuple.Create(new ExcelCellIndex(references[0]), new ExcelCellIndex(references[1])));
             }
         }
 

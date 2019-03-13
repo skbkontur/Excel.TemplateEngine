@@ -72,12 +72,12 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
         private static int GetCellXIndex(Cell cell)
         {
             return cell
-                .CellReference.Value
-                .TakeWhile(char.IsLetter)
-                .Select(c => c - 'A' + 1)
-                .Reverse()
-                .Select((v, i) => v * (int)Math.Pow(26, i))
-                .Sum();
+                   .CellReference.Value
+                   .TakeWhile(char.IsLetter)
+                   .Select(c => c - 'A' + 1)
+                   .Reverse()
+                   .Select((v, i) => v * (int)Math.Pow(26, i))
+                   .Sum();
         }
 
         private readonly Row row;
