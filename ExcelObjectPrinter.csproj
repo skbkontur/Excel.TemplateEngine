@@ -1,134 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1C8FDA28-788B-4015-8015-B31970A4E5B1}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>net472</TargetFramework>
     <RootNamespace>SKBKontur.Catalogue.ExcelObjectPrinter</RootNamespace>
     <AssemblyName>Catalogue.ExcelObjectPrinter</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\..\Assemblies\Temp\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\Assemblies\Temp\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Exceptions\BaseExcelSerializationException.cs" />
-    <Compile Include="Exceptions\EnumerableTooLongException.cs" />
-    <Compile Include="Exceptions\ObjectPropertyExtractionException.cs" />
-    <Compile Include="Helpers\ExcelTemplatePath.cs" />
-    <Compile Include="Helpers\ExpressionPrimitives.cs" />
-    <Compile Include="Helpers\ObjectPropertySettersExtractor.cs" />
-    <Compile Include="NavigationPrimitives\IRectangle.cs" />
-    <Compile Include="NavigationPrimitives\Rectangle.cs" />
-    <Compile Include="DataTypes\CellType.cs" />
-    <Compile Include="DocumentPrimitivesInterfaces\ICell.cs" />
-    <Compile Include="DocumentPrimitivesInterfaces\IColumn.cs" />
-    <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelCell.cs" />
-    <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelColumn.cs" />
-    <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelTable.cs" />
-    <Compile Include="ExcelDocumentPrimitivesImplementation\ExcelTablePart.cs" />
-    <Compile Include="FakeDocumentPrimitivesImplementation\FakeColumn.cs" />
-    <Compile Include="Helpers\JaggedArrayHelper.cs" />
-    <Compile Include="ParseCollection\IParserCollection.cs" />
-    <Compile Include="ParseCollection\ParserCollection.cs" />
-    <Compile Include="ParseCollection\Parsers\CheckBoxValueParser.cs" />
-    <Compile Include="ParseCollection\Parsers\ClassParser.cs" />
-    <Compile Include="ParseCollection\Parsers\DropDownValueParser.cs" />
-    <Compile Include="ParseCollection\Parsers\EnumerableMeasurer.cs" />
-    <Compile Include="ParseCollection\Parsers\IAtomicValueParser.cs" />
-    <Compile Include="ParseCollection\Parsers\IEnumerableMeasurer.cs" />
-    <Compile Include="ParseCollection\Parsers\IEnumerableParser.cs" />
-    <Compile Include="ParseCollection\Parsers\IFormValueParser.cs" />
-    <Compile Include="ParseCollection\Parsers\AtomicValueParser.cs" />
-    <Compile Include="ParseCollection\Parsers\IClassParser.cs" />
-    <Compile Include="ParseCollection\Parsers\EnumerableParser.cs" />
-    <Compile Include="ParseCollection\Parsers\ParsingParameters.cs" />
-    <Compile Include="RenderCollection\Renderers\CheckBoxRenderer.cs" />
-    <Compile Include="RenderCollection\Renderers\DropDownRenderer.cs" />
-    <Compile Include="RenderCollection\Renderers\IFormControlRenderer.cs" />
-    <Compile Include="TableNavigator\IStyle.cs" />
-    <Compile Include="NavigationPrimitives\ICellPosition.cs" />
-    <Compile Include="NavigationPrimitives\CellPosition.cs" />
-    <Compile Include="NavigationPrimitives\IObjectSize.cs" />
-    <Compile Include="DocumentPrimitivesInterfaces\ITable.cs" />
-    <Compile Include="DocumentPrimitivesInterfaces\ITablePart.cs" />
-    <Compile Include="FakeDocumentPrimitivesImplementation\FakeCell.cs" />
-    <Compile Include="FakeDocumentPrimitivesImplementation\FakeTablePart.cs" />
-    <Compile Include="FakeDocumentPrimitivesImplementation\FakeTable.cs" />
-    <Compile Include="Helpers\ObjectPropertiesExtractor.cs" />
-    <Compile Include="Helpers\TypeCheckingHelper.cs" />
-    <Compile Include="RenderCollection\Renderers\ClassRenderer.cs" />
-    <Compile Include="RenderCollection\Renderers\DecimalRenderer.cs" />
-    <Compile Include="RenderCollection\Renderers\DoubleRenderer.cs" />
-    <Compile Include="RenderCollection\Renderers\EnumerableRenderer.cs" />
-    <Compile Include="RenderCollection\Renderers\IntRenderer.cs" />
-    <Compile Include="RenderCollection\Renderers\IRenderer.cs" />
-    <Compile Include="RenderCollection\IRendererCollection.cs" />
-    <Compile Include="RenderCollection\RendererCollection.cs" />
-    <Compile Include="RenderCollection\Renderers\StringRenderer.cs" />
-    <Compile Include="TableNavigator\ITableNavigator.cs" />
-    <Compile Include="TableParser\ITableParser.cs" />
-    <Compile Include="TableNavigator\Style.cs" />
-    <Compile Include="TableNavigator\TableNavigator.cs" />
-    <Compile Include="TableParser\TableParser.cs" />
-    <Compile Include="TemplateEngine.cs" />
-    <Compile Include="TableBuilder\ITableBuilder.cs" />
-    <Compile Include="ITemplateEngine.cs" />
-    <Compile Include="RenderingTemplates\ITemplateCollection.cs" />
-    <Compile Include="RenderingTemplates\RenderingTemplate.cs" />
-    <Compile Include="RenderingTemplates\TemplateCollection.cs" />
-    <Compile Include="TableBuilder\TableBuilder.cs" />
-    <Compile Include="TableNavigator\TableNavigatorState.cs" />
-    <Compile Include="Helpers\TemplateDescriptionHelper.cs" />
-    <Compile Include="NavigationPrimitives\ObjectSize.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <ProjectReference Include="..\Commons\Commons.csproj" />
+    <ProjectReference Include="..\ExcelFileGenerator\ExcelFileGenerator.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Commons\Commons.csproj">
-      <Project>{95B2CCB1-0C83-4A9B-A33F-EA8B13FD099B}</Project>
-      <Name>Commons</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExcelFileGenerator\ExcelFileGenerator.csproj">
-      <Project>{24CB5CAE-413D-457D-8ECD-C5C689F6BD4D}</Project>
-      <Name>ExcelFileGenerator</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations">
-      <Version>2019.1.1</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
