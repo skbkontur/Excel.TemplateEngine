@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <RootNamespace>SKBKontur.Catalogue.ExcelObjectPrinter</RootNamespace>
+    <AssemblyName>Catalogue.ExcelObjectPrinter</AssemblyName>
+    <OutputPath>..\..\Assemblies\Temp\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Commons\Commons.csproj" />
+    <ProjectReference Include="..\ExcelFileGenerator\ExcelFileGenerator.csproj" />
+  </ItemGroup>
+
+</Project>
