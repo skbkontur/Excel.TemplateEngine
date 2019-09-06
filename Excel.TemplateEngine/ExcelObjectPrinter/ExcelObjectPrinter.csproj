@@ -1,10 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <RootNamespace>SKBKontur.Catalogue.ExcelObjectPrinter</RootNamespace>
-    <AssemblyName>Catalogue.ExcelObjectPrinter</AssemblyName>
-    <OutputPath>..\..\Assemblies\Temp\</OutputPath>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Commons\Commons.csproj" />
     <ProjectReference Include="..\ExcelFileGenerator\ExcelFileGenerator.csproj" />
   </ItemGroup>
 
