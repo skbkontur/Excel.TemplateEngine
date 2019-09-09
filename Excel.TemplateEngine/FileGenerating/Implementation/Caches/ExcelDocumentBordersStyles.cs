@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
-using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems;
+using Excel.TemplateEngine.FileGenerating.DataTypes;
+using Excel.TemplateEngine.FileGenerating.Implementation.CacheItems;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
+namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
 {
     internal class ExcelDocumentBordersStyles : IExcelDocumentBordersStyles
     {

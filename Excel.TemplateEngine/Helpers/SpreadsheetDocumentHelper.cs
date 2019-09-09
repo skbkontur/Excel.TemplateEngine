@@ -1,4 +1,4 @@
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
+namespace Excel.TemplateEngine.Helpers
 {
     public static class SpreadsheetDocumentHelper
     {

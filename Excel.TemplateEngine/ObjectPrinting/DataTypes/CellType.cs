@@ -1,4 +1,4 @@
-﻿namespace SKBKontur.Catalogue.ExcelObjectPrinter.DataTypes
+﻿namespace Excel.TemplateEngine.ObjectPrinting.DataTypes
 {
     public enum CellType
     {

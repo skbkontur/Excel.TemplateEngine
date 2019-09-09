@@ -1,6 +1,6 @@
-﻿using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
+﻿using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation
+namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation
 {
     public class ExcelColumn : IColumn
     {

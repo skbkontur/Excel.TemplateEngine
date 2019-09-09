@@ -1,8 +1,8 @@
-﻿using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
+﻿using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
+namespace Excel.TemplateEngine.ObjectPrinting.TableBuilder
 {
     public interface ITableBuilder
     {

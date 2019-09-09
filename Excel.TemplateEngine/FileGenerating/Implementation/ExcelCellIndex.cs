@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation
+namespace Excel.TemplateEngine.FileGenerating.Implementation
 {
     public class ExcelCellIndex
     {

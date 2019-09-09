@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplementation
+namespace Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation
 {
     public class FakeTablePart : ITablePart
     {

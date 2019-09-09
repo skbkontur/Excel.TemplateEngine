@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
+namespace Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces
 {
     public interface ITable
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
-using SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers;
-using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
+using Excel.TemplateEngine.Helpers;
+using Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
+using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection
+namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection
 {
     public class RendererCollection : IRendererCollection
     {

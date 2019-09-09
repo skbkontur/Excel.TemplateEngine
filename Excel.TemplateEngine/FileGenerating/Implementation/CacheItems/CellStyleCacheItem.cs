@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
+namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
 {
     public class CellStyleCacheItem : IEquatable<CellStyleCacheItem>
     {

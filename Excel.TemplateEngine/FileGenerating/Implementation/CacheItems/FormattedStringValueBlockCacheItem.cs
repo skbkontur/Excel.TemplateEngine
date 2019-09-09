@@ -1,8 +1,8 @@
 ﻿using System;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+using Excel.TemplateEngine.FileGenerating.DataTypes;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
+namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
 {
     public class FormattedStringValueBlockCacheItem : IEquatable<FormattedStringValueBlockCacheItem>
     {

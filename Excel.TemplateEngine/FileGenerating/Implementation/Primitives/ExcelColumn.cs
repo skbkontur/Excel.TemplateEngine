@@ -1,6 +1,6 @@
-﻿using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+﻿using Excel.TemplateEngine.FileGenerating.Interfaces;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
+namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 {
     public class ExcelColumn : IExcelColumn
     {

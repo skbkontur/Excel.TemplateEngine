@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
+namespace Excel.TemplateEngine.FileGenerating.Interfaces
 {
     public interface IExcelDocument : IDisposable
     {

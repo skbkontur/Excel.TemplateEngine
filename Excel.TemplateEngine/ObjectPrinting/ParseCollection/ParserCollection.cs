@@ -1,9 +1,9 @@
 ﻿using System;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
-using SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers;
+using Excel.TemplateEngine.Helpers;
+using Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
+namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection
 {
     public class ParserCollection : IParserCollection
     {

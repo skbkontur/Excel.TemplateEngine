@@ -1,4 +1,4 @@
-﻿namespace SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives
+﻿namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
 {
     public interface IRectangle
     {

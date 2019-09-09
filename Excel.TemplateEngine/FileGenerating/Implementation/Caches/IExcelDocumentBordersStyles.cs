@@ -1,6 +1,6 @@
-﻿using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+﻿using Excel.TemplateEngine.FileGenerating.DataTypes;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
+namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
 {
     internal interface IExcelDocumentBordersStyles
     {

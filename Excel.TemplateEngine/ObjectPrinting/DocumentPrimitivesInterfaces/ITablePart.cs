@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces
+namespace Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces
 {
     public interface ITablePart //TODO: {birne} порвать дубликаты
     {

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
-using SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection;
-using SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection;
-using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
+using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.ParseCollection;
+using Excel.TemplateEngine.ObjectPrinting.RenderCollection;
+using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter
+namespace Excel.TemplateEngine.ObjectPrinting
 {
     public class TemplateEngine : ITemplateEngine
     {

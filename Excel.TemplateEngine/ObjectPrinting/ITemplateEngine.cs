@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
+using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter
+namespace Excel.TemplateEngine.ObjectPrinting
 {
     public interface ITemplateEngine
     {

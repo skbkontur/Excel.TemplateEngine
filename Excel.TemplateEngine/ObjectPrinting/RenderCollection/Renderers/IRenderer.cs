@@ -1,7 +1,7 @@
-﻿using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
+﻿using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
+namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers
 {
     public interface IRenderer
     {

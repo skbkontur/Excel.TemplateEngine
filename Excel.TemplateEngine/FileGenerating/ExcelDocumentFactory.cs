@@ -1,9 +1,9 @@
 ﻿using System;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives;
-using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+using Excel.TemplateEngine.FileGenerating.Implementation.Primitives;
+using Excel.TemplateEngine.FileGenerating.Interfaces;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator
+namespace Excel.TemplateEngine.FileGenerating
 {
     public static class ExcelDocumentFactory
     {

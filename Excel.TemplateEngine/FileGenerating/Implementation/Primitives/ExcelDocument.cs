@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.Helpers;
-using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
-using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+using Excel.TemplateEngine.FileGenerating.Implementation.Caches;
+using Excel.TemplateEngine.FileGenerating.Interfaces;
+using Excel.TemplateEngine.Helpers;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
+namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 {
     public class ExcelDocument : IExcelDocument
     {

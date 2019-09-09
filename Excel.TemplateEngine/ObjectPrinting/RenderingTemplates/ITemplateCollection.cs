@@ -1,4 +1,4 @@
-﻿namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
+﻿namespace Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
 {
     public interface ITemplateCollection
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
+using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
+namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
     public interface IEnumerableMeasurer
     {

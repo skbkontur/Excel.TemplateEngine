@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
-using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
+using Excel.TemplateEngine.Helpers;
+using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation
+namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation
 {
     public class ExcelTable : ITable
     {

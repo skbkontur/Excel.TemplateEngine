@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives
+namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
 {
     public class Rectangle : IRectangle
     {

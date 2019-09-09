@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
+using Excel.TemplateEngine.ObjectPrinting.Exceptions;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
+namespace Excel.TemplateEngine.Helpers
 {
     public static class ObjectPropertySettersExtractor
     {

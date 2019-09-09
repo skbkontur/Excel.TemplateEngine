@@ -1,8 +1,8 @@
 ﻿using System;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
+using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
+namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
     public class DropDownValueParser : IFormValueParser
     {

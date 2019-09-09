@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.Exceptions;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
+namespace Excel.TemplateEngine.Helpers
 {
     public static class TemplateDescriptionHelper
     {

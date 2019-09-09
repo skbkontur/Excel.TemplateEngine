@@ -1,8 +1,8 @@
-﻿using SKBKontur.Catalogue.ExcelObjectPrinter.DataTypes;
-using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
+﻿using Excel.TemplateEngine.ObjectPrinting.DataTypes;
+using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplementation
+namespace Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation
 {
     public class FakeCell : ICell
     {

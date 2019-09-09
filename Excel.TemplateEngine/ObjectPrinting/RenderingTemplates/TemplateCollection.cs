@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
-using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
+using Excel.TemplateEngine.Helpers;
+using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates
+namespace Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
 {
     public class TemplateCollection : ITemplateCollection
     {

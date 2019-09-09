@@ -1,6 +1,6 @@
-﻿using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
+﻿using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
+namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers
 {
     public class DropDownRenderer : IFormControlRenderer
     {

@@ -1,4 +1,4 @@
-﻿namespace SKBKontur.Catalogue.ExcelFileGenerator.DataTypes
+﻿namespace Excel.TemplateEngine.FileGenerating.DataTypes
 {
     public class ExcelColor
     {

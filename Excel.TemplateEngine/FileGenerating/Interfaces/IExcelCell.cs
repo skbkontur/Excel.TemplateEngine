@@ -1,7 +1,7 @@
-﻿using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
-using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
+﻿using Excel.TemplateEngine.FileGenerating.DataTypes;
+using Excel.TemplateEngine.FileGenerating.Implementation;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
+namespace Excel.TemplateEngine.FileGenerating.Interfaces
 {
     public interface IExcelCell
     {

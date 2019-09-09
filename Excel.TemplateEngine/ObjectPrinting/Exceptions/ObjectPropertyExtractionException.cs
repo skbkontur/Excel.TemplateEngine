@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions
+namespace Excel.TemplateEngine.ObjectPrinting.Exceptions
 {
     public class ObjectPropertyExtractionException : BaseExcelSerializationException
     {

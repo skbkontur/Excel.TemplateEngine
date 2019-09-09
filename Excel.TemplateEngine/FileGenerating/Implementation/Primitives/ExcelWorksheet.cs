@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
-using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
-using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+using Excel.TemplateEngine.FileGenerating.DataTypes;
+using Excel.TemplateEngine.FileGenerating.Implementation.Caches;
+using Excel.TemplateEngine.FileGenerating.Interfaces;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
+namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 {
     public class ExcelWorksheet : IExcelWorksheet
     {

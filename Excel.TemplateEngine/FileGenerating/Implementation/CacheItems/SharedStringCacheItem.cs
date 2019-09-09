@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+using Excel.TemplateEngine.FileGenerating.DataTypes;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
+namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
 {
     public class SharedStringCacheItem : IEquatable<SharedStringCacheItem>
     {

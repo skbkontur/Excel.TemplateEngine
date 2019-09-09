@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
-using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
-using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
+using Excel.TemplateEngine.Helpers;
+using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
+namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
     public class ClassParser : IClassParser
     {

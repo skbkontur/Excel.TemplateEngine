@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Globalization;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
+using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableParser
+namespace Excel.TemplateEngine.ObjectPrinting.TableParser
 {
     public class TableParser : ITableParser
     {

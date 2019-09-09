@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
-using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
+using Excel.TemplateEngine.FileGenerating.Implementation.Caches;
+using Excel.TemplateEngine.FileGenerating.Interfaces;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
+namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 {
     internal class ExcelRow : IExcelRow
     {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
-using SKBKontur.Catalogue.ExcelFileGenerator.Helpers;
-using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems;
+using Excel.TemplateEngine.FileGenerating.DataTypes;
+using Excel.TemplateEngine.FileGenerating.Implementation.CacheItems;
+using Excel.TemplateEngine.Helpers;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
+namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
 {
     internal class ExcelDocumentStyle : IExcelDocumentStyle
     {

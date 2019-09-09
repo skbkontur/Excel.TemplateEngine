@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
+using Excel.TemplateEngine.FileGenerating.DataTypes;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Helpers
+namespace Excel.TemplateEngine.Helpers
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public static class ColorConverter

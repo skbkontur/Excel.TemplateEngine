@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
+namespace Excel.TemplateEngine.FileGenerating.Interfaces
 {
     public interface IExcelRow
     {

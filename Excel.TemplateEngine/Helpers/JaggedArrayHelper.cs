@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
+namespace Excel.TemplateEngine.Helpers
 {
     public static class JaggedArrayHelper
     {
