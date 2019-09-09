@@ -2,12 +2,7 @@
 
 using NUnit.Framework;
 
-using SKBKontur.Catalogue.ExcelFileGenerator;
-using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
-using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
-using SKBKontur.Catalogue.ServiceLib.Logging;
-
-namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
+namespace Excel.TemplateEngine.Tests.ExcelFileGeneratorTests
 {
     public class ExcelStyleTests : FileBasedTestBase
     {

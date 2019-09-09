@@ -2,11 +2,7 @@
 
 using NUnit.Framework;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
-using SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplementation;
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
-
-namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
+namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
 {
     [TestFixture]
     public class FakeDocumentPrimitivesTests

@@ -1,14 +1,8 @@
 ﻿using System.IO;
-using System.Linq;
 
 using NUnit.Framework;
 
-using SKBKontur.Catalogue.ExcelFileGenerator;
-using SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation;
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
-using SKBKontur.Catalogue.ServiceLib.Logging;
-
-namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
+namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
 {
     [TestFixture]
     public class ExcelPrimitivesWrappersTests : FileBasedTestBase

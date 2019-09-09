@@ -1,16 +1,6 @@
-﻿using System.Linq;
+﻿using NUnit.Framework;
 
-using NUnit.Framework;
-
-using SKBKontur.Catalogue.ExcelObjectPrinter.FakeDocumentPrimitivesImplementation;
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
-using SKBKontur.Catalogue.ServiceLib.Logging;
-
-using Vostok.Logging.Abstractions;
-
-namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
+namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
 {
     [TestFixture]
     public class TableBuilderTests

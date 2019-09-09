@@ -1,8 +1,6 @@
 ﻿using NUnit.Framework;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
-
-namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
+namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
 {
     public class CellPositionTests
     {

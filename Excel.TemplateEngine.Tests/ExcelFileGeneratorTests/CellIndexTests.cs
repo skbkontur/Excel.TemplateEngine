@@ -1,8 +1,6 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
-using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
-
-namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
+namespace Excel.TemplateEngine.Tests.ExcelFileGeneratorTests
 {
     [TestFixture]
     public class CellIndexTests

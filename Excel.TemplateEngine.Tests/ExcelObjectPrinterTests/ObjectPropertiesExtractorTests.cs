@@ -4,14 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-using JetBrains.Annotations;
-
 using NUnit.Framework;
 
-using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
-using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
-
-namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
+namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
 {
     [TestFixture]
     public class ObjectPropertiesExtractorTests

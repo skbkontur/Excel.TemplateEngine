@@ -2,10 +2,7 @@
 
 using NUnit.Framework;
 
-using SKBKontur.Catalogue.ExcelFileGenerator;
-using SKBKontur.Catalogue.ServiceLib.Logging;
-
-namespace SKBKontur.Catalogue.Core.Tests.ExcelFileGeneratorTests
+namespace Excel.TemplateEngine.Tests.ExcelFileGeneratorTests
 {
     public class WorksheetAdditionTests : FileBasedTestBase
     {

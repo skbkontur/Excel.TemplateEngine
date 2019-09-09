@@ -3,17 +3,7 @@ using System.IO;
 
 using NUnit.Framework;
 
-using SKBKontur.Catalogue.ExcelFileGenerator;
-using SKBKontur.Catalogue.ExcelObjectPrinter;
-using SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation;
-using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
-using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
-using SKBKontur.Catalogue.ServiceLib.Logging;
-
-namespace SKBKontur.Catalogue.Core.Tests.ExcelObjectPrinterTests
+namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
 {
     [TestFixture]
     public class ExcelParsingTests : FileBasedTestBase
