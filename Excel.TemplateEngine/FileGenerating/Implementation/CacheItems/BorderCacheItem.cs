@@ -67,7 +67,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
             case ExcelBorderType.Double:
                 return new EnumValue<BorderStyleValues>(BorderStyleValues.Double);
             default:
-                throw new InvalidProgramStateException($"Unknown border type: {borderType}");
+                throw new ArgumentOutOfRangeException(nameof(borderType));
             }
         }
 
