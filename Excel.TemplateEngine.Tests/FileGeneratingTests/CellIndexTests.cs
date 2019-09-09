@@ -1,3 +1,5 @@
+using Excel.TemplateEngine.FileGenerating.Implementation;
+
 using NUnit.Framework;
 
 namespace Excel.TemplateEngine.Tests.FileGeneratingTests

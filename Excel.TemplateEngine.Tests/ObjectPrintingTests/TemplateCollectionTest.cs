@@ -1,4 +1,10 @@
-﻿using NUnit.Framework;
+using System.Linq;
+
+using Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+
+using NUnit.Framework;
 
 namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {

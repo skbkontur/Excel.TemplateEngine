@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+
+using NUnit.Framework;
 
 namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {

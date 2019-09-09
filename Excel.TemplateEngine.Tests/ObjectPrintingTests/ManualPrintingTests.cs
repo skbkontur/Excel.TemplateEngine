@@ -1,5 +1,11 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
+
+using Excel.TemplateEngine.FileGenerating;
+using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
 using NUnit.Framework;
 
