@@ -26,10 +26,8 @@ namespace Excel.TemplateEngine.FileGenerating
 
         [NotNull]
         public static IExcelDocument CreateFromTemplate([NotNull] byte[] template, [NotNull] ILog logger)
-        {
-            var result = TryCreateFromTemplate(template, logger);
-            return result ?? throw new InvalidProgramStateException($"An error occurred while creating of {nameof(ExcelDocument)}");
-        }
+            => TryCreateFromTemplate(template, logger)
+               ?? throw new ExcelEngineException($"An error occurred while creating of {nameof(ExcelDocument)}");
 
         [NotNull]
         public static IExcelDocument CreateEmpty(bool useXlsm, [NotNull] ILog logger)

@@ -167,7 +167,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
             case BorderStyleValues.Double:
                 return ExcelBorderType.Double;
             default:
-                throw new InvalidProgramStateException($"Unknown border type: {borderStyle}");
+                throw new ArgumentOutOfRangeException(nameof(borderStyle));
             }
         }
 
@@ -254,7 +254,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
         private ExcelColor ThemeToExcelColor(uint theme, double tint)
         {
             if (theme >= colorSchemeElements.Count)
-                throw new InvalidProgramStateException($"Theme with id '{theme}' not found");
+                throw new ExcelEngineException($"Theme with id '{theme}' not found");
             var color2Type = colorSchemeElements[(int)theme];
             var rgbColor = color2Type?.RgbColorModelHex?.Val?.Value ?? color2Type?.SystemColor?.LastColor?.Value;
             if (rgbColor == null)

@@ -24,7 +24,7 @@ namespace Excel.TemplateEngine.ObjectPrinting
         public void Render<TModel>([NotNull] ITableBuilder tableBuilder, [NotNull] TModel model)
         {
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName)
-                                    ?? throw new InvalidProgramStateException($"Template with name {rootTemplateName} not found in xlsx");
+                                    ?? throw new ExcelEngineException($"Template with name {rootTemplateName} not found in xlsx");
             tableBuilder.CopyFormControlsFrom(templateTable);
             tableBuilder.CopyDataValidationsFrom(templateTable);
             tableBuilder.CopyWorksheetExtensionListFrom(templateTable); // WorksheetExtensionList contains info about data validations with ranges from other sheets, so copying it to support them.
@@ -37,7 +37,7 @@ namespace Excel.TemplateEngine.ObjectPrinting
             where TModel : new()
         {
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName)
-                                    ?? throw new InvalidProgramStateException($"Template with name {rootTemplateName} not found in xlsx");
+                                    ?? throw new ExcelEngineException($"Template with name {rootTemplateName} not found in xlsx");
             var parser = parserCollection.GetClassParser();
             var fieldsMappingForErrors = new Dictionary<string, string>();
             return (model : parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors : fieldsMappingForErrors);

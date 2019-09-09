@@ -18,9 +18,9 @@ namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
         public List<object> Parse([NotNull] ITableParser tableParser, [NotNull] Type modelType, int count, [NotNull] Action<string, string> addFieldMapping)
         {
             if (count < 0)
-                throw new InvalidProgramStateException($"Count should be positive ({count} found)");
+                throw new ExcelEngineException($"Count should be positive ({count} found)");
             if (count > ParsingParameters.MaxEnumerableLength)
-                throw new InvalidProgramStateException($"Lists longer than {ParsingParameters.MaxEnumerableLength} are not supported");
+                throw new ExcelEngineException($"Lists longer than {ParsingParameters.MaxEnumerableLength} are not supported");
 
             var parser = parserCollection.GetAtomicValueParser();
             var result = new List<object>();

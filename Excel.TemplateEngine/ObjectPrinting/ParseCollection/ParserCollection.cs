@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Excel.TemplateEngine.Helpers;
 using Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
@@ -21,7 +21,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection
         {
             if (TypeCheckingHelper.IsEnumerable(modelType))
                 return new EnumerableParser(this);
-            throw new InvalidProgramStateException($"{modelType} is not IEnumerable");
+            throw new ExcelEngineException($"{modelType} is not IEnumerable");
         }
 
         public IAtomicValueParser GetAtomicValueParser()
@@ -35,7 +35,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection
                 return new CheckBoxValueParser();
             if (formControlTypeName == "DropDown" && valueType == typeof(string))
                 return new DropDownValueParser();
-            throw new InvalidProgramStateException($"Unsupported pair of {nameof(formControlTypeName)} ({formControlTypeName}) and {nameof(valueType)} ({valueType}) for form controls");
+            throw new ExcelEngineException($"Unsupported pair of {nameof(formControlTypeName)} ({formControlTypeName}) and {nameof(valueType)} ({valueType}) for form controls");
         }
 
         public IEnumerableMeasurer GetEnumerableMeasurer()

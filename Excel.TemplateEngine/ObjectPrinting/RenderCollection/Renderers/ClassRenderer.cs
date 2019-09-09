@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 
 using Excel.TemplateEngine.Helpers;
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
@@ -104,7 +104,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers
             }
             catch (ObjectPropertyExtractionException exception)
             {
-                throw new InvalidProgramStateException($"Failed to extract child by path '{excelTemplatePath.RawPath}' in model of type {model.GetType()}", exception);
+                throw new ExcelEngineException($"Failed to extract child by path '{excelTemplatePath.RawPath}' in model of type {model.GetType()}", exception);
             }
         }
 

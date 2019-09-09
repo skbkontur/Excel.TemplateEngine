@@ -252,7 +252,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
         {
             var vmlDrawingParts = templateWorksheetPart.VmlDrawingParts.ToList();
             if (vmlDrawingParts.Count > 1)
-                throw new InvalidProgramStateException("More than one VmlDrawingPart found");
+                throw new ExcelEngineException("More than one VmlDrawingPart found");
             var vmlDrawingPart = vmlDrawingParts.SingleOrDefault();
             var vmlDrawingPartId = vmlDrawingPart == null ? null : templateWorksheetPart.GetIdOfPart(vmlDrawingPart);
             SafelyAddPart(targetWorksheet.WorksheetPart, vmlDrawingPart, vmlDrawingPartId);

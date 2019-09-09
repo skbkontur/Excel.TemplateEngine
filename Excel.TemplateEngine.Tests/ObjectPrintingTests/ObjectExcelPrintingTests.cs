@@ -236,7 +236,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                     var target = new ExcelTable(targetDocument.GetWorksheet(0));
                     var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), Log.DefaultLogger), new Style(template.GetCell(new CellPosition("A1"))));
 
-                    Assert.Throws<InvalidProgramStateException>(() => templateEngine.Render(tableBuilder, model));
+                    Assert.Throws<ExcelEngineException>(() => templateEngine.Render(tableBuilder, model));
                 }
             }
         }

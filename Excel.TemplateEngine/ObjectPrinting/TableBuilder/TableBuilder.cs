@@ -45,7 +45,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.TableBuilder
         {
             var formControl = target.TryGetCheckBoxFormControl(name);
             if (formControl == null)
-                throw new InvalidProgramStateException($"CheckBox with name {name} not found");
+                throw new ExcelEngineException($"CheckBox with name {name} not found");
             formControl.IsChecked = value;
             return this;
         }
@@ -55,7 +55,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.TableBuilder
         {
             var formControl = target.TryGetDropDownFormControl(name);
             if (formControl == null)
-                throw new InvalidProgramStateException($"DropDown with name {name} not found");
+                throw new ExcelEngineException($"DropDown with name {name} not found");
             formControl.SelectedValue = value;
             return this;
         }
