@@ -3,7 +3,7 @@ using System.Linq;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [Ignore("These tests can be used only for manual testing")]
     public class ManualPrintingTests : FileBasedTestBase

@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ExcelFileGeneratorTests
+namespace Excel.TemplateEngine.Tests.FileGeneratingTests
 {
     [TestFixture]
     public class CellIndexTests
