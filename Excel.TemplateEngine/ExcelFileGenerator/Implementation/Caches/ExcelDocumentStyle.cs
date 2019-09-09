@@ -1,22 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Spreadsheet;
-
-using JetBrains.Annotations;
 
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Helpers;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems;
-using SKBKontur.Catalogue.Objects;
-
-using Vostok.Logging.Abstractions;
-
-using ColorType = DocumentFormat.OpenXml.Spreadsheet.ColorType;
-using Fill = DocumentFormat.OpenXml.Spreadsheet.Fill;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
 {
@@ -207,7 +194,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches
             return new ExcelCellFontStyle
                 {
                     Bold = internalFont?.Bold != null,
-                    Size = internalFont?.FontSize == null ? (int?)null : Convert.ToInt32(internalFont.FontSize?.Val.Value),
+                    Size = internalFont?.FontSize == null ? (int?)null : Convert.ToInt32((object)internalFont.FontSize?.Val.Value),
                     Underlined = internalFont?.Underline != null,
                     Color = ToExcelColor(internalFont?.Color)
                 };

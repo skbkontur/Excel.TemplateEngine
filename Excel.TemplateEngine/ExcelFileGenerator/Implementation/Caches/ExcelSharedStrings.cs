@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using DocumentFormat.OpenXml.Spreadsheet;
-
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems;
 

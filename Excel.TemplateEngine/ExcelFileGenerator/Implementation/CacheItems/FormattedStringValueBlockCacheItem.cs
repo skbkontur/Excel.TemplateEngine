@@ -1,8 +1,5 @@
 ﻿using System;
 
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Spreadsheet;
-
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems

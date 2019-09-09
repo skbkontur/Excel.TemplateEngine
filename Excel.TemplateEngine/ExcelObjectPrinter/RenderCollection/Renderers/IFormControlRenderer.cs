@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
+﻿using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection.Renderers
 {

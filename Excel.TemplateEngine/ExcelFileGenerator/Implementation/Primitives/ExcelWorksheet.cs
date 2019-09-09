@@ -3,24 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-using C5;
-
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-
-using JetBrains.Annotations;
-
-using MoreLinq;
-
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
-using SKBKontur.Catalogue.Objects;
-
-using Vostok.Logging.Abstractions;
-
-using Tuple = System.Tuple;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
@@ -288,10 +273,9 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         public IEnumerable<IExcelCell> SearchCellsByText(string text)
         {
-            return rowsCache.Select(x => x.Value)
-                            .SelectMany(row => row.Elements<Cell>())
-                            .Select(internalCell => new ExcelCell(internalCell, documentStyle, excelSharedStrings))
-                            .Where(cell => cell.GetStringValue()?.Contains(text) ?? false);
+            return Enumerable.Where<ExcelCell>(rowsCache.Select(x => x.Value)
+                                                       .SelectMany(row => row.Elements<Cell>())
+                                                       .Select(internalCell => new ExcelCell(internalCell, documentStyle, excelSharedStrings)), cell => cell.GetStringValue()?.Contains(text) ?? false);
         }
 
         public IEnumerable<IExcelRow> Rows { get { return rowsCache.Select(x => new ExcelRow(x.Value, documentStyle, excelSharedStrings)); } }
@@ -317,7 +301,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             get
             {
                 return (worksheet?.GetFirstChild<MergeCells>()?.Select(x => (MergeCell)x) ?? Enumerable.Empty<MergeCell>())
-                       .Select(mergeCell => mergeCell.Reference.Value.Split(':').ToArray())
+                       .Select(mergeCell => Enumerable.ToArray<string>(mergeCell.Reference.Value.Split(':')))
                        .Select(references => Tuple.Create(new ExcelCellIndex(references[0]), new ExcelCellIndex(references[1])));
             }
         }

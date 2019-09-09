@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 
-using Vostok.Logging.Abstractions;
-
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator
 {
     public class TableNavigator : ITableNavigator

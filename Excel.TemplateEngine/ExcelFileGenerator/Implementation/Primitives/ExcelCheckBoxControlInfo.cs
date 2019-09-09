@@ -1,14 +1,8 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 
-using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-
-using JetBrains.Annotations;
-
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
-using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
@@ -33,7 +27,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 lock (GlobalVmlDrawingPart)
                 {
                     const string ns = "urn:schemas-microsoft-com:office:excel";
-                    var xdoc = XDocument.Load(GlobalVmlDrawingPart.GetStream());
+                    var xdoc = XDocument.Load((Stream)GlobalVmlDrawingPart.GetStream());
                     // ReSharper disable once ConstantConditionalAccessQualifier
                     var clientData = xdoc.Root?.Elements()?.SingleOrDefault(x => x.Attribute("id")?.Value == Control.Name)?.Element(XName.Get("ClientData", ns));
                     if (clientData == null)
@@ -42,7 +36,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                     checkedElement?.Remove();
                     if (value)
                         clientData.Add(new XElement(XName.Get("Checked", ns), "1"));
-                    xdoc.Save(GlobalVmlDrawingPart.GetStream());
+                    xdoc.Save((Stream)GlobalVmlDrawingPart.GetStream());
                 }
             }
         }

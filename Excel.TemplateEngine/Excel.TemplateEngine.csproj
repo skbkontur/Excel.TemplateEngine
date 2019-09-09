@@ -8,11 +8,17 @@
     <PackageReference Include="morelinq" Version="3.1.1" />
     <PackageReference Include="C5" Version="2.5.3" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.9.1" />
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\empty.xlsx" />
-    <EmbeddedResource Include="Resources\empty.xlsm" />
+    <None Remove="ExcelFileGenerator\Resources\empty.xlsm" />
+    <None Remove="ExcelFileGenerator\Resources\empty.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ExcelFileGenerator\Resources\empty.xlsm" />
+    <EmbeddedResource Include="ExcelFileGenerator\Resources\empty.xlsx" />
   </ItemGroup>
 
 </Project>

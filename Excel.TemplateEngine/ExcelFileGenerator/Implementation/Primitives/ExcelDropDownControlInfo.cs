@@ -1,17 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-
-using JetBrains.Annotations;
-
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
-using SKBKontur.Catalogue.Objects;
-
-using Vostok.Logging.Abstractions;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
@@ -48,7 +40,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 const string ns = "urn:schemas-microsoft-com:office:excel";
                 lock (GlobalVmlDrawingPart)
                 {
-                    var xdoc = XDocument.Load(GlobalVmlDrawingPart.GetStream());
+                    var xdoc = XDocument.Load((Stream)GlobalVmlDrawingPart.GetStream());
                     // ReSharper disable once ConstantConditionalAccessQualifier
                     var clientData = xdoc.Root?.Elements()?.Single(x => x.Attribute("id")?.Value == Control.Name)?.Element(XName.Get("ClientData", ns));
                     if (clientData == null)
@@ -56,7 +48,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                     var checkedElement = clientData.Element(XName.Get("Sel", ns));
                     checkedElement?.Remove();
                     clientData.Add(new XElement(XName.Get("Sel", ns), (index + 1).ToString()));
-                    xdoc.Save(GlobalVmlDrawingPart.GetStream());
+                    xdoc.Save((Stream)GlobalVmlDrawingPart.GetStream());
                 }
             }
         }

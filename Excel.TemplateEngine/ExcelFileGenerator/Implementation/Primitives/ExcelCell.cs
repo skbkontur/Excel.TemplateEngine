@@ -1,8 +1,5 @@
 ﻿using System.Globalization;
 
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Spreadsheet;
-
 using SKBKontur.Catalogue.ExcelFileGenerator.DataTypes;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;

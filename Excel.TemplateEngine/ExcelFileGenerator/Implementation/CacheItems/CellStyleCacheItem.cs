@@ -1,8 +1,5 @@
 ﻿using System;
 
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Spreadsheet;
-
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.CacheItems
 {
     public class CellStyleCacheItem : IEquatable<CellStyleCacheItem>

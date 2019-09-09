@@ -2,13 +2,10 @@
 using System.Globalization;
 using System.Linq;
 
-using JetBrains.Annotations;
-
 using SKBKontur.Catalogue.ExcelObjectPrinter.DataTypes;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;
-using SKBKontur.Catalogue.Objects;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder
 {

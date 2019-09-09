@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Globalization;
 
-using JetBrains.Annotations;
-
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableNavigator;

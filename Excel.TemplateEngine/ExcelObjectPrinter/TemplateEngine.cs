@@ -1,16 +1,11 @@
 ﻿using System.Collections.Generic;
 
-using JetBrains.Annotations;
-
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderCollection;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableBuilder;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
-using SKBKontur.Catalogue.Objects;
-
-using Vostok.Logging.Abstractions;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter
 {

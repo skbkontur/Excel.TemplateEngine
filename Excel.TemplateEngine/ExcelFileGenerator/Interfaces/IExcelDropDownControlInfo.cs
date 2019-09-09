@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
+﻿namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
 {
     public interface IExcelDropDownControlInfo : IExcelFormControlInfo
     {

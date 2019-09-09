@@ -2,9 +2,6 @@
 
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers;
-using SKBKontur.Catalogue.Objects;
-
-using Vostok.Logging.Abstractions;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection
 {

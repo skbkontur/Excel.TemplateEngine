@@ -1,10 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
-using JetBrains.Annotations;
-
-using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
-using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives;

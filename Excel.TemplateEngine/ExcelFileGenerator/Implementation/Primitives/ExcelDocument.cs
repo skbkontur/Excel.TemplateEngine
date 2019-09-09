@@ -1,23 +1,12 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
 
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-
-using JetBrains.Annotations;
-
-using MoreLinq;
-
 using SKBKontur.Catalogue.ExcelFileGenerator.Helpers;
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
-using SKBKontur.Catalogue.Objects;
-
-using Vostok.Logging.Abstractions;
 
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 {
@@ -32,8 +21,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
             documentMemoryStream.Write(template, 0, template.Length);
             spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true);
 
-            documentStyle = new ExcelDocumentStyle(spreadsheetDocument.GetOrCreateSpreadsheetStyles(), spreadsheetDocument.WorkbookPart.ThemePart.Theme, this.logger);
-            excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.GetOrCreateSpreadsheetSharedStrings());
+            documentStyle = new ExcelDocumentStyle(SpreadsheetDocumentHelper.GetOrCreateSpreadsheetStyles(spreadsheetDocument), spreadsheetDocument.WorkbookPart.ThemePart.Theme, this.logger);
+            excelSharedStrings = new ExcelSharedStrings(SpreadsheetDocumentHelper.GetOrCreateSpreadsheetSharedStrings(spreadsheetDocument));
             spreadsheetDisposed = false;
 
             SetDefaultCreatorAndEditor();
@@ -171,7 +160,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
             var sheetId = 1u;
             if (sheets.Elements<Sheet>().Any())
-                sheetId = sheets.Elements<Sheet>().Select(s => s.SheetId.Value).Max() + 1;
+                sheetId = Enumerable.Max<uint>(sheets.Elements<Sheet>().Select(s => s.SheetId.Value)) + 1;
 
             var sheet = new Sheet
                 {
@@ -205,7 +194,7 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
                 worksheet.MergedCells
                          .Select(mergedCells => string.Format("{0}:{1}\n", mergedCells.Item1.CellReference, mergedCells.Item2.CellReference))
                          .OrderBy(s => s)
-                         .ForEach(s => stringBuilder.Append(s));
+                         .ForEach(s => stringBuilder.Append((string)s));
 
                 stringBuilder.Append("\nColumns info:\n");
                 worksheet.Columns

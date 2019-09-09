@@ -1,5 +1,4 @@
-﻿using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
-using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
+﻿using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ExcelDocumentPrimitivesImplementation
 {

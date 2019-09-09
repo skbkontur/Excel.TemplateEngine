@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using JetBrains.Annotations;
-
 using SKBKontur.Catalogue.ExcelObjectPrinter.Exceptions;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers

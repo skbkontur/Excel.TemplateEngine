@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Spreadsheet;
-
 using SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Caches;
 using SKBKontur.Catalogue.ExcelFileGenerator.Interfaces;
 
@@ -71,9 +68,8 @@ namespace SKBKontur.Catalogue.ExcelFileGenerator.Implementation.Primitives
 
         private static int GetCellXIndex(Cell cell)
         {
-            return cell
-                   .CellReference.Value
-                   .TakeWhile(char.IsLetter)
+            return Enumerable.TakeWhile<char>(cell
+                                    .CellReference.Value, char.IsLetter)
                    .Select(c => c - 'A' + 1)
                    .Reverse()
                    .Select((v, i) => v * (int)Math.Pow(26, i))

@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using SKBKontur.Catalogue.Objects;
-
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.Helpers
 {
     public static class TypeCheckingHelper

@@ -3,15 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using JetBrains.Annotations;
-
 using SKBKontur.Catalogue.ExcelObjectPrinter.DocumentPrimitivesInterfaces;
 using SKBKontur.Catalogue.ExcelObjectPrinter.Helpers;
 using SKBKontur.Catalogue.ExcelObjectPrinter.RenderingTemplates;
 using SKBKontur.Catalogue.ExcelObjectPrinter.TableParser;
-using SKBKontur.Catalogue.Objects;
-
-using Vostok.Logging.Abstractions;
 
 namespace SKBKontur.Catalogue.ExcelObjectPrinter.ParseCollection.Parsers
 {

@@ -1,6 +1,4 @@
-﻿using SKBKontur.Catalogue.ExcelFileGenerator.Implementation;
-
-namespace SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives
+﻿namespace SKBKontur.Catalogue.ExcelObjectPrinter.NavigationPrimitives
 {
     public class CellPosition : ICellPosition
     {

@@ -1,7 +1,5 @@
 ﻿using System;
 
-using JetBrains.Annotations;
-
 namespace SKBKontur.Catalogue.ExcelFileGenerator.Interfaces
 {
     public interface IExcelDocument : IDisposable
