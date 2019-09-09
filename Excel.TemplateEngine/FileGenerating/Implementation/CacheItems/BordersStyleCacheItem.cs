@@ -47,16 +47,16 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
         {
             return new Border
                 {
-                    LeftBorder = LeftBorder == null ? null : LeftBorder.ToBorder<LeftBorder>(),
-                    RightBorder = RightBorder == null ? null : RightBorder.ToBorder<RightBorder>(),
-                    TopBorder = TopBorder == null ? null : TopBorder.ToBorder<TopBorder>(),
-                    BottomBorder = BottomBorder == null ? null : BottomBorder.ToBorder<BottomBorder>()
+                    LeftBorder = LeftBorder?.ToBorder<LeftBorder>(),
+                    RightBorder = RightBorder?.ToBorder<RightBorder>(),
+                    TopBorder = TopBorder?.ToBorder<TopBorder>(),
+                    BottomBorder = BottomBorder?.ToBorder<BottomBorder>()
                 };
         }
 
-        public BorderCacheItem LeftBorder { get; private set; }
-        public BorderCacheItem RightBorder { get; private set; }
-        public BorderCacheItem TopBorder { get; private set; }
-        public BorderCacheItem BottomBorder { get; private set; }
+        public BorderCacheItem LeftBorder { get; }
+        public BorderCacheItem RightBorder { get; }
+        public BorderCacheItem TopBorder { get; }
+        public BorderCacheItem BottomBorder { get; }
     }
 }

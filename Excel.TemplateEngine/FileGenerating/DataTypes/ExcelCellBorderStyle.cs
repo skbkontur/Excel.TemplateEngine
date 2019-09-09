@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Excel.TemplateEngine.FileGenerating.DataTypes
 {
@@ -11,8 +11,8 @@ namespace Excel.TemplateEngine.FileGenerating.DataTypes
         {
             var lines = new List<string>();
             if (Color != null)
-                lines.Add(string.Format("Color = {0}", Color));
-            lines.Add(string.Format("BorderType = {0}", BorderType));
+                lines.Add($"Color = {Color}");
+            lines.Add($"BorderType = {BorderType}");
 
             return "\n\t\t\t\t" + string.Join("\n\t\t\t\t", lines) + "\n\t\t\t";
         }

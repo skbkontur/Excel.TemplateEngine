@@ -50,13 +50,11 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
         }
 
         private HexBinaryValue GetRGBString()
-        {
-            return new HexBinaryValue {Value = string.Format("{0:X2}{1:X2}{2:X2}{3:X2}", Alpha, Red, Green, Blue)};
-        }
+            => new HexBinaryValue {Value = $"{Alpha:X2}{Red:X2}{Green:X2}{Blue:X2}"};
 
-        private int Red { get; set; }
-        private int Green { get; set; }
-        private int Blue { get; set; }
-        private int Alpha { get; set; }
+        private int Red { get; }
+        private int Green { get; }
+        private int Blue { get; }
+        private int Alpha { get; }
     }
 }

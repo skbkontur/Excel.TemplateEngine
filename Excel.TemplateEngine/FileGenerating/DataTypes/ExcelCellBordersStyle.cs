@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Excel.TemplateEngine.FileGenerating.DataTypes
 {
@@ -13,13 +13,13 @@ namespace Excel.TemplateEngine.FileGenerating.DataTypes
         {
             var lines = new List<string>();
             if (LeftBorder != null && LeftBorder.BorderType != ExcelBorderType.None)
-                lines.Add(string.Format("LeftBorder = {{{0}}}", LeftBorder));
+                lines.Add($"LeftBorder = {{{LeftBorder}}}");
             if (RightBorder != null && RightBorder.BorderType != ExcelBorderType.None)
-                lines.Add(string.Format("RightBorder = {{{0}}}", RightBorder));
+                lines.Add($"RightBorder = {{{RightBorder}}}");
             if (TopBorder != null && TopBorder.BorderType != ExcelBorderType.None)
-                lines.Add(string.Format("LeftBorder = {{{0}}}", TopBorder));
+                lines.Add($"LeftBorder = {{{TopBorder}}}");
             if (BottomBorder != null && BottomBorder.BorderType != ExcelBorderType.None)
-                lines.Add(string.Format("RightBorder = {{{0}}}", BottomBorder));
+                lines.Add($"RightBorder = {{{BottomBorder}}}");
 
             if (lines.Count != 0)
                 return "\n\t\t\t" + string.Join("\n\t\t\t", lines) + "\n\t\t";

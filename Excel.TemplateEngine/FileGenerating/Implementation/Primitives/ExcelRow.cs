@@ -21,12 +21,12 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 
         public IExcelCell CreateCell(int index)
         {
-            var cellRefernce = new ExcelCellIndex((int)row.RowIndex.Value, index).CellReference;
+            var cellReference = new ExcelCellIndex((int)row.RowIndex.Value, index).CellReference;
 
-            if (row.Elements<Cell>().Any(c => c.CellReference.Value == cellRefernce))
-                return new ExcelCell(row.Elements<Cell>().First(c => c.CellReference.Value == cellRefernce), documentStyle, excelSharedStrings);
+            if (row.Elements<Cell>().Any(c => c.CellReference.Value == cellReference))
+                return new ExcelCell(row.Elements<Cell>().First(c => c.CellReference.Value == cellReference), documentStyle, excelSharedStrings);
 
-            var refCell = row.Elements<Cell>().FirstOrDefault(cell => IsCellReferenceGreaterThan(cell.CellReference.Value, cellRefernce));
+            var refCell = row.Elements<Cell>().FirstOrDefault(cell => IsCellReferenceGreaterThan(cell.CellReference.Value, cellReference));
             var newCell = new Cell
                 {
                     CellReference = new ExcelCellIndex((int)row.RowIndex.Value, index).CellReference
@@ -71,8 +71,8 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 
         private static int GetCellXIndex(Cell cell)
         {
-            return Enumerable.TakeWhile<char>(cell
-                                    .CellReference.Value, char.IsLetter)
+            return cell
+                   .CellReference.Value.TakeWhile(char.IsLetter)
                    .Select(c => c - 'A' + 1)
                    .Reverse()
                    .Select((v, i) => v * (int)Math.Pow(26, i))

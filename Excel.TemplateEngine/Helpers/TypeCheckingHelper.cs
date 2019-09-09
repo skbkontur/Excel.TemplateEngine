@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,35 +8,23 @@ namespace Excel.TemplateEngine.Helpers
     public static class TypeCheckingHelper
     {
         public static bool IsEnumerable(Type type)
-        {
-            return type != typeof(string) &&
-                   (IsEnumerableDirectly(type) || type.GetInterfaces().Any(IsEnumerableDirectly));
-        }
+            => type != typeof(string) &&
+               (IsEnumerableDirectly(type) || type.GetInterfaces().Any(IsEnumerableDirectly));
 
-        public static bool IsDictionary(Type type)
-        {
-            return IsDictionaryDirectly(type) || type.GetInterfaces().Any(IsDictionaryDirectly);
-        }
+        public static bool IsDictionary(Type type) 
+            => IsDictionaryDirectly(type) || type.GetInterfaces().Any(IsDictionaryDirectly);
 
-        public static bool IsIList(Type type)
-        {
-            return type != typeof(string) && (IsIListDirectly(type) || type.GetInterfaces().Any(IsIListDirectly));
-        }
+        public static bool IsIList(Type type) 
+            => type != typeof(string) && (IsIListDirectly(type) || type.GetInterfaces().Any(IsIListDirectly));
 
-        public static bool IsNullable(Type type)
-        {
-            return Nullable.GetUnderlyingType(type) != null;
-        }
+        public static bool IsNullable(Type type) 
+            => Nullable.GetUnderlyingType(type) != null;
 
-        public static Type GetEnumerableItemType(Type type)
-        {
-            return GetImplementedEnumerableInterface(type).GetGenericArguments().SingleOrDefault() ?? typeof(object);
-        }
+        public static Type GetEnumerableItemType(Type type) 
+            => GetImplementedEnumerableInterface(type).GetGenericArguments().SingleOrDefault() ?? typeof(object);
 
-        public static Type GetIListItemType(Type type)
-        {
-            return GetImplementedIListInterface(type).GetGenericArguments().SingleOrDefault() ?? typeof(object);
-        }
+        public static Type GetIListItemType(Type type) 
+            => GetImplementedIListInterface(type).GetGenericArguments().SingleOrDefault() ?? typeof(object);
 
         public static (Type keyType, Type valueType) GetDictionaryGenericTypeArguments(Type type)
         {
@@ -73,34 +61,22 @@ namespace Excel.TemplateEngine.Helpers
             return type.GetInterfaces().FirstOrDefault(IsGenericIListDirectly) ?? type.GetInterfaces().FirstOrDefault(IsIListDirectly);
         }
 
-        private static bool IsGenericEnumerableDirectly(Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
-        }
+        private static bool IsGenericEnumerableDirectly(Type type) 
+            => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
 
-        private static bool IsGenericDictionaryDirectly(Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IDictionary<,>);
-        }
+        private static bool IsGenericDictionaryDirectly(Type type) 
+            => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IDictionary<,>);
 
-        private static bool IsEnumerableDirectly(Type type)
-        {
-            return type == typeof(IEnumerable) || IsGenericEnumerableDirectly(type);
-        }
+        private static bool IsEnumerableDirectly(Type type) 
+            => type == typeof(IEnumerable) || IsGenericEnumerableDirectly(type);
 
-        private static bool IsDictionaryDirectly(Type type)
-        {
-            return type == typeof(IDictionary) || IsGenericDictionaryDirectly(type);
-        }
+        private static bool IsDictionaryDirectly(Type type) 
+            => type == typeof(IDictionary) || IsGenericDictionaryDirectly(type);
 
-        private static bool IsIListDirectly(Type type)
-        {
-            return type == typeof(IList) || IsGenericIListDirectly(type);
-        }
+        private static bool IsIListDirectly(Type type) 
+            => type == typeof(IList) || IsGenericIListDirectly(type);
 
-        private static bool IsGenericIListDirectly(Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IList<>);
-        }
+        private static bool IsGenericIListDirectly(Type type) 
+            => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IList<>);
     }
 }

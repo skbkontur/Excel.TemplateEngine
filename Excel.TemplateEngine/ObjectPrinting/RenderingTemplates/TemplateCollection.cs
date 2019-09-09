@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 using Excel.TemplateEngine.Helpers;
@@ -20,8 +20,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
             if (string.IsNullOrEmpty(templateName))
                 return null;
 
-            RenderingTemplate template;
-            if (cache.TryGetValue(templateName, out template))
+            if (cache.TryGetValue(templateName, out var template))
                 return template;
 
             AddNewTemplateIntoCache(templateName);
@@ -37,8 +36,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
             if (cell == null)
                 return;
 
-            IRectangle range;
-            if (!TemplateDescriptionHelper.TryExtractCoordinates(cell.StringValue, out range))
+            if (!TemplateDescriptionHelper.TryExtractCoordinates(cell.StringValue, out var range))
                 return;
 
             var newTemplate = BuildNewRenderingTemplate(range);
@@ -64,7 +62,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
 
         private ICell SearchTemplateDescription(string templateName)
         {
-            var templateNameWithPrefix = string.Format("Template:{0}:", templateName);
+            var templateNameWithPrefix = $"Template:{templateName}:";
             return templateTable.SearchCellByText(templateNameWithPrefix).FirstOrDefault();
         }
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Excel.TemplateEngine.FileGenerating.DataTypes
 {
@@ -12,8 +12,8 @@ namespace Excel.TemplateEngine.FileGenerating.DataTypes
         {
             var lines = new List<string>
                 {
-                    string.Format("HorizontalAlignment = {0}", HorizontalAlignment),
-                    string.Format("VerticalAlignment = {0}", VerticalAlignment)
+                    $"HorizontalAlignment = {HorizontalAlignment}",
+                    $"VerticalAlignment = {VerticalAlignment}"
                 };
 
             if (WrapText)

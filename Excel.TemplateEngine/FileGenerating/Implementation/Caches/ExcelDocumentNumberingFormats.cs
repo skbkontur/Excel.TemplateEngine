@@ -21,8 +21,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
             if (format == null)
                 return 0;
             var cacheItem = new NumberingFormatCacheItem(format);
-            uint formatId;
-            if (cache.TryGetValue(cacheItem, out formatId))
+            if (cache.TryGetValue(cacheItem, out var formatId))
                 return formatId;
             if (stylesheet.NumberingFormats == null)
             {

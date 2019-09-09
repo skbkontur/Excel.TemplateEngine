@@ -1,4 +1,4 @@
-﻿using Excel.TemplateEngine.FileGenerating.Interfaces;
+using Excel.TemplateEngine.FileGenerating.Interfaces;
 
 namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 {
@@ -10,7 +10,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
             Index = index;
         }
 
-        public double Width { get; private set; }
-        public int Index { get; private set; }
+        public double Width { get; }
+        public int Index { get; }
     }
 }

@@ -47,7 +47,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
         {
             return new Font
                 {
-                    Color = color == null ? null : color.ToColor<Color>(),
+                    Color = color?.ToColor<Color>(),
                     FontSize = size == null ? null : new FontSize {Val = size},
                     Underline = underlined ? new Underline() : null,
                     Bold = bold ? new Bold() : null

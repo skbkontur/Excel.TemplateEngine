@@ -31,7 +31,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
             throw new InvalidProgramStateException($"Type {itemType} is not a supported atomic value");
         }
 
-        private bool Parse<T>(Func<(bool succeed, T result)> parse, out object result)
+        private static bool Parse<T>(Func<(bool succeed, T result)> parse, out object result)
         {
             var (succeed, res) = parse();
             result = res;

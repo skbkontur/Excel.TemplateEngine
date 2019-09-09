@@ -13,9 +13,9 @@ namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementat
 {
     public class ExcelTable : ITable
     {
-        public ExcelTable([NotNull] IExcelWorksheet excelWotksheet)
+        public ExcelTable([NotNull] IExcelWorksheet excelWorksheet)
         {
-            internalTable = excelWotksheet;
+            internalTable = excelWorksheet;
         }
 
         public ICell GetCell(ICellPosition position)
@@ -48,8 +48,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementat
             {
                 for (var y = rectangle.UpperLeft.RowIndex; y <= rectangle.LowerRight.RowIndex; ++y)
                 {
-                    ExcelCell cell;
-                    if (!excelReferenceToCell.TryGetValue(new CellPosition(y, x).CellReference, out cell))
+                    if (!excelReferenceToCell.TryGetValue(new CellPosition(y, x).CellReference, out var cell))
                         cell = new ExcelCell(internalTable.InsertCell(new ExcelCellIndex(y, x)));
 
                     subTable[y - rectangle.UpperLeft.RowIndex][x - rectangle.UpperLeft.ColumnIndex] = cell;

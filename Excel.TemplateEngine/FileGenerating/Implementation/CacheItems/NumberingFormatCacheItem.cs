@@ -27,20 +27,15 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
             return Equals((NumberingFormatCacheItem)obj);
         }
 
-        public override int GetHashCode()
-        {
-            return FormatCode.GetHashCode();
-        }
+        public override int GetHashCode() => FormatCode.GetHashCode();
 
         public NumberingFormat ToNumberingFormat(uint formatId)
-        {
-            return new NumberingFormat
+            => new NumberingFormat
                 {
                     FormatCode = new StringValue(FormatCode),
                     NumberFormatId = formatId
                 };
-        }
 
-        public string FormatCode { get; private set; }
+        public string FormatCode { get; }
     }
 }

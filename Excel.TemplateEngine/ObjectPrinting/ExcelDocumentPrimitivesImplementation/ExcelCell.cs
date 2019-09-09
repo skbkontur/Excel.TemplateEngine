@@ -12,7 +12,11 @@ namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementat
             internalCell = excelCell;
         }
 
-        public string StringValue { get { return internalCell.GetStringValue(); } set { internalCell.SetStringValue(value); } }
+        public string StringValue
+        {
+            get => internalCell.GetStringValue();
+            set => internalCell.SetStringValue(value);
+        }
 
         public CellType CellType
         {
@@ -31,7 +35,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementat
             internalCell.SetStyle(excelCell.internalCell.GetStyle());
         }
 
-        public ICellPosition CellPosition { get { return new CellPosition(internalCell.GetCellIndex()); } }
+        public ICellPosition CellPosition => new CellPosition(internalCell.GetCellIndex());
 
         private readonly IExcelCell internalCell;
     }

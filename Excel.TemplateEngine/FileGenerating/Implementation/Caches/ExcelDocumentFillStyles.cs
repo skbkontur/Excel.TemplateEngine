@@ -21,8 +21,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
             if (format == null)
                 return 0;
             var cacheItem = new FillStyleCacheItem(format);
-            uint result;
-            if (cache.TryGetValue(cacheItem, out result))
+            if (cache.TryGetValue(cacheItem, out var result))
                 return result;
             if (stylesheet.Fills == null)
             {

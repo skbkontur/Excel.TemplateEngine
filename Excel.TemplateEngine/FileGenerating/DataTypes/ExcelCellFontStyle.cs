@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Excel.TemplateEngine.FileGenerating.DataTypes
 {
@@ -13,9 +13,9 @@ namespace Excel.TemplateEngine.FileGenerating.DataTypes
         {
             var lines = new List<string>();
             if (Size != null)
-                lines.Add(string.Format("Size = {0}", Size.Value));
+                lines.Add($"Size = {Size.Value}");
             if (Color != null)
-                lines.Add(string.Format("Color = {0}", Color));
+                lines.Add($"Color = {Color}");
             if (Underlined)
                 lines.Add("Underlined");
             if (Bold)

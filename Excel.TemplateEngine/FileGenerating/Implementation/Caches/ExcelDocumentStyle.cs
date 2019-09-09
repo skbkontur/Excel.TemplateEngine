@@ -173,7 +173,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
 
         private ExcelCellNumberingFormat GetCellNumberingFormat(uint numberFormatId)
         {
-            if (TryExtractStandartNumberingFormat(numberFormatId, out var result))
+            if (TryExtractStandardNumberingFormat(numberFormatId, out var result))
                 return result;
 
             var numberFormat = (NumberingFormat)stylesheet?.NumberingFormats?.ChildElements
@@ -186,7 +186,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
             return new ExcelCellNumberingFormat(numberFormat.FormatCode.Value);
         }
 
-        private static bool TryExtractStandartNumberingFormat(uint numberingFormat, out ExcelCellNumberingFormat result)
+        private static bool TryExtractStandardNumberingFormat(uint numberingFormat, out ExcelCellNumberingFormat result)
         {
             result = null;
             if (numberingFormat == 2)
@@ -240,7 +240,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
         }
 
         [CanBeNull]
-        private ExcelColor RgbStringToExcelColor([NotNull] string hexRgbColor)
+        private static ExcelColor RgbStringToExcelColor([NotNull] string hexRgbColor)
         {
             if (hexRgbColor.Length == 6)
                 hexRgbColor = "FF" + hexRgbColor;

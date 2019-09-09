@@ -18,8 +18,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
         public uint AddSharedString(FormattedStringValue value)
         {
             var cacheItem = new SharedStringCacheItem(value);
-            uint result;
-            if (!cache.TryGetValue(cacheItem, out result))
+            if (!cache.TryGetValue(cacheItem, out var result))
             {
                 if (sharedStringTable.UniqueCount == null)
                     sharedStringTable.UniqueCount = 0;

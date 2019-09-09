@@ -27,22 +27,17 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
             return Equals((FillStyleCacheItem)obj);
         }
 
-        public override int GetHashCode()
-        {
-            return Color.GetHashCode();
-        }
+        public override int GetHashCode() => Color.GetHashCode();
 
         public Fill ToFill()
-        {
-            return new Fill
+            => new Fill
                 {
                     PatternFill = new PatternFill(Color.ToColor<ForegroundColor>())
                         {
                             PatternType = new EnumValue<PatternValues>(PatternValues.Solid)
                         }
                 };
-        }
 
-        private ColorCacheItem Color { get; set; }
+        private ColorCacheItem Color { get; }
     }
 }

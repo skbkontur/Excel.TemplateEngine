@@ -29,8 +29,8 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
             documentMemoryStream.Write(template, 0, template.Length);
             spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true);
 
-            documentStyle = new ExcelDocumentStyle(SpreadsheetDocumentHelper.GetOrCreateSpreadsheetStyles(spreadsheetDocument), spreadsheetDocument.WorkbookPart.ThemePart.Theme, this.logger);
-            excelSharedStrings = new ExcelSharedStrings(SpreadsheetDocumentHelper.GetOrCreateSpreadsheetSharedStrings(spreadsheetDocument));
+            documentStyle = new ExcelDocumentStyle(spreadsheetDocument.GetOrCreateSpreadsheetStyles(), spreadsheetDocument.WorkbookPart.ThemePart.Theme, this.logger);
+            excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.GetOrCreateSpreadsheetSharedStrings());
             spreadsheetDisposed = false;
 
             SetDefaultCreatorAndEditor();
@@ -168,7 +168,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 
             var sheetId = 1u;
             if (sheets.Elements<Sheet>().Any())
-                sheetId = Enumerable.Max<uint>(sheets.Elements<Sheet>().Select(s => s.SheetId.Value)) + 1;
+                sheetId = sheets.Elements<Sheet>().Select(s => s.SheetId.Value).Max() + 1;
 
             var sheet = new Sheet
                 {
@@ -200,7 +200,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 
                 stringBuilder.Append("\nMerged cells info:\n");
                 worksheet.MergedCells
-                         .Select(mergedCells => string.Format("{0}:{1}\n", mergedCells.Item1.CellReference, mergedCells.Item2.CellReference))
+                         .Select(mergedCells => $"{mergedCells.Item1.CellReference}:{mergedCells.Item2.CellReference}\n")
                          .OrderBy(s => s)
                          .ForEach(s => stringBuilder.Append((string)s));
 

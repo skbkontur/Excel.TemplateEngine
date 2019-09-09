@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
@@ -6,7 +6,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
     public class CheckBoxValueParser : IFormValueParser
     {
-        public bool TryParse(ITableParser tableParser, string name, Type modelType, out object result)
+        public bool TryParse(ITableParser tableParser, string name, out object result)
         {
             if (!tableParser.TryParseCheckBoxValue(name, out var parseResult))
             {

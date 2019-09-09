@@ -68,11 +68,11 @@ namespace Excel.TemplateEngine.Helpers
             if (!IsCorrectTemplateDescription(templateDescription))
                 return false;
 
-            rectangle = ExctractCoordinates(templateDescription);
+            rectangle = ExtractCoordinates(templateDescription);
             return true;
         }
 
-        private static IRectangle ExctractCoordinates(string expression)
+        private static IRectangle ExtractCoordinates(string expression)
         {
             var upperLeft = new CellPosition(cellReferenceRegex.Matches(expression)[0].Value);
             var lowerRight = new CellPosition(cellReferenceRegex.Matches(expression)[1].Value);

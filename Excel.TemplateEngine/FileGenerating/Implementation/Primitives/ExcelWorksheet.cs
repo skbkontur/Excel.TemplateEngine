@@ -285,9 +285,9 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 
         public IEnumerable<IExcelCell> SearchCellsByText(string text)
         {
-            return Enumerable.Where<ExcelCell>(rowsCache.Select(x => x.Value)
-                                                       .SelectMany(row => row.Elements<Cell>())
-                                                       .Select(internalCell => new ExcelCell(internalCell, documentStyle, excelSharedStrings)), cell => cell.GetStringValue()?.Contains(text) ?? false);
+            return rowsCache.Select(x => x.Value)
+                            .SelectMany(row => row.Elements<Cell>())
+                            .Select(internalCell => new ExcelCell(internalCell, documentStyle, excelSharedStrings)).Where(cell => cell.GetStringValue()?.Contains(text) ?? false);
         }
 
         public IEnumerable<IExcelRow> Rows { get { return rowsCache.Select(x => new ExcelRow(x.Value, documentStyle, excelSharedStrings)); } }
@@ -313,7 +313,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
             get
             {
                 return (worksheet?.GetFirstChild<MergeCells>()?.Select(x => (MergeCell)x) ?? Enumerable.Empty<MergeCell>())
-                       .Select(mergeCell => Enumerable.ToArray<string>(mergeCell.Reference.Value.Split(':')))
+                       .Select(mergeCell => mergeCell.Reference.Value.Split(':').ToArray())
                        .Select(references => Tuple.Create(new ExcelCellIndex(references[0]), new ExcelCellIndex(references[1])));
             }
         }

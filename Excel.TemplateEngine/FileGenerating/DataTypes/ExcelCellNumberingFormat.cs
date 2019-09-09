@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 
 namespace Excel.TemplateEngine.FileGenerating.DataTypes
 {
@@ -14,11 +14,8 @@ namespace Excel.TemplateEngine.FileGenerating.DataTypes
             FormatCode = formatCode;
         }
 
-        public override string ToString()
-        {
-            return string.Format("FormatCode = {0}", FormatCode);
-        }
+        public override string ToString() => $"FormatCode = {FormatCode}";
 
-        public string FormatCode { get; private set; }
+        public string FormatCode { get; }
     }
 }
