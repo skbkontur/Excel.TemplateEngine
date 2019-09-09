@@ -1,7 +1,9 @@
-﻿using System;
+using System;
 
 using Excel.TemplateEngine.FileGenerating.Implementation.Primitives;
 using Excel.TemplateEngine.FileGenerating.Interfaces;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.FileGenerating
 {

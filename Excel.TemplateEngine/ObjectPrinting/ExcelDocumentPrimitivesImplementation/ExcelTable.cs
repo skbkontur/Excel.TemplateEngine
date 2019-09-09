@@ -1,8 +1,13 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Linq;
 
+using Excel.TemplateEngine.FileGenerating.Implementation;
+using Excel.TemplateEngine.FileGenerating.Interfaces;
 using Excel.TemplateEngine.Helpers;
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation
 {

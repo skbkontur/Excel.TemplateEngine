@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using Excel.TemplateEngine.FileGenerating.DataTypes;
 using Excel.TemplateEngine.FileGenerating.Implementation;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.FileGenerating.Interfaces
 {

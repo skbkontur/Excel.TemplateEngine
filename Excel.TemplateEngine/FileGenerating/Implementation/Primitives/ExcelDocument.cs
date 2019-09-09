@@ -1,12 +1,20 @@
-﻿using System;
+using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
 
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+
 using Excel.TemplateEngine.FileGenerating.Implementation.Caches;
 using Excel.TemplateEngine.FileGenerating.Interfaces;
 using Excel.TemplateEngine.Helpers;
+
+using JetBrains.Annotations;
+
+using MoreLinq;
 
 namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 {

@@ -1,4 +1,6 @@
-﻿namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
+using Excel.TemplateEngine.FileGenerating.Implementation;
+
+namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
 {
     public class CellPosition : ICellPosition
     {

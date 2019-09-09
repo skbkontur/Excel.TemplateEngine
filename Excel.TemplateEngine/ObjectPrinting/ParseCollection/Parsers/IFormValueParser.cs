@@ -1,6 +1,8 @@
-﻿using System;
+using System;
 
 using Excel.TemplateEngine.ObjectPrinting.TableParser;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {

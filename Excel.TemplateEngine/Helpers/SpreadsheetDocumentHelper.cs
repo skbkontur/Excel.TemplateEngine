@@ -1,3 +1,6 @@
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+
 namespace Excel.TemplateEngine.Helpers
 {
     public static class SpreadsheetDocumentHelper

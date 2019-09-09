@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -6,6 +6,8 @@ using Excel.TemplateEngine.ObjectPrinting.DataTypes;
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.TableBuilder
 {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +7,8 @@ using Excel.TemplateEngine.Helpers;
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
 using Excel.TemplateEngine.ObjectPrinting.TableParser;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {

@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 
 using Excel.TemplateEngine.Helpers;
 using Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
 using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection
 {

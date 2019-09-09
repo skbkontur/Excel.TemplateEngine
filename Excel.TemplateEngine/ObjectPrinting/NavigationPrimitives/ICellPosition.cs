@@ -1,4 +1,4 @@
-﻿namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
+namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
 {
     public interface ICellPosition
     {
@@ -9,7 +9,7 @@
         string CellReference { get; }
     }
 
-    public static class CellPositionExtentions
+    public static class CellPositionExtensions
     {
         public static ICellPosition ToRelativeCoordinates(this ICellPosition globalCoordinates, ICellPosition newOrigin)
         {

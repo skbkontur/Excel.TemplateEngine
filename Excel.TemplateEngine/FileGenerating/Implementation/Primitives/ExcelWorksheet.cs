@@ -1,11 +1,23 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
+using C5;
+
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+
 using Excel.TemplateEngine.FileGenerating.DataTypes;
 using Excel.TemplateEngine.FileGenerating.Implementation.Caches;
 using Excel.TemplateEngine.FileGenerating.Interfaces;
+
+using JetBrains.Annotations;
+
+using MoreLinq;
+
+using Tuple = System.Tuple;
 
 namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 {

@@ -1,9 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 using Excel.TemplateEngine.FileGenerating.DataTypes;
 using Excel.TemplateEngine.FileGenerating.Implementation.CacheItems;
 using Excel.TemplateEngine.Helpers;
+
+using JetBrains.Annotations;
+
+using ColorType = DocumentFormat.OpenXml.Spreadsheet.ColorType;
+using Fill = DocumentFormat.OpenXml.Spreadsheet.Fill;
 
 namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
 {

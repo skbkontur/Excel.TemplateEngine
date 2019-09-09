@@ -1,4 +1,6 @@
-﻿namespace Excel.TemplateEngine.FileGenerating.Interfaces
+using JetBrains.Annotations;
+
+namespace Excel.TemplateEngine.FileGenerating.Interfaces
 {
     public interface IExcelDropDownControlInfo : IExcelFormControlInfo
     {

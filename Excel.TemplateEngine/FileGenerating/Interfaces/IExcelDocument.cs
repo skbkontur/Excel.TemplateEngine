@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.FileGenerating.Interfaces
 {
