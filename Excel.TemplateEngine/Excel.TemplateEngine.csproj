@@ -12,13 +12,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ExcelFileGenerator\Resources\empty.xlsm" />
-    <None Remove="ExcelFileGenerator\Resources\empty.xlsx" />
+    <None Remove="FileGenerating\Resources\empty.xlsm" />
+    <None Remove="FileGenerating\Resources\empty.xlsx" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ExcelFileGenerator\Resources\empty.xlsm" />
-    <EmbeddedResource Include="ExcelFileGenerator\Resources\empty.xlsx" />
+    <EmbeddedResource Include="FileGenerating\Resources\empty.xlsm" />
+    <EmbeddedResource Include="FileGenerating\Resources\empty.xlsx" />
   </ItemGroup>
 
 </Project>
