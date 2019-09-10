@@ -11,7 +11,7 @@ using JetBrains.Annotations;
 
 using Vostok.Logging.Abstractions;
 
-namespace Excel.TemplateEngine.ObjectPrinting
+namespace Excel.TemplateEngine
 {
     public class TemplateEngine : ITemplateEngine
     {

@@ -5,7 +5,7 @@ using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting
+namespace Excel.TemplateEngine
 {
     public interface ITemplateEngine
     {
