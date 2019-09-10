@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -48,7 +47,9 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
                 const string ns = "urn:schemas-microsoft-com:office:excel";
                 lock (GlobalVmlDrawingPart)
                 {
-                    var xdoc = XDocument.Load((Stream)GlobalVmlDrawingPart.GetStream());
+                    XDocument xdoc;
+                    using (var stream = GlobalVmlDrawingPart.GetStream())
+                        xdoc = XDocument.Load(stream);
                     // ReSharper disable once ConstantConditionalAccessQualifier
                     var clientData = xdoc.Root?.Elements()?.Single(x => x.Attribute("id")?.Value == Control.Name)?.Element(XName.Get("ClientData", ns));
                     if (clientData == null)
@@ -56,7 +57,8 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
                     var checkedElement = clientData.Element(XName.Get("Sel", ns));
                     checkedElement?.Remove();
                     clientData.Add(new XElement(XName.Get("Sel", ns), (index + 1).ToString()));
-                    xdoc.Save((Stream)GlobalVmlDrawingPart.GetStream());
+                    using (var stream = GlobalVmlDrawingPart.GetStream())
+                        xdoc.Save(stream);
                 }
             }
         }

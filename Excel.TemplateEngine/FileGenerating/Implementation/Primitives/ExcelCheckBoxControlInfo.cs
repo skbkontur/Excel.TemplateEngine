@@ -1,4 +1,3 @@
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -33,7 +32,10 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
                 lock (GlobalVmlDrawingPart)
                 {
                     const string ns = "urn:schemas-microsoft-com:office:excel";
-                    var xdoc = XDocument.Load((Stream)GlobalVmlDrawingPart.GetStream());
+
+                    XDocument xdoc;
+                    using (var stream = GlobalVmlDrawingPart.GetStream())
+                        xdoc = XDocument.Load(stream);
                     // ReSharper disable once ConstantConditionalAccessQualifier
                     var clientData = xdoc.Root?.Elements()?.SingleOrDefault(x => x.Attribute("id")?.Value == Control.Name)?.Element(XName.Get("ClientData", ns));
                     if (clientData == null)
@@ -42,7 +44,8 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
                     checkedElement?.Remove();
                     if (value)
                         clientData.Add(new XElement(XName.Get("Checked", ns), "1"));
-                    xdoc.Save((Stream)GlobalVmlDrawingPart.GetStream());
+                    using (var stream = GlobalVmlDrawingPart.GetStream())
+                        xdoc.Save(stream);
                 }
             }
         }
