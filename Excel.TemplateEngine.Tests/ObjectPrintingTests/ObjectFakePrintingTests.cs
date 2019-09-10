@@ -9,6 +9,8 @@ using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
 using NUnit.Framework;
 
+using Vostok.Logging.Console;
+
 namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
@@ -408,7 +410,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             }
         }
 
-        private readonly ILog logger = Log.For(typeof(ObjectFakePrintingTests));
+        private readonly ConsoleLog logger = new ConsoleLog();
 
         public class DocumentWithArray
         {

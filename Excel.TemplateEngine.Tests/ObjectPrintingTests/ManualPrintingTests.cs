@@ -9,6 +9,8 @@ using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
 using NUnit.Framework;
 
+using Vostok.Logging.Console;
+
 namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [Ignore("These tests can be used only for manual testing")]
@@ -17,8 +19,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestPrintingDropDownFromTheOtherWorksheet()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("printingDropDownFromTheOtherWorksheet.xlsx")), Log.DefaultLogger))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("printingDropDownFromTheOtherWorksheet.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 targetDocument.CopyVbaInfoFrom(templateDocument);
 
@@ -26,17 +28,17 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                 {
                     var worksheet = templateDocument.GetWorksheet(index);
                     var name = templateDocument.GetWorksheetName(index);
-                    var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet), Log.DefaultLogger);
+                    var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet), logger);
                     var targetWorksheet = targetDocument.AddWorksheet(name);
-                    var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1"), Log.DefaultLogger));
+                    var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1"), logger));
                     innerTemplateEngine.Render(innerTableBuilder, new {});
                 }
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), Log.DefaultLogger);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {Type = "Значение 2"});
 
@@ -51,16 +53,16 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestPrintingVbaMacros()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("printingVbaMacros.xlsm")), Log.DefaultLogger))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsm")), Log.DefaultLogger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("printingVbaMacros.xlsm")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsm")), logger))
             {
                 targetDocument.CopyVbaInfoFrom(templateDocument);
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), Log.DefaultLogger);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {Type = "123"});
 
@@ -75,14 +77,14 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestColumnsSwitching()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("columnsSwitching.xlsx")), Log.DefaultLogger))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("columnsSwitching.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), Log.DefaultLogger);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {A = "First", B = true, C = "Third", D = new[] {1, 2, 3}, E = "Fifth"});
 
@@ -108,14 +110,14 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestDataValidations()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("dataValidations.xlsx")), Log.DefaultLogger))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("dataValidations.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), Log.DefaultLogger);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {Test = "b"});
 
@@ -132,14 +134,14 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestColors()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("colors.xlsx")), Log.DefaultLogger))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("colors.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), Log.DefaultLogger);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {});
 
@@ -155,8 +157,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestDataValidationsFromTheOtherWorksheet()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("otherSheetDataValidations.xlsx")), Log.DefaultLogger))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("otherSheetDataValidations.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 targetDocument.CopyVbaInfoFrom(templateDocument);
 
@@ -164,17 +166,17 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                 {
                     var worksheet = templateDocument.GetWorksheet(index);
                     var name = templateDocument.GetWorksheetName(index);
-                    var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet), Log.DefaultLogger);
+                    var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet), logger);
                     var targetWorksheet = targetDocument.AddWorksheet(name);
-                    var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1"), Log.DefaultLogger));
+                    var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1"), logger));
                     innerTemplateEngine.Render(innerTableBuilder, new {});
                 }
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), Log.DefaultLogger);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {});
 
@@ -189,14 +191,14 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestPrintingComments()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("comments.xlsx")), Log.DefaultLogger))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("comments.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), Log.DefaultLogger);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {});
 
@@ -208,5 +210,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                 Assert.Fail($"Please manually open file:\n{path}\nand check that cells has same comments as in\n{templatePath}\n");
             }
         }
+
+        private readonly ConsoleLog logger = new ConsoleLog();
     }
 }

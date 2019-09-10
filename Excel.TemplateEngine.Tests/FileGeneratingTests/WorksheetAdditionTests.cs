@@ -4,6 +4,8 @@ using Excel.TemplateEngine.FileGenerating;
 
 using NUnit.Framework;
 
+using Vostok.Logging.Console;
+
 namespace Excel.TemplateEngine.Tests.FileGeneratingTests
 {
     public class WorksheetAdditionTests : FileBasedTestBase
@@ -11,7 +13,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
         [Test]
         public void WorksheetAdditionTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger);
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), new ConsoleLog());
             document.AddWorksheet("Лист2");
             var worksheet = document.GetWorksheet(1);
             Assert.AreNotEqual(null, worksheet);

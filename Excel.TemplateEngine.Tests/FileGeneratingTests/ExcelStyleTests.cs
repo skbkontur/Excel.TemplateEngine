@@ -6,6 +6,8 @@ using Excel.TemplateEngine.FileGenerating.Implementation;
 
 using NUnit.Framework;
 
+using Vostok.Logging.Console;
+
 namespace Excel.TemplateEngine.Tests.FileGeneratingTests
 {
     public class ExcelStyleTests : FileBasedTestBase
@@ -13,7 +15,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
         [Test]
         public void CellColorExtractionTest()
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
@@ -25,7 +27,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
         [Test]
         public void CellFontExtractionTest()
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
@@ -41,7 +43,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
         [Test]
         public void CellNumberFormatExtractionTest()
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
@@ -51,7 +53,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
         [Test]
         public void CellBorderFormatExtractionTest()
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
@@ -64,7 +66,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
         [Test]
         public void CellAlignmentExtractionTest()
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
@@ -75,9 +77,11 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
         [Test]
         public void NullCellStyleAccessTest()
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A2"));
             cell.GetStyle();
         }
+
+        private readonly ConsoleLog logger = new ConsoleLog();
     }
 }

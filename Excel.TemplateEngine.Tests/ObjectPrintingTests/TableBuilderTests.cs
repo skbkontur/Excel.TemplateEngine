@@ -7,6 +7,8 @@ using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
 using NUnit.Framework;
 
+using Vostok.Logging.Console;
+
 namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
@@ -240,6 +242,6 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             Assert.AreEqual(mergedCells[1].LowerRight.CellReference, "D6");
         }
 
-        private readonly ILog logger = Log.For(typeof(TableBuilderTests));
+        private readonly ConsoleLog logger = new ConsoleLog();
     }
 }

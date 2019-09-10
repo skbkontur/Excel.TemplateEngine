@@ -5,6 +5,8 @@ using Excel.TemplateEngine.FileGenerating;
 
 using NUnit.Framework;
 
+using Vostok.Logging.Console;
+
 namespace Excel.TemplateEngine.Tests.FileGeneratingTests
 {
     [TestFixture]
@@ -13,7 +15,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
         [Test]
         public void MergedCellsExtractionTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var worksheet = document.GetWorksheet(0);
 
             var cells = worksheet.MergedCells.ToArray();
@@ -30,7 +32,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
         [Test]
         public void MergedCellsExtractionEmptyTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger);
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger);
             var worksheet = document.GetWorksheet(0);
 
             var cells = worksheet.MergedCells.ToArray();
@@ -39,5 +41,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
 
             document.Dispose();
         }
+
+        private readonly ConsoleLog logger = new ConsoleLog();
     }
 }
