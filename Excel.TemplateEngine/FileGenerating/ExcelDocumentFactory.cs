@@ -5,6 +5,8 @@ using Excel.TemplateEngine.FileGenerating.Interfaces;
 
 using JetBrains.Annotations;
 
+using Vostok.Logging.Abstractions;
+
 namespace Excel.TemplateEngine.FileGenerating
 {
     public static class ExcelDocumentFactory

@@ -12,6 +12,8 @@ using Excel.TemplateEngine.Helpers;
 
 using JetBrains.Annotations;
 
+using Vostok.Logging.Abstractions;
+
 using ColorType = DocumentFormat.OpenXml.Spreadsheet.ColorType;
 using Fill = DocumentFormat.OpenXml.Spreadsheet.Fill;
 

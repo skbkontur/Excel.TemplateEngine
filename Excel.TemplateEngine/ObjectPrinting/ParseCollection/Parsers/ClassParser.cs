@@ -10,6 +10,8 @@ using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
 using JetBrains.Annotations;
 
+using Vostok.Logging.Abstractions;
+
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
     public class ClassParser : IClassParser

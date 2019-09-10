@@ -1,7 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+
+using Vostok.Logging.Abstractions;
 
 namespace Excel.TemplateEngine.ObjectPrinting.TableNavigator
 {

@@ -17,6 +17,8 @@ using JetBrains.Annotations;
 
 using MoreLinq;
 
+using Vostok.Logging.Abstractions;
+
 using Tuple = System.Tuple;
 
 namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives

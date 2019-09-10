@@ -16,6 +16,8 @@ using JetBrains.Annotations;
 
 using MoreLinq;
 
+using Vostok.Logging.Abstractions;
+
 namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 {
     public class ExcelDocument : IExcelDocument

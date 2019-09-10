@@ -3,6 +3,8 @@ using System;
 using Excel.TemplateEngine.Helpers;
 using Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
 
+using Vostok.Logging.Abstractions;
+
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection
 {
     public class ParserCollection : IParserCollection
