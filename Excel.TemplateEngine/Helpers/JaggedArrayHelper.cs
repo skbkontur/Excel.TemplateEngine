@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
 namespace Excel.TemplateEngine.Helpers
 {
-    public static class JaggedArrayHelper
+    internal static class JaggedArrayHelper
     {
         public static T CreateJaggedArray<T>(params int[] lengths)
         {

@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Excel.TemplateEngine.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="morelinq" Version="3.1.1" />
     <PackageReference Include="C5" Version="2.5.3" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.9.1" />

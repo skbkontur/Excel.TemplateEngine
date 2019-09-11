@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 using Excel.TemplateEngine.FileGenerating.DataTypes;
@@ -6,7 +6,7 @@ using Excel.TemplateEngine.FileGenerating.DataTypes;
 namespace Excel.TemplateEngine.Helpers
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public static class ColorConverter
+    internal static class ColorConverter
     {
         public struct HslColor
         {

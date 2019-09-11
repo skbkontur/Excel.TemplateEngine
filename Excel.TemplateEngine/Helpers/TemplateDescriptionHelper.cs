@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.Helpers
 {
-    public static class TemplateDescriptionHelper
+    internal static class TemplateDescriptionHelper
     {
         public static string GetTemplateNameFromValueDescription(string expression)
         {

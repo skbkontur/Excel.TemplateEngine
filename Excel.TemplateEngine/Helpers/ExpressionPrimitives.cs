@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.Helpers
 {
-    public static class ExpressionPrimitives
+    internal static class ExpressionPrimitives
     {
         [NotNull]
         public static Expression ForFromTo([NotNull] ParameterExpression loopVar, [NotNull] Expression lInclusive, [NotNull] Expression rExclusive, [NotNull] Expression body)

@@ -7,7 +7,7 @@ using Excel.TemplateEngine.Exceptions;
 
 namespace Excel.TemplateEngine.Helpers
 {
-    public static class TypeCheckingHelper
+    internal static class TypeCheckingHelper
     {
         public static bool IsEnumerable(Type type)
             => type != typeof(string) &&

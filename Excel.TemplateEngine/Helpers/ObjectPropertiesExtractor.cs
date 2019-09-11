@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.Helpers
 {
-    public static class ObjectPropertiesExtractor
+    internal static class ObjectPropertiesExtractor
     {
         [CanBeNull]
         public static object ExtractChildObject([NotNull] object model, [NotNull] ExcelTemplatePath path)

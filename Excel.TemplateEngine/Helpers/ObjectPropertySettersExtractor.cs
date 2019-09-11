@@ -11,7 +11,7 @@ using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.Helpers
 {
-    public static class ObjectPropertySettersExtractor
+    internal static class ObjectPropertySettersExtractor
     {
         [NotNull]
         public static Action<object> ExtractChildObjectSetter([NotNull] object model, [NotNull] ExcelTemplatePath path)

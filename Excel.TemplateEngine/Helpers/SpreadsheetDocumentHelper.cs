@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Excel.TemplateEngine.Helpers
 {
-    public static class SpreadsheetDocumentHelper
+    internal static class SpreadsheetDocumentHelper
     {
         public static Stylesheet GetOrCreateSpreadsheetStyles(this SpreadsheetDocument document)
         {

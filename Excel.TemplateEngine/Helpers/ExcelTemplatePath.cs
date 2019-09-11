@@ -4,7 +4,7 @@ using Excel.TemplateEngine.Exceptions;
 
 namespace Excel.TemplateEngine.Helpers
 {
-    public class ExcelTemplatePath
+    internal class ExcelTemplatePath
     {
         private ExcelTemplatePath(string rawPath)
         {
