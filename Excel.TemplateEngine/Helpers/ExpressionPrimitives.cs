@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
-using Excel.TemplateEngine.ObjectPrinting.Exceptions;
+using Excel.TemplateEngine.Exceptions;
 
 using JetBrains.Annotations;
 
@@ -146,6 +146,6 @@ namespace Excel.TemplateEngine.Helpers
         [NotNull]
         private static MethodInfo GetMethod([NotNull] Type type, [NotNull] string name)
             => type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static)
-               ?? throw new ExcelEngineException($"Method '{name}' not found in '{type}'");
+               ?? throw new ExcelTemplateEngineException($"Method '{name}' not found in '{type}'");
     }
 }

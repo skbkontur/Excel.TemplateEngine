@@ -1,6 +1,6 @@
-﻿using System.Linq;
+using System.Linq;
 
-using Excel.TemplateEngine.ObjectPrinting.Exceptions;
+using Excel.TemplateEngine.Exceptions;
 
 namespace Excel.TemplateEngine.Helpers
 {

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using Excel.TemplateEngine.Exceptions;
+
 namespace Excel.TemplateEngine.Helpers
 {
     public static class TypeCheckingHelper
@@ -29,12 +31,12 @@ namespace Excel.TemplateEngine.Helpers
         public static (Type keyType, Type valueType) GetDictionaryGenericTypeArguments(Type type)
         {
             if (!IsDictionary(type))
-                throw new ExcelEngineException($"{nameof(type)} ({type}) should implement IDictionary<,> or IDictionary");
+                throw new ExcelTemplateEngineException($"{nameof(type)} ({type}) should implement IDictionary<,> or IDictionary");
             var genericArguments = GetImplementedDictionaryInterface(type).GetGenericArguments();
             if (!genericArguments.Any())
                 return (typeof(object), typeof(object));
             if (genericArguments.Length != 2)
-                throw new ExcelEngineException($"Dict can have only 0 or 2 generic arguments, but here is {genericArguments.Length} of them ({string.Join(", ", genericArguments.Select(x => x.ToString()))}). Type is '{type}'.");
+                throw new ExcelTemplateEngineException($"Dict can have only 0 or 2 generic arguments, but here is {genericArguments.Length} of them ({string.Join(", ", genericArguments.Select(x => x.ToString()))}). Type is '{type}'.");
             return (genericArguments[0], genericArguments[1]);
         }
 

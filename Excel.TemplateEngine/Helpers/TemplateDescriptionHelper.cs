@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using Excel.TemplateEngine.ObjectPrinting.Exceptions;
+using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
 using JetBrains.Annotations;

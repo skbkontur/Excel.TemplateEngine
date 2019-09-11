@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 using Excel.TemplateEngine.ObjectPrinting.ParseCollection;
 using Excel.TemplateEngine.ObjectPrinting.RenderCollection;
@@ -26,7 +27,7 @@ namespace Excel.TemplateEngine
         public void Render<TModel>([NotNull] ITableBuilder tableBuilder, [NotNull] TModel model)
         {
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName)
-                                    ?? throw new ExcelEngineException($"Template with name {rootTemplateName} not found in xlsx");
+                                    ?? throw new ExcelTemplateEngineException($"Template with name {rootTemplateName} not found in xlsx");
             tableBuilder.CopyFormControlsFrom(templateTable);
             tableBuilder.CopyDataValidationsFrom(templateTable);
             tableBuilder.CopyWorksheetExtensionListFrom(templateTable); // WorksheetExtensionList contains info about data validations with ranges from other sheets, so copying it to support them.
@@ -39,7 +40,7 @@ namespace Excel.TemplateEngine
             where TModel : new()
         {
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName)
-                                    ?? throw new ExcelEngineException($"Template with name {rootTemplateName} not found in xlsx");
+                                    ?? throw new ExcelTemplateEngineException($"Template with name {rootTemplateName} not found in xlsx");
             var parser = parserCollection.GetClassParser();
             var fieldsMappingForErrors = new Dictionary<string, string>();
             return (model : parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors : fieldsMappingForErrors);

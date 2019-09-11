@@ -8,6 +8,7 @@ using System.Xml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
+using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.FileGenerating.Implementation.Caches;
 using Excel.TemplateEngine.FileGenerating.Interfaces;
 using Excel.TemplateEngine.Helpers;
@@ -98,7 +99,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
         {
             ThrowIfSpreadsheetDisposed();
             var result = TryGetWorksheet(index);
-            return result ?? throw new ExcelEngineException("An error occurred while getting of an excel worksheet");
+            return result ?? throw new ExcelTemplateEngineException("An error occurred while getting of an excel worksheet");
         }
 
         [NotNull]
@@ -161,7 +162,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
             AssertWorksheetNameValid(worksheetName);
 
             if (FindWorksheet(worksheetName) != null)
-                throw new ExcelEngineException($"Sheet with name {worksheetName} already exists");
+                throw new ExcelTemplateEngineException($"Sheet with name {worksheetName} already exists");
 
             var worksheetPart = spreadsheetDocument.WorkbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = new Worksheet(new SheetData());
@@ -186,7 +187,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
         private static void AssertWorksheetNameValid([NotNull] string worksheetName)
         {
             if (worksheetName.Length > 31)
-                throw new ExcelEngineException($"Worksheet name ('{worksheetName}') is too long (allowed <=31 symbols, current - {worksheetName.Length})");
+                throw new ExcelTemplateEngineException($"Worksheet name ('{worksheetName}') is too long (allowed <=31 symbols, current - {worksheetName.Length})");
         }
 
         public override string ToString()

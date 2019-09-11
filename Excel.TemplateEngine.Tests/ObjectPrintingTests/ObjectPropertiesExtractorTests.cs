@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
+using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.Helpers;
-using Excel.TemplateEngine.ObjectPrinting.Exceptions;
 
 using FluentAssertions;
 
@@ -22,9 +22,9 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
         public void AtomicObjectsArrayExtractionTest()
         {
-            const string valueDes—Åription = "Value::Bs[].Cs[].S";
+            const string valueDesÒription = "Value::Bs[].Cs[].S";
 
-            var child = ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDes—Åription));
+            var child = ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesÒription));
             var childArray = child as object[];
             childArray.Should().NotBeNull();
 

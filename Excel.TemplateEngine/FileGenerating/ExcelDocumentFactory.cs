@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 
+using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.FileGenerating.Implementation.Primitives;
 using Excel.TemplateEngine.FileGenerating.Interfaces;
 
@@ -30,7 +31,7 @@ namespace Excel.TemplateEngine.FileGenerating
         [NotNull]
         public static IExcelDocument CreateFromTemplate([NotNull] byte[] template, [NotNull] ILog logger)
             => TryCreateFromTemplate(template, logger)
-               ?? throw new ExcelEngineException($"An error occurred while creating of {nameof(ExcelDocument)}");
+               ?? throw new ExcelTemplateEngineException($"An error occurred while creating of {nameof(ExcelDocument)}");
 
         [NotNull]
         public static IExcelDocument CreateEmpty(bool useXlsm, [NotNull] ILog logger)
@@ -46,7 +47,7 @@ namespace Excel.TemplateEngine.FileGenerating
             using (var ms = new MemoryStream())
             {
                 if (rs == null)
-                    throw new ExcelEngineException($"Stream is null for resource: {resourceName}");
+                    throw new ExcelTemplateEngineException($"Stream is null for resource: {resourceName}");
                 rs.CopyTo(ms);
                 return ms.ToArray();
             }

@@ -1,5 +1,6 @@
 using System;
 
+using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.Helpers;
 using Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
 using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
@@ -38,7 +39,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection
                 return new CheckBoxRenderer();
             if (typeName == "DropDown" && modelType == typeof(string))
                 return new DropDownRenderer();
-            throw new ExcelEngineException($"Unsupported pair of typeName ({typeName}) and modelType ({modelType}) for form controls");
+            throw new ExcelTemplateEngineException($"Unsupported pair of typeName ({typeName}) and modelType ({modelType}) for form controls");
         }
 
         private readonly ITemplateCollection templateCollection;

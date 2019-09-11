@@ -1,4 +1,4 @@
-﻿namespace Excel.TemplateEngine.ObjectPrinting.Exceptions
+namespace Excel.TemplateEngine.Exceptions
 {
     public class EnumerableTooLongException : BaseExcelSerializationException
     {
@@ -8,6 +8,6 @@
             Limit = limit;
         }
 
-        public int Limit { get; set; }
+        public int Limit { get; }
     }
 }

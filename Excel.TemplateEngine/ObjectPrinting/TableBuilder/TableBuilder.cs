@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
+using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.ObjectPrinting.DataTypes;
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
@@ -45,7 +46,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.TableBuilder
         {
             var formControl = target.TryGetCheckBoxFormControl(name);
             if (formControl == null)
-                throw new ExcelEngineException($"CheckBox with name {name} not found");
+                throw new ExcelTemplateEngineException($"CheckBox with name {name} not found");
             formControl.IsChecked = value;
             return this;
         }
@@ -55,7 +56,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.TableBuilder
         {
             var formControl = target.TryGetDropDownFormControl(name);
             if (formControl == null)
-                throw new ExcelEngineException($"DropDown with name {name} not found");
+                throw new ExcelTemplateEngineException($"DropDown with name {name} not found");
             formControl.SelectedValue = value;
             return this;
         }

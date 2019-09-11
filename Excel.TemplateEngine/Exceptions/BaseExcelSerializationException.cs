@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Runtime.Serialization;
 
-namespace Excel.TemplateEngine.ObjectPrinting.Exceptions
+namespace Excel.TemplateEngine.Exceptions
 {
     public class BaseExcelSerializationException : Exception
     {

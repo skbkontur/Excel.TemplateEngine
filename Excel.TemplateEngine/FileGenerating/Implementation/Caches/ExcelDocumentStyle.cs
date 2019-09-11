@@ -6,6 +6,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Spreadsheet;
 
+using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.FileGenerating.DataTypes;
 using Excel.TemplateEngine.FileGenerating.Implementation.CacheItems;
 using Excel.TemplateEngine.Helpers;
@@ -256,7 +257,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
         private ExcelColor ThemeToExcelColor(uint theme, double tint)
         {
             if (theme >= colorSchemeElements.Count)
-                throw new ExcelEngineException($"Theme with id '{theme}' not found");
+                throw new ExcelTemplateEngineException($"Theme with id '{theme}' not found");
             var color2Type = colorSchemeElements[(int)theme];
             var rgbColor = color2Type?.RgbColorModelHex?.Val?.Value ?? color2Type?.SystemColor?.LastColor?.Value;
             if (rgbColor == null)

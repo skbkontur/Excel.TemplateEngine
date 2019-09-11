@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.Helpers;
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
@@ -87,7 +88,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 
                 var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(typeof(TModel), cleanPathToEnumerable);
                 if (!TypeCheckingHelper.IsIList(childEnumerableType))
-                    throw new ExcelEngineException($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
+                    throw new ExcelTemplateEngineException($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
 
                 var primaryParts = enumerableCells.Value.Where(x => ExcelTemplatePath.FromRawExpression(x.StringValue).HasPrimaryKeyArrayAccess).ToList();
                 if (primaryParts.Count == 0)
@@ -148,7 +149,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
             var (childFormControlType, childFormControlName) = GetFormControlDescription(cell);
 
             if (path.HasArrayAccess)
-                throw new ExcelEngineException("Enumerables are not supported for form controls");
+                throw new ExcelTemplateEngineException("Enumerables are not supported for form controls");
 
             var parser = parserCollection.GetFormValueParser(childFormControlType, childModelType);
             var parsedObject = parser.ParseOrDefault(tableParser, childFormControlName, childModelType);
@@ -161,7 +162,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
         {
             var formControlDescription = TemplateDescriptionHelper.TryGetFormControlFromValueDescription(cell.StringValue);
             if (string.IsNullOrEmpty(formControlDescription.formControlType) || formControlDescription.formControlName == null)
-                throw new ExcelEngineException($"Invalid xlsx template. '{cell.StringValue}' is not a valid form control description.");
+                throw new ExcelTemplateEngineException($"Invalid xlsx template. '{cell.StringValue}' is not a valid form control description.");
             return formControlDescription;
         }
 

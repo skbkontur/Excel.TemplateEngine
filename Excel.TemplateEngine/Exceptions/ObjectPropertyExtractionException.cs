@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Excel.TemplateEngine.ObjectPrinting.Exceptions
+namespace Excel.TemplateEngine.Exceptions
 {
     public class ObjectPropertyExtractionException : BaseExcelSerializationException
     {

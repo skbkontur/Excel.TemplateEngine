@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
+using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.FileGenerating.Interfaces;
 
 using JetBrains.Annotations;
@@ -39,7 +40,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
                     // ReSharper disable once ConstantConditionalAccessQualifier
                     var clientData = xdoc.Root?.Elements()?.SingleOrDefault(x => x.Attribute("id")?.Value == Control.Name)?.Element(XName.Get("ClientData", ns));
                     if (clientData == null)
-                        throw new ExcelEngineException($"ClientData element is not found for control with name '{Control.Name}'");
+                        throw new ExcelTemplateEngineException($"ClientData element is not found for control with name '{Control.Name}'");
                     var checkedElement = clientData.Element(XName.Get("Checked", ns));
                     checkedElement?.Remove();
                     if (value)

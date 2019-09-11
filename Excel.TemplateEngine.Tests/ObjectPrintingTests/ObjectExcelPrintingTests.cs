@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.FileGenerating;
 using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
@@ -242,7 +243,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                     var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger), new Style(template.GetCell(new CellPosition("A1"))));
 
                     Action rendering = () => templateEngine.Render(tableBuilder, model);
-                    rendering.Should().Throw<ExcelEngineException>();
+                    rendering.Should().Throw<ExcelTemplateEngineException>();
                 }
             }
         }

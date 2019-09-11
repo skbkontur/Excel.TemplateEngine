@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.FileGenerating;
 using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation;
-using Excel.TemplateEngine.ObjectPrinting.Exceptions;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
