@@ -1,8 +1,8 @@
 using System.Linq;
 
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
-using Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation;
 
 using FluentAssertions;
 

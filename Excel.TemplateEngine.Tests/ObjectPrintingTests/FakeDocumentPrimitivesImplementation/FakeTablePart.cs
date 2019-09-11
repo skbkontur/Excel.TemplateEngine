@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 
-namespace Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation
 {
     public class FakeTablePart : ITablePart
     {
@@ -11,6 +11,6 @@ namespace Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementati
             Cells = cells;
         }
 
-        public IEnumerable<IEnumerable<ICell>> Cells { get; private set; }
+        public IEnumerable<IEnumerable<ICell>> Cells { get; }
     }
 }

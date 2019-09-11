@@ -6,7 +6,7 @@ using Excel.TemplateEngine.Helpers;
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation
 {
     public class FakeTable : ITable
     {

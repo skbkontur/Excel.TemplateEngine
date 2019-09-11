@@ -1,8 +1,8 @@
-﻿using Excel.TemplateEngine.ObjectPrinting.DataTypes;
+using Excel.TemplateEngine.ObjectPrinting.DataTypes;
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation
 {
     public class FakeCell : ICell
     {
@@ -13,7 +13,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementati
 
         public string StringValue { get; set; }
         public CellType CellType { get; set; }
-        public ICellPosition CellPosition { get; private set; }
+        public ICellPosition CellPosition { get; }
 
         public void CopyStyle(ICell templateCell)
         {

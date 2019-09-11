@@ -1,9 +1,9 @@
 using System.Linq;
 
-using Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+using Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation;
 
 using FluentAssertions;
 
