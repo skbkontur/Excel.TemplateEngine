@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Linq;
 
@@ -40,10 +40,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers
             }
         }
 
-        private static object NormalizeElement(object element)
-        {
-            return element ?? "";
-        }
+        private static object NormalizeElement(object element) => element ?? "";
 
         private readonly IRendererCollection rendererCollection;
     }

@@ -1,8 +1,15 @@
-﻿using System.IO;
+using System.IO;
+using System.Linq;
+
+using Excel.TemplateEngine.FileGenerating;
+using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
+using Vostok.Logging.Console;
+
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class ExcelPrimitivesWrappersTests : FileBasedTestBase
@@ -10,7 +17,7 @@ namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
         [Test]
         public void ExcelTablePartExtractionTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var table = new ExcelTable(document.GetWorksheet(0));
 
             var rows = table.GetTablePart(new Rectangle(new CellPosition("B9"), new CellPosition("D11")))
@@ -35,7 +42,7 @@ namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
         [Test]
         public void ExcelCellExtractionTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var table = new ExcelTable(document.GetWorksheet(0));
 
             var cell = table.GetCell(new CellPosition("B9"));
@@ -45,5 +52,7 @@ namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
             cell = table.GetCell(new CellPosition("ABCD4234"));
             Assert.AreEqual(null, cell);
         }
+
+        private readonly ConsoleLog logger = new ConsoleLog();
     }
 }

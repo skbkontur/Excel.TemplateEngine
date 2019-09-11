@@ -1,7 +1,12 @@
-﻿using System;
+using System;
+using System.IO;
 
 using Excel.TemplateEngine.FileGenerating.Implementation.Primitives;
 using Excel.TemplateEngine.FileGenerating.Interfaces;
+
+using JetBrains.Annotations;
+
+using Vostok.Logging.Abstractions;
 
 namespace Excel.TemplateEngine.FileGenerating
 {
@@ -24,22 +29,27 @@ namespace Excel.TemplateEngine.FileGenerating
 
         [NotNull]
         public static IExcelDocument CreateFromTemplate([NotNull] byte[] template, [NotNull] ILog logger)
-        {
-            var result = TryCreateFromTemplate(template, logger);
-            return result ?? throw new InvalidProgramStateException($"An error occurred while creating of {nameof(ExcelDocument)}");
-        }
+            => TryCreateFromTemplate(template, logger)
+               ?? throw new ExcelEngineException($"An error occurred while creating of {nameof(ExcelDocument)}");
 
         [NotNull]
         public static IExcelDocument CreateEmpty(bool useXlsm, [NotNull] ILog logger)
         {
-            if (useXlsm)
-                return CreateFromTemplate(GetFileBytes("empty.xlsm"), logger);
-            return CreateFromTemplate(GetFileBytes("empty.xlsx"), logger);
+            var resourceBytes = GetResourceBytes(useXlsm ? "empty.xlsm" : "empty.xlsx");
+            return CreateFromTemplate(resourceBytes, logger);
         }
 
-        private static byte[] GetFileBytes(string filename)
+        private static byte[] GetResourceBytes(string resourceName)
         {
-            return typeof(ExcelDocumentFactory).Assembly.ReadAllBytesFromResource(filename);
+            var assembly = typeof(ExcelDocumentFactory).Assembly;
+            using (var rs = assembly.GetManifestResourceStream(resourceName))
+            using (var ms = new MemoryStream())
+            {
+                if (rs == null)
+                    throw new ExcelEngineException($"Stream is null for resource: {resourceName}");
+                rs.CopyTo(ms);
+                return ms.ToArray();
+            }
         }
     }
 }

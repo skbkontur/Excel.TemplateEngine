@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Globalization;
 
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.TableParser
 {

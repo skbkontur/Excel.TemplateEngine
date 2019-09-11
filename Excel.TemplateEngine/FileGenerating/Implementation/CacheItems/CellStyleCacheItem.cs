@@ -1,4 +1,7 @@
-﻿using System;
+using System;
+
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
 {
@@ -41,7 +44,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
                     NumberFormatId = NumberFormatId,
                     FillId = FillId,
                     BorderId = BorderId,
-                    Alignment = Alignment == null ? null : Alignment.ToAlignment(),
+                    Alignment = Alignment?.ToAlignment(),
                     ApplyFill = FillId == 0 ? null : new BooleanValue(true),
                     ApplyBorder = BorderId == 0 ? null : new BooleanValue(true),
                     ApplyNumberFormat = NumberFormatId == 0 ? null : new BooleanValue(true),

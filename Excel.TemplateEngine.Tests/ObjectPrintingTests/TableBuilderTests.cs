@@ -1,6 +1,15 @@
-﻿using NUnit.Framework;
+using System.Linq;
 
-namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
+using Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+
+using NUnit.Framework;
+
+using Vostok.Logging.Console;
+
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class TableBuilderTests
@@ -233,6 +242,6 @@ namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
             Assert.AreEqual(mergedCells[1].LowerRight.CellReference, "D6");
         }
 
-        private readonly ILog logger = Log.For(typeof(TableBuilderTests));
+        private readonly ConsoleLog logger = new ConsoleLog();
     }
 }

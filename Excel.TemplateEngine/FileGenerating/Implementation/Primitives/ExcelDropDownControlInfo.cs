@@ -1,9 +1,16 @@
-﻿using System.Collections.Generic;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
+using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+
 using Excel.TemplateEngine.FileGenerating.Interfaces;
+
+using JetBrains.Annotations;
+
+using Vostok.Logging.Abstractions;
 
 namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 {
@@ -40,15 +47,18 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
                 const string ns = "urn:schemas-microsoft-com:office:excel";
                 lock (GlobalVmlDrawingPart)
                 {
-                    var xdoc = XDocument.Load((Stream)GlobalVmlDrawingPart.GetStream());
+                    XDocument xdoc;
+                    using (var stream = GlobalVmlDrawingPart.GetStream())
+                        xdoc = XDocument.Load(stream);
                     // ReSharper disable once ConstantConditionalAccessQualifier
                     var clientData = xdoc.Root?.Elements()?.Single(x => x.Attribute("id")?.Value == Control.Name)?.Element(XName.Get("ClientData", ns));
                     if (clientData == null)
-                        throw new InvalidProgramStateException($"ClientData element is not found for control with name '{Control.Name}'");
+                        throw new ExcelEngineException($"ClientData element is not found for control with name '{Control.Name}'");
                     var checkedElement = clientData.Element(XName.Get("Sel", ns));
                     checkedElement?.Remove();
                     clientData.Add(new XElement(XName.Get("Sel", ns), (index + 1).ToString()));
-                    xdoc.Save((Stream)GlobalVmlDrawingPart.GetStream());
+                    using (var stream = GlobalVmlDrawingPart.GetStream())
+                        xdoc.Save(stream);
                 }
             }
         }
@@ -58,12 +68,12 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
         {
             var absoluteRange = ControlPropertiesPart.FormControlProperties?.FmlaRange?.Value;
             if (absoluteRange == null)
-                throw new InvalidProgramStateException("This form control has no FmlaRange (maybe you are using it as dropdown, while it isn't dropdown)");
+                throw new ExcelEngineException("This form control has no FmlaRange (maybe you are using it as dropdown, while it isn't dropdown)");
             var (worksheetName, relativeRange) = SplitAbsoluteRange(absoluteRange);
             var (from, to) = ParseRelativeRange(relativeRange);
             var worksheet = worksheetName == null ? excelWorksheet : excelWorksheet.ExcelDocument.FindWorksheet(worksheetName);
             if (worksheet == null)
-                throw new InvalidProgramStateException($"Worksheet with name {worksheetName} not found, but used in dropDown");
+                throw new ExcelEngineException($"Worksheet with name {worksheetName} not found, but used in dropDown");
             return worksheet.GetSortedCellsInRange(from, to);
         }
 
@@ -79,14 +89,14 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
                     return (worksheetName.Substring(1, worksheetName.Length - 2), parts[1]);
                 return (worksheetName, parts[1]);
             }
-            throw new InvalidProgramStateException($"Invalid absolute range: '{absoluteRange}'");
+            throw new ExcelEngineException($"Invalid absolute range: '{absoluteRange}'");
         }
 
         private static (ExcelCellIndex from, ExcelCellIndex to) ParseRelativeRange([NotNull] string relativeRange)
         {
             var parts = relativeRange.Split(':').Select(x => x.Replace("$", "")).ToList();
             if (parts.Count != 2)
-                throw new InvalidProgramStateException($"Invalid relative range: '{relativeRange}'");
+                throw new ExcelEngineException($"Invalid relative range: '{relativeRange}'");
             return (new ExcelCellIndex(parts[0]), new ExcelCellIndex(parts[1]));
         }
 

@@ -1,15 +1,21 @@
-﻿using System.IO;
+using System.IO;
+using System.Linq;
+
+using Excel.TemplateEngine.FileGenerating;
+using Excel.TemplateEngine.FileGenerating.Implementation;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ExcelFileGeneratorTests
+using Vostok.Logging.Console;
+
+namespace Excel.TemplateEngine.Tests.FileGeneratingTests
 {
     public class DocumentPartsExtractionTests : FileBasedTestBase
     {
         [Test]
         public void CellsInRangeTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var worksheet = document.GetWorksheet(0);
 
             var upperLeft = new ExcelCellIndex("A22");
@@ -26,7 +32,7 @@ namespace Excel.TemplateEngine.Tests.ExcelFileGeneratorTests
         [Test]
         public void GetCellTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var worksheet = document.GetWorksheet(0);
 
             var position = new ExcelCellIndex("B9");
@@ -39,7 +45,7 @@ namespace Excel.TemplateEngine.Tests.ExcelFileGeneratorTests
         [Test]
         public void SearchCellsByTextTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger);
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
             var worksheet = document.GetWorksheet(0);
 
             var cell = worksheet.SearchCellsByText("Value:String").FirstOrDefault();
@@ -50,5 +56,7 @@ namespace Excel.TemplateEngine.Tests.ExcelFileGeneratorTests
 
             document.Dispose();
         }
+
+        private readonly ConsoleLog logger = new ConsoleLog();
     }
 }

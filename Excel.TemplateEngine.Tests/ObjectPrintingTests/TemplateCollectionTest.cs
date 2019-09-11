@@ -1,6 +1,12 @@
-﻿using NUnit.Framework;
+using System.Linq;
 
-namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
+using Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+
+using NUnit.Framework;
+
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class TemplateCollectionTest

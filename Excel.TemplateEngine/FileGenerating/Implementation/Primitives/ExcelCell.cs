@@ -1,4 +1,7 @@
-﻿using System.Globalization;
+using System.Globalization;
+
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 using Excel.TemplateEngine.FileGenerating.DataTypes;
 using Excel.TemplateEngine.FileGenerating.Implementation.Caches;
@@ -15,9 +18,8 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
             this.excelSharedStrings = excelSharedStrings;
         }
 
-        public IExcelCell SetStringValue(string value)
-        {
-            return SetFormattedStringValue(new FormattedStringValue
+        public IExcelCell SetStringValue(string value) 
+            => SetFormattedStringValue(new FormattedStringValue
                 {
                     Blocks = new[]
                         {
@@ -27,7 +29,6 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
                                 }
                         }
                 });
-        }
 
         public IExcelCell SetNumericValue(double value)
         {

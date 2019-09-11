@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 using Excel.TemplateEngine.ObjectPrinting.Exceptions;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.Helpers
 {
@@ -66,11 +68,11 @@ namespace Excel.TemplateEngine.Helpers
             if (!IsCorrectTemplateDescription(templateDescription))
                 return false;
 
-            rectangle = ExctractCoordinates(templateDescription);
+            rectangle = ExtractCoordinates(templateDescription);
             return true;
         }
 
-        private static IRectangle ExctractCoordinates(string expression)
+        private static IRectangle ExtractCoordinates(string expression)
         {
             var upperLeft = new CellPosition(cellReferenceRegex.Matches(expression)[0].Value);
             var lowerRight = new CellPosition(cellReferenceRegex.Matches(expression)[1].Value);

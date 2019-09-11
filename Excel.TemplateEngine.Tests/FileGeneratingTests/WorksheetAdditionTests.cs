@@ -1,15 +1,19 @@
-﻿using System.IO;
+using System.IO;
+
+using Excel.TemplateEngine.FileGenerating;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ExcelFileGeneratorTests
+using Vostok.Logging.Console;
+
+namespace Excel.TemplateEngine.Tests.FileGeneratingTests
 {
     public class WorksheetAdditionTests : FileBasedTestBase
     {
         [Test]
         public void WorksheetAdditionTest()
         {
-            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger);
+            var document = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), new ConsoleLog());
             document.AddWorksheet("Лист2");
             var worksheet = document.GetWorksheet(1);
             Assert.AreNotEqual(null, worksheet);

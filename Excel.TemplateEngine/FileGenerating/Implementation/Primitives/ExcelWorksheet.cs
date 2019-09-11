@@ -1,11 +1,25 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
+using C5;
+
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+
 using Excel.TemplateEngine.FileGenerating.DataTypes;
 using Excel.TemplateEngine.FileGenerating.Implementation.Caches;
 using Excel.TemplateEngine.FileGenerating.Interfaces;
+
+using JetBrains.Annotations;
+
+using MoreLinq;
+
+using Vostok.Logging.Abstractions;
+
+using Tuple = System.Tuple;
 
 namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 {
@@ -240,7 +254,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
         {
             var vmlDrawingParts = templateWorksheetPart.VmlDrawingParts.ToList();
             if (vmlDrawingParts.Count > 1)
-                throw new InvalidProgramStateException("More than one VmlDrawingPart found");
+                throw new ExcelEngineException("More than one VmlDrawingPart found");
             var vmlDrawingPart = vmlDrawingParts.SingleOrDefault();
             var vmlDrawingPartId = vmlDrawingPart == null ? null : templateWorksheetPart.GetIdOfPart(vmlDrawingPart);
             SafelyAddPart(targetWorksheet.WorksheetPart, vmlDrawingPart, vmlDrawingPartId);
@@ -273,9 +287,9 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 
         public IEnumerable<IExcelCell> SearchCellsByText(string text)
         {
-            return Enumerable.Where<ExcelCell>(rowsCache.Select(x => x.Value)
-                                                       .SelectMany(row => row.Elements<Cell>())
-                                                       .Select(internalCell => new ExcelCell(internalCell, documentStyle, excelSharedStrings)), cell => cell.GetStringValue()?.Contains(text) ?? false);
+            return rowsCache.Select(x => x.Value)
+                            .SelectMany(row => row.Elements<Cell>())
+                            .Select(internalCell => new ExcelCell(internalCell, documentStyle, excelSharedStrings)).Where(cell => cell.GetStringValue()?.Contains(text) ?? false);
         }
 
         public IEnumerable<IExcelRow> Rows { get { return rowsCache.Select(x => new ExcelRow(x.Value, documentStyle, excelSharedStrings)); } }
@@ -301,7 +315,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
             get
             {
                 return (worksheet?.GetFirstChild<MergeCells>()?.Select(x => (MergeCell)x) ?? Enumerable.Empty<MergeCell>())
-                       .Select(mergeCell => Enumerable.ToArray<string>(mergeCell.Reference.Value.Split(':')))
+                       .Select(mergeCell => mergeCell.Reference.Value.Split(':').ToArray())
                        .Select(references => Tuple.Create(new ExcelCellIndex(references[0]), new ExcelCellIndex(references[1])));
             }
         }

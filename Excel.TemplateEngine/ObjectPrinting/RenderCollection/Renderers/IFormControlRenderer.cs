@@ -1,4 +1,6 @@
-﻿using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers
 {

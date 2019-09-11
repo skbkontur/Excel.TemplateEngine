@@ -1,8 +1,17 @@
-﻿using System;
+using System;
+using System.Linq;
+
+using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
+using Vostok.Logging.Console;
+
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class ObjectFakePrintingTests
@@ -401,7 +410,7 @@ namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
             }
         }
 
-        private readonly ILog logger = Log.For(typeof(ObjectFakePrintingTests));
+        private readonly ConsoleLog logger = new ConsoleLog();
 
         public class DocumentWithArray
         {

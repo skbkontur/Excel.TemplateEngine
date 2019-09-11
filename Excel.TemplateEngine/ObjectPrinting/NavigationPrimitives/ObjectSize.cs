@@ -1,4 +1,4 @@
-﻿namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
+namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
 {
     public class ObjectSize : IObjectSize
     {
@@ -8,8 +8,8 @@
             Height = height;
         }
 
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        public int Width { get; }
+        public int Height { get; }
 
         public IObjectSize Add(IObjectSize other)
         {

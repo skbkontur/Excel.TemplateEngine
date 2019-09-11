@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Excel.TemplateEngine.FileGenerating.DataTypes
 {
@@ -14,15 +14,15 @@ namespace Excel.TemplateEngine.FileGenerating.DataTypes
         {
             var lines = new List<string>();
             if (NumberingFormat != null && !string.IsNullOrEmpty(NumberingFormat.ToString()))
-                lines.Add(string.Format("\tNumberingFormat = {{{0}}}", NumberingFormat));
+                lines.Add($"\tNumberingFormat = {{{NumberingFormat}}}");
             if (FillStyle != null && !string.IsNullOrEmpty(FillStyle.ToString()))
-                lines.Add(string.Format("\tFillStyle = {{{0}}}", FillStyle));
+                lines.Add($"\tFillStyle = {{{FillStyle}}}");
             if (FontStyle != null && !string.IsNullOrEmpty(FontStyle.ToString()))
-                lines.Add(string.Format("\tFontStyle = {{{0}}}", FontStyle));
+                lines.Add($"\tFontStyle = {{{FontStyle}}}");
             if (BordersStyle != null && !string.IsNullOrEmpty(BordersStyle.ToString()))
-                lines.Add(string.Format("\tBordersStyle = {{{0}}}", BordersStyle));
+                lines.Add($"\tBordersStyle = {{{BordersStyle}}}");
             if (Alignment != null && !string.IsNullOrEmpty(Alignment.ToString()))
-                lines.Add(string.Format("\tAlignment = {{{0}}}", Alignment));
+                lines.Add($"\tAlignment = {{{Alignment}}}");
             return string.Join("\n", lines);
         }
     }

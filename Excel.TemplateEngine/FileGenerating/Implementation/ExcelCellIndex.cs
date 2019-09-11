@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 namespace Excel.TemplateEngine.FileGenerating.Implementation
 {
@@ -6,14 +6,14 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation
     {
         public ExcelCellIndex(int row, int column)
         {
-            this.RowIndex = row;
-            this.ColumnIndex = column;
+            RowIndex = row;
+            ColumnIndex = column;
             CellReference = ToCellReference(row, column);
         }
 
         public ExcelCellIndex(string cellReference)
         {
-            this.CellReference = cellReference;
+            CellReference = cellReference;
             RowIndex = ToRowIndex(cellReference);
             ColumnIndex = ToColumnIndex(cellReference);
         }
@@ -32,20 +32,14 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation
         public int RowIndex { get; }
         public int ColumnIndex { get; }
 
-        private static string ToCellReference(int rowIndex, int columnIndex)
-        {
-            return string.Format("{0}{1}", ToColumnName(columnIndex), rowIndex);
-        }
+        private static string ToCellReference(int rowIndex, int columnIndex) 
+            => $"{ToColumnName(columnIndex)}{rowIndex}";
 
-        private static string ToCellReference(uint rowIndex, int columnIndex)
-        {
-            return ToCellReference((int)rowIndex, columnIndex);
-        }
+        private static string ToCellReference(uint rowIndex, int columnIndex) 
+            => ToCellReference((int)rowIndex, columnIndex);
 
-        private static int ToRowIndex(string cellReference)
-        {
-            return int.Parse(new Regex("[A-Z]+").Replace(cellReference, ""));
-        }
+        private static int ToRowIndex(string cellReference) 
+            => int.Parse(new Regex("[A-Z]+").Replace(cellReference, ""));
 
         private static int ToColumnIndex(string cellReference)
         {

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
-namespace Excel.TemplateEngine.ObjectPrinting
+using JetBrains.Annotations;
+
+namespace Excel.TemplateEngine
 {
     public interface ITemplateEngine
     {

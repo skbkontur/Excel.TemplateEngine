@@ -1,8 +1,12 @@
-﻿using System.Linq;
+using System.Linq;
+
+using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class FakeDocumentPrimitivesTests

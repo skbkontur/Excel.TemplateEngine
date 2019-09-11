@@ -1,9 +1,21 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 using Excel.TemplateEngine.FileGenerating.DataTypes;
 using Excel.TemplateEngine.FileGenerating.Implementation.CacheItems;
 using Excel.TemplateEngine.Helpers;
+
+using JetBrains.Annotations;
+
+using Vostok.Logging.Abstractions;
+
+using ColorType = DocumentFormat.OpenXml.Spreadsheet.ColorType;
+using Fill = DocumentFormat.OpenXml.Spreadsheet.Fill;
 
 namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
 {
@@ -157,13 +169,13 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
             case BorderStyleValues.Double:
                 return ExcelBorderType.Double;
             default:
-                throw new InvalidProgramStateException($"Unknown border type: {borderStyle}");
+                throw new ArgumentOutOfRangeException(nameof(borderStyle));
             }
         }
 
         private ExcelCellNumberingFormat GetCellNumberingFormat(uint numberFormatId)
         {
-            if (TryExtractStandartNumberingFormat(numberFormatId, out var result))
+            if (TryExtractStandardNumberingFormat(numberFormatId, out var result))
                 return result;
 
             var numberFormat = (NumberingFormat)stylesheet?.NumberingFormats?.ChildElements
@@ -176,7 +188,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
             return new ExcelCellNumberingFormat(numberFormat.FormatCode.Value);
         }
 
-        private static bool TryExtractStandartNumberingFormat(uint numberingFormat, out ExcelCellNumberingFormat result)
+        private static bool TryExtractStandardNumberingFormat(uint numberingFormat, out ExcelCellNumberingFormat result)
         {
             result = null;
             if (numberingFormat == 2)
@@ -230,7 +242,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
         }
 
         [CanBeNull]
-        private ExcelColor RgbStringToExcelColor([NotNull] string hexRgbColor)
+        private static ExcelColor RgbStringToExcelColor([NotNull] string hexRgbColor)
         {
             if (hexRgbColor.Length == 6)
                 hexRgbColor = "FF" + hexRgbColor;
@@ -244,7 +256,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
         private ExcelColor ThemeToExcelColor(uint theme, double tint)
         {
             if (theme >= colorSchemeElements.Count)
-                throw new InvalidProgramStateException($"Theme with id '{theme}' not found");
+                throw new ExcelEngineException($"Theme with id '{theme}' not found");
             var color2Type = colorSchemeElements[(int)theme];
             var rgbColor = color2Type?.RgbColorModelHex?.Val?.Value ?? color2Type?.SystemColor?.LastColor?.Value;
             if (rgbColor == null)

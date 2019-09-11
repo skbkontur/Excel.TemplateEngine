@@ -1,4 +1,7 @@
-﻿using System;
+using System;
+
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 using Excel.TemplateEngine.FileGenerating.DataTypes;
 
@@ -67,7 +70,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
                 result = null;
                 break;
             default:
-                throw new InvalidProgramStateException($"Unknown vertical alignment: {verticalAlignment}");
+                throw new ArgumentOutOfRangeException(nameof(verticalAlignment));
             }
             return result;
         }
@@ -90,7 +93,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.CacheItems
                 result = null;
                 break;
             default:
-                throw new InvalidProgramStateException($"Unknown horizontal alignment: {horizontalAlignment}");
+                throw new ArgumentOutOfRangeException(nameof(horizontalAlignment));
             }
             return result;
         }

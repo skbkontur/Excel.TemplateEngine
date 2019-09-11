@@ -1,6 +1,9 @@
-﻿using NUnit.Framework;
+using Excel.TemplateEngine.Helpers;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
+using NUnit.Framework;
+
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class TemplateDescriptionHelperTests

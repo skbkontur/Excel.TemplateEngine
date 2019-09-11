@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 using Excel.TemplateEngine.FileGenerating.DataTypes;
 using Excel.TemplateEngine.FileGenerating.Implementation.CacheItems;
@@ -18,8 +21,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Caches
             if (style == null)
                 return 0;
             var cacheItem = new FontStyleCacheItem(style);
-            uint result;
-            if (cache.TryGetValue(cacheItem, out result))
+            if (cache.TryGetValue(cacheItem, out var result))
                 return result;
             if (stylesheet.Fonts == null)
             {

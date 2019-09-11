@@ -1,4 +1,4 @@
-﻿namespace Excel.TemplateEngine.FileGenerating.DataTypes
+namespace Excel.TemplateEngine.FileGenerating.DataTypes
 {
     public class ExcelColor
     {
@@ -19,9 +19,6 @@
         public int Blue { get; set; }
         public int Alpha { get; set; }
 
-        public override string ToString()
-        {
-            return string.Format("R = {0}, G = {1}, B = {2}, A = {3}", Red, Green, Blue, Alpha);
-        }
+        public override string ToString() => $"R = {Red}, G = {Green}, B = {Blue}, A = {Alpha}";
     }
 }

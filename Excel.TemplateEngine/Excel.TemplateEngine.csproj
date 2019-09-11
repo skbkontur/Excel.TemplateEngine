@@ -9,6 +9,7 @@
     <PackageReference Include="C5" Version="2.5.3" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.9.1" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
+    <PackageReference Include="Vostok.Logging.Abstractions" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 
@@ -11,6 +11,6 @@ namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementat
             Cells = cells;
         }
 
-        public IEnumerable<IEnumerable<ICell>> Cells { get; private set; }
+        public IEnumerable<IEnumerable<ICell>> Cells { get; }
     }
 }

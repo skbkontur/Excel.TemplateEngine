@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 using Excel.TemplateEngine.ObjectPrinting.Exceptions;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.Helpers
 {

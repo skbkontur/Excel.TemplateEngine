@@ -1,4 +1,5 @@
-﻿using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.FileGenerating.Interfaces;
+using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation
 {
@@ -9,8 +10,8 @@ namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementat
             this.internalColumn = internalColumn;
         }
 
-        public int Index { get { return internalColumn.Index; } }
-        public double Width { get { return internalColumn.Width; } }
+        public int Index => internalColumn.Index;
+        public double Width => internalColumn.Width;
 
         private readonly IExcelColumn internalColumn;
     }

@@ -1,10 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+
+using Excel.TemplateEngine.FileGenerating;
+using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
+using Vostok.Logging.Console;
+
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class ObjectExcelPrintingTests : FileBasedTestBase
@@ -161,19 +170,19 @@ namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
                     TypeName = "ORDERS"
                 };
 
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("complexTemplate.xlsx")), Log.DefaultLogger);
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("complexTemplate.xlsx")), logger);
             var template = new ExcelTable(templateDocument.GetWorksheet(0));
-            var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+            var templateEngine = new TemplateEngine(template, logger);
 
-            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger);
+            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger);
             targetDocument.AddWorksheet("Лист2");
 
             var target = new ExcelTable(targetDocument.GetWorksheet(0));
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), Log.DefaultLogger), new Style(template.GetCell(new CellPosition("A1"))));
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger), new Style(template.GetCell(new CellPosition("A1"))));
             templateEngine.Render(tableBuilder, model);
 
             target = new ExcelTable(targetDocument.GetWorksheet(1));
-            tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), Log.DefaultLogger), new Style(template.GetCell(new CellPosition("A1"))));
+            tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger), new Style(template.GetCell(new CellPosition("A1"))));
             templateEngine.Render(tableBuilder, model);
 
             var result = targetDocument.CloseAndGetDocumentBytes();
@@ -194,14 +203,14 @@ namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
                     Dict = new Dictionary<string, bool> {{"TestKey", false}},
                 };
 
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("formControlsTemplate.xlsx")), Log.DefaultLogger);
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("formControlsTemplate.xlsx")), logger);
             var template = new ExcelTable(templateDocument.GetWorksheet(0));
-            var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+            var templateEngine = new TemplateEngine(template, logger);
 
-            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger);
+            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger);
 
             var target = new ExcelTable(targetDocument.GetWorksheet(0));
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), Log.DefaultLogger), new Style(template.GetCell(new CellPosition("A1"))));
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger), new Style(template.GetCell(new CellPosition("A1"))));
             templateEngine.Render(tableBuilder, model);
 
             var result = targetDocument.CloseAndGetDocumentBytes();
@@ -220,31 +229,31 @@ namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
                     B = true,
                 };
 
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), Log.DefaultLogger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+                var templateEngine = new TemplateEngine(template, logger);
 
-                using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger))
+                using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
                 {
                     var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                    var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), Log.DefaultLogger), new Style(template.GetCell(new CellPosition("A1"))));
+                    var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger), new Style(template.GetCell(new CellPosition("A1"))));
 
-                    Assert.Throws<InvalidProgramStateException>(() => templateEngine.Render(tableBuilder, model));
+                    Assert.Throws<ExcelEngineException>(() => templateEngine.Render(tableBuilder, model));
                 }
             }
         }
 
         private void MakeTest(object model, string templateFileName, Action<ExcelTable> resultValidationFunc = null)
         {
-            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath(templateFileName)), Log.DefaultLogger);
+            var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath(templateFileName)), logger);
             var template = new ExcelTable(templateDocument.GetWorksheet(0));
 
-            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), Log.DefaultLogger);
+            var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger);
             var target = new ExcelTable(targetDocument.GetWorksheet(0));
 
-            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), Log.DefaultLogger), new Style(template.GetCell(new CellPosition("A1"))));
-            var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+            var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger), new Style(template.GetCell(new CellPosition("A1"))));
+            var templateEngine = new TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             var result = targetDocument.CloseAndGetDocumentBytes();
@@ -255,6 +264,8 @@ namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
             templateDocument.Dispose();
             targetDocument.Dispose();
         }
+
+        private readonly ConsoleLog logger = new ConsoleLog();
 
         public class DocumentWithArray
         {

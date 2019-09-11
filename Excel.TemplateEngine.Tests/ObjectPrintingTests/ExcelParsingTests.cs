@@ -1,9 +1,19 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
+
+using Excel.TemplateEngine.FileGenerating;
+using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation;
+using Excel.TemplateEngine.ObjectPrinting.Exceptions;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
+using Vostok.Logging.Console;
+
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class ExcelParsingTests : FileBasedTestBase
@@ -145,14 +155,14 @@ namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
         {
             byte[] bytes;
 
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("importAfterCreate_template.xlsx")), Log.DefaultLogger))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath($"empty.{extension}")), Log.DefaultLogger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("importAfterCreate_template.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath($"empty.{extension}")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), Log.DefaultLogger);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
 
                 templateEngine.Render(tableBuilder, new {Type = "Значение 2", TestFlag1 = false, TestFlag2 = true});
@@ -178,18 +188,20 @@ namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
 
         private (PriceList model, Dictionary<string, string> mappingForErrors) Parse(byte[] templateBytes, byte[] targetBytes)
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(templateBytes, Log.DefaultLogger))
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes, Log.DefaultLogger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(templateBytes, logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes, logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, Log.DefaultLogger);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), Log.DefaultLogger);
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableParser = new TableParser(target, tableNavigator);
                 return templateEngine.Parse<PriceList>(tableParser);
             }
         }
+
+        private readonly ConsoleLog logger = new ConsoleLog();
     }
 
     #region TestModels

@@ -1,4 +1,6 @@
-﻿namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
+using Excel.TemplateEngine.FileGenerating.Implementation;
+
+namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
 {
     public class CellPosition : ICellPosition
     {
@@ -27,9 +29,9 @@
             return new ObjectSize(ColumnIndex - other.ColumnIndex, RowIndex - other.RowIndex);
         }
 
-        public int RowIndex { get { return internalCellIndex.RowIndex; } }
-        public int ColumnIndex { get { return internalCellIndex.ColumnIndex; } }
-        public string CellReference { get { return internalCellIndex.CellReference; } }
+        public int RowIndex => internalCellIndex.RowIndex;
+        public int ColumnIndex => internalCellIndex.ColumnIndex;
+        public string CellReference => internalCellIndex.CellReference;
 
         private readonly ExcelCellIndex internalCellIndex;
     }

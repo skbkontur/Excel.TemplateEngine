@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
 using Excel.TemplateEngine.ObjectPrinting.Exceptions;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.Helpers
 {
@@ -131,26 +133,19 @@ namespace Excel.TemplateEngine.Helpers
         }
 
         private static void InitPrimitiveDict<TKey, TValue>([NotNull] Dictionary<TKey, TValue> dict, [CanBeNull] object indexer)
-        {
-            InitDict(dict, indexer, () => default);
-        }
+            => InitDict(dict, indexer, () => default);
 
         private static void InitClassDict<TKey, TValue>([NotNull] Dictionary<TKey, TValue> dict, [CanBeNull] object indexer)
             where TValue : new()
-        {
-            InitDict(dict, indexer, () => new TValue());
-        }
+            => InitDict(dict, indexer, () => new TValue());
 
         [NotNull]
-        private static MethodInfo GetGenericMethod([NotNull] Type type, [NotNull] string name, [NotNull, ItemNotNull] params Type[] genericTypes)
-        {
-            return GetMethod(type, name).MakeGenericMethod(genericTypes);
-        }
+        private static MethodInfo GetGenericMethod([NotNull] Type type, [NotNull] string name, [NotNull, ItemNotNull] params Type[] genericTypes) 
+            => GetMethod(type, name).MakeGenericMethod(genericTypes);
 
         [NotNull]
         private static MethodInfo GetMethod([NotNull] Type type, [NotNull] string name)
-        {
-            return type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static) ?? throw new InvalidProgramStateException($"Method '{name}' not found in '{type}'");
-        }
+            => type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static)
+               ?? throw new ExcelEngineException($"Method '{name}' not found in '{type}'");
     }
 }

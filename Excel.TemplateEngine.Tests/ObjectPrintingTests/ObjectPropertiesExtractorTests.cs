@@ -1,12 +1,17 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
+using Excel.TemplateEngine.Helpers;
+using Excel.TemplateEngine.ObjectPrinting.Exceptions;
+
+using JetBrains.Annotations;
+
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ExcelObjectPrinterTests
+namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class ObjectPropertiesExtractorTests

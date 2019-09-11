@@ -1,12 +1,22 @@
-﻿using System;
+using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
 
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+
 using Excel.TemplateEngine.FileGenerating.Implementation.Caches;
 using Excel.TemplateEngine.FileGenerating.Interfaces;
 using Excel.TemplateEngine.Helpers;
+
+using JetBrains.Annotations;
+
+using MoreLinq;
+
+using Vostok.Logging.Abstractions;
 
 namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 {
@@ -21,8 +31,8 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
             documentMemoryStream.Write(template, 0, template.Length);
             spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true);
 
-            documentStyle = new ExcelDocumentStyle(SpreadsheetDocumentHelper.GetOrCreateSpreadsheetStyles(spreadsheetDocument), spreadsheetDocument.WorkbookPart.ThemePart.Theme, this.logger);
-            excelSharedStrings = new ExcelSharedStrings(SpreadsheetDocumentHelper.GetOrCreateSpreadsheetSharedStrings(spreadsheetDocument));
+            documentStyle = new ExcelDocumentStyle(spreadsheetDocument.GetOrCreateSpreadsheetStyles(), spreadsheetDocument.WorkbookPart.ThemePart.Theme, this.logger);
+            excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.GetOrCreateSpreadsheetSharedStrings());
             spreadsheetDisposed = false;
 
             SetDefaultCreatorAndEditor();
@@ -88,7 +98,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
         {
             ThrowIfSpreadsheetDisposed();
             var result = TryGetWorksheet(index);
-            return result ?? throw new InvalidProgramStateException("An error occurred while getting of an excel worksheet");
+            return result ?? throw new ExcelEngineException("An error occurred while getting of an excel worksheet");
         }
 
         [NotNull]
@@ -151,7 +161,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
             AssertWorksheetNameValid(worksheetName);
 
             if (FindWorksheet(worksheetName) != null)
-                throw new InvalidProgramStateException($"Sheet with name {worksheetName} already exists");
+                throw new ExcelEngineException($"Sheet with name {worksheetName} already exists");
 
             var worksheetPart = spreadsheetDocument.WorkbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = new Worksheet(new SheetData());
@@ -160,7 +170,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 
             var sheetId = 1u;
             if (sheets.Elements<Sheet>().Any())
-                sheetId = Enumerable.Max<uint>(sheets.Elements<Sheet>().Select(s => s.SheetId.Value)) + 1;
+                sheetId = sheets.Elements<Sheet>().Select(s => s.SheetId.Value).Max() + 1;
 
             var sheet = new Sheet
                 {
@@ -176,7 +186,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
         private static void AssertWorksheetNameValid([NotNull] string worksheetName)
         {
             if (worksheetName.Length > 31)
-                throw new InvalidProgramStateException($"Worksheet name ('{worksheetName}') is too long (allowed <=31 symbols, current - {worksheetName.Length})");
+                throw new ExcelEngineException($"Worksheet name ('{worksheetName}') is too long (allowed <=31 symbols, current - {worksheetName.Length})");
         }
 
         public override string ToString()
@@ -192,7 +202,7 @@ namespace Excel.TemplateEngine.FileGenerating.Implementation.Primitives
 
                 stringBuilder.Append("\nMerged cells info:\n");
                 worksheet.MergedCells
-                         .Select(mergedCells => string.Format("{0}:{1}\n", mergedCells.Item1.CellReference, mergedCells.Item2.CellReference))
+                         .Select(mergedCells => $"{mergedCells.Item1.CellReference}:{mergedCells.Item2.CellReference}\n")
                          .OrderBy(s => s)
                          .ForEach(s => stringBuilder.Append((string)s));
 

@@ -1,6 +1,8 @@
-﻿using System;
+using System;
 
 using Excel.TemplateEngine.ObjectPrinting.TableParser;
+
+using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
@@ -26,10 +28,10 @@ namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
                 return Parse(() => (tableParser.TryParseAtomicValue(out decimal? res), res), out result);
             if (itemType == typeof(long?))
                 return Parse(() => (tableParser.TryParseAtomicValue(out long? res), res), out result);
-            throw new InvalidProgramStateException($"Type {itemType} is not a supported atomic value");
+            throw new ExcelEngineException($"Type {itemType} is not a supported atomic value");
         }
 
-        private bool Parse<T>(Func<(bool succeed, T result)> parse, out object result)
+        private static bool Parse<T>(Func<(bool succeed, T result)> parse, out object result)
         {
             var (succeed, res) = parse();
             result = res;
