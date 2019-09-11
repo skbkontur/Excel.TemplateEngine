@@ -4,6 +4,8 @@ using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
 using Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
+using FluentAssertions;
+
 using NUnit.Framework;
 
 namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
@@ -20,15 +22,15 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var position = new CellPosition(10, 10);
             var cell = table.InsertCell(position);
-            Assert.AreNotEqual(null, cell);
+            cell.Should().NotBeNull();
 
             const string testValue = "Test Value";
             cell.StringValue = testValue;
 
             cell = table.GetCell(position);
 
-            Assert.AreNotEqual(null, cell);
-            Assert.AreEqual(testValue, cell.StringValue);
+            cell.Should().NotBeNull();
+            cell.StringValue.Should().Be(testValue);
         }
 
         [Test]
@@ -40,33 +42,24 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var position = new CellPosition(10, 10);
             var cell = table.InsertCell(position);
-            Assert.AreNotEqual(null, cell);
+            cell.Should().NotBeNull();
         }
 
         [Test]
-        public void FakeTableWrongPositionCellInsertionTest()
+        [TestCase(-1, 10)]
+        [TestCase(10, -1)]
+        [TestCase(100, 10)]
+        [TestCase(10, 100)]
+        [TestCase(-1, -1)]
+        [TestCase(100, 100)]
+        public void FakeTableWrongPositionCellInsertionTest(int wrongRowIndex, int wrongColumnIndex)
         {
             const int width = 20;
             const int height = 40;
             var table = new FakeTable(width, height);
 
-            var cell = table.InsertCell(new CellPosition(-1, 10));
-            Assert.AreEqual(null, cell);
-
-            cell = table.InsertCell(new CellPosition(10, -1));
-            Assert.AreEqual(null, cell);
-
-            cell = table.InsertCell(new CellPosition(100, 10));
-            Assert.AreEqual(null, cell);
-
-            cell = table.InsertCell(new CellPosition(10, 100));
-            Assert.AreEqual(null, cell);
-
-            cell = table.InsertCell(new CellPosition(-1, -1));
-            Assert.AreEqual(null, cell);
-
-            cell = table.InsertCell(new CellPosition(100, 100));
-            Assert.AreEqual(null, cell);
+            var cell = table.InsertCell(new CellPosition(wrongRowIndex, wrongColumnIndex));
+            cell.Should().BeNull();
         }
 
         [Test]
@@ -77,10 +70,10 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var table = new FakeTable(width, height);
 
             var cell = table.GetCell(new CellPosition(-1, -1));
-            Assert.AreEqual(null, cell);
+            cell.Should().BeNull();
 
             cell = table.GetCell(new CellPosition(3, 3));
-            Assert.AreEqual(null, cell);
+            cell.Should().BeNull();
         }
 
         [Test]
@@ -102,14 +95,14 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var cells = table.SearchCellByText("Test");
             var cellsArray = cells as ICell[] ?? cells.ToArray();
 
-            Assert.AreEqual(2, cellsArray.Count());
-            Assert.AreNotEqual(null, cellsArray[0]);
-            Assert.AreNotEqual(null, cellsArray[1]);
+            cellsArray.Length.Should().Be(2);
+            cellsArray[0].Should().NotBeNull();
+            cellsArray[1].Should().NotBeNull();
 
-            Assert.AreEqual(1, cellsArray[0].CellPosition.RowIndex);
-            Assert.AreEqual(1, cellsArray[0].CellPosition.ColumnIndex);
-            Assert.AreEqual(40, cellsArray[1].CellPosition.RowIndex);
-            Assert.AreEqual(20, cellsArray[1].CellPosition.ColumnIndex);
+            cellsArray[0].CellPosition.RowIndex.Should().Be(1);
+            cellsArray[0].CellPosition.ColumnIndex.Should().Be(1);
+            cellsArray[1].CellPosition.RowIndex.Should().Be(40);
+            cellsArray[1].CellPosition.ColumnIndex.Should().Be(20);
         }
 
         [Test]
@@ -136,33 +129,32 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var tablePart = table.GetTablePart(new Rectangle(new CellPosition(9, 9), new CellPosition(40, 20)));
 
-            Assert.AreEqual(32, tablePart.Cells.Count());
+            tablePart.Cells.Count().Should().Be(32);
 
             foreach (var row in tablePart.Cells)
-                Assert.AreEqual(12, row.Count());
+                row.Count().Should().Be(12);
 
             var targetRow = tablePart.Cells.FirstOrDefault(row => row.FirstOrDefault(cell => cell.StringValue == "Another text") != null);
-            Assert.AreNotEqual(null, targetRow);
+            targetRow.Should().NotBeNull();
 // ReSharper disable AssignNullToNotNullAttribute
             var targetCell = targetRow.FirstOrDefault(cell => cell.StringValue == "Another text");
 // ReSharper restore AssignNullToNotNullAttribute
 
-            Assert.AreNotEqual(null, targetCell);
+            targetCell.Should().NotBeNull();
 // ReSharper disable PossibleNullReferenceException
-            Assert.AreEqual(10, targetCell.CellPosition.RowIndex);
+            targetCell.CellPosition.RowIndex.Should().Be(10);
 // ReSharper restore PossibleNullReferenceException
-            Assert.AreEqual(10, targetCell.CellPosition.ColumnIndex);
+            targetCell.CellPosition.ColumnIndex.Should().Be(10);
 
             targetRow = tablePart.Cells.LastOrDefault();
-            Assert.AreNotEqual(null, targetRow);
-
+            targetRow.Should().NotBeNull();
 // ReSharper disable AssignNullToNotNullAttribute
             targetCell = tablePart.Cells.LastOrDefault().LastOrDefault();
-// ReSharper restore AssignNullToNotNullAttribute
-            Assert.AreNotEqual(null, targetCell);
+            // ReSharper restore AssignNullToNotNullAttribute
+            targetCell.Should().NotBeNull();
 
 // ReSharper disable PossibleNullReferenceException
-            Assert.AreEqual(targetCell.StringValue, "Test Test");
+            targetCell.StringValue.Should().Be("Test Test");
 // ReSharper restore PossibleNullReferenceException
         }
 
@@ -175,7 +167,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var tablePart = table.GetTablePart(new Rectangle(new CellPosition(-1, 0), new CellPosition(1, 1)));
 
-            Assert.AreEqual(null, tablePart);
+            tablePart.Should().BeNull();
         }
 
         [Test]
@@ -194,9 +186,9 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                 };
             var table = FakeTable.GenerateFromStringArray(template);
 
-            Assert.AreEqual("Text", table.GetCell(new CellPosition("A1")).StringValue);
-            Assert.AreEqual(null, table.GetCell(new CellPosition("B1")).StringValue);
-            Assert.AreEqual("Model:ABC:A1:SD123", table.GetCell(new CellPosition(2, 3)).StringValue);
+            table.GetCell(new CellPosition("A1")).StringValue.Should().Be("Text");
+            table.GetCell(new CellPosition("B1")).StringValue.Should().BeNull();
+            table.GetCell(new CellPosition(2, 3)).StringValue.Should().Be("Model:ABC:A1:SD123");
         }
     }
 }

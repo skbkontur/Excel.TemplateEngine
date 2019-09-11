@@ -3,6 +3,8 @@ using System.Linq;
 
 using Excel.TemplateEngine.FileGenerating;
 
+using FluentAssertions;
+
 using NUnit.Framework;
 
 using Vostok.Logging.Console;
@@ -20,11 +22,11 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
 
             var cells = worksheet.MergedCells.ToArray();
 
-            Assert.AreEqual(2, cells.Length);
-            Assert.AreEqual("B32", cells[0].Item1.CellReference);
-            Assert.AreEqual("C35", cells[0].Item2.CellReference);
-            Assert.AreEqual("I2", cells[1].Item1.CellReference);
-            Assert.AreEqual("J3", cells[1].Item2.CellReference);
+            cells.Length.Should().Be(2);
+            cells[0].Item1.CellReference.Should().Be("B32");
+            cells[0].Item2.CellReference.Should().Be("C35");
+            cells[1].Item1.CellReference.Should().Be("I2");
+            cells[1].Item2.CellReference.Should().Be("J3");
 
             document.Dispose();
         }
@@ -37,7 +39,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
 
             var cells = worksheet.MergedCells.ToArray();
 
-            Assert.AreEqual(0, cells.Length);
+            cells.Length.Should().Be(0);
 
             document.Dispose();
         }

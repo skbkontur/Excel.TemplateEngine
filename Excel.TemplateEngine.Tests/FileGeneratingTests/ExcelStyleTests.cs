@@ -4,6 +4,8 @@ using Excel.TemplateEngine.FileGenerating;
 using Excel.TemplateEngine.FileGenerating.DataTypes;
 using Excel.TemplateEngine.FileGenerating.Implementation;
 
+using FluentAssertions;
+
 using NUnit.Framework;
 
 using Vostok.Logging.Console;
@@ -19,9 +21,9 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
-            Assert.AreEqual(128, style.FillStyle.Color.Red);
-            Assert.AreEqual(129, style.FillStyle.Color.Green);
-            Assert.AreEqual(200, style.FillStyle.Color.Blue);
+            style.FillStyle.Color.Red.Should().Be(128);
+            style.FillStyle.Color.Green.Should().Be(129);
+            style.FillStyle.Color.Blue.Should().Be(200);
         }
 
         [Test]
@@ -31,13 +33,13 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
-            Assert.IsTrue(style.FontStyle.Bold);
-            Assert.IsTrue(style.FontStyle.Underlined);
-            Assert.AreEqual(20, style.FontStyle.Size);
+            style.FontStyle.Bold.Should().BeTrue();
+            style.FontStyle.Underlined.Should().BeTrue();
+            style.FontStyle.Size.Should().Be(20);
 
-            Assert.AreEqual(122, style.FontStyle.Color.Red);
-            Assert.AreEqual(200, style.FontStyle.Color.Green);
-            Assert.AreEqual(20, style.FontStyle.Color.Blue);
+            style.FontStyle.Color.Red.Should().Be(122);
+            style.FontStyle.Color.Green.Should().Be(200);
+            style.FontStyle.Color.Blue.Should().Be(20);
         }
 
         [Test]
@@ -47,7 +49,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
-            Assert.AreEqual("0.0000", style.NumberingFormat.FormatCode);
+            style.NumberingFormat.FormatCode.Should().Be("0.0000");
         }
 
         [Test]
@@ -57,10 +59,10 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
-            Assert.AreEqual(ExcelBorderType.Double, style.BordersStyle.BottomBorder.BorderType);
-            Assert.AreEqual(255, style.BordersStyle.BottomBorder.Color.Red);
-            Assert.AreEqual(0, style.BordersStyle.BottomBorder.Color.Green);
-            Assert.AreEqual(255, style.BordersStyle.BottomBorder.Color.Blue);
+            style.BordersStyle.BottomBorder.BorderType.Should().Be(ExcelBorderType.Double);
+            style.BordersStyle.BottomBorder.Color.Red.Should().Be(255);
+            style.BordersStyle.BottomBorder.Color.Green.Should().Be(0);
+            style.BordersStyle.BottomBorder.Color.Blue.Should().Be(255);
         }
 
         [Test]
@@ -70,8 +72,8 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
-            Assert.IsTrue(style.Alignment.WrapText);
-            Assert.AreEqual(ExcelHorizontalAlignment.Left, style.Alignment.HorizontalAlignment);
+            style.Alignment.WrapText.Should().BeTrue();
+            style.Alignment.HorizontalAlignment.Should().Be(ExcelHorizontalAlignment.Left);
         }
 
         [Test]

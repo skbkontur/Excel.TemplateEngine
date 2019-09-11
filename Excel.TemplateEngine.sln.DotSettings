@@ -4,3 +4,120 @@
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=33BE97A1B2E0E149BBD2B72157DB55B5/RelativePath/@EntryValue">..\Common.DotSettings</s:String>
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File33BE97A1B2E0E149BBD2B72157DB55B5/@KeyIndexDefined">True</s:Boolean>
 	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File33BE97A1B2E0E149BBD2B72157DB55B5/RelativePriority/@EntryValue">1</s:Double>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/Comment/@EntryValue">Can use Should().BeNull() fluent assertion</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/CustomPatternPlaceholder/=actual/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/CustomPatternPlaceholder/=actual/Properties/=Maximal/@EntryIndexedValue">-1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/CustomPatternPlaceholder/=actual/Properties/=Minimal/@EntryIndexedValue">-1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/CustomPatternPlaceholder/=actual/Type/@EntryValue">ArgumentPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/IsReplacePattern/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/LanguageName/@EntryValue">CSHARP</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/MatchCatchClauseWithoutExceptionFilter/@EntryValue">False</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/ReplaceComment/@EntryValue">Use Should().BeNull() fluent assertion</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/ReplacePattern/@EntryValue">$actual$.Should().BeNull();</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/SearchPattern/@EntryValue">Assert.IsNull($actual$);</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=487E5135C00DFC4EA4145FAEE1D5219F/Severity/@EntryValue">SUGGESTION</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/Comment/@EntryValue">Can use Should.BeFalse fluent assertion</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/CustomPatternPlaceholder/=actual/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/CustomPatternPlaceholder/=actual/Properties/=ExactType/@EntryIndexedValue">True</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/CustomPatternPlaceholder/=actual/Properties/=ExpressionType/@EntryIndexedValue">System.Boolean</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/CustomPatternPlaceholder/=actual/Type/@EntryValue">ExpressionPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/IsReplacePattern/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/LanguageName/@EntryValue">CSHARP</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/MatchCatchClauseWithoutExceptionFilter/@EntryValue">False</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/ReplaceComment/@EntryValue">Use Should.BeFalse fluent assertion</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/ReplacePattern/@EntryValue">$actual$.Should().BeFalse();</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/SearchPattern/@EntryValue">Assert.IsFalse($actual$);</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=54E0D4932529A147957252ABE752EB27/Severity/@EntryValue">SUGGESTION</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/Comment/@EntryValue">Can use Should().Be() fluent assertion</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/CustomPatternPlaceholder/=actual/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/CustomPatternPlaceholder/=actual/Properties/=Maximal/@EntryIndexedValue">-1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/CustomPatternPlaceholder/=actual/Properties/=Minimal/@EntryIndexedValue">1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/CustomPatternPlaceholder/=actual/Type/@EntryValue">ArgumentPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/CustomPatternPlaceholder/=expected/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/CustomPatternPlaceholder/=expected/Properties/=Maximal/@EntryIndexedValue">-1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/CustomPatternPlaceholder/=expected/Properties/=Minimal/@EntryIndexedValue">1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/CustomPatternPlaceholder/=expected/Type/@EntryValue">ArgumentPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/IsReplacePattern/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/LanguageName/@EntryValue">CSHARP</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/MatchCatchClauseWithoutExceptionFilter/@EntryValue">False</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/ReplaceComment/@EntryValue">Use Should().Be() fluent assertion</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/ReplacePattern/@EntryValue">$actual$.Should().Be($expected$);</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/SearchPattern/@EntryValue">Assert.That($actual$, Is.Equals($expected$));</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=75566B66E35D9C42A36CAF2D77162A9F/Severity/@EntryValue">SUGGESTION</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/Comment/@EntryValue">Can use Should().NotBeSameAs() fluent assertion</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/CustomPatternPlaceholder/=actual/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/CustomPatternPlaceholder/=actual/Properties/=Maximal/@EntryIndexedValue">-1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/CustomPatternPlaceholder/=actual/Properties/=Minimal/@EntryIndexedValue">1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/CustomPatternPlaceholder/=actual/Type/@EntryValue">ArgumentPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/CustomPatternPlaceholder/=expected/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/CustomPatternPlaceholder/=expected/Properties/=Maximal/@EntryIndexedValue">-1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/CustomPatternPlaceholder/=expected/Properties/=Minimal/@EntryIndexedValue">1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/CustomPatternPlaceholder/=expected/Type/@EntryValue">ArgumentPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/IsReplacePattern/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/LanguageName/@EntryValue">CSHARP</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/MatchCatchClauseWithoutExceptionFilter/@EntryValue">False</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/ReplaceComment/@EntryValue">Use Should().NotBeSameAs() fluent assertion</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/ReplacePattern/@EntryValue">$actual$.Should().NotBeSameAs($expected$);</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/SearchPattern/@EntryValue">Assert.That($actual$, Is.Not.SameAs($expected$));</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=B8AB45B4E4D4124780482F6A61109876/Severity/@EntryValue">SUGGESTION</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/Comment/@EntryValue">Can use Should().Be() fluent assertion</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/CustomPatternPlaceholder/=first/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/CustomPatternPlaceholder/=first/Properties/=Maximal/@EntryIndexedValue">1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/CustomPatternPlaceholder/=first/Properties/=Minimal/@EntryIndexedValue">1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/CustomPatternPlaceholder/=first/Type/@EntryValue">ArgumentPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/CustomPatternPlaceholder/=second/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/CustomPatternPlaceholder/=second/Properties/=Maximal/@EntryIndexedValue">1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/CustomPatternPlaceholder/=second/Properties/=Minimal/@EntryIndexedValue">1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/CustomPatternPlaceholder/=second/Type/@EntryValue">ArgumentPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/IsReplacePattern/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/LanguageName/@EntryValue">CSHARP</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/MatchCatchClauseWithoutExceptionFilter/@EntryValue">False</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/ReplaceComment/@EntryValue">Use Should().Be() fluent assertion</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/ReplacePattern/@EntryValue">$first$.Should().Be($second$);</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/SearchPattern/@EntryValue">Assert.AreEqual($first$, $second$);</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E4FA9E1B3EAD364CAF75D998D9FFDF8F/Severity/@EntryValue">SUGGESTION</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/Comment/@EntryValue">Can use Should().BeNullOrEmpty() fluent assertion</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/CustomPatternPlaceholder/=actual/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/CustomPatternPlaceholder/=actual/Properties/=ExactType/@EntryIndexedValue">True</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/CustomPatternPlaceholder/=actual/Properties/=ExpressionType/@EntryIndexedValue">System.String</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/CustomPatternPlaceholder/=actual/Type/@EntryValue">ExpressionPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/IsReplacePattern/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/LanguageName/@EntryValue">CSHARP</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/MatchCatchClauseWithoutExceptionFilter/@EntryValue">False</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/ReplaceComment/@EntryValue">Use Should().BeNullOrEmpty() fluent assertion</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/ReplacePattern/@EntryValue">$actual$.Should().BeNullOrEmpty();</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/SearchPattern/@EntryValue">Assert.IsNullOrEmpty($actual$);</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=E779DCF937021A48BEA536A159FA06D5/Severity/@EntryValue">SUGGESTION</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/Comment/@EntryValue">Can use Should.BeTrue fluent assertion</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/CustomPatternPlaceholder/=actual/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/CustomPatternPlaceholder/=actual/Properties/=ExactType/@EntryIndexedValue">True</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/CustomPatternPlaceholder/=actual/Properties/=ExpressionType/@EntryIndexedValue">System.Boolean</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/CustomPatternPlaceholder/=actual/Type/@EntryValue">ExpressionPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/IsReplacePattern/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/LanguageName/@EntryValue">CSHARP</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/MatchCatchClauseWithoutExceptionFilter/@EntryValue">False</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/ReplaceComment/@EntryValue">Use Should.BeTrue fluent assertion</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/ReplacePattern/@EntryValue">$actual$.Should().BeTrue();</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/SearchPattern/@EntryValue">Assert.IsTrue($actual$);</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F6E4F5A978EFA542A740935F9095512B/Severity/@EntryValue">SUGGESTION</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/Comment/@EntryValue">Can use Should().BeSameAs() fluent assertion</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/CustomPatternPlaceholder/=actual/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/CustomPatternPlaceholder/=actual/Properties/=Maximal/@EntryIndexedValue">-1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/CustomPatternPlaceholder/=actual/Properties/=Minimal/@EntryIndexedValue">1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/CustomPatternPlaceholder/=actual/Type/@EntryValue">ArgumentPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/CustomPatternPlaceholder/=expected/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/CustomPatternPlaceholder/=expected/Properties/=Maximal/@EntryIndexedValue">-1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/CustomPatternPlaceholder/=expected/Properties/=Minimal/@EntryIndexedValue">1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/CustomPatternPlaceholder/=expected/Type/@EntryValue">ArgumentPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/IsReplacePattern/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/LanguageName/@EntryValue">CSHARP</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/MatchCatchClauseWithoutExceptionFilter/@EntryValue">False</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/ReplaceComment/@EntryValue">Use Should().BeSameAs() fluent assertion</s:String></wpf:ResourceDictionary>

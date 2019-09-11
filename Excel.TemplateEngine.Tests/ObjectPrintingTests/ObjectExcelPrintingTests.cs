@@ -9,6 +9,8 @@ using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
+using FluentAssertions;
+
 using NUnit.Framework;
 
 using Vostok.Logging.Console;
@@ -66,9 +68,9 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             MakeTest(model, "withCellsMergingTemplate.xlsx", doc =>
                 {
                     var mergedCells = doc.MergedCells.FirstOrDefault();
-                    Assert.AreNotEqual(null, mergedCells);
-                    Assert.AreEqual("C2", mergedCells.UpperLeft.CellReference);
-                    Assert.AreEqual("D2", mergedCells.LowerRight.CellReference);
+                    mergedCells.Should().NotBeNull();
+                    mergedCells.UpperLeft.CellReference.Should().Be("C2");
+                    mergedCells.LowerRight.CellReference.Should().Be("D2");
                 });
         }
 
@@ -239,7 +241,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                     var target = new ExcelTable(targetDocument.GetWorksheet(0));
                     var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger), new Style(template.GetCell(new CellPosition("A1"))));
 
-                    Assert.Throws<ExcelEngineException>(() => templateEngine.Render(tableBuilder, model));
+                    Action rendering = () => templateEngine.Render(tableBuilder, model);
+                    rendering.Should().Throw<ExcelEngineException>();
                 }
             }
         }

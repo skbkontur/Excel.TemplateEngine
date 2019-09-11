@@ -4,6 +4,8 @@ using System.Linq;
 using Excel.TemplateEngine.FileGenerating;
 using Excel.TemplateEngine.FileGenerating.Implementation;
 
+using FluentAssertions;
+
 using NUnit.Framework;
 
 using Vostok.Logging.Console;
@@ -22,9 +24,9 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
             var lowerRight = new ExcelCellIndex("A24");
             var cells = worksheet.GetSortedCellsInRange(upperLeft, lowerRight).ToArray();
 
-            Assert.AreEqual(3, cells.Count());
-            Assert.AreEqual("Value:String:Name", cells[1].GetStringValue());
-            Assert.AreEqual("Value:String:Address", cells[2].GetStringValue());
+            cells.Length.Should().Be(3);
+            cells[1].GetStringValue().Should().Be("Value:String:Name");
+            cells[2].GetStringValue().Should().Be("Value:String:Address");
 
             document.Dispose();
         }
@@ -37,7 +39,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
 
             var position = new ExcelCellIndex("B9");
             var cell = worksheet.GetCell(position);
-            Assert.AreEqual("Model:Document:B10:C11", cell.GetStringValue());
+            cell.GetStringValue().Should().Be("Model:Document:B10:C11");
 
             document.Dispose();
         }
@@ -49,9 +51,9 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
             var worksheet = document.GetWorksheet(0);
 
             var cell = worksheet.SearchCellsByText("Value:String").FirstOrDefault();
-            Assert.AreNotEqual(null, cell);
+            cell.Should().NotBeNull();
 // ReSharper disable PossibleNullReferenceException
-            Assert.AreEqual("Value:String:Name", cell.GetStringValue());
+            cell.GetStringValue().Should().Be("Value:String:Name");
 // ReSharper restore PossibleNullReferenceException
 
             document.Dispose();

@@ -1,5 +1,7 @@
 using Excel.TemplateEngine.FileGenerating.Implementation;
 
+using FluentAssertions;
+
 using NUnit.Framework;
 
 namespace Excel.TemplateEngine.Tests.FileGeneratingTests
@@ -11,15 +13,15 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
         public void CellIndexConstructorsTest()
         {
             var a = new ExcelCellIndex("A1");
-            Assert.AreEqual(a.RowIndex, 1);
-            Assert.AreEqual(a.ColumnIndex, 1);
+            a.RowIndex.Should().Be(1);
+            a.ColumnIndex.Should().Be(1);
 
             var b = new ExcelCellIndex(1, 1);
-            Assert.AreEqual(b.CellReference, "A1");
+            b.CellReference.Should().Be("A1");
 
             var c = new ExcelCellIndex("AAA23");
-            Assert.AreEqual(c.RowIndex, 23);
-            Assert.AreEqual(c.ColumnIndex, 703);
+            c.RowIndex.Should().Be(23);
+            c.ColumnIndex.Should().Be(703);
         }
 
         [Test]
@@ -28,10 +30,10 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
             var a = new ExcelCellIndex("A1");
             var b = new ExcelCellIndex("A1");
 
-            Assert.AreEqual("A1", a.Subtract(b).CellReference);
+            "A1".Should().Be(a.Subtract(b).CellReference);
 
             b = new ExcelCellIndex("ABC345");
-            Assert.AreEqual("ABC345", b.Subtract(a).CellReference);
+            "ABC345".Should().Be(b.Subtract(a).CellReference);
         }
 
         [Test]
@@ -40,7 +42,7 @@ namespace Excel.TemplateEngine.Tests.FileGeneratingTests
             var a = new ExcelCellIndex("A1");
             var b = new ExcelCellIndex("A1");
 
-            Assert.AreEqual("A1", a.Add(b).CellReference);
+            a.Add(b).CellReference.Should().Be("A1");
         }
     }
 }
