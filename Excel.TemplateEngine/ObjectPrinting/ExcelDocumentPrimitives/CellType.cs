@@ -1,4 +1,4 @@
-﻿namespace Excel.TemplateEngine.ObjectPrinting.DataTypes
+namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives
 {
     public enum CellType
     {

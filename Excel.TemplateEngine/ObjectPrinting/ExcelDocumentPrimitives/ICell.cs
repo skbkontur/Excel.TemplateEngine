@@ -1,4 +1,3 @@
-﻿using Excel.TemplateEngine.ObjectPrinting.DataTypes;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives

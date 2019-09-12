@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Linq;
 
 using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.DataTypes;
 using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 using Excel.TemplateEngine.ObjectPrinting.TableNavigator;

@@ -1,5 +1,4 @@
 using Excel.TemplateEngine.FileGenerating.Primitives;
-using Excel.TemplateEngine.ObjectPrinting.DataTypes;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
