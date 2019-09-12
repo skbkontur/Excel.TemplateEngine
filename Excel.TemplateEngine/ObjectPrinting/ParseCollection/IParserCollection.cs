@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 
 using Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection
 {
-    public interface IParserCollection
+    internal interface IParserCollection
     {
         IClassParser GetClassParser();
         IEnumerableParser GetEnumerableParser(Type modelType);

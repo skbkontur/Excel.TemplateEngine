@@ -15,7 +15,7 @@ using Vostok.Logging.Abstractions;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
 {
-    public class ClassParser : IClassParser
+    internal class ClassParser : IClassParser
     {
         public ClassParser(IParserCollection parserCollection, ILog logger)
         {

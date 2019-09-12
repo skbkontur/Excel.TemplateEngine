@@ -1,6 +1,6 @@
-﻿namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
+namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
-    public static class ParsingParameters
+    internal static class ParsingParameters
     {
         public const int MaxEnumerableLength = 10000;
     }

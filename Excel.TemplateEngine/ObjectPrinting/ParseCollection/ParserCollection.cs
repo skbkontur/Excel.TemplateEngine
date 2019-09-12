@@ -9,7 +9,7 @@ using Vostok.Logging.Abstractions;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection
 {
-    public class ParserCollection : IParserCollection
+    internal class ParserCollection : IParserCollection
     {
         public ParserCollection(ILog logger)
         {

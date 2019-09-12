@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
 {
-    public class EnumerableParser : IEnumerableParser
+    internal class EnumerableParser : IEnumerableParser
     {
         public EnumerableParser(IParserCollection parserCollection)
         {

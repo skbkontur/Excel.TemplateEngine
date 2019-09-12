@@ -4,7 +4,7 @@ using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
 {
-    public class CheckBoxValueParser : IFormValueParser
+    internal class CheckBoxValueParser : IFormValueParser
     {
         public bool TryParse(ITableParser tableParser, string name, Type modelType, out object result)
         {

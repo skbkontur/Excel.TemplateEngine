@@ -9,7 +9,7 @@ using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
 {
-    public class EnumerableMeasurer : IEnumerableMeasurer
+    internal class EnumerableMeasurer : IEnumerableMeasurer
     {
         public EnumerableMeasurer(ParserCollection parserCollection)
         {

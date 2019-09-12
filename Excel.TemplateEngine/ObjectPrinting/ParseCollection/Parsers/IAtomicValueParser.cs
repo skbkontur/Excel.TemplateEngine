@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
-    public interface IAtomicValueParser
+    internal interface IAtomicValueParser
     {
         bool TryParse([NotNull] ITableParser tableParser, [NotNull] Type itemType, [CanBeNull] out object result);
     }

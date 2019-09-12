@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
-    public interface IClassParser
+    internal interface IClassParser
     {
         [NotNull]
         TModel Parse<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template, Action<string, string> addFieldMapping)
