@@ -21,7 +21,7 @@ using Vostok.Logging.Abstractions;
 
 namespace Excel.TemplateEngine.FileGenerating.Primitives.Implementations
 {
-    public class ExcelDocument : IExcelDocument
+    internal class ExcelDocument : IExcelDocument
     {
         public ExcelDocument([NotNull] byte[] template, [NotNull] ILog logger)
         {

@@ -23,7 +23,7 @@ using Tuple = System.Tuple;
 
 namespace Excel.TemplateEngine.FileGenerating.Primitives.Implementations
 {
-    public class ExcelWorksheet : IExcelWorksheet
+    internal class ExcelWorksheet : IExcelWorksheet
     {
         public ExcelWorksheet(IExcelDocument excelDocument, WorksheetPart worksheetPart, IExcelDocumentStyle documentStyle, IExcelSharedStrings excelSharedStrings, ILog logger)
         {
