@@ -1,18 +1,18 @@
 using System.Collections.Generic;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.ParseCollection;
-using Excel.TemplateEngine.ObjectPrinting.RenderCollection;
-using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
-using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
-using Excel.TemplateEngine.ObjectPrinting.TableParser;
-
 using JetBrains.Annotations;
+
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
 
 using Vostok.Logging.Abstractions;
 
-namespace Excel.TemplateEngine
+namespace SkbKontur.Excel.TemplateEngine
 {
     public class TemplateEngine : ITemplateEngine
     {

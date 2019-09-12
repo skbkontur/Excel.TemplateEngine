@@ -1,4 +1,4 @@
-﻿namespace Excel.TemplateEngine.FileGenerating.Primitives
+﻿namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives
 {
     public interface IExcelFormControlInfo
     {

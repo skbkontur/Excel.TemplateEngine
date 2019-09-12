@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Excel.TemplateEngine.FileGenerating.DataTypes;
-using Excel.TemplateEngine.FileGenerating.Primitives;
-using Excel.TemplateEngine.ObjectPrinting.Helpers;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations
+using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations
 {
     public class ExcelTable : ITable
     {

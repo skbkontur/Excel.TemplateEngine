@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 
-using Excel.TemplateEngine.FileGenerating.Primitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives
 {
     public interface ITable
     {

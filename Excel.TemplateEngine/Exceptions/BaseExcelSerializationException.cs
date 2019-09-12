@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Excel.TemplateEngine.Exceptions
+namespace SkbKontur.Excel.TemplateEngine.Exceptions
 {
     public class BaseExcelSerializationException : Exception
     {

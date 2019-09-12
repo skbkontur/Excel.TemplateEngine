@@ -1,13 +1,13 @@
 using System;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.Helpers;
-using Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
-using Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations;
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations;
 
 using Vostok.Logging.Abstractions;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection
 {
     internal class ParserCollection : IParserCollection
     {

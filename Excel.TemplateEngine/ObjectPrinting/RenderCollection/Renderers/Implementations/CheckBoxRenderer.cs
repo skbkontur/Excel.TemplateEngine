@@ -1,9 +1,9 @@
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations
 {
     internal class CheckBoxRenderer : IFormControlRenderer
     {

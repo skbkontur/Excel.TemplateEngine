@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.FileGenerating.Primitives.Implementations
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementations
 {
     public class BaseExcelFormControlInfo : IExcelFormControlInfo
     {

@@ -1,4 +1,4 @@
-﻿namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives
+﻿namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives
 {
     public interface IColumn
     {

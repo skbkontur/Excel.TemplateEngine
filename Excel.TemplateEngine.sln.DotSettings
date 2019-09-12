@@ -120,4 +120,5 @@
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/IsReplacePattern/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/LanguageName/@EntryValue">CSHARP</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/MatchCatchClauseWithoutExceptionFilter/@EntryValue">False</s:Boolean>
-	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/ReplaceComment/@EntryValue">Use Should().BeSameAs() fluent assertion</s:String></wpf:ResourceDictionary>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=F77C06500E06BF47A671036ABE4C3CC8/ReplaceComment/@EntryValue">Use Should().BeSameAs() fluent assertion</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Kontur/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

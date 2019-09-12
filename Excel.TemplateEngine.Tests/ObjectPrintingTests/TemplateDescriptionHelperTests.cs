@@ -1,5 +1,3 @@
-using Excel.TemplateEngine.ObjectPrinting.Helpers;
-
 using FluentAssertions;
 
 using NUnit.Framework;

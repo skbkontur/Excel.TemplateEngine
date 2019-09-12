@@ -1,15 +1,15 @@
 using System;
 using System.IO;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.FileGenerating.Primitives;
-using Excel.TemplateEngine.FileGenerating.Primitives.Implementations;
-
 using JetBrains.Annotations;
+
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementations;
 
 using Vostok.Logging.Abstractions;
 
-namespace Excel.TemplateEngine.FileGenerating
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating
 {
     public static class ExcelDocumentFactory
     {

@@ -1,6 +1,6 @@
-﻿using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+﻿using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
 {
     public interface IRectangle
     {

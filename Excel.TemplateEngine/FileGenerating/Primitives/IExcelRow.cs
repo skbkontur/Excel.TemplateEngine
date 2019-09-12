@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Excel.TemplateEngine.FileGenerating.Primitives
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives
 {
     public interface IExcelRow
     {

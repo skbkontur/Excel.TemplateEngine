@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-using Excel.TemplateEngine.ObjectPrinting.TableParser;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
     internal interface IEnumerableParser
     {

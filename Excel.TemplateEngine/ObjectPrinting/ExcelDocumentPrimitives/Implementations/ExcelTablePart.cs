@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations
 {
     public class ExcelTablePart : ITablePart
     {

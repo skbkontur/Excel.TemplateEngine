@@ -2,7 +2,7 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.Exceptions
+namespace SkbKontur.Excel.TemplateEngine.Exceptions
 {
     public class ExcelTemplateEngineException : Exception
     {

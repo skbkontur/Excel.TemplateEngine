@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-using Excel.TemplateEngine.Exceptions;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.Helpers
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
 {
     internal static class ObjectPropertySettersExtractor
     {

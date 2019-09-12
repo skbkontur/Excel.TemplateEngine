@@ -1,14 +1,14 @@
 using System;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.Helpers;
-using Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
-using Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations;
-using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection
 {
     internal class RendererCollection : IRendererCollection
     {

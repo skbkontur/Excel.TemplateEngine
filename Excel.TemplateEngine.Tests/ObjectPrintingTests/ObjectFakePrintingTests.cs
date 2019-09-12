@@ -1,16 +1,17 @@
 using System;
 using System.Linq;
 
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
-using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
-using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 using Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation;
 
 using FluentAssertions;
 
 using NUnit.Framework;
+
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
 using Vostok.Logging.Console;
 
@@ -26,7 +27,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var cell = template.InsertCell(new CellPosition(1, 1));
             cell.StringValue = "Template:RootTemplate:A1:A1";
 
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
             var target = new FakeTable(10, 10);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger), new Style(new FakeCell(new CellPosition("A1"))
@@ -50,7 +51,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var cell = template.InsertCell(new CellPosition(1, 1));
             cell.StringValue = "Template:RootTemplate:A1:A1";
 
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
             var target = new FakeTable(10, 10);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger), new Style(new FakeCell(new CellPosition("A1"))
@@ -103,7 +104,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var target = new FakeTable(100, 100);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger));
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             target.GetCell(new CellPosition("A1")).StringValue.Should().Be("Покупатель:");
@@ -187,7 +188,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var target = new FakeTable(100, 100);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger));
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             target.GetCell(new CellPosition("A1")).StringValue.Should().Be("Покупатель:");
@@ -256,7 +257,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var target = new FakeTable(100, 100);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger));
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             target.GetCell(new CellPosition("C2")).StringValue.Should().Be("Адреса:");
@@ -292,7 +293,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var target = new FakeTable(100, 100);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger));
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             DebugPrinting(target, new CellPosition(1, 1), new CellPosition(20, 20));
@@ -318,7 +319,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var target = new FakeTable(100, 100);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger));
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             target.GetCell(new CellPosition("C2")).StringValue.Should().Be("Адреса:");
@@ -373,7 +374,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var target = new FakeTable(100, 100);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger));
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             target.GetCell(new CellPosition("C2")).StringValue.Should().Be("Адреса:");

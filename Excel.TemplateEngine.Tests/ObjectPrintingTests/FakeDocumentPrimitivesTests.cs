@@ -1,13 +1,13 @@
 using System.Linq;
 
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 using Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation;
 
 using FluentAssertions;
 
 using NUnit.Framework;
+
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
 namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {

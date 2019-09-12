@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.Helpers
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
 {
     internal static class TemplateDescriptionHelper
     {

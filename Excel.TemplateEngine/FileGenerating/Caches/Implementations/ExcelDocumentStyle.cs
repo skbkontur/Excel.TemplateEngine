@@ -6,19 +6,19 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.FileGenerating.Caches.CacheItems;
-using Excel.TemplateEngine.FileGenerating.DataTypes;
-using Excel.TemplateEngine.FileGenerating.Helpers;
-
 using JetBrains.Annotations;
+
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.CacheItems;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Helpers;
 
 using Vostok.Logging.Abstractions;
 
 using ColorType = DocumentFormat.OpenXml.Spreadsheet.ColorType;
 using Fill = DocumentFormat.OpenXml.Spreadsheet.Fill;
 
-namespace Excel.TemplateEngine.FileGenerating.Caches.Implementations
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
 {
     internal class ExcelDocumentStyle : IExcelDocumentStyle
     {

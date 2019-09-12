@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-using Excel.TemplateEngine.FileGenerating.DataTypes;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.FileGenerating.Primitives
+using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
+
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives
 {
     public interface IExcelWorksheet
     {

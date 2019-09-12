@@ -1,13 +1,13 @@
 using System.Linq;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.Helpers;
-using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
-using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
-using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
-namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations
 {
     internal class ClassRenderer : IRenderer
     {

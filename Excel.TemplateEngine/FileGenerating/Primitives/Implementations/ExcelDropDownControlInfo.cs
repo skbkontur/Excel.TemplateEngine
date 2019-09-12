@@ -6,14 +6,14 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.FileGenerating.DataTypes;
-
 using JetBrains.Annotations;
+
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 
 using Vostok.Logging.Abstractions;
 
-namespace Excel.TemplateEngine.FileGenerating.Primitives.Implementations
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementations
 {
     public class ExcelDropDownControlInfo : BaseExcelFormControlInfo, IExcelDropDownControlInfo
     {

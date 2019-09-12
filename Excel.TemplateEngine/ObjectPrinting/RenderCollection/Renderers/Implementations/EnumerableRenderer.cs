@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Linq;
 
-using Excel.TemplateEngine.ObjectPrinting.Helpers;
-using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
-using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 
-namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations
 {
     internal class EnumerableRenderer : IRenderer
     {

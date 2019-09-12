@@ -5,10 +5,10 @@ using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-using Excel.TemplateEngine.FileGenerating.Caches;
-using Excel.TemplateEngine.FileGenerating.DataTypes;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Caches;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 
-namespace Excel.TemplateEngine.FileGenerating.Primitives.Implementations
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementations
 {
     internal class ExcelRow : IExcelRow
     {

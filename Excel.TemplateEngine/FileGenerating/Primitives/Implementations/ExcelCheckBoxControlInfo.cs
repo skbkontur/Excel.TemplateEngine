@@ -5,11 +5,11 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-using Excel.TemplateEngine.Exceptions;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.FileGenerating.Primitives.Implementations
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementations
 {
     public class ExcelCheckBoxControlInfo : BaseExcelFormControlInfo, IExcelCheckBoxControlInfo
     {

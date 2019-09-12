@@ -2,9 +2,9 @@ using System;
 
 using DocumentFormat.OpenXml.Spreadsheet;
 
-using Excel.TemplateEngine.FileGenerating.DataTypes;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 
-namespace Excel.TemplateEngine.FileGenerating.Caches.CacheItems
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.CacheItems
 {
     internal class FontStyleCacheItem : IEquatable<FontStyleCacheItem>
     {

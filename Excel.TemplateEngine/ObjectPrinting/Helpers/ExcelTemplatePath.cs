@@ -1,8 +1,8 @@
 using System.Linq;
 
-using Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.Exceptions;
 
-namespace Excel.TemplateEngine.ObjectPrinting.Helpers
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
 {
     internal class ExcelTemplatePath
     {

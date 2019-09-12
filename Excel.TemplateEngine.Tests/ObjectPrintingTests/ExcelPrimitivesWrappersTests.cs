@@ -1,14 +1,13 @@
 using System.IO;
 using System.Linq;
 
-using Excel.TemplateEngine.FileGenerating;
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
-
 using FluentAssertions;
 
 using NUnit.Framework;
+
+using SkbKontur.Excel.TemplateEngine.FileGenerating;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
 using Vostok.Logging.Console;
 

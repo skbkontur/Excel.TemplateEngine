@@ -1,6 +1,6 @@
-using Excel.TemplateEngine.FileGenerating.Primitives;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations
 {
     public class ExcelColumn : IColumn
     {

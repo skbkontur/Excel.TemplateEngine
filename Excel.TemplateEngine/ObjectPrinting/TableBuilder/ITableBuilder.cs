@@ -1,10 +1,10 @@
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.TableBuilder
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder
 {
     public interface ITableBuilder
     {

@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.Helpers;
-
 using FluentAssertions;
 
 using JetBrains.Annotations;
 
 using NUnit.Framework;
+
+using SkbKontur.Excel.TemplateEngine.Exceptions;
 
 namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Excel.TemplateEngine.Exceptions
+namespace SkbKontur.Excel.TemplateEngine.Exceptions
 {
     public class ObjectPropertyExtractionException : BaseExcelSerializationException
     {

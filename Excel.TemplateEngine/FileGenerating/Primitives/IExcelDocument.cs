@@ -2,7 +2,7 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.FileGenerating.Primitives
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives
 {
     public interface IExcelDocument : IDisposable
     {

@@ -1,4 +1,4 @@
-namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations
 {
     public class ObjectSize : IObjectSize
     {

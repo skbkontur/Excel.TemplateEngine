@@ -1,4 +1,4 @@
-namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
     internal static class ParsingParameters
     {

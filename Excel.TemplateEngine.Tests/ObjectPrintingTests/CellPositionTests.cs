@@ -1,9 +1,9 @@
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
-
 using FluentAssertions;
 
 using NUnit.Framework;
+
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
 namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 {

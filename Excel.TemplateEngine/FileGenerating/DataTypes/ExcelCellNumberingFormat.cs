@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Excel.TemplateEngine.FileGenerating.DataTypes
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes
 {
     public class ExcelCellNumberingFormat
     {

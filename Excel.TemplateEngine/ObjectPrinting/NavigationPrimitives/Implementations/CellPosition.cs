@@ -1,6 +1,6 @@
-using Excel.TemplateEngine.FileGenerating.DataTypes;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 
-namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations
 {
     public class CellPosition : ICellPosition
     {

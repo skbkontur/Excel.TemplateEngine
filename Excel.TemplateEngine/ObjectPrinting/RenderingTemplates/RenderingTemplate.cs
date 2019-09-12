@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
 {
     internal class RenderingTemplate
     {

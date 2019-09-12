@@ -1,7 +1,7 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace Excel.TemplateEngine.FileGenerating.Helpers
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Helpers
 {
     internal static class SpreadsheetDocumentHelper
     {

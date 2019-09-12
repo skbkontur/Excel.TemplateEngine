@@ -1,8 +1,8 @@
-using Excel.TemplateEngine.FileGenerating.DataTypes;
-
 using FluentAssertions;
 
 using NUnit.Framework;
+
+using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 
 namespace Excel.TemplateEngine.Tests.FileGeneratingTests
 {

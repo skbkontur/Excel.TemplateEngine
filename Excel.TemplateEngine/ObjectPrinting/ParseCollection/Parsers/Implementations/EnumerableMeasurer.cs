@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.Helpers;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
-using Excel.TemplateEngine.ObjectPrinting.TableParser;
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
 {
     internal class EnumerableMeasurer : IEnumerableMeasurer
     {

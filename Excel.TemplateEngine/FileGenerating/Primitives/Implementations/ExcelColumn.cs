@@ -1,4 +1,4 @@
-namespace Excel.TemplateEngine.FileGenerating.Primitives.Implementations
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementations
 {
     public class ExcelColumn : IExcelColumn
     {

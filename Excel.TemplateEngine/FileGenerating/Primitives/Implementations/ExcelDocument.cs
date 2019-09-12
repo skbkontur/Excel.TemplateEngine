@@ -8,18 +8,18 @@ using System.Xml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.FileGenerating.Caches;
-using Excel.TemplateEngine.FileGenerating.Caches.Implementations;
-using Excel.TemplateEngine.FileGenerating.Helpers;
-
 using JetBrains.Annotations;
 
 using MoreLinq;
 
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Caches;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Helpers;
+
 using Vostok.Logging.Abstractions;
 
-namespace Excel.TemplateEngine.FileGenerating.Primitives.Implementations
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementations
 {
     internal class ExcelDocument : IExcelDocument
     {

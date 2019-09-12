@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.TableParser;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
 {
     internal class EnumerableParser : IEnumerableParser
     {

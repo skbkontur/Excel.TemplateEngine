@@ -1,7 +1,7 @@
-﻿using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+﻿using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
-namespace Excel.TemplateEngine.ObjectPrinting.TableParser
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser
 {
     public interface ITableParser
     {

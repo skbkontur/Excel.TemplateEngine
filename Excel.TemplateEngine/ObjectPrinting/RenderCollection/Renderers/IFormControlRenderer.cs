@@ -1,8 +1,8 @@
-using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers
 {
     internal interface IFormControlRenderer
     {

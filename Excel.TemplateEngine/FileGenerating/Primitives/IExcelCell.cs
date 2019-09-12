@@ -1,6 +1,6 @@
-﻿using Excel.TemplateEngine.FileGenerating.DataTypes;
+﻿using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 
-namespace Excel.TemplateEngine.FileGenerating.Primitives
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives
 {
     public interface IExcelCell
     {

@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>SkbKontur.Excel.TemplateEngine</AssemblyName>
+    <RootNamespace>SkbKontur.Excel.TemplateEngine</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

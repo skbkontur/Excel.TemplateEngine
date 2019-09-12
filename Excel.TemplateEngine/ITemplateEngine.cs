@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 
-using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
-using Excel.TemplateEngine.ObjectPrinting.TableParser;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
+
+namespace SkbKontur.Excel.TemplateEngine
 {
     public interface ITemplateEngine
     {

@@ -1,6 +1,6 @@
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives
 {
     public interface ICell
     {

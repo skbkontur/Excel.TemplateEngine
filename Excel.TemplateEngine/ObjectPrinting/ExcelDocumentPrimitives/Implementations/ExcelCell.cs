@@ -1,8 +1,8 @@
-using Excel.TemplateEngine.FileGenerating.Primitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations
 {
     public class ExcelCell : ICell
     {

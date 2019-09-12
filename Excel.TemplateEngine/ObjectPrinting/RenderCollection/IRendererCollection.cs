@@ -1,8 +1,8 @@
 using System;
 
-using Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
 
-namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection
 {
     internal interface IRendererCollection
     {

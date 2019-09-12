@@ -1,6 +1,6 @@
-﻿using Excel.TemplateEngine.FileGenerating.DataTypes;
+﻿using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 
-namespace Excel.TemplateEngine.FileGenerating.Caches
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches
 {
     internal interface IExcelDocumentFontStyles
     {

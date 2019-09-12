@@ -1,8 +1,8 @@
 using System;
 
-using Excel.TemplateEngine.ObjectPrinting.TableParser;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
 {
     internal class CheckBoxValueParser : IFormValueParser
     {

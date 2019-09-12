@@ -1,12 +1,12 @@
 using System.IO;
 using System.Linq;
 
-using Excel.TemplateEngine.FileGenerating;
-using Excel.TemplateEngine.FileGenerating.DataTypes;
-
 using FluentAssertions;
 
 using NUnit.Framework;
+
+using SkbKontur.Excel.TemplateEngine.FileGenerating;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 
 using Vostok.Logging.Console;
 

@@ -3,7 +3,7 @@ using System;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace Excel.TemplateEngine.FileGenerating.Caches.CacheItems
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.CacheItems
 {
     internal class CellStyleCacheItem : IEquatable<CellStyleCacheItem>
     {

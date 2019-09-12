@@ -1,10 +1,10 @@
 using System.IO;
 
-using Excel.TemplateEngine.FileGenerating;
-
 using FluentAssertions;
 
 using NUnit.Framework;
+
+using SkbKontur.Excel.TemplateEngine.FileGenerating;
 
 using Vostok.Logging.Console;
 

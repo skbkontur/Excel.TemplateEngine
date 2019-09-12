@@ -3,17 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.Helpers;
-using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
-using Excel.TemplateEngine.ObjectPrinting.TableParser;
-
 using JetBrains.Annotations;
+
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
 
 using Vostok.Logging.Abstractions;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
 {
     internal class ClassParser : IClassParser
     {
