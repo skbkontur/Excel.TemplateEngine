@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 
 namespace Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation
 {

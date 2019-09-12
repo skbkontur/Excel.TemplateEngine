@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Excel.TemplateEngine.Helpers;
-using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.Helpers;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
 namespace Excel.TemplateEngine.ObjectPrinting.RenderingTemplates

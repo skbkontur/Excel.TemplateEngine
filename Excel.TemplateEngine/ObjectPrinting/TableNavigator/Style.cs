@@ -1,4 +1,4 @@
-﻿using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+﻿using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 
 namespace Excel.TemplateEngine.ObjectPrinting.TableNavigator
 {

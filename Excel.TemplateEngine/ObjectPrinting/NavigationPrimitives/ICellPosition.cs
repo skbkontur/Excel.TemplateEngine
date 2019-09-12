@@ -1,3 +1,5 @@
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+
 namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
 {
     public interface ICellPosition

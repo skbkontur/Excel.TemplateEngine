@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using Excel.TemplateEngine.ObjectPrinting.TableParser;
 
 using JetBrains.Annotations;

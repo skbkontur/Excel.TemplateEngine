@@ -1,4 +1,5 @@
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
 using FluentAssertions;
 

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using Excel.TemplateEngine.ObjectPrinting.ParseCollection;
 using Excel.TemplateEngine.ObjectPrinting.RenderCollection;
 using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;

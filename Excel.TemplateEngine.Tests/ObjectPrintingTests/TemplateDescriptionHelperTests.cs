@@ -1,4 +1,4 @@
-using Excel.TemplateEngine.Helpers;
+using Excel.TemplateEngine.ObjectPrinting.Helpers;
 
 using FluentAssertions;
 

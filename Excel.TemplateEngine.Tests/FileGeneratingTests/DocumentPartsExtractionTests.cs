@@ -2,7 +2,7 @@ using System.IO;
 using System.Linq;
 
 using Excel.TemplateEngine.FileGenerating;
-using Excel.TemplateEngine.FileGenerating.Implementation;
+using Excel.TemplateEngine.FileGenerating.DataTypes;
 
 using FluentAssertions;
 

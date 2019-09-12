@@ -4,8 +4,9 @@ using System.IO;
 
 using Excel.TemplateEngine.Exceptions;
 using Excel.TemplateEngine.FileGenerating;
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation;
+using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 using Excel.TemplateEngine.ObjectPrinting.TableParser;

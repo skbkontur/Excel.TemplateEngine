@@ -1,6 +1,7 @@
 using System.Linq;
 
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
 using Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation;
 

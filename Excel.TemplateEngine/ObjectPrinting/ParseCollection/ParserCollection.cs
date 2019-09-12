@@ -1,8 +1,9 @@
 using System;
 
 using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.Helpers;
+using Excel.TemplateEngine.ObjectPrinting.Helpers;
 using Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
+using Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations;
 
 using Vostok.Logging.Abstractions;
 

@@ -1,8 +1,9 @@
 using System;
 
 using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.Helpers;
+using Excel.TemplateEngine.ObjectPrinting.Helpers;
 using Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
+using Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations;
 using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
 
 using JetBrains.Annotations;

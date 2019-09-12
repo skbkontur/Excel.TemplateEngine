@@ -1,5 +1,5 @@
 using Excel.TemplateEngine.ObjectPrinting.DataTypes;
-using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
 namespace Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation

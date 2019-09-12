@@ -1,4 +1,4 @@
-using Excel.TemplateEngine.FileGenerating.Implementation;
+using Excel.TemplateEngine.FileGenerating.DataTypes;
 
 using FluentAssertions;
 

@@ -2,7 +2,6 @@ using System.IO;
 
 using Excel.TemplateEngine.FileGenerating;
 using Excel.TemplateEngine.FileGenerating.DataTypes;
-using Excel.TemplateEngine.FileGenerating.Implementation;
 
 using FluentAssertions;
 

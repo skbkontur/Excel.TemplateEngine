@@ -1,4 +1,6 @@
-﻿namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
+﻿using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+
+namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
 {
     public interface IRectangle
     {

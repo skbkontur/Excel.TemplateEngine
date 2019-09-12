@@ -2,8 +2,8 @@ using System;
 using System.IO;
 
 using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.FileGenerating.Implementation.Primitives;
-using Excel.TemplateEngine.FileGenerating.Interfaces;
+using Excel.TemplateEngine.FileGenerating.Primitives;
+using Excel.TemplateEngine.FileGenerating.Primitives.Implementations;
 
 using JetBrains.Annotations;
 

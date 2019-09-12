@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using Excel.TemplateEngine.Exceptions;
-using Excel.TemplateEngine.Helpers;
+using Excel.TemplateEngine.ObjectPrinting.Helpers;
 
 using FluentAssertions;
 
