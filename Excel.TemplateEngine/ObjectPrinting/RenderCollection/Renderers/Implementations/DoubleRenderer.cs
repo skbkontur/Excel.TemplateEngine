@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
 using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 
 namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations
 {
-    public class DoubleRenderer : IRenderer
+    internal class DoubleRenderer : IRenderer
     {
         public void Render(ITableBuilder tableBuilder, object model, RenderingTemplate template)
         {

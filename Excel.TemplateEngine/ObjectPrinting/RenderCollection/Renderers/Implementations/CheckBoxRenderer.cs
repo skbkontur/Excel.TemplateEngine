@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations
 {
-    public class CheckBoxRenderer : IFormControlRenderer
+    internal class CheckBoxRenderer : IFormControlRenderer
     {
         public void Render([NotNull] ITableBuilder tableBuilder, [NotNull] string name, [NotNull] object model)
         {

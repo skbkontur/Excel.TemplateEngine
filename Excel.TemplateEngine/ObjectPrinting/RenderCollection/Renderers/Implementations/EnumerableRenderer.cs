@@ -8,7 +8,7 @@ using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 
 namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations
 {
-    public class EnumerableRenderer : IRenderer
+    internal class EnumerableRenderer : IRenderer
     {
         public EnumerableRenderer(IRendererCollection rendererCollection)
         {

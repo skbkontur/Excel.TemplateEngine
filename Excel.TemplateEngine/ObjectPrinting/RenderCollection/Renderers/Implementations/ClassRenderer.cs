@@ -9,7 +9,7 @@ using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
 namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations
 {
-    public class ClassRenderer : IRenderer
+    internal class ClassRenderer : IRenderer
     {
         public ClassRenderer(ITemplateCollection templateCollection, IRendererCollection rendererCollection)
         {

@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 
 namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection
 {
-    public class RendererCollection : IRendererCollection
+    internal class RendererCollection : IRendererCollection
     {
         public RendererCollection(ITemplateCollection templateCollection)
         {
