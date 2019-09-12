@@ -16,7 +16,7 @@ using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
 
 using Vostok.Logging.Console;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class ExcelParsingTests : FileBasedTestBase

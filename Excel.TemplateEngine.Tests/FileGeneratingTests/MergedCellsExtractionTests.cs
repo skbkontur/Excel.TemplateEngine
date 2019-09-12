@@ -9,7 +9,7 @@ using SkbKontur.Excel.TemplateEngine.FileGenerating;
 
 using Vostok.Logging.Console;
 
-namespace Excel.TemplateEngine.Tests.FileGeneratingTests
+namespace SkbKontur.Excel.TemplateEngine.Tests.FileGeneratingTests
 {
     [TestFixture]
     public class MergedCellsExtractionTests : FileBasedTestBase

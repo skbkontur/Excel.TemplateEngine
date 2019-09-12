@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 
-namespace Excel.TemplateEngine.Tests.FileGeneratingTests
+namespace SkbKontur.Excel.TemplateEngine.Tests.FileGeneratingTests
 {
     [TestFixture]
     public class CellIndexTests

@@ -3,7 +3,7 @@ using System.IO;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests
+namespace SkbKontur.Excel.TemplateEngine.Tests
 {
     public class FileBasedTestBase
     {

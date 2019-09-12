@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class RectangleTests

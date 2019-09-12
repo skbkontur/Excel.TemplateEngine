@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
 
-using Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation;
-
 using FluentAssertions;
 
 using NUnit.Framework;
@@ -12,10 +10,11 @@ using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+using SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation;
 
 using Vostok.Logging.Console;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class ObjectFakePrintingTests

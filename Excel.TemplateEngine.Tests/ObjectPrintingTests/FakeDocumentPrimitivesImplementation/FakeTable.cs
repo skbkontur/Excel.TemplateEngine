@@ -3,12 +3,13 @@ using System.Linq;
 
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation
 {
-    public class FakeTable : ITable
+    internal class FakeTable : ITable
     {
         public FakeTable(int width, int height)
         {

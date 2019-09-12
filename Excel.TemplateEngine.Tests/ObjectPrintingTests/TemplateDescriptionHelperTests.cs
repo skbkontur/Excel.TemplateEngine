@@ -2,7 +2,9 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class TemplateDescriptionHelperTests

@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>net472;netcoreapp2.2</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <AssemblyName>SkbKontur.Excel.TemplateEngine.Tests</AssemblyName>
+    <RootNamespace>SkbKontur.Excel.TemplateEngine.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

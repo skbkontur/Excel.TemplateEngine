@@ -9,7 +9,7 @@ using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 
 using Vostok.Logging.Console;
 
-namespace Excel.TemplateEngine.Tests.FileGeneratingTests
+namespace SkbKontur.Excel.TemplateEngine.Tests.FileGeneratingTests
 {
     public class ExcelStyleTests : FileBasedTestBase
     {

@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation
 {
-    public class FakeTablePart : ITablePart
+    internal class FakeTablePart : ITablePart
     {
         public FakeTablePart(IEnumerable<IEnumerable<ICell>> cells)
         {

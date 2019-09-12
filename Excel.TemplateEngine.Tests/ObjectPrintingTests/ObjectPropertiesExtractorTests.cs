@@ -11,8 +11,9 @@ using JetBrains.Annotations;
 using NUnit.Framework;
 
 using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class ObjectPropertiesExtractorTests
@@ -21,9 +22,9 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
         public void AtomicObjectsArrayExtractionTest()
         {
-            const string valueDesÒription = "Value::Bs[].Cs[].S";
+            const string valueDes—Åription = "Value::Bs[].Cs[].S";
 
-            var child = ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesÒription));
+            var child = ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDes—Åription));
             var childArray = child as object[];
             childArray.Should().NotBeNull();
 

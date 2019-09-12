@@ -1,9 +1,9 @@
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation
 {
-    public class FakeCell : ICell
+    internal class FakeCell : ICell
     {
         public FakeCell(ICellPosition position)
         {
