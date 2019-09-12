@@ -1,6 +1,6 @@
-﻿using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+﻿using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace Excel.TemplateEngine.ObjectPrinting.TableNavigator
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator
 {
     public class TableNavigatorState
     {

@@ -1,12 +1,14 @@
 using System.Linq;
 
-using Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+using FluentAssertions;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+using SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation;
+
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class TemplateCollectionTest
@@ -30,20 +32,20 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                 var cellNumber = 0;
                 foreach (var cell in row)
                 {
-                    Assert.AreEqual(rootTemplateContent[rowNumber][cellNumber], cell.StringValue);
+                    cell.StringValue.Should().Be(rootTemplateContent[rowNumber][cellNumber]);
                     ++cellNumber;
                 }
                 ++rowNumber;
             }
 
             var thrashTemplate = templateCollection.GetTemplate("Thrash");
-            Assert.AreEqual("Value::Metallica", thrashTemplate.Content.Cells.First().First().StringValue);
+            thrashTemplate.Content.Cells.First().First().StringValue.Should().Be("Value::Metallica");
 
             var emptyTemplate = templateCollection.GetTemplate("Тест:");
-            Assert.AreEqual(null, emptyTemplate);
+            emptyTemplate.Should().BeNull();
 
-            Assert.AreEqual("D3", thrashTemplate.Range.UpperLeft.CellReference);
-            Assert.AreEqual("D3", thrashTemplate.Range.LowerRight.CellReference);
+            thrashTemplate.Range.UpperLeft.CellReference.Should().Be("D3");
+            thrashTemplate.Range.LowerRight.CellReference.Should().Be("D3");
         }
 
         [Test]
@@ -56,9 +58,9 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var rootTemplate = templateCollection.GetTemplate("RootTemplate");
             var mergedCells = rootTemplate.MergedCells.ToArray();
 
-            Assert.AreEqual(1, mergedCells.Length);
-            Assert.AreEqual("A2", mergedCells[0].UpperLeft.CellReference);
-            Assert.AreEqual("B2", mergedCells[0].LowerRight.CellReference);
+            mergedCells.Length.Should().Be(1);
+            mergedCells[0].UpperLeft.CellReference.Should().Be("A2");
+            mergedCells[0].LowerRight.CellReference.Should().Be("B2");
         }
 
         private readonly string[][] stringTemplate =

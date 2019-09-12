@@ -1,13 +1,13 @@
 using System;
 using System.Globalization;
 
-using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.TableParser
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser
 {
     public class TableParser : ITableParser
     {

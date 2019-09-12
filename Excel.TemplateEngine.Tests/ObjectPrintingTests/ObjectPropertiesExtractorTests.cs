@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-using Excel.TemplateEngine.Helpers;
-using Excel.TemplateEngine.ObjectPrinting.Exceptions;
+using FluentAssertions;
 
 using JetBrains.Annotations;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class ObjectPropertiesExtractorTests
@@ -20,15 +22,15 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
         public void AtomicObjectsArrayExtractionTest()
         {
-            const string valueDesription = "Value::Bs[].Cs[].S";
+            const string valueDesсription = "Value::Bs[].Cs[].S";
 
-            var child = ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesription));
+            var child = ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesсription));
             var childArray = child as object[];
-            Assert.NotNull(childArray);
+            childArray.Should().NotBeNull();
 
-            Assert.AreEqual(2, childArray.Length);
-            CollectionAssert.AreEqual(model.Bs[0].Cs.Select(x => x.S), childArray[0] as object[]);
-            CollectionAssert.AreEqual(model.Bs[1].Cs.Select(x => x.S), childArray[1] as object[]);
+            childArray.Length.Should().Be(2);
+            childArray[0].Should().BeEquivalentTo(model.Bs[0].Cs.Select(x => x.S));
+            childArray[1].Should().BeEquivalentTo(model.Bs[1].Cs.Select(x => x.S));
         }
 
         [Test]
@@ -38,33 +40,30 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             const string valueDesription = "Value::Bs[].Cs[]";
             var child = ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesription));
             var childArray = child as object[];
-            Assert.NotNull(childArray);
+            childArray.Should().NotBeNull();
 
-            Assert.AreEqual(2, childArray.Length);
-            CollectionAssert.AreEqual(model.Bs[0].Cs, childArray[0] as object[]);
-            CollectionAssert.AreEqual(model.Bs[1].Cs, childArray[1] as object[]);
+            childArray.Length.Should().Be(2);
+            childArray[0].Should().BeEquivalentTo(model.Bs[0].Cs);
+            childArray[1].Should().BeEquivalentTo(model.Bs[1].Cs);
         }
 
         [Test]
-        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
         public void NullArrayExtractionTest()
         {
             const string valueDesription = "Value::Bs";
             var child = ObjectPropertiesExtractor.ExtractChildObject(new A(), ExcelTemplatePath.FromRawExpression(valueDesription));
-            Assert.Null(child);
+            child.Should().BeNull();
         }
 
         [Test]
-        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
         public void NullArrayExtractionTestWithBraces()
         {
             const string valueDesription = "Value::Bs[]";
             var child = ObjectPropertiesExtractor.ExtractChildObject(new A(), ExcelTemplatePath.FromRawExpression(valueDesription));
-            Assert.Null(child);
+            child.Should().BeNull();
         }
 
         [Test]
-        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
         public void NullValuesArrayExtractionTest()
         {
             const string valueDesription = "Value::Bs[]";
@@ -74,7 +73,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                 };
             var child = ObjectPropertiesExtractor.ExtractChildObject(localModel, ExcelTemplatePath.FromRawExpression(valueDesription));
             var childArray = child as object[];
-            CollectionAssert.AreEqual(localModel.Bs, childArray);
+            childArray.Should().BeEquivalentTo(localModel.Bs);
         }
 
         [Test]
@@ -88,7 +87,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                 };
             var child = ObjectPropertiesExtractor.ExtractChildObject(localModel, ExcelTemplatePath.FromRawExpression(valueDesription));
             var childArray = child as object[];
-            CollectionAssert.AreEqual(localModel.Bs, childArray);
+            childArray.Should().BeEquivalentTo(localModel.Bs);
         }
 
         public static IEnumerable CollectionElementsExtractionTestSource
@@ -140,21 +139,23 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                         }
                 };
             var child = ObjectPropertiesExtractor.ExtractChildObject(localModel, ExcelTemplatePath.FromRawExpression(valueDesription));
-            Assert.AreEqual(expectedElementProvider(localModel), child);
+            child.Should().Be(expectedElementProvider(localModel));
         }
 
         [Test]
         public void NonexistentObjectsArrayExtractionTest()
         {
             const string valueDesription = "Value::Bs[].Cs[].NULL";
-            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesription)));
+            Action extracting = () => ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesription));
+            extracting.Should().Throw<ObjectPropertyExtractionException>();
         }
 
         [Test]
         public void NonexistentObjectExtractionTest()
         {
             const string valueDesription = "Value::NULL";
-            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesription)));
+            Action extracting = () => ObjectPropertiesExtractor.ExtractChildObject(model, ExcelTemplatePath.FromRawExpression(valueDesription));
+            extracting.Should().Throw<ObjectPropertyExtractionException>();
         }
 
         [Test]
@@ -166,8 +167,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                 };
             const string valueDescription = "Value::S";
             var child = ObjectPropertiesExtractor.ExtractChildObject(simpleModel, ExcelTemplatePath.FromRawExpression(valueDescription));
-            Assert.AreNotEqual(null, child);
-            Assert.AreEqual("Test", child);
+            child.Should().NotBeNull();
+            child.Should().Be("Test");
         }
 
         [TestCase("Value::lalala", TestName = "Non-existent property")]
@@ -177,7 +178,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         [TestCase("Value::DictProperty[123123]", TestName = "Access to dict with index of wrong type")]
         public void TypeExtractionTestOnInvalidExpressions(string expression)
         {
-            Assert.Throws<ObjectPropertyExtractionException>(() => ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest.GetType(), ExcelTemplatePath.FromRawExpression(expression)));
+            Action extracting = () => ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest.GetType(), ExcelTemplatePath.FromRawExpression(expression));
+            extracting.Should().Throw<ObjectPropertyExtractionException>();
         }
 
         public static IEnumerable TypeExtractionTestTestCases
@@ -203,7 +205,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         public void TypeExtractionTest(string expression, Type expectedType)
         {
             var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelForTypeExtractionTest.GetType(), ExcelTemplatePath.FromRawExpression(expression));
-            Assert.AreEqual(expectedType, type);
+            type.Should().Be(expectedType);
         }
 
         [TestCaseSource(nameof(TypeExtractionTestTestCases))]
@@ -212,7 +214,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var modelToGetType = new ComplexModel();
 
             var type = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelToGetType.GetType(), ExcelTemplatePath.FromRawExpression(expression));
-            Assert.AreEqual(expectedType, type);
+            type.Should().Be(expectedType);
         }
 
         private static object[][] ExtractChildObjectSetterTestSource { [UsedImplicitly] get; } = new (string, Func<ComplexModel, object>, object)[]
@@ -241,7 +243,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var modelToSet = new ComplexModel();
             var s = ObjectPropertySettersExtractor.ExtractChildObjectSetter(modelToSet, ExcelTemplatePath.FromRawExpression(expression));
             s(valueToSet);
-            Assert.AreEqual(valueToSet, getter(modelToSet));
+            getter(modelToSet).Should().BeEquivalentTo(valueToSet);
         }
 
         #region auxiliary models

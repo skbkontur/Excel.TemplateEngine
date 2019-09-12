@@ -1,15 +1,17 @@
 using System.IO;
 using System.Linq;
 
-using Excel.TemplateEngine.FileGenerating;
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using FluentAssertions;
 
 using NUnit.Framework;
 
+using SkbKontur.Excel.TemplateEngine.FileGenerating;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+
 using Vostok.Logging.Console;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class ExcelPrimitivesWrappersTests : FileBasedTestBase
@@ -26,17 +28,17 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                             .ToArray();
 
             foreach (var cell in rows.SelectMany(row => row))
-                Assert.AreNotEqual(null, cell);
+                cell.Should().NotBeNull();
 
-            Assert.AreEqual("Template:RootTemplate:B10:D11", rows[0][0].StringValue);
-            Assert.AreEqual("", rows[0][1].StringValue + "");
-            Assert.AreEqual("", rows[0][2].StringValue + "");
-            Assert.AreEqual("Покупатель:", rows[1][0].StringValue);
-            Assert.AreEqual("Поставщик:", rows[1][1].StringValue);
-            Assert.AreEqual("", rows[1][2].StringValue + "");
-            Assert.AreEqual("Value:Organization:Buyer", rows[2][0].StringValue);
-            Assert.AreEqual("Value:Organization:Supplier", rows[2][1].StringValue);
-            Assert.AreEqual("Value::TypeName", rows[2][2].StringValue);
+            rows[0][0].StringValue.Should().Be("Template:RootTemplate:B10:D11");
+            (rows[0][1].StringValue + "").Should().BeEmpty();
+            (rows[0][2].StringValue + "").Should().BeEmpty();
+            rows[1][0].StringValue.Should().Be("Покупатель:");
+            rows[1][1].StringValue.Should().Be("Поставщик:");
+            (rows[1][2].StringValue + "").Should().BeEmpty();
+            rows[2][0].StringValue.Should().Be("Value:Organization:Buyer");
+            rows[2][1].StringValue.Should().Be("Value:Organization:Supplier");
+            rows[2][2].StringValue.Should().Be("Value::TypeName");
         }
 
         [Test]
@@ -46,11 +48,11 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var table = new ExcelTable(document.GetWorksheet(0));
 
             var cell = table.GetCell(new CellPosition("B9"));
-            Assert.AreNotEqual(null, cell);
-            Assert.AreEqual("Template:RootTemplate:B10:D11", cell.StringValue);
+            cell.Should().NotBeNull();
+            cell.StringValue.Should().Be("Template:RootTemplate:B10:D11");
 
             cell = table.GetCell(new CellPosition("ABCD4234"));
-            Assert.AreEqual(null, cell);
+            cell.Should().BeNull();
         }
 
         private readonly ConsoleLog logger = new ConsoleLog();

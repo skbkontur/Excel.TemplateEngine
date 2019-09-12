@@ -1,4 +1,6 @@
-namespace Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives
 {
     public interface ICellPosition
     {

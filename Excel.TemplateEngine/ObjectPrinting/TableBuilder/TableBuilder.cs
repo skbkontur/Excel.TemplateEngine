@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-using Excel.TemplateEngine.ObjectPrinting.DataTypes;
-using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.TableBuilder
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder
 {
     public class TableBuilder : ITableBuilder
     {
@@ -45,7 +45,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.TableBuilder
         {
             var formControl = target.TryGetCheckBoxFormControl(name);
             if (formControl == null)
-                throw new ExcelEngineException($"CheckBox with name {name} not found");
+                throw new ExcelTemplateEngineException($"CheckBox with name {name} not found");
             formControl.IsChecked = value;
             return this;
         }
@@ -55,7 +55,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.TableBuilder
         {
             var formControl = target.TryGetDropDownFormControl(name);
             if (formControl == null)
-                throw new ExcelEngineException($"DropDown with name {name} not found");
+                throw new ExcelTemplateEngineException($"DropDown with name {name} not found");
             formControl.SelectedValue = value;
             return this;
         }

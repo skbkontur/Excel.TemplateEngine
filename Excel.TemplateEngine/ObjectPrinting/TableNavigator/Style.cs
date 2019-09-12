@@ -1,6 +1,6 @@
-﻿using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
+﻿using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 
-namespace Excel.TemplateEngine.ObjectPrinting.TableNavigator
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator
 {
     public class Style : IStyle
     {

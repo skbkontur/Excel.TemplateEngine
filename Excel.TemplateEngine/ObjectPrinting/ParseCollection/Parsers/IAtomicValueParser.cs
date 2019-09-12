@@ -1,12 +1,12 @@
 using System;
 
-using Excel.TemplateEngine.ObjectPrinting.TableParser;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
-    public interface IAtomicValueParser
+    internal interface IAtomicValueParser
     {
         bool TryParse([NotNull] ITableParser tableParser, [NotNull] Type itemType, [CanBeNull] out object result);
     }

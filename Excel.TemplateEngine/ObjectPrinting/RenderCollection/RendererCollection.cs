@@ -1,14 +1,16 @@
 using System;
 
-using Excel.TemplateEngine.Helpers;
-using Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
-using Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection
 {
-    public class RendererCollection : IRendererCollection
+    internal class RendererCollection : IRendererCollection
     {
         public RendererCollection(ITemplateCollection templateCollection)
         {
@@ -38,7 +40,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection
                 return new CheckBoxRenderer();
             if (typeName == "DropDown" && modelType == typeof(string))
                 return new DropDownRenderer();
-            throw new ExcelEngineException($"Unsupported pair of typeName ({typeName}) and modelType ({modelType}) for form controls");
+            throw new ExcelTemplateEngineException($"Unsupported pair of typeName ({typeName}) and modelType ({modelType}) for form controls");
         }
 
         private readonly ITemplateCollection templateCollection;

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Excel.TemplateEngine.FileGenerating.DataTypes
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes
 {
     public class ExcelCellBordersStyle
     {

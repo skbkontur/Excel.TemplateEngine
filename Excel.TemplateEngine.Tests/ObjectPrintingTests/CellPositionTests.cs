@@ -1,8 +1,11 @@
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using FluentAssertions;
 
 using NUnit.Framework;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     public class CellPositionTests
     {
@@ -13,8 +16,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var b = new CellPosition("A1");
             var c = a.Subtract(b);
 
-            Assert.AreEqual(c.Width, 0);
-            Assert.AreEqual(c.Height, 0);
+            c.Width.Should().Be(0);
+            c.Height.Should().Be(0);
         }
 
         [Test]
@@ -24,8 +27,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var b = new CellPosition(123, 345);
             var c = a.Subtract(b);
 
-            Assert.AreEqual(c.Width, 511);
-            Assert.AreEqual(c.Height, 221);
+            c.Width.Should().Be(511);
+            c.Height.Should().Be(221);
         }
 
         [Test]
@@ -35,8 +38,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var b = new ObjectSize(12, 15);
             var c = a.Add(b);
 
-            Assert.AreEqual(c.Width, 35);
-            Assert.AreEqual(c.Height, 37);
+            c.Width.Should().Be(35);
+            c.Height.Should().Be(37);
         }
 
         [Test]
@@ -46,8 +49,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var b = new ObjectSize(1, 11);
             var c = a.Subtract(b);
 
-            Assert.AreEqual(c.Width, 0);
-            Assert.AreEqual(c.Height, 11);
+            c.Width.Should().Be(0);
+            c.Height.Should().Be(11);
         }
 
         [Test]
@@ -57,8 +60,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var b = new ObjectSize(0, 0);
             var c = a.Add(b);
 
-            Assert.AreEqual(c.RowIndex, 1);
-            Assert.AreEqual(c.ColumnIndex, 1);
+            c.RowIndex.Should().Be(1);
+            c.ColumnIndex.Should().Be(1);
         }
 
         [Test]
@@ -68,8 +71,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var b = new ObjectSize(2, 2);
             var c = a.Add(b);
 
-            Assert.AreEqual(c.RowIndex, 3);
-            Assert.AreEqual(c.ColumnIndex, 3);
+            c.RowIndex.Should().Be(3);
+            c.ColumnIndex.Should().Be(3);
         }
 
         [Test]
@@ -80,8 +83,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var relativePos = pos.ToRelativeCoordinates(origin);
 
-            Assert.AreEqual(relativePos.RowIndex, 2);
-            Assert.AreEqual(relativePos.ColumnIndex, 5);
+            relativePos.RowIndex.Should().Be(2);
+            relativePos.ColumnIndex.Should().Be(5);
         }
 
         [Test]
@@ -92,8 +95,8 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var globalPos = pos.ToGlobalCoordinates(origin);
 
-            Assert.AreEqual(globalPos.RowIndex, 3);
-            Assert.AreEqual(globalPos.ColumnIndex, 6);
+            globalPos.RowIndex.Should().Be(3);
+            globalPos.ColumnIndex.Should().Be(6);
         }
     }
 }

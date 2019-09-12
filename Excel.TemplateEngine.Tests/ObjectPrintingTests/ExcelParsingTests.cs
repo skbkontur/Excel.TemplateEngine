@@ -1,19 +1,22 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 
-using Excel.TemplateEngine.FileGenerating;
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation;
-using Excel.TemplateEngine.ObjectPrinting.Exceptions;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
-using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
-using Excel.TemplateEngine.ObjectPrinting.TableParser;
+using FluentAssertions;
 
 using NUnit.Framework;
 
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.FileGenerating;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
+
 using Vostok.Logging.Console;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class ExcelParsingTests : FileBasedTestBase
@@ -23,18 +26,18 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         {
             var (model, mappingForErrors) = Parse("simpleWithEnumerable_template.xlsx", "simpleWithEnumerable_target.xlsx");
 
-            Assert.AreEqual("C3", mappingForErrors["Type"]);
-            Assert.AreEqual("B13", mappingForErrors["Items[0].Id"]);
-            Assert.AreEqual("C13", mappingForErrors["Items[0].Name"]);
-            Assert.AreEqual("B14", mappingForErrors["Items[1].Id"]);
-            Assert.AreEqual("C14", mappingForErrors["Items[1].Name"]);
+            mappingForErrors["Type"].Should().Be("C3");
+            mappingForErrors["Items[0].Id"].Should().Be("B13");
+            mappingForErrors["Items[0].Name"].Should().Be("C13");
+            mappingForErrors["Items[1].Id"].Should().Be("B14");
+            mappingForErrors["Items[1].Name"].Should().Be("C14");
 
-            Assert.AreEqual("Основной", model.Type);
-            Assert.AreEqual(new[]
+            model.Type.Should().Be("Основной");
+            model.Items.Should().BeEquivalentTo(new[]
                 {
                     new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ"},
                     new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ"},
-                }, model.Items);
+                });
         }
 
         [Test]
@@ -42,91 +45,91 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         {
             var (model, mappingForErrors) = Parse("enumerableWithPrimaryKey_template.xlsx", "enumerableWithPrimaryKey_target.xlsx");
 
-            Assert.AreEqual("C3", mappingForErrors["Type"]);
+            mappingForErrors["Type"].Should().Be("C3");
             for (var i = 0; i < 7; i++)
             {
-                Assert.AreEqual($"B{i + 13}", mappingForErrors[$"Items[{i}].Id"]);
-                Assert.AreEqual($"C{i + 13}", mappingForErrors[$"Items[{i}].Name"]);
-                Assert.AreEqual($"D{i + 13}", mappingForErrors[$"Items[{i}].BuyerProductId"]);
-                Assert.AreEqual($"E{i + 13}", mappingForErrors[$"Items[{i}].Articul"]);
+                mappingForErrors[$"Items[{i}].Id"].Should().Be($"B{i + 13}");
+                mappingForErrors[$"Items[{i}].Name"].Should().Be($"C{i + 13}");
+                mappingForErrors[$"Items[{i}].BuyerProductId"].Should().Be($"D{i + 13}");
+                mappingForErrors[$"Items[{i}].Articul"].Should().Be($"E{i + 13}");
             }
 
-            Assert.AreEqual("Основной", model.Type);
-            Assert.AreEqual(new[]
-                {
-                    new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ", BuyerProductId = "000074467", Articul = "123456"},
-                    new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ", BuyerProductId = "000074468", Articul = "123457"},
-                    new Item {Id = null, Name = "Товар 3"},
-                    new Item {Id = "123", Articul = "3123123"},
-                    new Item {Id = "111", Articul = "111111"},
-                    new Item {Name = "Товар 6"},
-                    new Item {Id = "222", Name = "Товар 7", Articul = "123"},
-                }, model.Items);
+            model.Type.Should().Be("Основной");
+            model.Items.Should().BeEquivalentTo(
+                new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ", BuyerProductId = "000074467", Articul = "123456"},
+                new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ", BuyerProductId = "000074468", Articul = "123457"},
+                new Item {Id = null, Name = "Товар 3"},
+                new Item {Id = "123", Articul = "3123123"},
+                new Item {Id = "111", Articul = "111111"},
+                new Item {Name = "Товар 6"},
+                new Item {Id = "222", Name = "Товар 7", Articul = "123"}
+            );
         }
 
         [Test]
         public void TestCheckBoxes()
         {
             var (model, mappingForErrors) = Parse("сheckBoxes_template.xlsx", "сheckBoxes_target.xlsx");
-            Assert.AreEqual("CheckBoxName1", mappingForErrors["TestFlag1"]);
-            Assert.AreEqual("CheckBoxName2", mappingForErrors["TestFlag2"]);
-            Assert.AreEqual(false, model.TestFlag1);
-            Assert.AreEqual(true, model.TestFlag2);
+            mappingForErrors["TestFlag1"].Should().Be("CheckBoxName1");
+            mappingForErrors["TestFlag2"].Should().Be("CheckBoxName2");
+            model.TestFlag1.Should().BeFalse();
+            model.TestFlag2.Should().BeTrue();
         }
 
         [Test]
         public void TestNonexistentCheckBoxes()
         {
             var (model, mappingForErrors) = Parse("nonexistent_сheckBoxes_template.xlsx", "nonexistent_сheckBoxes_target.xlsx");
-            Assert.AreEqual("CheckBoxName1", mappingForErrors["TestFlag1"]);
-            Assert.AreEqual("NonexistentInTarget", mappingForErrors["TestFlag2"]);
-            Assert.AreEqual(true, model.TestFlag1);
-            Assert.AreEqual(false, model.TestFlag2);
+            mappingForErrors["TestFlag1"].Should().Be("CheckBoxName1");
+            mappingForErrors["TestFlag2"].Should().Be("NonexistentInTarget");
+            model.TestFlag1.Should().BeTrue();
+            model.TestFlag2.Should().BeFalse();
         }
 
         [Test]
         public void TestNonexistentField()
         {
-            Assert.Throws<ObjectPropertyExtractionException>(() => Parse("nonexistentField_template.xlsx", "empty.xlsx"));
+            Action parsing = () => Parse("nonexistentField_template.xlsx", "empty.xlsx");
+            parsing.Should().Throw<ObjectPropertyExtractionException>();
         }
 
         [Test]
         public void TestDictDirectAccess()
         {
             var (model, mappingForErrors) = Parse("dictDirectAccess_template.xlsx", "dictDirectAccess_target.xlsx");
-            Assert.AreEqual("C7", mappingForErrors["StringStringDict[\"testKey\"]"]);
-            Assert.AreEqual("E7", mappingForErrors["IntStringDict[42]"]);
-            Assert.AreEqual("E9", mappingForErrors["InnerPriceList.IntStringDict[25]"]);
-            Assert.AreEqual("E10", mappingForErrors["InnerPriceList.PriceListsDict[\"price\"].Type"]);
-            Assert.AreEqual(new Dictionary<string, string> {{"testKey", "testValue"}}, model.StringStringDict);
-            Assert.AreEqual(new Dictionary<int, string> {{42, "testValueInt"}}, model.IntStringDict);
-            Assert.AreEqual(new Dictionary<int, string> {{25, "222222222"}}, model.InnerPriceList.IntStringDict);
-            Assert.AreEqual(1, model.InnerPriceList.PriceListsDict.Count);
-            Assert.AreEqual("720306001", model.InnerPriceList.PriceListsDict["price"].Type);
+            mappingForErrors["StringStringDict[\"testKey\"]"].Should().Be("C7");
+            mappingForErrors["IntStringDict[42]"].Should().Be("E7");
+            mappingForErrors["InnerPriceList.IntStringDict[25]"].Should().Be("E9");
+            mappingForErrors["InnerPriceList.PriceListsDict[\"price\"].Type"].Should().Be("E10");
+            model.StringStringDict.Should().BeEquivalentTo(new Dictionary<string, string> {{"testKey", "testValue"}});
+            model.IntStringDict.Should().BeEquivalentTo(new Dictionary<int, string> {{42, "testValueInt"}});
+            model.InnerPriceList.IntStringDict.Should().BeEquivalentTo(new Dictionary<int, string> {{25, "222222222"}});
+            model.InnerPriceList.PriceListsDict.Count.Should().Be(1);
+            model.InnerPriceList.PriceListsDict["price"].Type.Should().Be("720306001");
         }
 
         [Test]
         public void TestDictDirectAccessInCheckBoxes()
         {
             var (model, mappingForErrors) = Parse("dictDirectAccessInCheckBoxes_template.xlsx", "dictDirectAccessInCheckBoxes_target.xlsx");
-            Assert.AreEqual("C7", mappingForErrors["StringStringDict[\"testKey\"]"]);
-            Assert.AreEqual("E7", mappingForErrors["IntStringDict[42]"]);
-            Assert.AreEqual("TestCheckBox1", mappingForErrors["IntBoolDict[25]"]);
-            Assert.AreEqual("TestCheckBox2", mappingForErrors["IntBoolDict[27]"]);
-            Assert.AreEqual(new Dictionary<string, string> {{"testKey", "testValue"}}, model.StringStringDict);
-            Assert.AreEqual(new Dictionary<int, string> {{42, "testValueInt"}}, model.IntStringDict);
-            Assert.AreEqual(new Dictionary<int, bool> {{25, false}, {27, true}}, model.IntBoolDict);
+            mappingForErrors["StringStringDict[\"testKey\"]"].Should().Be("C7");
+            mappingForErrors["IntStringDict[42]"].Should().Be("E7");
+            mappingForErrors["IntBoolDict[25]"].Should().Be("TestCheckBox1");
+            mappingForErrors["IntBoolDict[27]"].Should().Be("TestCheckBox2");
+            model.StringStringDict.Should().BeEquivalentTo(new Dictionary<string, string> {{"testKey", "testValue"}});
+            model.IntStringDict.Should().BeEquivalentTo(new Dictionary<int, string> {{42, "testValueInt"}});
+            model.IntBoolDict.Should().BeEquivalentTo(new Dictionary<int, bool> {{25, false}, {27, true}});
         }
 
         [Test]
         public void TestDictDirectAccessInDropDown()
         {
             var (model, mappingForErrors) = Parse("dictDirectAccessInDropDown_template.xlsx", "dictDirectAccessInDropDown_target.xlsx");
-            Assert.AreEqual("C7", mappingForErrors["StringStringDict[\"testKey\"]"]);
-            Assert.AreEqual("E7", mappingForErrors["IntStringDict[42]"]);
-            Assert.AreEqual("TestDropDown1", mappingForErrors["IntStringDict[15]"]);
-            Assert.AreEqual(new Dictionary<string, string> {{"testKey", "testValue"}}, model.StringStringDict);
-            Assert.AreEqual(new Dictionary<int, string> {{42, "testValueInt"}, {15, "Value2"}}, model.IntStringDict);
+            mappingForErrors["StringStringDict[\"testKey\"]"].Should().Be("C7");
+            mappingForErrors["IntStringDict[42]"].Should().Be("E7");
+            mappingForErrors["IntStringDict[15]"].Should().Be("TestDropDown1");
+            model.StringStringDict.Should().BeEquivalentTo(new Dictionary<string, string> {{"testKey", "testValue"}});
+            model.IntStringDict.Should().BeEquivalentTo(new Dictionary<int, string> {{42, "testValueInt"}, {15, "Value2"}});
         }
 
         [Test]
@@ -134,19 +137,19 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
         {
             var (model, mappingForErrors) = Parse("emptyEnumerable_template.xlsx", "emptyEnumerable_target.xlsx");
 
-            Assert.AreEqual("C3", mappingForErrors["Type"]);
-            Assert.AreEqual(1, mappingForErrors.Count);
+            mappingForErrors["Type"].Should().Be("C3");
+            mappingForErrors.Count.Should().Be(1);
 
-            Assert.AreEqual(0, model.Items.Length);
-            Assert.AreEqual("", model.Type);
+            model.Items.Length.Should().Be(0);
+            model.Type.Should().BeEmpty();
         }
 
         [Test]
         public void TestDropDownFromTheOtherWorksheet()
         {
             var (model, mappingForErrors) = Parse("dropDownOtherWorksheet_template.xlsx", "dropDownOtherWorksheet_target.xlsx");
-            Assert.AreEqual("DropDown1", mappingForErrors["Type"]);
-            Assert.AreEqual("ValueC", model.Type);
+            mappingForErrors["Type"].Should().Be("DropDown1");
+            model.Type.Should().Be("ValueC");
         }
 
         [TestCase("xlsx")]
@@ -159,7 +162,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath($"empty.{extension}")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
+                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
@@ -173,12 +176,12 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             }
 
             var (model, mappingForErrors) = Parse(File.ReadAllBytes(GetFilePath("importAfterCreate_template.xlsx")), bytes);
-            Assert.AreEqual("CheckBoxName1", mappingForErrors["TestFlag1"]);
-            Assert.AreEqual("CheckBoxName2", mappingForErrors["TestFlag2"]);
-            Assert.AreEqual("C3", mappingForErrors["Type"]);
-            Assert.AreEqual(false, model.TestFlag1);
-            Assert.AreEqual(true, model.TestFlag2);
-            Assert.AreEqual("Значение 2", model.Type);
+            mappingForErrors["TestFlag1"].Should().Be("CheckBoxName1");
+            mappingForErrors["TestFlag2"].Should().Be("CheckBoxName2");
+            mappingForErrors["Type"].Should().Be("C3");
+            model.TestFlag1.Should().BeFalse();
+            model.TestFlag2.Should().BeTrue();
+            model.Type.Should().Be("Значение 2");
         }
 
         private (PriceList model, Dictionary<string, string> mappingForErrors) Parse(string templateFileName, string targetFileName)
@@ -192,7 +195,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes, logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
+                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);

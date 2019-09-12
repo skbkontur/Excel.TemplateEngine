@@ -1,12 +1,12 @@
 using System;
 
-using Excel.TemplateEngine.ObjectPrinting.TableParser;
-
 using JetBrains.Annotations;
 
-namespace Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
 {
-    public interface IFormValueParser
+    internal interface IFormValueParser
     {
         object ParseOrDefault([NotNull] ITableParser tableParser, [NotNull] string name, [NotNull] Type modelType);
     }

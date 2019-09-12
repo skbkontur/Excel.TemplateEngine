@@ -1,17 +1,17 @@
 using System.IO;
 using System.Linq;
 
-using Excel.TemplateEngine.FileGenerating;
-using Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitivesImplementation;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
-using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
-
 using NUnit.Framework;
+
+using SkbKontur.Excel.TemplateEngine.FileGenerating;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 
 using Vostok.Logging.Console;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [Ignore("These tests can be used only for manual testing")]
     public class ManualPrintingTests : FileBasedTestBase
@@ -28,14 +28,14 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                 {
                     var worksheet = templateDocument.GetWorksheet(index);
                     var name = templateDocument.GetWorksheetName(index);
-                    var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet), logger);
+                    var innerTemplateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(new ExcelTable(worksheet), logger);
                     var targetWorksheet = targetDocument.AddWorksheet(name);
                     var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1"), logger));
                     innerTemplateEngine.Render(innerTableBuilder, new {});
                 }
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
+                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
@@ -59,7 +59,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                 targetDocument.CopyVbaInfoFrom(templateDocument);
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
+                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
@@ -81,7 +81,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
+                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
@@ -114,7 +114,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
+                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
@@ -138,7 +138,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
+                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
@@ -166,14 +166,14 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                 {
                     var worksheet = templateDocument.GetWorksheet(index);
                     var name = templateDocument.GetWorksheetName(index);
-                    var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet), logger);
+                    var innerTemplateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(new ExcelTable(worksheet), logger);
                     var targetWorksheet = targetDocument.AddWorksheet(name);
                     var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1"), logger));
                     innerTemplateEngine.Render(innerTableBuilder, new {});
                 }
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
+                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
@@ -195,7 +195,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
+                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);

@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
-using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
-namespace Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
 {
-    public class RenderingTemplate
+    internal class RenderingTemplate
     {
         public IRectangle Range { get; set; }
         public ITablePart Content { get; set; }
@@ -14,7 +14,7 @@ namespace Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
         public IEnumerable<IColumn> Columns { get; set; }
     }
 
-    public static class RenderingTemplateExtensions
+    internal static class RenderingTemplateExtensions
     {
         public static bool IsValid(this RenderingTemplate renderingTemplate) //TODO: {birne} здесь нужно ещё проверить, что во всех клетках слитых областей только атомарные значения
         {

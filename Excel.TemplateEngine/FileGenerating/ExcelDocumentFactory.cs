@@ -1,14 +1,15 @@
 using System;
 using System.IO;
 
-using Excel.TemplateEngine.FileGenerating.Implementation.Primitives;
-using Excel.TemplateEngine.FileGenerating.Interfaces;
-
 using JetBrains.Annotations;
+
+using SkbKontur.Excel.TemplateEngine.Exceptions;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementations;
 
 using Vostok.Logging.Abstractions;
 
-namespace Excel.TemplateEngine.FileGenerating
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating
 {
     public static class ExcelDocumentFactory
     {
@@ -30,7 +31,7 @@ namespace Excel.TemplateEngine.FileGenerating
         [NotNull]
         public static IExcelDocument CreateFromTemplate([NotNull] byte[] template, [NotNull] ILog logger)
             => TryCreateFromTemplate(template, logger)
-               ?? throw new ExcelEngineException($"An error occurred while creating of {nameof(ExcelDocument)}");
+               ?? throw new ExcelTemplateEngineException($"An error occurred while creating of {nameof(ExcelDocument)}");
 
         [NotNull]
         public static IExcelDocument CreateEmpty(bool useXlsm, [NotNull] ILog logger)
@@ -46,7 +47,7 @@ namespace Excel.TemplateEngine.FileGenerating
             using (var ms = new MemoryStream())
             {
                 if (rs == null)
-                    throw new ExcelEngineException($"Stream is null for resource: {resourceName}");
+                    throw new ExcelTemplateEngineException($"Stream is null for resource: {resourceName}");
                 rs.CopyTo(ms);
                 return ms.ToArray();
             }

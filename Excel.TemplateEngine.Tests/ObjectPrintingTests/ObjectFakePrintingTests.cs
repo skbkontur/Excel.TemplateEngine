@@ -1,17 +1,20 @@
 using System;
 using System.Linq;
 
-using Excel.TemplateEngine.ObjectPrinting.DocumentPrimitivesInterfaces;
-using Excel.TemplateEngine.ObjectPrinting.FakeDocumentPrimitivesImplementation;
-using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
-using Excel.TemplateEngine.ObjectPrinting.TableBuilder;
-using Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+using FluentAssertions;
 
 using NUnit.Framework;
 
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
+using SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentPrimitivesImplementation;
+
 using Vostok.Logging.Console;
 
-namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
+namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
     [TestFixture]
     public class ObjectFakePrintingTests
@@ -23,7 +26,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var cell = template.InsertCell(new CellPosition(1, 1));
             cell.StringValue = "Template:RootTemplate:A1:A1";
 
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
             var target = new FakeTable(10, 10);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger), new Style(new FakeCell(new CellPosition("A1"))
@@ -33,9 +36,9 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             templateEngine.Render(tableBuilder, "TestStringValue");
 
-            Assert.AreEqual("TestStringValue", target.GetCell(new CellPosition("B2")).StringValue);
+            target.GetCell(new CellPosition("B2")).StringValue.Should().Be("TestStringValue");
 
-            Assert.AreEqual("(1,1)", ((FakeCell)target.GetCell(new CellPosition("B2"))).StyleId);
+            ((FakeCell)target.GetCell(new CellPosition("B2"))).StyleId.Should().Be("(1,1)");
         }
 
         [Test]
@@ -47,7 +50,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
             var cell = template.InsertCell(new CellPosition(1, 1));
             cell.StringValue = "Template:RootTemplate:A1:A1";
 
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
 
             var target = new FakeTable(10, 10);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger), new Style(new FakeCell(new CellPosition("A1"))
@@ -57,11 +60,11 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             templateEngine.Render(tableBuilder, model);
 
-            Assert.AreEqual("a", target.GetCell(new CellPosition("B2")).StringValue);
-            Assert.AreEqual("b", target.GetCell(new CellPosition("B3")).StringValue);
-            Assert.AreEqual("c", target.GetCell(new CellPosition("B4")).StringValue);
-            Assert.AreEqual("d", target.GetCell(new CellPosition("B5")).StringValue);
-            Assert.AreEqual("e", target.GetCell(new CellPosition("B6")).StringValue);
+            target.GetCell(new CellPosition("B2")).StringValue.Should().Be("a");
+            target.GetCell(new CellPosition("B3")).StringValue.Should().Be("b");
+            target.GetCell(new CellPosition("B4")).StringValue.Should().Be("c");
+            target.GetCell(new CellPosition("B5")).StringValue.Should().Be("d");
+            target.GetCell(new CellPosition("B6")).StringValue.Should().Be("e");
 
             DebugPrinting(target, new CellPosition(1, 1), new CellPosition(10, 10));
         }
@@ -100,24 +103,24 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var target = new FakeTable(100, 100);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger));
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
-            Assert.AreEqual("Покупатель:", target.GetCell(new CellPosition("A1")).StringValue);
-            Assert.AreEqual("Поставщик:", target.GetCell(new CellPosition("B1")).StringValue);
-            Assert.AreEqual("BuyerName", target.GetCell(new CellPosition("A2")).StringValue);
-            Assert.AreEqual("SupplierName", target.GetCell(new CellPosition("B2")).StringValue);
-            Assert.AreEqual("ORDERS", target.GetCell(new CellPosition("C2")).StringValue);
-            Assert.AreEqual("BuyerAddress", target.GetCell(new CellPosition("A3")).StringValue);
-            Assert.AreEqual("SupplierAddress", target.GetCell(new CellPosition("B3")).StringValue);
+            target.GetCell(new CellPosition("A1")).StringValue.Should().Be("Покупатель:");
+            target.GetCell(new CellPosition("B1")).StringValue.Should().Be("Поставщик:");
+            target.GetCell(new CellPosition("A2")).StringValue.Should().Be("BuyerName");
+            target.GetCell(new CellPosition("B2")).StringValue.Should().Be("SupplierName");
+            target.GetCell(new CellPosition("C2")).StringValue.Should().Be("ORDERS");
+            target.GetCell(new CellPosition("A3")).StringValue.Should().Be("BuyerAddress");
+            target.GetCell(new CellPosition("B3")).StringValue.Should().Be("SupplierAddress");
 
-            Assert.AreEqual("B4", ((FakeCell)target.GetCell(new CellPosition("A1"))).StyleId);
-            Assert.AreEqual("C4", ((FakeCell)target.GetCell(new CellPosition("B1"))).StyleId);
-            Assert.AreEqual("A8", ((FakeCell)target.GetCell(new CellPosition("A2"))).StyleId);
-            Assert.AreEqual("A8", ((FakeCell)target.GetCell(new CellPosition("B2"))).StyleId);
-            Assert.AreEqual("D5", ((FakeCell)target.GetCell(new CellPosition("C2"))).StyleId);
-            Assert.AreEqual("A9", ((FakeCell)target.GetCell(new CellPosition("A3"))).StyleId);
-            Assert.AreEqual("A9", ((FakeCell)target.GetCell(new CellPosition("B3"))).StyleId);
+            ((FakeCell)target.GetCell(new CellPosition("A1"))).StyleId.Should().Be("B4");
+            ((FakeCell)target.GetCell(new CellPosition("B1"))).StyleId.Should().Be("C4");
+            ((FakeCell)target.GetCell(new CellPosition("A2"))).StyleId.Should().Be("A8");
+            ((FakeCell)target.GetCell(new CellPosition("B2"))).StyleId.Should().Be("A8");
+            ((FakeCell)target.GetCell(new CellPosition("C2"))).StyleId.Should().Be("D5");
+            ((FakeCell)target.GetCell(new CellPosition("A3"))).StyleId.Should().Be("A9");
+            ((FakeCell)target.GetCell(new CellPosition("B3"))).StyleId.Should().Be("A9");
 
             DebugPrinting(target, new CellPosition(1, 1), new CellPosition(10, 10));
         }
@@ -184,29 +187,29 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var target = new FakeTable(100, 100);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger));
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
-            Assert.AreEqual("Покупатель:", target.GetCell(new CellPosition("A1")).StringValue);
-            Assert.AreEqual("Поставщик:", target.GetCell(new CellPosition("C1")).StringValue);
-            Assert.AreEqual("BuyerName", target.GetCell(new CellPosition("A2")).StringValue);
-            Assert.AreEqual("BuyerAddress", target.GetCell(new CellPosition("A3")).StringValue);
-            Assert.AreEqual("ORDERS", target.GetCell(new CellPosition("B2")).StringValue);
-            Assert.AreEqual("SupplierName", target.GetCell(new CellPosition("C2")).StringValue);
-            Assert.AreEqual("90238192038", target.GetCell(new CellPosition("D2")).StringValue);
-            Assert.AreEqual("SupplierAddress", target.GetCell(new CellPosition("C3")).StringValue);
-            Assert.AreEqual("0832309812", target.GetCell(new CellPosition("D3")).StringValue);
-            Assert.AreEqual("Плательщик:", target.GetCell(new CellPosition("A4")).StringValue);
-            Assert.AreEqual("Средство доставки:", target.GetCell(new CellPosition("B4")).StringValue);
-            Assert.AreEqual("Доставка:", target.GetCell(new CellPosition("D4")).StringValue);
-            Assert.AreEqual("PayerName", target.GetCell(new CellPosition("A5")).StringValue);
-            Assert.AreEqual("PayerAddress", target.GetCell(new CellPosition("A6")).StringValue);
-            Assert.AreEqual("Евкакий", target.GetCell(new CellPosition("B5")).StringValue);
-            Assert.AreEqual("Tauria", target.GetCell(new CellPosition("C5")).StringValue);
-            Assert.AreEqual("Agressive", target.GetCell(new CellPosition("B6")).StringValue);
-            Assert.AreEqual("A777AB", target.GetCell(new CellPosition("C6")).StringValue);
-            Assert.AreEqual("DeliveryPartyName", target.GetCell(new CellPosition("D5")).StringValue);
-            Assert.AreEqual("DeliveryPartyAddress", target.GetCell(new CellPosition("D6")).StringValue);
+            target.GetCell(new CellPosition("A1")).StringValue.Should().Be("Покупатель:");
+            target.GetCell(new CellPosition("C1")).StringValue.Should().Be("Поставщик:");
+            target.GetCell(new CellPosition("A2")).StringValue.Should().Be("BuyerName");
+            target.GetCell(new CellPosition("A3")).StringValue.Should().Be("BuyerAddress");
+            target.GetCell(new CellPosition("B2")).StringValue.Should().Be("ORDERS");
+            target.GetCell(new CellPosition("C2")).StringValue.Should().Be("SupplierName");
+            target.GetCell(new CellPosition("D2")).StringValue.Should().Be("90238192038");
+            target.GetCell(new CellPosition("C3")).StringValue.Should().Be("SupplierAddress");
+            target.GetCell(new CellPosition("D3")).StringValue.Should().Be("0832309812");
+            target.GetCell(new CellPosition("A4")).StringValue.Should().Be("Плательщик:");
+            target.GetCell(new CellPosition("B4")).StringValue.Should().Be("Средство доставки:");
+            target.GetCell(new CellPosition("D4")).StringValue.Should().Be("Доставка:");
+            target.GetCell(new CellPosition("A5")).StringValue.Should().Be("PayerName");
+            target.GetCell(new CellPosition("A6")).StringValue.Should().Be("PayerAddress");
+            target.GetCell(new CellPosition("B5")).StringValue.Should().Be("Евкакий");
+            target.GetCell(new CellPosition("C5")).StringValue.Should().Be("Tauria");
+            target.GetCell(new CellPosition("B6")).StringValue.Should().Be("Agressive");
+            target.GetCell(new CellPosition("C6")).StringValue.Should().Be("A777AB");
+            target.GetCell(new CellPosition("D5")).StringValue.Should().Be("DeliveryPartyName");
+            target.GetCell(new CellPosition("D6")).StringValue.Should().Be("DeliveryPartyAddress");
 
             DebugPrinting(target, new CellPosition(1, 1), new CellPosition(20, 20));
         }
@@ -253,20 +256,20 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var target = new FakeTable(100, 100);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger));
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
-            Assert.AreEqual("Адреса:", target.GetCell(new CellPosition("C2")).StringValue);
-            Assert.AreEqual("Имена:", target.GetCell(new CellPosition("D2")).StringValue);
-            Assert.AreEqual("Address1", target.GetCell(new CellPosition("C3")).StringValue);
-            Assert.AreEqual("Address2", target.GetCell(new CellPosition("C4")).StringValue);
-            Assert.AreEqual("Address3", target.GetCell(new CellPosition("C5")).StringValue);
-            Assert.AreEqual("Address4", target.GetCell(new CellPosition("C6")).StringValue);
-            Assert.AreEqual("Name1", target.GetCell(new CellPosition("D3")).StringValue);
-            Assert.AreEqual("Name2", target.GetCell(new CellPosition("D4")).StringValue);
-            Assert.AreEqual("Name3", target.GetCell(new CellPosition("D5")).StringValue);
-            Assert.AreEqual("Name4", target.GetCell(new CellPosition("D6")).StringValue);
-            Assert.AreEqual("StringValue", target.GetCell(new CellPosition("B7")).StringValue);
+            target.GetCell(new CellPosition("C2")).StringValue.Should().Be("Адреса:");
+            target.GetCell(new CellPosition("D2")).StringValue.Should().Be("Имена:");
+            target.GetCell(new CellPosition("C3")).StringValue.Should().Be("Address1");
+            target.GetCell(new CellPosition("C4")).StringValue.Should().Be("Address2");
+            target.GetCell(new CellPosition("C5")).StringValue.Should().Be("Address3");
+            target.GetCell(new CellPosition("C6")).StringValue.Should().Be("Address4");
+            target.GetCell(new CellPosition("D3")).StringValue.Should().Be("Name1");
+            target.GetCell(new CellPosition("D4")).StringValue.Should().Be("Name2");
+            target.GetCell(new CellPosition("D5")).StringValue.Should().Be("Name3");
+            target.GetCell(new CellPosition("D6")).StringValue.Should().Be("Name4");
+            target.GetCell(new CellPosition("B7")).StringValue.Should().Be("StringValue");
 
             DebugPrinting(target, new CellPosition(1, 1), new CellPosition(20, 20));
         }
@@ -289,7 +292,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var target = new FakeTable(100, 100);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger));
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             DebugPrinting(target, new CellPosition(1, 1), new CellPosition(20, 20));
@@ -315,14 +318,14 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var target = new FakeTable(100, 100);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger));
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
-            Assert.AreEqual("Адреса:", target.GetCell(new CellPosition("C2")).StringValue);
-            Assert.AreEqual("Имена:", target.GetCell(new CellPosition("D2")).StringValue);
-            Assert.AreEqual("", target.GetCell(new CellPosition("C3")).StringValue);
-            Assert.AreEqual("", target.GetCell(new CellPosition("D3")).StringValue);
-            Assert.AreEqual("StringValue", target.GetCell(new CellPosition("B4")).StringValue);
+            target.GetCell(new CellPosition("C2")).StringValue.Should().Be("Адреса:");
+            target.GetCell(new CellPosition("D2")).StringValue.Should().Be("Имена:");
+            target.GetCell(new CellPosition("C3")).StringValue.Should().BeEmpty();
+            target.GetCell(new CellPosition("D3")).StringValue.Should().BeEmpty();
+            target.GetCell(new CellPosition("B4")).StringValue.Should().Be("StringValue");
 
             DebugPrinting(target, new CellPosition(1, 1), new CellPosition(20, 20));
         }
@@ -370,22 +373,22 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var target = new FakeTable(100, 100);
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger));
-            var templateEngine = new TemplateEngine(template, logger);
+            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
-            Assert.AreEqual("Адреса:", target.GetCell(new CellPosition("C2")).StringValue);
-            Assert.AreEqual("Имена:", target.GetCell(new CellPosition("D2")).StringValue);
-            Assert.AreEqual("Address1", target.GetCell(new CellPosition("C3")).StringValue);
-            Assert.AreEqual("Address2", target.GetCell(new CellPosition("C4")).StringValue);
-            Assert.AreEqual("", target.GetCell(new CellPosition("C5")).StringValue);
-            Assert.AreEqual("", target.GetCell(new CellPosition("C6")).StringValue);
-            Assert.AreEqual("Address4", target.GetCell(new CellPosition("C7")).StringValue);
-            Assert.AreEqual("Name1", target.GetCell(new CellPosition("D3")).StringValue);
-            Assert.AreEqual("", target.GetCell(new CellPosition("D4")).StringValue);
-            Assert.AreEqual("Name3", target.GetCell(new CellPosition("D5")).StringValue);
-            Assert.AreEqual("", target.GetCell(new CellPosition("D6")).StringValue);
-            Assert.AreEqual("Name4", target.GetCell(new CellPosition("D7")).StringValue);
-            Assert.AreEqual("StringValue", target.GetCell(new CellPosition("B8")).StringValue);
+            target.GetCell(new CellPosition("C2")).StringValue.Should().Be("Адреса:");
+            target.GetCell(new CellPosition("D2")).StringValue.Should().Be("Имена:");
+            target.GetCell(new CellPosition("C3")).StringValue.Should().Be("Address1");
+            target.GetCell(new CellPosition("C4")).StringValue.Should().Be("Address2");
+            target.GetCell(new CellPosition("C5")).StringValue.Should().BeEmpty();
+            target.GetCell(new CellPosition("C6")).StringValue.Should().BeEmpty();
+            target.GetCell(new CellPosition("C7")).StringValue.Should().Be("Address4");
+            target.GetCell(new CellPosition("D3")).StringValue.Should().Be("Name1");
+            target.GetCell(new CellPosition("D4")).StringValue.Should().BeEmpty();
+            target.GetCell(new CellPosition("D5")).StringValue.Should().Be("Name3");
+            target.GetCell(new CellPosition("D6")).StringValue.Should().BeEmpty();
+            target.GetCell(new CellPosition("D7")).StringValue.Should().Be("Name4");
+            target.GetCell(new CellPosition("B8")).StringValue.Should().Be("StringValue");
 
             DebugPrinting(target, new CellPosition(1, 1), new CellPosition(20, 20));
         }
@@ -403,7 +406,7 @@ namespace Excel.TemplateEngine.Tests.ObjectPrintingTests
                 {
                     var val = cell.StringValue + "";
                     while (val.Length < maxWidth)
-                        val = val + " ";
+                        val += " ";
                     Console.Write(val);
                 }
                 Console.WriteLine();

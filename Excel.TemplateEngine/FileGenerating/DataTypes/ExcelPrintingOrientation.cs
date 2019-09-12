@@ -1,4 +1,4 @@
-﻿namespace Excel.TemplateEngine.FileGenerating.DataTypes
+﻿namespace SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes
 {
     public enum ExcelPrintingOrientation
     {

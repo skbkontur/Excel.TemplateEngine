@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 
-using Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
 
-namespace Excel.TemplateEngine.ObjectPrinting.RenderCollection
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection
 {
-    public interface IRendererCollection
+    internal interface IRendererCollection
     {
         IRenderer GetRenderer(Type modelType);
         IFormControlRenderer GetFormControlRenderer(string typeName, Type modelType);
