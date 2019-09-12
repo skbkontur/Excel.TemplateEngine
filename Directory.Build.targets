@@ -1,0 +1,24 @@
+  
+<Project>
+
+  <!-- https://github.com/dotnet/sdk/issues/1458 -->
+  <Target Name="_ResolveCopyLocalNuGetPackagePdbs" Condition="$(CopyLocalLockFileAssemblies) == true" AfterTargets="ResolveReferences">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).pdb')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != '' and Exists('%(RootDir)%(Directory)%(Filename).pdb')" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="SetNuSpecProperties" BeforeTargets="GenerateNuspec" DependsOnTargets="GetBuildVersion">
+    <PropertyGroup>
+      <PackageId>$(AssemblyName)</PackageId>
+      <Authors>Paul Ageev, Maxim Pivko</Authors>
+      <PackageDescription>Engine for printing Excel documents with templates</PackageDescription>
+      <PackageTags>Excel</PackageTags>
+      <RepositoryType>git</RepositoryType>
+      <RepositoryUrl>https://github.com/skbkontur/Excel.TemplateEngine</RepositoryUrl>
+      <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+      <PackageReleaseNotes>$(RepositoryUrl)/releases/tag/v$(MajorMinorVersion)-release</PackageReleaseNotes>
+    </PropertyGroup>
+  </Target>
+
+</Project>
