@@ -7,7 +7,7 @@ using Excel.TemplateEngine.FileGenerating.DataTypes;
 
 namespace Excel.TemplateEngine.FileGenerating.Caches.Implementations
 {
-    internal class ExcelSharedStrings : IExcelSharedStrings
+    public class ExcelSharedStrings : IExcelSharedStrings
     {
         public ExcelSharedStrings(SharedStringTable sharedStringTable)
         {

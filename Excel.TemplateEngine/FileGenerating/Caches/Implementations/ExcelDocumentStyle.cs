@@ -20,7 +20,7 @@ using Fill = DocumentFormat.OpenXml.Spreadsheet.Fill;
 
 namespace Excel.TemplateEngine.FileGenerating.Caches.Implementations
 {
-    internal class ExcelDocumentStyle : IExcelDocumentStyle
+    public class ExcelDocumentStyle : IExcelDocumentStyle
     {
         public ExcelDocumentStyle(Stylesheet stylesheet, Theme theme, ILog logger)
         {
