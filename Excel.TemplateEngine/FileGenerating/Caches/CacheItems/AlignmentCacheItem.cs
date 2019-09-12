@@ -7,7 +7,7 @@ using Excel.TemplateEngine.FileGenerating.DataTypes;
 
 namespace Excel.TemplateEngine.FileGenerating.Caches.CacheItems
 {
-    public class AlignmentCacheItem : IEquatable<AlignmentCacheItem>
+    internal class AlignmentCacheItem : IEquatable<AlignmentCacheItem>
     {
         public AlignmentCacheItem(ExcelCellAlignment cellAlignment)
         {

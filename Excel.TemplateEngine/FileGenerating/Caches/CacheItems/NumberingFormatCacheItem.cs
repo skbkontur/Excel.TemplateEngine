@@ -7,7 +7,7 @@ using Excel.TemplateEngine.FileGenerating.DataTypes;
 
 namespace Excel.TemplateEngine.FileGenerating.Caches.CacheItems
 {
-    public class NumberingFormatCacheItem : IEquatable<NumberingFormatCacheItem>
+    internal class NumberingFormatCacheItem : IEquatable<NumberingFormatCacheItem>
     {
         public NumberingFormatCacheItem(ExcelCellNumberingFormat format)
         {

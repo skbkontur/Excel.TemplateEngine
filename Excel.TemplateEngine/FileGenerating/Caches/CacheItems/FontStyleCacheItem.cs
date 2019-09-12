@@ -6,7 +6,7 @@ using Excel.TemplateEngine.FileGenerating.DataTypes;
 
 namespace Excel.TemplateEngine.FileGenerating.Caches.CacheItems
 {
-    public class FontStyleCacheItem : IEquatable<FontStyleCacheItem>
+    internal class FontStyleCacheItem : IEquatable<FontStyleCacheItem>
     {
         public FontStyleCacheItem(ExcelCellFontStyle style)
         {

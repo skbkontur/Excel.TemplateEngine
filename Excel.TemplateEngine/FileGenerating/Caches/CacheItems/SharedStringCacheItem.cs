@@ -7,7 +7,7 @@ using Excel.TemplateEngine.FileGenerating.DataTypes;
 
 namespace Excel.TemplateEngine.FileGenerating.Caches.CacheItems
 {
-    public class SharedStringCacheItem : IEquatable<SharedStringCacheItem>
+    internal class SharedStringCacheItem : IEquatable<SharedStringCacheItem>
     {
         public SharedStringCacheItem(FormattedStringValue value)
         {

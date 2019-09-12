@@ -5,7 +5,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Excel.TemplateEngine.FileGenerating.Caches.CacheItems
 {
-    public class CellStyleCacheItem : IEquatable<CellStyleCacheItem>
+    internal class CellStyleCacheItem : IEquatable<CellStyleCacheItem>
     {
         public bool Equals(CellStyleCacheItem other)
         {

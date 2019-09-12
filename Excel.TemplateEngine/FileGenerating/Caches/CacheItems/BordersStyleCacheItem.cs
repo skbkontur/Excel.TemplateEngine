@@ -6,7 +6,7 @@ using Excel.TemplateEngine.FileGenerating.DataTypes;
 
 namespace Excel.TemplateEngine.FileGenerating.Caches.CacheItems
 {
-    public class BordersStyleCacheItem : IEquatable<BordersStyleCacheItem>
+    internal class BordersStyleCacheItem : IEquatable<BordersStyleCacheItem>
     {
         public BordersStyleCacheItem(ExcelCellBordersStyle format)
         {

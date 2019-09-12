@@ -1,8 +1,8 @@
-﻿using Excel.TemplateEngine.FileGenerating.DataTypes;
+using Excel.TemplateEngine.FileGenerating.DataTypes;
 
 namespace Excel.TemplateEngine.FileGenerating.Caches
 {
-    public interface IExcelDocumentStyle
+    internal interface IExcelDocumentStyle
     {
         uint AddStyle(ExcelCellStyle style);
         ExcelCellStyle GetStyle(int styleIndex);

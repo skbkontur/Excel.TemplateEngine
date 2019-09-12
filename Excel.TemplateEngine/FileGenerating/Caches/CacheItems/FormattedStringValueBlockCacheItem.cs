@@ -7,7 +7,7 @@ using Excel.TemplateEngine.FileGenerating.DataTypes;
 
 namespace Excel.TemplateEngine.FileGenerating.Caches.CacheItems
 {
-    public class FormattedStringValueBlockCacheItem : IEquatable<FormattedStringValueBlockCacheItem>
+    internal class FormattedStringValueBlockCacheItem : IEquatable<FormattedStringValueBlockCacheItem>
     {
         public FormattedStringValueBlockCacheItem(FormattedStringValueBlock formattedStringValueBlock)
         {

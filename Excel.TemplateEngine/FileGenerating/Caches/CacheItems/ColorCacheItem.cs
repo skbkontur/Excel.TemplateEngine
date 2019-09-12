@@ -7,7 +7,7 @@ using Excel.TemplateEngine.FileGenerating.DataTypes;
 
 namespace Excel.TemplateEngine.FileGenerating.Caches.CacheItems
 {
-    public class ColorCacheItem : IEquatable<ColorCacheItem>
+    internal class ColorCacheItem : IEquatable<ColorCacheItem>
     {
         public ColorCacheItem(ExcelColor color)
         {
