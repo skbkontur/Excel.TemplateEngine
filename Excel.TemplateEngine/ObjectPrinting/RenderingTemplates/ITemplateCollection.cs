@@ -1,6 +1,6 @@
-﻿namespace Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
+namespace Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
 {
-    public interface ITemplateCollection
+    internal interface ITemplateCollection
     {
         RenderingTemplate GetTemplate(string templateName);
     }

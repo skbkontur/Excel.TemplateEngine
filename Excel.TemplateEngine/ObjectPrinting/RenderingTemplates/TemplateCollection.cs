@@ -7,7 +7,7 @@ using Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 
 namespace Excel.TemplateEngine.ObjectPrinting.RenderingTemplates
 {
-    public class TemplateCollection : ITemplateCollection
+    internal class TemplateCollection : ITemplateCollection
     {
         public TemplateCollection(ITable templateTable)
         {
