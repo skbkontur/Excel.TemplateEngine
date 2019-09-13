@@ -21,6 +21,7 @@ init:
           Write-Host "Will create release for $tagName tag" -ForegroundColor "Green"
         }
       }
+
 nuget:
   disable_publish_on_pr: true
 

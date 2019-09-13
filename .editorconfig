@@ -1,4 +1,4 @@
-﻿# stop looking for other EditorConfig files upward in directory tree
+# stop looking for other EditorConfig files upward in directory tree
 root = true
 
 [*]

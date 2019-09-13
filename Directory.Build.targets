@@ -1,4 +1,3 @@
-  
 <Project>
 
   <!-- https://github.com/dotnet/sdk/issues/1458 -->
@@ -11,7 +10,7 @@
   <Target Name="SetNuSpecProperties" BeforeTargets="GenerateNuspec" DependsOnTargets="GetBuildVersion">
     <PropertyGroup>
       <PackageId>$(AssemblyName)</PackageId>
-      <Authors>Paul Ageev, Maxim Pivko</Authors>
+      <Authors>Denis Dublennykh, Pavel Ageev, Maxim Pivko</Authors>
       <PackageDescription>Engine for printing Excel documents with templates</PackageDescription>
       <PackageTags>Excel</PackageTags>
       <RepositoryType>git</RepositoryType>

@@ -3,15 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>SkbKontur.Excel.TemplateEngine</AssemblyName>
-    <RootNamespace>SkbKontur.Excel.TemplateEngine</RootNamespace>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>SkbKontur.Excel.TemplateEngine.Tests</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="morelinq" Version="3.2.0" />
@@ -22,8 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="FileGenerating\Resources\empty.xlsm" />
-    <None Remove="FileGenerating\Resources\empty.xlsx" />
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>SkbKontur.Excel.TemplateEngine.Tests</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
   <ItemGroup>
