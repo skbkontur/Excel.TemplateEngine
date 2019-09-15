@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 
 using JetBrains.Annotations;
 
@@ -43,7 +44,8 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating
         private static byte[] GetResourceBytes(string resourceName)
         {
             var assembly = typeof(ExcelDocumentFactory).Assembly;
-            using (var rs = assembly.GetManifestResourceStream(resourceName))
+            var resourceFullName = assembly.GetManifestResourceNames().Single(name => name.EndsWith(resourceName));
+            using (var rs = assembly.GetManifestResourceStream(resourceFullName))
             using (var ms = new MemoryStream())
             {
                 if (rs == null)
