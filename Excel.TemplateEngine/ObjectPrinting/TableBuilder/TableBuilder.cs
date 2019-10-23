@@ -1,10 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
 using JetBrains.Annotations;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
@@ -45,7 +45,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder
         {
             var formControl = target.TryGetCheckBoxFormControl(name);
             if (formControl == null)
-                throw new ExcelTemplateEngineException($"CheckBox with name {name} not found");
+                throw new InvalidOperationException($"CheckBox with name {name} not found");
             formControl.IsChecked = value;
             return this;
         }
@@ -55,7 +55,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder
         {
             var formControl = target.TryGetDropDownFormControl(name);
             if (formControl == null)
-                throw new ExcelTemplateEngineException($"DropDown with name {name} not found");
+                throw new InvalidOperationException($"DropDown with name {name} not found");
             formControl.SelectedValue = value;
             return this;
         }

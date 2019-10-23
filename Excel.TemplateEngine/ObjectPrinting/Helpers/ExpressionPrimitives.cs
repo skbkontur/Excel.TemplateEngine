@@ -146,6 +146,6 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
         [NotNull]
         private static MethodInfo GetMethod([NotNull] Type type, [NotNull] string name)
             => type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static)
-               ?? throw new ExcelTemplateEngineException($"Method '{name}' not found in '{type}'");
+               ?? throw new InvalidOperationException($"Method '{name}' not found in '{type}'");
     }
 }

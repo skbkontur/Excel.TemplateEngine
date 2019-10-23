@@ -2,7 +2,6 @@ using System;
 
 using JetBrains.Annotations;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Renderers.Implementations;
@@ -40,7 +39,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection
                 return new CheckBoxRenderer();
             if (typeName == "DropDown" && modelType == typeof(string))
                 return new DropDownRenderer();
-            throw new ExcelTemplateEngineException($"Unsupported pair of typeName ({typeName}) and modelType ({modelType}) for form controls");
+            throw new InvalidOperationException($"Unsupported pair of typeName ({typeName}) and modelType ({modelType}) for form controls");
         }
 
         private readonly ITemplateCollection templateCollection;

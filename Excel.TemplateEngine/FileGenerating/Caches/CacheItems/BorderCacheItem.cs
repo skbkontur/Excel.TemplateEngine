@@ -67,7 +67,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.CacheItems
             case ExcelBorderType.Double:
                 return new EnumValue<BorderStyleValues>(BorderStyleValues.Double);
             default:
-                throw new ArgumentOutOfRangeException(nameof(borderType));
+                throw new InvalidOperationException($"Unknown border type: {borderType}");
             }
         }
 

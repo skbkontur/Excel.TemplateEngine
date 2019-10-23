@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 using SkbKontur.Excel.TemplateEngine.Exceptions;
@@ -104,7 +105,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection.Rendere
             }
             catch (ObjectPropertyExtractionException exception)
             {
-                throw new ExcelTemplateEngineException($"Failed to extract child by path '{excelTemplatePath.RawPath}' in model of type {model.GetType()}", exception);
+                throw new InvalidOperationException($"Failed to extract child by path '{excelTemplatePath.RawPath}' in model of type {model.GetType()}", exception);
             }
         }
 

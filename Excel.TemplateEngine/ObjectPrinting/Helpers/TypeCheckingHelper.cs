@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
-
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
 {
     internal static class TypeCheckingHelper
@@ -31,12 +29,12 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
         public static (Type keyType, Type valueType) GetDictionaryGenericTypeArguments(Type type)
         {
             if (!IsDictionary(type))
-                throw new ExcelTemplateEngineException($"{nameof(type)} ({type}) should implement IDictionary<,> or IDictionary");
+                throw new InvalidOperationException($"{nameof(type)} ({type}) should implement IDictionary<,> or IDictionary");
             var genericArguments = GetImplementedDictionaryInterface(type).GetGenericArguments();
             if (!genericArguments.Any())
                 return (typeof(object), typeof(object));
             if (genericArguments.Length != 2)
-                throw new ExcelTemplateEngineException($"Dict can have only 0 or 2 generic arguments, but here is {genericArguments.Length} of them ({string.Join(", ", genericArguments.Select(x => x.ToString()))}). Type is '{type}'.");
+                throw new InvalidOperationException($"Dict can have only 0 or 2 generic arguments, but here is {genericArguments.Length} of them ({string.Join(", ", genericArguments.Select(x => x.ToString()))}). Type is '{type}'.");
             return (genericArguments[0], genericArguments[1]);
         }
 

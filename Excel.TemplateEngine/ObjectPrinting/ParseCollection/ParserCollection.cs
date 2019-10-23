@@ -1,6 +1,5 @@
 using System;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations;
@@ -25,7 +24,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection
         {
             if (TypeCheckingHelper.IsEnumerable(modelType))
                 return new EnumerableParser(this);
-            throw new ExcelTemplateEngineException($"{modelType} is not IEnumerable");
+            throw new InvalidOperationException($"{modelType} is not IEnumerable");
         }
 
         public IAtomicValueParser GetAtomicValueParser()
@@ -39,7 +38,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection
                 return new CheckBoxValueParser();
             if (formControlTypeName == "DropDown" && valueType == typeof(string))
                 return new DropDownValueParser();
-            throw new ExcelTemplateEngineException($"Unsupported pair of {nameof(formControlTypeName)} ({formControlTypeName}) and {nameof(valueType)} ({valueType}) for form controls");
+            throw new InvalidOperationException($"Unsupported pair of {nameof(formControlTypeName)} ({formControlTypeName}) and {nameof(valueType)} ({valueType}) for form controls");
         }
 
         public IEnumerableMeasurer GetEnumerableMeasurer()

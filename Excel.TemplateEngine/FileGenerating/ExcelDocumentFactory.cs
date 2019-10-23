@@ -4,7 +4,6 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementations;
 
@@ -32,7 +31,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating
         [NotNull]
         public static IExcelDocument CreateFromTemplate([NotNull] byte[] template, [NotNull] ILog logger)
             => TryCreateFromTemplate(template, logger)
-               ?? throw new ExcelTemplateEngineException($"An error occurred while creating of {nameof(ExcelDocument)}");
+               ?? throw new InvalidOperationException($"An error occurred while creating of {nameof(ExcelDocument)}");
 
         [NotNull]
         public static IExcelDocument CreateEmpty(bool useXlsm, [NotNull] ILog logger)
@@ -49,7 +48,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating
             using (var ms = new MemoryStream())
             {
                 if (rs == null)
-                    throw new ExcelTemplateEngineException($"Stream is null for resource: {resourceName}");
+                    throw new InvalidOperationException($"Stream is null for resource: {resourceName}");
                 rs.CopyTo(ms);
                 return ms.ToArray();
             }

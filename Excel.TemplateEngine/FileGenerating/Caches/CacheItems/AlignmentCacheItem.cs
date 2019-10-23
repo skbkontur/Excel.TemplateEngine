@@ -70,7 +70,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.CacheItems
                 result = null;
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(verticalAlignment));
+                throw new InvalidOperationException($"Unknown vertical alignment: {verticalAlignment}");
             }
             return result;
         }
@@ -93,7 +93,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.CacheItems
                 result = null;
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(horizontalAlignment));
+                throw new InvalidOperationException($"Unknown horizontal alignment: {horizontalAlignment}");
             }
             return result;
         }

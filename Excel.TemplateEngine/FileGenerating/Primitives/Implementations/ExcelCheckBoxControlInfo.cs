@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -6,8 +7,6 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 using JetBrains.Annotations;
-
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 
 namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementations
 {
@@ -39,7 +38,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
                     // ReSharper disable once ConstantConditionalAccessQualifier
                     var clientData = xdoc.Root?.Elements()?.SingleOrDefault(x => x.Attribute("id")?.Value == Control.Name)?.Element(XName.Get("ClientData", ns));
                     if (clientData == null)
-                        throw new ExcelTemplateEngineException($"ClientData element is not found for control with name '{Control.Name}'");
+                        throw new InvalidOperationException($"ClientData element is not found for control with name '{Control.Name}'");
                     var checkedElement = clientData.Element(XName.Get("Checked", ns));
                     checkedElement?.Remove();
                     if (value)
