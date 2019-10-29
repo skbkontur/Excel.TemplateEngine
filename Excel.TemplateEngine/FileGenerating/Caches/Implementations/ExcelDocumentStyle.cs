@@ -8,7 +8,6 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 using JetBrains.Annotations;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.CacheItems;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Helpers;
@@ -170,7 +169,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
             case BorderStyleValues.Double:
                 return ExcelBorderType.Double;
             default:
-                throw new ArgumentOutOfRangeException(nameof(borderStyle));
+                throw new InvalidOperationException($"Unknown border type: {borderStyle}");
             }
         }
 
@@ -257,7 +256,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
         private ExcelColor ThemeToExcelColor(uint theme, double tint)
         {
             if (theme >= colorSchemeElements.Count)
-                throw new ExcelTemplateEngineException($"Theme with id '{theme}' not found");
+                throw new InvalidOperationException($"Theme with id '{theme}' not found");
             var color2Type = colorSchemeElements[(int)theme];
             var rgbColor = color2Type?.RgbColorModelHex?.Val?.Value ?? color2Type?.SystemColor?.LastColor?.Value;
             if (rgbColor == null)

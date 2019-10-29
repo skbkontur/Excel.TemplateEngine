@@ -1,8 +1,8 @@
+using System;
 using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection;
@@ -27,7 +27,7 @@ namespace SkbKontur.Excel.TemplateEngine
         public void Render<TModel>([NotNull] ITableBuilder tableBuilder, [NotNull] TModel model)
         {
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName)
-                                    ?? throw new ExcelTemplateEngineException($"Template with name {rootTemplateName} not found in xlsx");
+                                    ?? throw new InvalidOperationException($"Template with name {rootTemplateName} not found in xlsx");
             tableBuilder.CopyFormControlsFrom(templateTable);
             tableBuilder.CopyDataValidationsFrom(templateTable);
             tableBuilder.CopyWorksheetExtensionListFrom(templateTable); // WorksheetExtensionList contains info about data validations with ranges from other sheets, so copying it to support them.
@@ -40,7 +40,7 @@ namespace SkbKontur.Excel.TemplateEngine
             where TModel : new()
         {
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName)
-                                    ?? throw new ExcelTemplateEngineException($"Template with name {rootTemplateName} not found in xlsx");
+                                    ?? throw new InvalidOperationException($"Template with name {rootTemplateName} not found in xlsx");
             var parser = parserCollection.GetClassParser();
             var fieldsMappingForErrors = new Dictionary<string, string>();
             return (model : parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors : fieldsMappingForErrors);

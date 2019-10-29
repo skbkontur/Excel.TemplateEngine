@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
 
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
@@ -19,9 +18,9 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
         public List<object> Parse([NotNull] ITableParser tableParser, [NotNull] Type modelType, int count, [NotNull] Action<string, string> addFieldMapping)
         {
             if (count < 0)
-                throw new ExcelTemplateEngineException($"Count should be positive ({count} found)");
+                throw new InvalidOperationException($"Count should be positive ({count} found)");
             if (count > ParsingParameters.MaxEnumerableLength)
-                throw new ExcelTemplateEngineException($"Lists longer than {ParsingParameters.MaxEnumerableLength} are not supported");
+                throw new InvalidOperationException($"Lists longer than {ParsingParameters.MaxEnumerableLength} are not supported");
 
             var parser = parserCollection.GetAtomicValueParser();
             var result = new List<object>();

@@ -7,7 +7,6 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.FileGenerating;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
@@ -243,7 +242,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                     var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger), new Style(template.GetCell(new CellPosition("A1"))));
 
                     Action rendering = () => templateEngine.Render(tableBuilder, model);
-                    rendering.Should().Throw<ExcelTemplateEngineException>();
+                    rendering.Should().Throw<InvalidOperationException>();
                 }
             }
         }

@@ -12,7 +12,6 @@ using JetBrains.Annotations;
 
 using MoreLinq;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Caches;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Helpers;
@@ -99,7 +98,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
         {
             ThrowIfSpreadsheetDisposed();
             var result = TryGetWorksheet(index);
-            return result ?? throw new ExcelTemplateEngineException("An error occurred while getting of an excel worksheet");
+            return result ?? throw new InvalidOperationException("An error occurred while getting of an excel worksheet");
         }
 
         [NotNull]
@@ -162,7 +161,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
             AssertWorksheetNameValid(worksheetName);
 
             if (FindWorksheet(worksheetName) != null)
-                throw new ExcelTemplateEngineException($"Sheet with name {worksheetName} already exists");
+                throw new InvalidOperationException($"Sheet with name {worksheetName} already exists");
 
             var worksheetPart = spreadsheetDocument.WorkbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = new Worksheet(new SheetData());
@@ -187,7 +186,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
         private static void AssertWorksheetNameValid([NotNull] string worksheetName)
         {
             if (worksheetName.Length > 31)
-                throw new ExcelTemplateEngineException($"Worksheet name ('{worksheetName}') is too long (allowed <=31 symbols, current - {worksheetName.Length})");
+                throw new InvalidOperationException($"Worksheet name ('{worksheetName}') is too long (allowed <=31 symbols, current - {worksheetName.Length})");
         }
 
         public override string ToString()

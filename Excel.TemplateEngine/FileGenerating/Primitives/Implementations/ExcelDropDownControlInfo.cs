@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -8,7 +9,6 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 using JetBrains.Annotations;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 
 using Vostok.Logging.Abstractions;
@@ -54,7 +54,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
                     // ReSharper disable once ConstantConditionalAccessQualifier
                     var clientData = xdoc.Root?.Elements()?.Single(x => x.Attribute("id")?.Value == Control.Name)?.Element(XName.Get("ClientData", ns));
                     if (clientData == null)
-                        throw new ExcelTemplateEngineException($"ClientData element is not found for control with name '{Control.Name}'");
+                        throw new InvalidOperationException($"ClientData element is not found for control with name '{Control.Name}'");
                     var checkedElement = clientData.Element(XName.Get("Sel", ns));
                     checkedElement?.Remove();
                     clientData.Add(new XElement(XName.Get("Sel", ns), (index + 1).ToString()));
@@ -69,12 +69,12 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
         {
             var absoluteRange = ControlPropertiesPart.FormControlProperties?.FmlaRange?.Value;
             if (absoluteRange == null)
-                throw new ExcelTemplateEngineException("This form control has no FmlaRange (maybe you are using it as dropdown, while it isn't dropdown)");
+                throw new InvalidOperationException("This form control has no FmlaRange (maybe you are using it as dropdown, while it isn't dropdown)");
             var (worksheetName, relativeRange) = SplitAbsoluteRange(absoluteRange);
             var (from, to) = ParseRelativeRange(relativeRange);
             var worksheet = worksheetName == null ? excelWorksheet : excelWorksheet.ExcelDocument.FindWorksheet(worksheetName);
             if (worksheet == null)
-                throw new ExcelTemplateEngineException($"Worksheet with name {worksheetName} not found, but used in dropDown");
+                throw new InvalidOperationException($"Worksheet with name {worksheetName} not found, but used in dropDown");
             return worksheet.GetSortedCellsInRange(from, to);
         }
 
@@ -90,14 +90,14 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
                     return (worksheetName.Substring(1, worksheetName.Length - 2), parts[1]);
                 return (worksheetName, parts[1]);
             }
-            throw new ExcelTemplateEngineException($"Invalid absolute range: '{absoluteRange}'");
+            throw new InvalidOperationException($"Invalid absolute range: '{absoluteRange}'");
         }
 
         private static (ExcelCellIndex from, ExcelCellIndex to) ParseRelativeRange([NotNull] string relativeRange)
         {
             var parts = relativeRange.Split(':').Select(x => x.Replace("$", "")).ToList();
             if (parts.Count != 2)
-                throw new ExcelTemplateEngineException($"Invalid relative range: '{relativeRange}'");
+                throw new InvalidOperationException($"Invalid relative range: '{relativeRange}'");
             return (new ExcelCellIndex(parts[0]), new ExcelCellIndex(parts[1]));
         }
 

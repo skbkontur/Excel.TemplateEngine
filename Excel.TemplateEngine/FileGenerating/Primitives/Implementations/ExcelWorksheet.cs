@@ -13,7 +13,6 @@ using JetBrains.Annotations;
 
 using MoreLinq;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Caches;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 
@@ -254,7 +253,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
         {
             var vmlDrawingParts = templateWorksheetPart.VmlDrawingParts.ToList();
             if (vmlDrawingParts.Count > 1)
-                throw new ExcelTemplateEngineException("More than one VmlDrawingPart found");
+                throw new InvalidOperationException("More than one VmlDrawingPart found");
             var vmlDrawingPart = vmlDrawingParts.SingleOrDefault();
             var vmlDrawingPartId = vmlDrawingPart == null ? null : templateWorksheetPart.GetIdOfPart(vmlDrawingPart);
             SafelyAddPart(targetWorksheet.WorksheetPart, vmlDrawingPart, vmlDrawingPartId);

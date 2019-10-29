@@ -5,7 +5,6 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
-using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
@@ -88,7 +87,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
 
                 var childEnumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(typeof(TModel), cleanPathToEnumerable);
                 if (!TypeCheckingHelper.IsIList(childEnumerableType))
-                    throw new ExcelTemplateEngineException($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
+                    throw new InvalidOperationException($"Only ILists are supported as collections, but tried to use '{childEnumerableType}'. (path: {cleanPathToEnumerable.RawPath})");
 
                 var primaryParts = enumerableCells.Value.Where(x => ExcelTemplatePath.FromRawExpression(x.StringValue).HasPrimaryKeyArrayAccess).ToList();
                 if (primaryParts.Count == 0)
@@ -149,7 +148,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
             var (childFormControlType, childFormControlName) = GetFormControlDescription(cell);
 
             if (path.HasArrayAccess)
-                throw new ExcelTemplateEngineException("Enumerables are not supported for form controls");
+                throw new InvalidOperationException("Enumerables are not supported for form controls");
 
             var parser = parserCollection.GetFormValueParser(childFormControlType, childModelType);
             var parsedObject = parser.ParseOrDefault(tableParser, childFormControlName, childModelType);
@@ -162,7 +161,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
         {
             var formControlDescription = TemplateDescriptionHelper.TryGetFormControlFromValueDescription(cell.StringValue);
             if (string.IsNullOrEmpty(formControlDescription.formControlType) || formControlDescription.formControlName == null)
-                throw new ExcelTemplateEngineException($"Invalid xlsx template. '{cell.StringValue}' is not a valid form control description.");
+                throw new InvalidOperationException($"Invalid xlsx template. '{cell.StringValue}' is not a valid form control description.");
             return formControlDescription;
         }
 
