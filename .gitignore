@@ -351,4 +351,7 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
+# Ignore all Rider settings
+.idea
+
 /Excel.TemplateEngine.Tests/output.xlsx
