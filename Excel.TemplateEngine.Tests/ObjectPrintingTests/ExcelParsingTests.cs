@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using FluentAssertions;
 
@@ -18,13 +19,36 @@ using Vostok.Logging.Console;
 
 namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
+    internal class SingleArrayContainer
+    {
+        public SingleStringContainer[] Items { get; set; }
+    }
+
+    internal class SingleStringContainer
+    {
+        public string Value { get; set; }
+    }
+
     [TestFixture]
     public class ExcelParsingTests : FileBasedTestBase
     {
         [Test]
+        public void TestStringsWithManyFormattedFragments()
+        {
+            var (model, _) = Parse<SingleArrayContainer>("stringArray_template.xlsx", "stringArrayWithComplexStrings_target.xlsx");
+
+            model.Items.Should().BeEquivalentTo(new[]
+                {
+                    new SingleStringContainer {Value = "Строка с разным размером шрифтов"},
+                    new SingleStringContainer {Value = "String with different fonts"},
+                    new SingleStringContainer {Value = "Different font colors"}
+                }, options => options.WithStrictOrdering());
+        }
+
+        [Test]
         public void TestSimpleWithEnumerable()
         {
-            var (model, mappingForErrors) = Parse("simpleWithEnumerable_template.xlsx", "simpleWithEnumerable_target.xlsx");
+            var (model, mappingForErrors) = Parse<PriceList>("simpleWithEnumerable_template.xlsx", "simpleWithEnumerable_target.xlsx");
 
             mappingForErrors["Type"].Should().Be("C3");
             mappingForErrors["Items[0].Id"].Should().Be("B13");
@@ -43,7 +67,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestEnumerableWithPrimaryKey()
         {
-            var (model, mappingForErrors) = Parse("enumerableWithPrimaryKey_template.xlsx", "enumerableWithPrimaryKey_target.xlsx");
+            var (model, mappingForErrors) = Parse<PriceList>("enumerableWithPrimaryKey_template.xlsx", "enumerableWithPrimaryKey_target.xlsx");
 
             mappingForErrors["Type"].Should().Be("C3");
             for (var i = 0; i < 7; i++)
@@ -69,7 +93,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestCheckBoxes()
         {
-            var (model, mappingForErrors) = Parse("сheckBoxes_template.xlsx", "сheckBoxes_target.xlsx");
+            var (model, mappingForErrors) = Parse<PriceList>("сheckBoxes_template.xlsx", "сheckBoxes_target.xlsx");
             mappingForErrors["TestFlag1"].Should().Be("CheckBoxName1");
             mappingForErrors["TestFlag2"].Should().Be("CheckBoxName2");
             model.TestFlag1.Should().BeFalse();
@@ -79,7 +103,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestNonexistentCheckBoxes()
         {
-            var (model, mappingForErrors) = Parse("nonexistent_сheckBoxes_template.xlsx", "nonexistent_сheckBoxes_target.xlsx");
+            var (model, mappingForErrors) = Parse<PriceList>("nonexistent_сheckBoxes_template.xlsx", "nonexistent_сheckBoxes_target.xlsx");
             mappingForErrors["TestFlag1"].Should().Be("CheckBoxName1");
             mappingForErrors["TestFlag2"].Should().Be("NonexistentInTarget");
             model.TestFlag1.Should().BeTrue();
@@ -89,14 +113,14 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestNonexistentField()
         {
-            Action parsing = () => Parse("nonexistentField_template.xlsx", "empty.xlsx");
+            Action parsing = () => Parse<PriceList>("nonexistentField_template.xlsx", "empty.xlsx");
             parsing.Should().Throw<ObjectPropertyExtractionException>();
         }
 
         [Test]
         public void TestDictDirectAccess()
         {
-            var (model, mappingForErrors) = Parse("dictDirectAccess_template.xlsx", "dictDirectAccess_target.xlsx");
+            var (model, mappingForErrors) = Parse<PriceList>("dictDirectAccess_template.xlsx", "dictDirectAccess_target.xlsx");
             mappingForErrors["StringStringDict[\"testKey\"]"].Should().Be("C7");
             mappingForErrors["IntStringDict[42]"].Should().Be("E7");
             mappingForErrors["InnerPriceList.IntStringDict[25]"].Should().Be("E9");
@@ -111,7 +135,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestDictDirectAccessInCheckBoxes()
         {
-            var (model, mappingForErrors) = Parse("dictDirectAccessInCheckBoxes_template.xlsx", "dictDirectAccessInCheckBoxes_target.xlsx");
+            var (model, mappingForErrors) = Parse<PriceList>("dictDirectAccessInCheckBoxes_template.xlsx", "dictDirectAccessInCheckBoxes_target.xlsx");
             mappingForErrors["StringStringDict[\"testKey\"]"].Should().Be("C7");
             mappingForErrors["IntStringDict[42]"].Should().Be("E7");
             mappingForErrors["IntBoolDict[25]"].Should().Be("TestCheckBox1");
@@ -124,7 +148,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestDictDirectAccessInDropDown()
         {
-            var (model, mappingForErrors) = Parse("dictDirectAccessInDropDown_template.xlsx", "dictDirectAccessInDropDown_target.xlsx");
+            var (model, mappingForErrors) = Parse<PriceList>("dictDirectAccessInDropDown_template.xlsx", "dictDirectAccessInDropDown_target.xlsx");
             mappingForErrors["StringStringDict[\"testKey\"]"].Should().Be("C7");
             mappingForErrors["IntStringDict[42]"].Should().Be("E7");
             mappingForErrors["IntStringDict[15]"].Should().Be("TestDropDown1");
@@ -135,7 +159,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestEmptyEnumerable()
         {
-            var (model, mappingForErrors) = Parse("emptyEnumerable_template.xlsx", "emptyEnumerable_target.xlsx");
+            var (model, mappingForErrors) = Parse<PriceList>("emptyEnumerable_template.xlsx", "emptyEnumerable_target.xlsx");
 
             mappingForErrors["Type"].Should().Be("C3");
             mappingForErrors.Count.Should().Be(1);
@@ -147,7 +171,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestDropDownFromTheOtherWorksheet()
         {
-            var (model, mappingForErrors) = Parse("dropDownOtherWorksheet_template.xlsx", "dropDownOtherWorksheet_target.xlsx");
+            var (model, mappingForErrors) = Parse<PriceList>("dropDownOtherWorksheet_template.xlsx", "dropDownOtherWorksheet_target.xlsx");
             mappingForErrors["Type"].Should().Be("DropDown1");
             model.Type.Should().Be("ValueC");
         }
@@ -175,7 +199,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                 bytes = targetDocument.CloseAndGetDocumentBytes();
             }
 
-            var (model, mappingForErrors) = Parse(File.ReadAllBytes(GetFilePath("importAfterCreate_template.xlsx")), bytes);
+            var (model, mappingForErrors) = Parse<PriceList>(File.ReadAllBytes(GetFilePath("importAfterCreate_template.xlsx")), bytes);
             mappingForErrors["TestFlag1"].Should().Be("CheckBoxName1");
             mappingForErrors["TestFlag2"].Should().Be("CheckBoxName2");
             mappingForErrors["Type"].Should().Be("C3");
@@ -184,12 +208,12 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             model.Type.Should().Be("Значение 2");
         }
 
-        private (PriceList model, Dictionary<string, string> mappingForErrors) Parse(string templateFileName, string targetFileName)
+        private (TData model, Dictionary<string, string> mappingForErrors) Parse<TData>(string templateFileName, string targetFileName) where TData : new()
         {
-            return Parse(File.ReadAllBytes(GetFilePath(templateFileName)), File.ReadAllBytes(GetFilePath(targetFileName)));
+            return Parse<TData>(File.ReadAllBytes(GetFilePath(templateFileName)), File.ReadAllBytes(GetFilePath(targetFileName)));
         }
 
-        private (PriceList model, Dictionary<string, string> mappingForErrors) Parse(byte[] templateBytes, byte[] targetBytes)
+        private (TData model, Dictionary<string, string> mappingForErrors) Parse<TData>(byte[] templateBytes, byte[] targetBytes) where TData : new()
         {
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(templateBytes, logger))
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes, logger))
@@ -200,7 +224,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableParser = new TableParser(target, tableNavigator);
-                return templateEngine.Parse<PriceList>(tableParser);
+                return templateEngine.Parse<TData>(tableParser);
             }
         }
 
