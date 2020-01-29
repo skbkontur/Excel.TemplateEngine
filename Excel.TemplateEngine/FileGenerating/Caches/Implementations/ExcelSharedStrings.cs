@@ -33,7 +33,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
         public string GetSharedString(uint index)
         {
             var a = sharedStringTable.ChildElements[(int)index];
-            return a.FirstChild.InnerText;
+            return a.InnerText;
         }
 
         private readonly IDictionary<SharedStringCacheItem, uint> cache;

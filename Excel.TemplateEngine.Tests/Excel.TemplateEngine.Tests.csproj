@@ -119,6 +119,12 @@
     <None Update="ObjectPrintingTests\Files\simpleWithEnumerable_template.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ObjectPrintingTests\Files\stringArray_template.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ObjectPrintingTests\Files\stringArrayWithComplexStrings_target.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ObjectPrintingTests\Files\template.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
