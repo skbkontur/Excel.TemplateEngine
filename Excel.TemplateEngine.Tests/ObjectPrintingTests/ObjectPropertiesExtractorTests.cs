@@ -226,6 +226,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                                                                                                          ("Value::ObjectProp", x => x.ObjectProp, new MarkerA()),
                                                                                                          ("Value::ArrayIntProp", x => x.ArrayIntProp, new[] {1, 2, 10}),
                                                                                                          ("Value::NullableInt", x => x.NullableInt, (int?)10),
+                                                                                                         ("Value::NullableInt", x => x.NullableInt, null),
                                                                                                          ("Value::InnerObject.A.Value", x => x.InnerObject.A.Value, new MarkerA()),
                                                                                                          ("Value::InnerObject.InnerArray[1].ElementProp.A", x => x.InnerObject.InnerArray[1].ElementProp.A, new MarkerB()),
                                                                                                          ("Value::DictProperty", x => x.DictProperty, new Dictionary<string, MarkerC>()),
@@ -244,6 +245,18 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             var s = ObjectPropertySettersExtractor.ExtractChildObjectSetter(modelToSet, ExcelTemplatePath.FromRawExpression(expression));
             s(valueToSet);
             getter(modelToSet).Should().BeEquivalentTo(valueToSet);
+        }
+
+        [Test]
+        public void SetNullToNotNullableTest()
+        {
+            (string expression, object valueToSet) = ("Value::IntProp", null);
+
+            var modelToSet = new ComplexModel();
+            var setter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(modelToSet, ExcelTemplatePath.FromRawExpression(expression));
+
+            var setterAction = new Action(() => setter(valueToSet));
+            setterAction.Should().Throw<ObjectPropertyExtractionException>();
         }
 
         #region auxiliary models
