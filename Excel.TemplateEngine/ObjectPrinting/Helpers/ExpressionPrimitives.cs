@@ -97,9 +97,9 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
         {
             if (from is T res)
                 return res;
-            if (from == null && !typeof(T).IsValueType)
+            if (from == null)
                 return default;
-            throw new ObjectPropertyExtractionException($"Can't assign item of type '{from?.GetType()}' to target of type '{typeof(T)}'");
+            throw new ObjectPropertyExtractionException($"Can't assign item of type '{from.GetType()}' to target of type '{typeof(T)}'");
         }
 
         [CanBeNull]
