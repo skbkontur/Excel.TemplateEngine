@@ -97,9 +97,9 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
         {
             if (from is T res)
                 return res;
-            if (from == null)
+            if (from == null && (!typeof(T).IsValueType || TypeCheckingHelper.IsNullable(typeof(T))))
                 return default;
-            throw new ObjectPropertyExtractionException($"Can't assign item of type '{from.GetType()}' to target of type '{typeof(T)}'");
+            throw new ObjectPropertyExtractionException($"Can't assign item of type '{from?.GetType()}' to target of type '{typeof(T)}'");
         }
 
         [CanBeNull]
@@ -140,7 +140,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             => InitDict(dict, indexer, () => new TValue());
 
         [NotNull]
-        private static MethodInfo GetGenericMethod([NotNull] Type type, [NotNull] string name, [NotNull, ItemNotNull] params Type[] genericTypes) 
+        private static MethodInfo GetGenericMethod([NotNull] Type type, [NotNull] string name, [NotNull, ItemNotNull] params Type[] genericTypes)
             => GetMethod(type, name).MakeGenericMethod(genericTypes);
 
         [NotNull]

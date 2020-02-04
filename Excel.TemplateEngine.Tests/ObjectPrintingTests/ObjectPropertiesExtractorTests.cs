@@ -247,6 +247,18 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             getter(modelToSet).Should().BeEquivalentTo(valueToSet);
         }
 
+        [Test]
+        public void SetNullToNotNullableTest()
+        {
+            (string expression, object valueToSet) = ("Value::IntProp", null);
+
+            var modelToSet = new ComplexModel();
+            var setter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(modelToSet, ExcelTemplatePath.FromRawExpression(expression));
+
+            var setterAction = new Action(() => setter(valueToSet));
+            setterAction.Should().Throw<ObjectPropertyExtractionException>();
+        }
+
         #region auxiliary models
 
         public class ComplexModel
