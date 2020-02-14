@@ -48,7 +48,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.FileGeneratingTests
             var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
             var style = cell.GetStyle();
 
-            style.NumberingFormat.FormatCode.Should().Be("0.0000");
+            style.NumberingFormat.Code.Should().Be("0.0000");
         }
 
         [Test]

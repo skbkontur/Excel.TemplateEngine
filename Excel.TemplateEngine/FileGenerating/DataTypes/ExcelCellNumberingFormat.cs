@@ -1,21 +1,20 @@
-using System.Linq;
+using JetBrains.Annotations;
 
 namespace SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes
 {
     public class ExcelCellNumberingFormat
     {
-        public ExcelCellNumberingFormat(int precision)
+        public ExcelCellNumberingFormat([NotNull] uint id, [CanBeNull] string code = null)
         {
-            FormatCode = "0." + string.Join("", Enumerable.Repeat("0", precision));
+            Id = id;
+            Code = code;
         }
 
-        public ExcelCellNumberingFormat(string formatCode)
-        {
-            FormatCode = formatCode;
-        }
+        public override string ToString() => $"Id = {Id}, Code = {Code}";
 
-        public override string ToString() => $"FormatCode = {FormatCode}";
+        public uint Id { get; }
 
-        public string FormatCode { get; }
+        [CanBeNull]
+        public string Code { get; }
     }
 }
