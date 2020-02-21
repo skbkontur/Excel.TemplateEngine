@@ -184,7 +184,6 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
             if (numberFormat?.FormatCode?.Value == null)
                 return null;
 
-            // ReSharper disable once PossibleNullReferenceException
             return new ExcelCellNumberingFormat(numberFormat.NumberFormatId.Value, numberFormat.FormatCode.Value);
         }
 
@@ -216,7 +215,10 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
         {
             if (color == null)
                 return null;
-            if (color.Rgb?.HasValue == true) return RgbStringToExcelColor(color.Rgb.Value);
+            if (color.Rgb?.HasValue == true)
+            {
+                return RgbStringToExcelColor(color.Rgb.Value);
+            }
             if (color.Theme?.HasValue == true)
             {
                 var theme = color.Theme.Value;
@@ -231,10 +233,10 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
         {
             if (hexRgbColor.Length == 6)
                 hexRgbColor = "FF" + hexRgbColor;
-            return new ExcelColor(Convert.ToInt32(hexRgbColor.Substring(0, 2), 16),
-                                  Convert.ToInt32(hexRgbColor.Substring(2, 2), 16),
-                                  Convert.ToInt32(hexRgbColor.Substring(4, 2), 16),
-                                  Convert.ToInt32(hexRgbColor.Substring(6, 2), 16));
+            return new ExcelColor(alpha : Convert.ToInt32(hexRgbColor.Substring(0, 2), 16),
+                                  red : Convert.ToInt32(hexRgbColor.Substring(2, 2), 16),
+                                  green : Convert.ToInt32(hexRgbColor.Substring(4, 2), 16),
+                                  blue : Convert.ToInt32(hexRgbColor.Substring(6, 2), 16));
         }
 
         [CanBeNull]
@@ -266,6 +268,8 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
             return new AlignmentCacheItem(cellAlignment);
         }
 
+        // standardNumberingFormatsId -- set of numbering formats that can be identified without format codes
+        // https://docs.microsoft.com/en-us/dotnet/api/documentformat.openxml.spreadsheet.numberingformat?view=openxml-2.8.1
         private static HashSet<uint> standardNumberingFormatsId = new HashSet<uint> {0, 1, 2, 3, 4, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 37, 38, 39, 40, 45, 46, 47, 48, 49};
 
         private readonly Stylesheet stylesheet;

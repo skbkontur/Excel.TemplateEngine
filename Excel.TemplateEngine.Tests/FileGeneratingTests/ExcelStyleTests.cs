@@ -74,25 +74,25 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.FileGeneratingTests
         public void CellNumberFormatCopyAfterRenderTest()
         {
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
                 var templateEngine = new TemplateEngine(template, logger);
 
-                using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
-                {
-                    var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                    var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger), new Style(template.GetCell(new CellPosition("A1"))));
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("A1"), logger), new Style(template.GetCell(new CellPosition("A1"))));
 
-                    templateEngine.Render(tableBuilder, new {A = 1, B = "asdf"});
+                // Model is required for printing cells defined by Template:RootTemplate
+                var dummyModel = new {A = 1, B = "asdf"};
+                templateEngine.Render(tableBuilder, dummyModel);
 
-                    var worksheet = targetDocument.GetWorksheet(0);
-                    var customStyle = worksheet.GetCell(new ExcelCellIndex("A1")).GetStyle();
-                    customStyle.NumberingFormat.Code.Should().Be("0.0000");
+                var worksheet = targetDocument.GetWorksheet(0);
+                var customStyle = worksheet.GetCell(new ExcelCellIndex("A1")).GetStyle();
+                customStyle.NumberingFormat.Code.Should().Be("0.0000");
 
-                    var standardStyle = worksheet.GetCell(new ExcelCellIndex("A4")).GetStyle();
-                    standardStyle.NumberingFormat.Id.Should().Be(49);
-                    standardStyle.NumberingFormat.Code.Should().BeNull();
-                }
+                var standardStyle = worksheet.GetCell(new ExcelCellIndex("A4")).GetStyle();
+                standardStyle.NumberingFormat.Id.Should().Be(49);
+                standardStyle.NumberingFormat.Code.Should().BeNull();
             }
         }
 

@@ -4,7 +4,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes
 {
     public class ExcelCellNumberingFormat
     {
-        public ExcelCellNumberingFormat([NotNull] uint id, [CanBeNull] string code = null)
+        public ExcelCellNumberingFormat(uint id, [CanBeNull] string code = null)
         {
             Id = id;
             Code = code;
