@@ -175,8 +175,8 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
 
         private ExcelCellNumberingFormat GetCellNumberingFormat(uint numberFormatId)
         {
-            if (TryExtractStandardNumberingFormat(numberFormatId, out var result))
-                return result;
+            if (standardNumberingFormatsId.Contains(numberFormatId))
+                return new ExcelCellNumberingFormat(numberFormatId);
 
             var numberFormat = (NumberingFormat)stylesheet?.NumberingFormats?.ChildElements
                                                           ?.FirstOrDefault(ce => ((NumberingFormat)ce)?.NumberFormatId != null &&
@@ -184,20 +184,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
             if (numberFormat?.FormatCode?.Value == null)
                 return null;
 
-            // ReSharper disable once PossibleNullReferenceException
-            return new ExcelCellNumberingFormat(numberFormat.FormatCode.Value);
-        }
-
-        private static bool TryExtractStandardNumberingFormat(uint numberingFormat, out ExcelCellNumberingFormat result)
-        {
-            result = null;
-            if (numberingFormat == 2)
-            {
-                result = new ExcelCellNumberingFormat("0.00");
-                return true;
-            }
-
-            return false;
+            return new ExcelCellNumberingFormat(numberFormat.NumberFormatId.Value, numberFormat.FormatCode.Value);
         }
 
         private ExcelCellFontStyle GetCellFontStyle(uint fontId)
@@ -280,6 +267,10 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
                 return null;
             return new AlignmentCacheItem(cellAlignment);
         }
+
+        // standardNumberingFormatsId -- set of numbering formats that can be identified without format codes
+        // https://docs.microsoft.com/en-us/dotnet/api/documentformat.openxml.spreadsheet.numberingformat?view=openxml-2.8.1
+        private static HashSet<uint> standardNumberingFormatsId = new HashSet<uint> {0, 1, 2, 3, 4, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 37, 38, 39, 40, 45, 46, 47, 48, 49};
 
         private readonly Stylesheet stylesheet;
         private readonly ILog logger;
