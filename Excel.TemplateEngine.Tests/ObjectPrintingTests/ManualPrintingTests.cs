@@ -211,6 +211,32 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             }
         }
 
+        /// <summary>
+        /// output file must contain the same comments, but one author
+        /// </summary>
+        [Test]
+        public void TestPrintingCommentsWithSeveralAuthors()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("commentsWithSeveralAuthors.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
+            {
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
+                var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
+                templateEngine.Render(tableBuilder, new {});
+
+                var filename = "output.xlsx";
+                File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
+
+                var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
+                var templatePath = "file:///" + Path.GetFullPath("ExcelObjectPrinterTests/Files/commentsWithSeveralAuthors.xlsx").Replace("\\", "/");
+                Assert.Fail($"Please manually open file:\n{path}\nand check that cells has same comments as in\n{templatePath}\n");
+            }
+        }
+
         private readonly ConsoleLog logger = new ConsoleLog();
     }
 }

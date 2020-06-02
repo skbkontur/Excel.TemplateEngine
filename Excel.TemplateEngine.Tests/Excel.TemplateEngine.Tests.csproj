@@ -35,6 +35,9 @@
     <None Update="ObjectPrintingTests\Files\comments.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ObjectPrintingTests\Files\commentsWithSeveralAuthors.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ObjectPrintingTests\Files\complexTemplate.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

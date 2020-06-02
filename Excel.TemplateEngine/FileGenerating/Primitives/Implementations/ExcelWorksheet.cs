@@ -163,22 +163,29 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
 
             var commentPartId = templateWorksheetPart.GetIdOfPart(commentsPart);
             SafelyAddPart(worksheet.WorksheetPart, commentsPart, commentPartId);
-            ChangeAllAuthorsToEdi(worksheet.WorksheetPart.WorksheetCommentsPart.Comments);
+            ReduceAllAuthorsToEdi(worksheet.WorksheetPart.WorksheetCommentsPart.Comments);
             RemoveShapeIdFromComments(worksheet.WorksheetPart.WorksheetCommentsPart.Comments);
             if (worksheet.WorksheetPart.VmlDrawingParts == null || !worksheet.WorksheetPart.VmlDrawingParts.Any())
                 CopyVmlDrawingPartAndGetId(templateWorksheetPart, worksheet);
         }
 
-        private static void ChangeAllAuthorsToEdi([CanBeNull] Comments comments)
+        private static void ReduceAllAuthorsToEdi([CanBeNull] Comments comments) //Файл с несколькими одинаковыми авторами комментариев открываются с ошибкой
         {
             if (comments == null)
                 return;
             const string edi = "Kontur.EDI";
-            foreach (var author in comments.Authors.ChildElements
-                                           .Where(x => x is Author)
-                                           .Cast<Author>())
+
+            var firstAuthor = (Author)comments.Authors.ChildElements.First(x => x is Author);
+            firstAuthor.Text = edi;
+
+            comments.Authors.RemoveAllChildren<Author>();
+            comments.Authors.AppendChild(firstAuthor);
+
+            foreach (var comment in comments.CommentList.ChildElements
+                                            .Where(x => x is Comment)
+                                            .Cast<Comment>())
             {
-                author.Text = edi;
+                comment.AuthorId = 0;
             }
         }
 
