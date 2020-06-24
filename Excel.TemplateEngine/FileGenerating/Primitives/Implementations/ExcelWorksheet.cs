@@ -163,30 +163,24 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
 
             var commentPartId = templateWorksheetPart.GetIdOfPart(commentsPart);
             SafelyAddPart(worksheet.WorksheetPart, commentsPart, commentPartId);
-            ReduceAllAuthorsToEdi(worksheet.WorksheetPart.WorksheetCommentsPart.Comments);
+            ChangeAllAuthorsToEdi(worksheet.WorksheetPart.WorksheetCommentsPart.Comments);
             RemoveShapeIdFromComments(worksheet.WorksheetPart.WorksheetCommentsPart.Comments);
             if (worksheet.WorksheetPart.VmlDrawingParts == null || !worksheet.WorksheetPart.VmlDrawingParts.Any())
                 CopyVmlDrawingPartAndGetId(templateWorksheetPart, worksheet);
         }
 
-        private static void ReduceAllAuthorsToEdi([CanBeNull] Comments comments) //Файл с несколькими одинаковыми авторами комментариев открываются с ошибкой
+        // note (sivukhin, 24.06.2020): Файлы с несколькими одинаковыми авторами комментариев открываются с ошибкой.
+        // note (sivukhin, 24.06.2020): Поэтому вместо того, чтобы поменять имя каждого автора, мы удаляем всех авторов и создаем одного общего
+        private static void ChangeAllAuthorsToEdi([CanBeNull] Comments comments)
         {
             if (comments == null)
                 return;
-            const string edi = "Kontur.EDI";
 
-            var firstAuthor = (Author)comments.Authors.ChildElements.First(x => x is Author);
-            firstAuthor.Text = edi;
-
+            var ediAuthor = new Author("Kontur.EDI");
             comments.Authors.RemoveAllChildren<Author>();
-            comments.Authors.AppendChild(firstAuthor);
-
-            foreach (var comment in comments.CommentList.ChildElements
-                                            .Where(x => x is Comment)
-                                            .Cast<Comment>())
-            {
+            comments.Authors.AppendChild(ediAuthor);
+            foreach (var comment in comments.CommentList.ChildElements.OfType<Comment>())
                 comment.AuthorId = 0;
-            }
         }
 
         private static void RemoveShapeIdFromComments([CanBeNull] Comments comments) //Комментарии с shapeId открываются с ошибкой в Excel 2007
