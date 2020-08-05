@@ -5,6 +5,7 @@ using System.Linq;
 using NUnit.Framework;
 
 using SkbKontur.Excel.TemplateEngine.FileGenerating;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
@@ -26,15 +27,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             {
                 targetDocument.CopyVbaInfoFrom(templateDocument);
 
-                foreach (var index in Enumerable.Range(1, templateDocument.GetWorksheetCount() - 1))
-                {
-                    var worksheet = templateDocument.GetWorksheet(index);
-                    var name = templateDocument.GetWorksheetName(index);
-                    var innerTemplateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(new ExcelTable(worksheet), logger);
-                    var targetWorksheet = targetDocument.AddWorksheet(name);
-                    var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1"), logger));
-                    innerTemplateEngine.Render(innerTableBuilder, new {});
-                }
+                CopySecondaryWorksheets(templateDocument, targetDocument);
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
                 var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
@@ -247,6 +240,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
+                targetDocument.GetWorksheet(0).SetPrinterSettings(printerSettings);
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {});
 
@@ -276,5 +270,19 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         }
 
         private readonly ConsoleLog logger = new ConsoleLog();
+
+        private static readonly ExcelPrinterSettings printerSettings = new ExcelPrinterSettings
+            {
+                PrintingOrientation = ExcelPrintingOrientation.Landscape,
+                PageMargins = new ExcelPageMargins
+                    {
+                        Left = 0.25,
+                        Right = 0.25,
+                        Top = 0.75,
+                        Bottom = 0.75,
+                        Header = 0.3,
+                        Footer = 0.3
+                    }
+            };
     }
 }
