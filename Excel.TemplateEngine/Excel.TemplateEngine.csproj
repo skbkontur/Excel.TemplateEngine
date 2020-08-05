@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="morelinq" Version="3.2.0" />
     <PackageReference Include="C5" Version="2.5.3" />
-    <PackageReference Include="DocumentFormat.OpenXml" Version="2.9.1" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.11.3" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
     <PackageReference Include="Vostok.Logging.Abstractions" Version="1.0.1" />
   </ItemGroup>
