@@ -1,9 +1,11 @@
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
 using NUnit.Framework;
 
 using SkbKontur.Excel.TemplateEngine.FileGenerating;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
@@ -162,15 +164,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             {
                 targetDocument.CopyVbaInfoFrom(templateDocument);
 
-                foreach (var index in Enumerable.Range(1, templateDocument.GetWorksheetCount() - 1))
-                {
-                    var worksheet = templateDocument.GetWorksheet(index);
-                    var name = templateDocument.GetWorksheetName(index);
-                    var innerTemplateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(new ExcelTable(worksheet), logger);
-                    var targetWorksheet = targetDocument.AddWorksheet(name);
-                    var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1"), logger));
-                    innerTemplateEngine.Render(innerTableBuilder, new {});
-                }
+                CopySecondaryWorksheets(templateDocument, targetDocument);
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
                 var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
@@ -234,6 +228,50 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                 var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
                 var templatePath = "file:///" + Path.GetFullPath("ExcelObjectPrinterTests/Files/commentsWithSeveralAuthors.xlsx").Replace("\\", "/");
                 Assert.Fail($"Please manually open file:\n{path}\nand check that cells has same comments as in\n{templatePath}\n");
+            }
+        }
+        
+        /// <summary>
+        ///     output file must contain data validations AND rendered comment
+        /// </summary>
+        [Test]
+        public void TestPrintingCommentsWithEnabledDataValidationByOtherSheetData()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("commentsAndOtherSheetDataValidations.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
+            {
+                CopySecondaryWorksheets(templateDocument, targetDocument);
+
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template, logger);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
+                var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
+                templateEngine.Render(tableBuilder, new {});
+
+                var filename = "output.xlsx";
+                File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
+
+                var path = "file:///" + Path.GetFullPath(filename);
+                Process.Start(filename);
+                Assert.Fail($@"Please check that opened file has:
+{path}
+- comment/annotation
+- D4-D7 has data validation with values from the second worksheet and G4-G7 has data validation with values from K1:K6");
+            }
+        }
+        
+        private void CopySecondaryWorksheets(IExcelDocument templateDocument, IExcelDocument targetDocument)
+        {
+            foreach (var index in Enumerable.Range(1, templateDocument.GetWorksheetCount() - 1))
+            {
+                var worksheet = templateDocument.GetWorksheet(index);
+                var name = templateDocument.GetWorksheetName(index);
+                var innerTemplateEngine = new TemplateEngine(new ExcelTable(worksheet), logger);
+                var targetWorksheet = targetDocument.AddWorksheet(name);
+                var innerTableBuilder = new TableBuilder(new ExcelTable(targetWorksheet), new TableNavigator(new CellPosition("A1"), logger));
+                innerTemplateEngine.Render(innerTableBuilder, new {});
             }
         }
 

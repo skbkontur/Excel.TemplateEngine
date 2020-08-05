@@ -143,6 +143,9 @@
     <None Update="ObjectPrintingTests\Files\сheckBoxes_template.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ObjectPrintingTests\Files\commentsAndOtherSheetDataValidations.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -259,7 +259,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
             var vmlDrawingPartId = vmlDrawingPart == null ? null : templateWorksheetPart.GetIdOfPart(vmlDrawingPart);
             SafelyAddPart(targetWorksheet.WorksheetPart, vmlDrawingPart, vmlDrawingPartId);
             targetWorksheet.RemoveAllChildren<LegacyDrawing>();
-            targetWorksheet.Append(new LegacyDrawing {Id = vmlDrawingPartId});
+            targetWorksheet.InsertAfter(new LegacyDrawing {Id = vmlDrawingPartId}, worksheet.GetFirstChild<PageMargins>());
         }
 
         [CanBeNull]
