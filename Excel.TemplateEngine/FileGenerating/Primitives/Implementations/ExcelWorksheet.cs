@@ -15,6 +15,7 @@ using MoreLinq;
 
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Caches;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Helpers;
 
 using Vostok.Logging.Abstractions;
 
@@ -50,25 +51,25 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
                 pageMargins.Footer = excelPrinterSettings.PageMargins.Footer;
 
                 if (!worksheet.Elements<PageMargins>().Any())
-                    worksheet.AppendChild(pageMargins);
+                    InsertWorksheetChild(worksheet, pageMargins);
             }
 
             var pageSetup = worksheet.Elements<PageSetup>().FirstOrDefault() ?? new PageSetup();
             pageSetup.Orientation = excelPrinterSettings.PrintingOrientation == ExcelPrintingOrientation.Landscape ? OrientationValues.Landscape : OrientationValues.Portrait;
 
             if (!worksheet.Elements<PageSetup>().Any())
-                worksheet.AppendChild(pageSetup);
+                InsertWorksheetChild(worksheet, pageSetup);
         }
 
         public void MergeCells(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
         {
-            var mergeCells = worksheet.GetFirstChild<MergeCells>() ?? CreateMergeCellsWorksheetPart();
+            var mergeCells = worksheet.GetFirstChild<MergeCells>() ?? InsertWorksheetChild(worksheet, new MergeCells());
             mergeCells.AppendChild(new MergeCell {Reference = $"{upperLeft.CellReference}:{lowerRight.CellReference}"});
         }
 
         public void ResizeColumn(int columnIndex, double width)
         {
-            var columns = worksheet.GetFirstChild<Columns>() ?? CreateColumns();
+            var columns = worksheet.GetFirstChild<Columns>() ?? InsertWorksheetChild(worksheet, new Columns());
             while (columns.ChildElements.Count < columnIndex)
             {
                 columns.AppendChild(new Column
@@ -142,7 +143,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
             var dataValidations = templateWorksheet.GetFirstChild<DataValidations>();
             if (dataValidations == null)
                 return;
-            worksheet.InsertBefore(dataValidations.CloneNode(true), worksheet.GetFirstChild<PageMargins>());
+            InsertWorksheetChild(worksheet, (DataValidations)dataValidations.CloneNode(true));
         }
 
         public void CopyWorksheetExtensionListFrom(IExcelWorksheet template)
@@ -246,7 +247,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
             var drawingsPartId = templateWorksheetPart.DrawingsPart == null ? null : templateWorksheetPart.GetIdOfPart(templateWorksheetPart.DrawingsPart);
             SafelyAddPart(targetWorksheet.WorksheetPart, drawingsPart, drawingsPartId);
             targetWorksheet.RemoveAllChildren<Drawing>();
-            targetWorksheet.Append(new Drawing {Id = drawingsPartId});
+            InsertWorksheetChild(targetWorksheet, new Drawing {Id = drawingsPartId});
         }
 
         [SuppressMessage("ReSharper", "PossiblyMistakenUseOfParamsMethod")]
@@ -259,7 +260,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
             var vmlDrawingPartId = vmlDrawingPart == null ? null : templateWorksheetPart.GetIdOfPart(vmlDrawingPart);
             SafelyAddPart(targetWorksheet.WorksheetPart, vmlDrawingPart, vmlDrawingPartId);
             targetWorksheet.RemoveAllChildren<LegacyDrawing>();
-            targetWorksheet.InsertAfter(new LegacyDrawing {Id = vmlDrawingPartId}, worksheet.GetFirstChild<PageMargins>());
+            InsertWorksheetChild(targetWorksheet, new LegacyDrawing {Id = vmlDrawingPartId});
         }
 
         [CanBeNull]
@@ -346,47 +347,9 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
             return new ExcelRow(newRow, documentStyle, excelSharedStrings);
         }
 
-        private MergeCells CreateMergeCellsWorksheetPart()
+        private static T InsertWorksheetChild<T>(Worksheet openXmlWorksheetNodesOrder, T child) where T : OpenXmlElement
         {
-            // Имеет принципиальное значение, куда именно вставлять элемент MergeCells
-            // см. http://msdn.microsoft.com/en-us/library/office/cc880096(v=office.15).aspx
-
-            var mergeCells = new MergeCells();
-            if (worksheet.Elements<CustomSheetView>().Any())
-                worksheet.InsertAfter(mergeCells, worksheet.Elements<CustomSheetView>().First());
-            else if (worksheet.Elements<DataConsolidate>().Any())
-                worksheet.InsertAfter(mergeCells, worksheet.Elements<DataConsolidate>().First());
-            else if (worksheet.Elements<SortState>().Any())
-                worksheet.InsertAfter(mergeCells, worksheet.Elements<SortState>().First());
-            else if (worksheet.Elements<AutoFilter>().Any())
-                worksheet.InsertAfter(mergeCells, worksheet.Elements<AutoFilter>().First());
-            else if (worksheet.Elements<Scenarios>().Any())
-                worksheet.InsertAfter(mergeCells, worksheet.Elements<Scenarios>().First());
-            else if (worksheet.Elements<ProtectedRanges>().Any())
-                worksheet.InsertAfter(mergeCells, worksheet.Elements<ProtectedRanges>().First());
-            else if (worksheet.Elements<SheetProtection>().Any())
-                worksheet.InsertAfter(mergeCells, worksheet.Elements<SheetProtection>().First());
-            else if (worksheet.Elements<SheetCalculationProperties>().Any())
-                worksheet.InsertAfter(mergeCells, worksheet.Elements<SheetCalculationProperties>().First());
-            else
-                worksheet.InsertAfter(mergeCells, worksheet.Elements<SheetData>().First());
-            return mergeCells;
-        }
-
-        private Columns CreateColumns()
-        {
-            var columns = new Columns();
-            if (worksheet.Elements<SheetFormatProperties>().Any())
-                worksheet.InsertAfter(columns, worksheet.Elements<SheetFormatProperties>().First());
-            else if (worksheet.Elements<SheetViews>().Any())
-                worksheet.InsertAfter(columns, worksheet.Elements<SheetViews>().First());
-            else if (worksheet.Elements<Dimensions>().Any())
-                worksheet.InsertAfter(columns, worksheet.Elements<Dimensions>().First());
-            else if (worksheet.Elements<SheetProperties>().Any())
-                worksheet.InsertAfter(columns, worksheet.Elements<SheetProperties>().First());
-            else
-                worksheet.InsertAt(columns, 0);
-            return columns;
+            return openXmlWorksheetNodesOrder.AddChildToCorrectLocation(child);
         }
 
         public IExcelDocument ExcelDocument { get; }
@@ -396,5 +359,6 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
         private readonly ILog logger;
         private readonly Worksheet worksheet;
         private readonly TreeDictionary<uint, Row> rowsCache;
+        
     }
 }
