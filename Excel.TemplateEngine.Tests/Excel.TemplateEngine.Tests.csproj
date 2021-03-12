@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net48;net5.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <AssemblyName>SkbKontur.Excel.TemplateEngine.Tests</AssemblyName>
     <RootNamespace>SkbKontur.Excel.TemplateEngine.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="nunit" Version="3.12.0" />
-    <PackageReference Include="FluentAssertions" Version="5.10.2" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-    <PackageReference Include="Vostok.Logging.Console" Version="1.0.2" />
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
+    <PackageReference Include="NUnit" Version="3.13.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageReference Include="Vostok.Logging.Console" Version="1.0.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,132 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="FileGeneratingTests\Files\empty.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="FileGeneratingTests\Files\template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\colors.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\columnsSwitching.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\comments.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\commentsWithSeveralAuthors.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\complexTemplate.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\dataValidations.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\defaultPriceList.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\dictDirectAccessInCheckBoxes_target.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\dictDirectAccessInCheckBoxes_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\dictDirectAccessInDropDown_target.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\dictDirectAccessInDropDown_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\dictDirectAccess_target.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\dictDirectAccess_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\dropDownOtherWorksheet_target.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\dropDownOtherWorksheet_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\empty.xlsm">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\empty.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\emptyEnumerable_target.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\emptyEnumerable_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\enumerableWithPrimaryKey_target.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\enumerableWithPrimaryKey_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\formControlsTemplate.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\importAfterCreate_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\importPriceTemplate.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\nonexistentField_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\nonexistent_сheckBoxes_target.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\nonexistent_сheckBoxes_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\otherSheetDataValidations.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\printingDropDownFromTheOtherWorksheet.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\printingVbaMacros.xlsm">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\simpleWithEnumerable_target.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\simpleWithEnumerable_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\stringArray_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\stringArrayWithComplexStrings_target.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\withCellsMergingTemplate.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\withFullPathsTemplate.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\сheckBoxes_target.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\сheckBoxes_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ObjectPrintingTests\Files\commentsAndOtherSheetDataValidations.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Content Include="*/Files/*.xls?" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>

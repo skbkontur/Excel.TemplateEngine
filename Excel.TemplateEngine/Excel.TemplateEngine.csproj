@@ -1,18 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net471;netstandard2.0</TargetFrameworks>
     <AssemblyName>SkbKontur.Excel.TemplateEngine</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="morelinq" Version="3.2.0" />
+    <PackageReference Include="morelinq" Version="3.3.2" />
     <PackageReference Include="C5" Version="2.5.3" />
-    <PackageReference Include="DocumentFormat.OpenXml" Version="2.11.3" />
-    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
-    <PackageReference Include="Vostok.Logging.Abstractions" Version="1.0.1" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" />
+    <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
+    <PackageReference Include="Vostok.Logging.Abstractions" Version="1.0.20" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net471'">
+    <!-- we need to reference System.IO.Packaging directly since net46-targeted DocumentFormat.OpenXml package does not depend on it anymore (see https://github.com/OfficeDev/Open-XML-SDK/pull/783) -->
+    <PackageReference Include="System.IO.Packaging" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
