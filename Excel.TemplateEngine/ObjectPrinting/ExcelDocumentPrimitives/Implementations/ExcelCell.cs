@@ -11,11 +11,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.
             internalCell = excelCell;
         }
 
-        public string StringValue
-        {
-            get => internalCell.GetStringValue();
-            set => internalCell.SetStringValue(value);
-        }
+        public string StringValue { get => internalCell.GetStringValue(); set => internalCell.SetStringValue(value); }
 
         public CellType CellType
         {

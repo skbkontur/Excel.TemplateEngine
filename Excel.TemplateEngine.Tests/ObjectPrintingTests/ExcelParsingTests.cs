@@ -15,6 +15,7 @@ using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
 
+using Vostok.Logging.Abstractions;
 using Vostok.Logging.Console;
 
 namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
@@ -32,6 +33,12 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
     [TestFixture]
     public class ExcelParsingTests : FileBasedTestBase
     {
+        [Test]
+        public void Create()
+        {
+            ExcelDocumentFactory.TryCreateFromTemplate(File.ReadAllBytes(@"C:\Users\p.vostretsov\Downloads\ДМ_2010.xlsx"), new ConsoleLog());
+        }
+
         [Test]
         public void TestStringsWithManyFormattedFragments()
         {
@@ -79,14 +86,16 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             }
 
             model.Type.Should().Be("Основной");
-            model.Items.Should().BeEquivalentTo(
-                new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ", BuyerProductId = "000074467", Articul = "123456"},
-                new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ", BuyerProductId = "000074468", Articul = "123457"},
-                new Item {Id = null, Name = "Товар 3"},
-                new Item {Id = "123", Articul = "3123123"},
-                new Item {Id = "111", Articul = "111111"},
-                new Item {Name = "Товар 6"},
-                new Item {Id = "222", Name = "Товар 7", Articul = "123"}
+            model.Items.Should().BeEquivalentTo(new[]
+                    {
+                        new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ", BuyerProductId = "000074467", Articul = "123456"},
+                        new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ", BuyerProductId = "000074468", Articul = "123457"},
+                        new Item {Id = null, Name = "Товар 3"},
+                        new Item {Id = "123", Articul = "3123123"},
+                        new Item {Id = "111", Articul = "111111"},
+                        new Item {Name = "Товар 6"},
+                        new Item {Id = "222", Name = "Товар 7", Articul = "123"}
+                    }
             );
         }
 
@@ -186,7 +195,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath($"empty.{extension}")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
@@ -219,7 +228,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes, logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
@@ -255,7 +264,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Item)obj);
         }
 

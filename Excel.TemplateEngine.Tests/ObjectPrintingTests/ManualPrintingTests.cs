@@ -199,7 +199,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         }
 
         /// <summary>
-        /// output file must contain the same comments, but one author
+        ///     output file must contain the same comments, but one author
         /// </summary>
         [Test]
         public void TestPrintingCommentsWithSeveralAuthors()
@@ -223,7 +223,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                 Assert.Fail($"Please manually open file:\n{path}\nand check that cells has same comments as in\n{templatePath}\n");
             }
         }
-        
+
         /// <summary>
         ///     output file must contain data validations AND rendered comment
         /// </summary>
@@ -255,7 +255,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 - D4-D7 has data validation with values from the second worksheet and G4-G7 has data validation with values from K1:K6");
             }
         }
-        
+
         private void CopySecondaryWorksheets(IExcelDocument templateDocument, IExcelDocument targetDocument)
         {
             foreach (var index in Enumerable.Range(1, templateDocument.GetWorksheetCount() - 1))

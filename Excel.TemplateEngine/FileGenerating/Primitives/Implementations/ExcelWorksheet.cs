@@ -359,6 +359,5 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
         private readonly ILog logger;
         private readonly Worksheet worksheet;
         private readonly TreeDictionary<uint, Row> rowsCache;
-        
     }
 }

@@ -32,13 +32,13 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes
         public int RowIndex { get; }
         public int ColumnIndex { get; }
 
-        private static string ToCellReference(int rowIndex, int columnIndex) 
+        private static string ToCellReference(int rowIndex, int columnIndex)
             => $"{ToColumnName(columnIndex)}{rowIndex}";
 
-        private static string ToCellReference(uint rowIndex, int columnIndex) 
+        private static string ToCellReference(uint rowIndex, int columnIndex)
             => ToCellReference((int)rowIndex, columnIndex);
 
-        private static int ToRowIndex(string cellReference) 
+        private static int ToRowIndex(string cellReference)
             => int.Parse(new Regex("[A-Z]+").Replace(cellReference, ""));
 
         private static int ToColumnIndex(string cellReference)

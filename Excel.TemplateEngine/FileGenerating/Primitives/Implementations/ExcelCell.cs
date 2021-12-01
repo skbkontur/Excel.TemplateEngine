@@ -17,7 +17,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
             this.excelSharedStrings = excelSharedStrings;
         }
 
-        public IExcelCell SetStringValue(string value) 
+        public IExcelCell SetStringValue(string value)
             => SetFormattedStringValue(new FormattedStringValue
                 {
                     Blocks = new[]
