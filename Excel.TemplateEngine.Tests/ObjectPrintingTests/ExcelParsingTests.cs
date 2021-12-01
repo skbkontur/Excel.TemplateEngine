@@ -15,7 +15,6 @@ using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
 
-using Vostok.Logging.Abstractions;
 using Vostok.Logging.Console;
 
 namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
@@ -33,12 +32,6 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
     [TestFixture]
     public class ExcelParsingTests : FileBasedTestBase
     {
-        [Test]
-        public void Create()
-        {
-            ExcelDocumentFactory.TryCreateFromTemplate(File.ReadAllBytes(@"C:\Users\p.vostretsov\Downloads\ДМ_2010.xlsx"), new ConsoleLog());
-        }
-
         [Test]
         public void TestStringsWithManyFormattedFragments()
         {
