@@ -174,7 +174,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("complexTemplate.xlsx")), logger);
             var template = new ExcelTable(templateDocument.GetWorksheet(0));
-            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
+            var templateEngine = new TemplateEngine(template, logger);
 
             var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger);
             targetDocument.AddWorksheet("Лист2");
@@ -207,7 +207,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("formControlsTemplate.xlsx")), logger);
             var template = new ExcelTable(templateDocument.GetWorksheet(0));
-            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
+            var templateEngine = new TemplateEngine(template, logger);
 
             var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger);
 
@@ -234,7 +234,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
+                var templateEngine = new TemplateEngine(template, logger);
 
                 using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
                 {
@@ -256,7 +256,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             var target = new ExcelTable(targetDocument.GetWorksheet(0));
 
             var tableBuilder = new TableBuilder(target, new TableNavigator(new CellPosition("B2"), logger), new Style(template.GetCell(new CellPosition("A1"))));
-            var templateEngine = new SkbKontur.Excel.TemplateEngine.TemplateEngine(template, logger);
+            var templateEngine = new TemplateEngine(template, logger);
             templateEngine.Render(tableBuilder, model);
 
             var result = targetDocument.CloseAndGetDocumentBytes();

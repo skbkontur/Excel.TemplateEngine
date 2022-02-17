@@ -6,11 +6,11 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentP
 {
     internal class FakeTablePart : ITablePart
     {
-        public FakeTablePart(IEnumerable<IEnumerable<ICell>> cells)
+        public FakeTablePart(IReadOnlyList<IReadOnlyList<ICell>> cells)
         {
             Cells = cells;
         }
 
-        public IEnumerable<IEnumerable<ICell>> Cells { get; }
+        public IReadOnlyList<IReadOnlyList<ICell>> Cells { get; }
     }
 }

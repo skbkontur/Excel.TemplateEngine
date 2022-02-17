@@ -4,11 +4,11 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.
 {
     public class ExcelTablePart : ITablePart
     {
-        public ExcelTablePart(IEnumerable<IEnumerable<ICell>> cells)
+        public ExcelTablePart(IReadOnlyList<IReadOnlyList<ICell>> cells)
         {
             Cells = cells;
         }
 
-        public IEnumerable<IEnumerable<ICell>> Cells { get; }
+        public IReadOnlyList<IReadOnlyList<ICell>> Cells { get; }
     }
 }
