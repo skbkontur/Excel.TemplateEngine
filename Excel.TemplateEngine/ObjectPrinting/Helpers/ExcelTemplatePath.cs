@@ -6,7 +6,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
 {
     internal class ExcelTemplatePath
     {
-        private ExcelTemplatePath(string rawPath)
+        public ExcelTemplatePath(string rawPath)
         {
             if (!TemplateDescriptionHelper.IsCorrectModelPath(rawPath))
                 throw new ObjectPropertyExtractionException($"Invalid excel template path '{rawPath}'");

@@ -27,6 +27,13 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection
             throw new InvalidOperationException($"{modelType} is not IEnumerable");
         }
 
+        public ListParser GetListParser(Type modelType)
+        {
+            if (TypeCheckingHelper.IsIList(modelType))
+                return new ListParser();
+            throw new InvalidOperationException($"{modelType} is not IEnumerable");
+        }
+
         public IAtomicValueParser GetAtomicValueParser()
         {
             return new AtomicValueParser();
