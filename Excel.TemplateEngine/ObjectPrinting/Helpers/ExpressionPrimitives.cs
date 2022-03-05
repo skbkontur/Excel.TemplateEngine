@@ -55,6 +55,13 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
         }
 
         [NotNull]
+        public static Expression CreateListInitStatement([NotNull] Expression expression, [NotNull] Type listItemType)
+        {
+            var method = GetGenericMethod(typeof(ExpressionPrimitives), nameof(InitList), listItemType);
+            return Expression.Assign(expression, Expression.Call(method, expression));
+        }
+
+        [NotNull]
         public static Expression CreateDictValueInitStatement([NotNull] Expression dict, [NotNull] Type dictKeyType, [NotNull] Type dictValueType, [NotNull] object indexer)
         {
             MethodInfo method;
@@ -120,6 +127,15 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             if (currentValue != null)
                 return currentValue;
             return new T[length];
+        }
+
+        [NotNull, ItemCanBeNull]
+        private static List<T> InitList<T>([CanBeNull, ItemCanBeNull] List<T> currentValue)
+            where T : new()
+        {
+            if (currentValue != null)
+                return currentValue;
+            return new List<T>();
         }
 
         private static void InitDict<TKey, TValue>([NotNull] Dictionary<TKey, TValue> dict, [CanBeNull] object indexer, [NotNull] Func<TValue> createValue)
