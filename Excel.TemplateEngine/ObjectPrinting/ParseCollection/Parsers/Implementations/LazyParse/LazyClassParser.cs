@@ -48,7 +48,8 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
                     var path = ExcelTemplatePath.FromRawExpression(expression);
                     if (path.HasArrayAccess)
                     {
-                        var enumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), path.WithoutArrayAccess());
+                        var pathToEnumerable = path.SplitForEnumerableExpansion().pathToEnumerable;
+                        var enumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), pathToEnumerable.WithoutArrayAccess());
                         if (!typeof(IList).IsAssignableFrom(enumerableType))
                             continue;
 
