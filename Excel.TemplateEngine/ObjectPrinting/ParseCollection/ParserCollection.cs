@@ -3,6 +3,7 @@ using System;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse;
 
 using Vostok.Logging.Abstractions;
 
@@ -27,11 +28,9 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection
             throw new InvalidOperationException($"{modelType} is not IEnumerable");
         }
 
-        public ListParser GetListParser(Type modelType)
+        public LazyClassParser GetLazyClassParser()
         {
-            if (TypeCheckingHelper.IsIList(modelType))
-                return new ListParser();
-            throw new InvalidOperationException($"{modelType} is not IEnumerable");
+            return new LazyClassParser(logger);
         }
 
         public IAtomicValueParser GetAtomicValueParser()

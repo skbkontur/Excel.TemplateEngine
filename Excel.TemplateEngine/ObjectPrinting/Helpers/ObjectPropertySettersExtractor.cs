@@ -21,57 +21,51 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
         }
 
         [NotNull]
-        public static Action<Dictionary<ExcelTemplatePath, object>> GenerateChildListItemAdder([NotNull] object model, [NotNull] ExcelTemplatePath pathToList, [NotNull] ExcelTemplatePath[] itemProps)
+        public static Action<Dictionary<ExcelTemplatePath, object>> GenerateChildListItemAdder([NotNull] object model, [NotNull] ExcelTemplatePath pathToList, [NotNull] ExcelTemplatePath[] relativeItemProps)
         {
             var modelType = model.GetType();
+            var itemDictType = typeof(Dictionary<ExcelTemplatePath, object>);
 
-            var targetModel = Expression.Parameter(typeof(object));
-            var newItemDict = Expression.Parameter(typeof(Dictionary<ExcelTemplatePath, object>));
+            var modelParam = Expression.Parameter(typeof(object));
+            var newItemDict = Expression.Parameter(itemDictType);
+            var typedModelParam = Expression.Convert(modelParam, modelType);
 
-            var currentModelNode = Expression.Convert(targetModel, modelType);
-            var initListStatements = BuildExtractionOfChildModelSetter(modelType, currentModelNode, Expression.Empty(), pathToList.PartsWithIndexers);
+            var clearPathToList = pathToList.WithoutArrayAccess();
+            var listType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, clearPathToList);
+            var listConstructor = listType.GetConstructor(Array.Empty<Type>());
+            var initListStatements = BuildChildSetter(modelType, typedModelParam, Expression.New(listConstructor!), pathToList.PartsWithIndexers);
 
-            var clearPathToList = pathToList.WithoutArrayAccess().PartsWithIndexers;
+            var itemType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, pathToList);
+            var itemConstructor = itemType.GetConstructor(Array.Empty<Type>());
 
-            var itemType = GetListItemType(clearPathToList, modelType);
-            var newItem = Expression.Variable(itemType);
+            var newItem = Expression.Variable(typeof(object));
+            var typedItem = Expression.Convert(newItem, itemType);
+            var initNewItem = Expression.Assign(newItem, Expression.New(itemConstructor!));
 
-            var setItemProps = new List<Expression>();
-            foreach (var prop in itemProps)
+            var dictIndexer = itemDictType.GetProperty("Item");
+            var setItemProps = new List<Expression>(new Expression[] {initNewItem});
+            foreach (var prop in relativeItemProps)
             {
-                var setProp = BuildExtractionOfChildModelSetter(itemType, newItem, Expression.ArrayAccess(newItemDict, Expression.Constant(prop)), prop.PartsWithIndexers);
+                var setProp = BuildChildSetter(itemType, typedItem, Expression.MakeIndex(newItemDict, dictIndexer, new[] {Expression.Constant(prop)}), prop.PartsWithIndexers);
                 setItemProps.AddRange(setProp);
             }
-            
-            var addItemToList = GenerateAddItemToList(targetModel, clearPathToList, newItem);
 
-            var block = Expression.Block(new ParameterExpression[0], initListStatements.Concat(setItemProps).Concat(new[] {addItemToList}));
-            var wholeAction = Expression.Lambda<Action<object, Dictionary<ExcelTemplatePath, object>>>(block, targetModel, newItemDict)
+            var addItemToList = GenerateAddItemToList(typedModelParam, listType, clearPathToList.PartsWithIndexers, typedItem);
+
+            var block = Expression.Block(new[] {newItem}, initListStatements.Concat(setItemProps).Concat(new[] {addItemToList}));
+            var wholeAction = Expression.Lambda<Action<object, Dictionary<ExcelTemplatePath, object>>>(block, modelParam, newItemDict)
                                         .Compile();
             return x => wholeAction(model, x);
         }
 
-        private static MethodCallExpression GenerateAddItemToList(ParameterExpression targetModel, string[] clearPathToList, ParameterExpression newItem)
+        private static MethodCallExpression GenerateAddItemToList(Expression targetModel, Type listType, string[] clearPathToList, Expression newItem)
         {
             var listExpression = Expression.Property(targetModel, clearPathToList.First());
             listExpression = clearPathToList.Skip(1).Aggregate(listExpression, Expression.Property);
 
-            var addMethodInfo = typeof(IList).GetMethod("Add");
+            var addMethodInfo = listType.GetMethod("Add");
             Action<IList, object> addInvokeAction = (list, item) => addMethodInfo!.Invoke(list, new[] {item});
-            var q = Expression.Call(addInvokeAction.Method, listExpression, newItem);
-            return q;
-        }
-
-        private static Type GetListItemType(string[] clearPathToList, Type modelType)
-        {
-            var listType = typeof(object);
-            foreach (var prop in clearPathToList)
-            {
-                var propertyType = modelType.GetProperty(prop)?.PropertyType;
-                listType = propertyType ?? throw new ObjectPropertyExtractionException($"Type '{listType}' has no property '{prop}'");
-            }
-            
-            return TypeCheckingHelper.GetEnumerableItemType(listType);
+            return Expression.Call(listExpression, addMethodInfo, newItem);
         }
 
         [NotNull]
@@ -81,7 +75,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             var valueToSet = Expression.Parameter(typeof(object));
             var currentModelNode = Expression.Convert(targetModel, modelType);
 
-            var statements = BuildExtractionOfChildModelSetter(modelType, currentModelNode, valueToSet, pathParts);
+            var statements = BuildChildSetter(modelType, currentModelNode, valueToSet, pathParts);
             var block = Expression.Block(new ParameterExpression[0], statements);
             var expression = Expression.Lambda<Action<object, object>>(block, targetModel, valueToSet);
 
@@ -89,7 +83,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
         }
 
         [NotNull, ItemNotNull]
-        private static List<Expression> BuildExtractionOfChildModelSetter([NotNull] Type currNodeType, [NotNull] Expression currNodeExpression, [NotNull] Expression valueToSetExpression, [NotNull, ItemNotNull] string[] pathParts)
+        private static List<Expression> BuildChildSetter([NotNull] Type currNodeType, [NotNull] Expression currNodeExpression, [NotNull] Expression valueToSetExpression, [NotNull, ItemNotNull] string[] pathParts)
         {
             var statements = new List<Expression>();
 
@@ -181,7 +175,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
 
             var elementExpression = Expression.ArrayAccess(currNodeExpression, expressionLoopVar);
             var elementInitStatement = ExpressionPrimitives.CreateValueInitStatement(elementExpression, itemType);
-            var setItemStatements = Expression.Block(BuildExtractionOfChildModelSetter(itemType, elementExpression, ExpressionPrimitives.GetIndexAccessExpression(valueToSetExpression, expressionLoopVar), pathParts));
+            var setItemStatements = Expression.Block(BuildChildSetter(itemType, elementExpression, ExpressionPrimitives.GetIndexAccessExpression(valueToSetExpression, expressionLoopVar), pathParts));
 
             var loopBodyExpression = Expression.Block(elementInitStatement, setItemStatements);
 

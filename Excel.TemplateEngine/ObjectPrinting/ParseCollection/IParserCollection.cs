@@ -1,7 +1,7 @@
 using System;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
-using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse;
 
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection
 {
@@ -9,7 +9,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection
     {
         IClassParser GetClassParser();
         IEnumerableParser GetEnumerableParser(Type modelType);
-        ListParser GetListParser(Type modelType);
+        LazyClassParser GetLazyClassParser();
         IAtomicValueParser GetAtomicValueParser();
         IFormValueParser GetFormValueParser(string formControlTypeName, Type valueType);
         IEnumerableMeasurer GetEnumerableMeasurer();

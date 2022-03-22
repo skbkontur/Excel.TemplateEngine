@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
@@ -44,6 +45,16 @@ namespace SkbKontur.Excel.TemplateEngine
             var parser = parserCollection.GetClassParser();
             var fieldsMappingForErrors = new Dictionary<string, string>();
             return (model : parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors : fieldsMappingForErrors);
+        }
+
+        public (TModel model, Dictionary<string, string> mappingForErrors) LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader)
+            where TModel : new()
+        {
+            var renderingTemplate = templateCollection.GetTemplate(rootTemplateName) ??
+                                    throw new InvalidOperationException($"Template with name {rootTemplateName} not found in xlsx");
+            var parser = parserCollection.GetLazyClassParser();
+            var fieldsMappingForErrors = new Dictionary<string, string>();
+            return (model : parser.Parse<TModel>(lazyTableReader, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors : fieldsMappingForErrors);
         }
 
         private const string rootTemplateName = "RootTemplate";

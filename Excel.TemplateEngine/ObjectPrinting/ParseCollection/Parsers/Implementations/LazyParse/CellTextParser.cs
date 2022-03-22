@@ -3,11 +3,11 @@ using System.Globalization;
 
 using JetBrains.Annotations;
 
-namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse
 {
     internal static class CellTextParser
     {
-        public static bool TryParse([NotNull] string cellText, [NotNull] Type itemType, out object result)
+        public static bool TryParse([CanBeNull] string cellText, [NotNull] Type itemType, out object result)
         {
             if (itemType == typeof(string))
                 return Parse(() => (TryParseString(cellText, out var res), res), out result);
