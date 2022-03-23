@@ -47,14 +47,13 @@ namespace SkbKontur.Excel.TemplateEngine
             return (model : parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors : fieldsMappingForErrors);
         }
 
-        public (TModel model, Dictionary<string, string> mappingForErrors) LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader)
+        public TModel LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader)
             where TModel : new()
         {
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName) ??
                                     throw new InvalidOperationException($"Template with name {rootTemplateName} not found in xlsx");
             var parser = parserCollection.GetLazyClassParser();
-            var fieldsMappingForErrors = new Dictionary<string, string>();
-            return (model : parser.Parse<TModel>(lazyTableReader, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors : fieldsMappingForErrors);
+            return parser.Parse<TModel>(lazyTableReader, renderingTemplate);
         }
 
         private const string rootTemplateName = "RootTemplate";

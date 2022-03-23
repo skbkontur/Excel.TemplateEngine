@@ -15,8 +15,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
         public static void Parse([NotNull] LazyTableReader tableReader,
                                  [NotNull] Type modelType,
                                  [NotNull, ItemNotNull] ICell[] templateListCells,
-                                 [NotNull] Action<Dictionary<ExcelTemplatePath, object>> addItem,
-                                 [NotNull] Action<int, string> logValueParse)
+                                 [NotNull] Action<Dictionary<ExcelTemplatePath, object>> addItem)
         {
             var parsedCount = 0;
 
@@ -30,7 +29,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
             {
                 var itemDict = itemPropFullPaths.ToDictionary(x => x.fullPropPath.SplitForEnumerableExpansion().relativePathToItem,
                                                               _ => (object)null);
-                var rowIsNotEmpty = false;
+                var rowIsEmpty = true;
                 foreach (var prop in itemPropFullPaths)
                 {
                     var cellPosition = new CellPosition(row.RowIndex, prop.cellPosition.ColumnIndex);
@@ -38,7 +37,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
                     if (cell == null || string.IsNullOrEmpty(cell.CellValue))
                         continue;
 
-                    rowIsNotEmpty = true;
+                    rowIsEmpty = false;
 
                     var propType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, prop.fullPropPath);
                     CellTextParser.TryParse(cell.CellValue, propType, out var parsedValue);
@@ -47,13 +46,10 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
                     itemDict[relativeItemPropPath] = parsedValue;
                 }
 
-                if (rowIsNotEmpty)
-                {
-                    addItem(itemDict);
-                    logValueParse(parsedCount++, string.Join(", ", itemDict));
-                }
-                else
+                if (rowIsEmpty)
                     break;
+                
+                addItem(itemDict);
 
                 row = tableReader.TryReadRow(row.RowIndex + 1);
             }

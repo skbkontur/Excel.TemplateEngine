@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Linq;
 
 using JetBrains.Annotations;
@@ -20,7 +18,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
         }
 
         [NotNull]
-        public TModel Parse<TModel>([NotNull] LazyTableReader tableReader, [NotNull] RenderingTemplate template, [NotNull] Action<string, string> addFieldMapping)
+        public TModel Parse<TModel>([NotNull] LazyTableReader tableReader, [NotNull] RenderingTemplate template)
             where TModel : new()
         {
             var model = new TModel();
@@ -55,11 +53,11 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
 
                         var templateListRow = templateRow.SkipWhile(x => x.CellPosition.CellReference != templateCell.CellPosition.CellReference)
                                                          .ToArray();
-                        ParseList(tableReader, addFieldMapping, model, templateListRow);
+                        ParseList(tableReader, model, templateListRow);
                         break;
                     }
 
-                    ParseSingleValue(targetCell, addFieldMapping, model, path);
+                    ParseSingleValue(targetCell, model, path);
                 }
             }
 
@@ -70,7 +68,6 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
         ///     Read rows one by one. Parse only first met enumerable elements.
         /// </summary>
         private void ParseList([NotNull] LazyTableReader tableReader,
-                               [NotNull] Action<string, string> addFieldMapping,
                                [NotNull] object model,
                                [NotNull, ItemNotNull] ICell[] templateEnumerableRow)
         {
@@ -89,24 +86,16 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
                                                           .ToArray();
             var addItem = ObjectPropertySettersExtractor.GenerateChildListItemAdder(model, pathToList, relativeItemProps);
 
-            var enumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), pathToList.WithoutArrayAccess());
-
-            ListParser.Parse(tableReader,
-                             model.GetType(),
-                             firstListTemplateCells,
-                             addItem,
-                             (index, value) => addFieldMapping($"{pathToList.WithoutArrayAccess()}[{index}]", value));
+            ListParser.Parse(tableReader, model.GetType(), firstListTemplateCells, addItem);
         }
 
         private void ParseSingleValue([NotNull] SimpleCell cell,
-                                      [NotNull] Action<string, string> addFieldMapping,
                                       [NotNull] object model,
                                       [NotNull] ExcelTemplatePath leafPath)
         {
             var leafSetter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(model, leafPath);
             var leafModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), leafPath);
 
-            addFieldMapping(leafPath.RawPath, cell.CellPosition.CellReference);
             if (!CellTextParser.TryParse(cell.CellValue, leafModelType, out var parsedObject))
             {
                 logger.Error($"Failed to parse value {cell.CellValue} from {cell.CellPosition.CellReference} with type='{leafModelType}'");
