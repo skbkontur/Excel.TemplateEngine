@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.FileGenerating;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableNavigator;
@@ -61,6 +62,37 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                     new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ"},
                     new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ"},
                 });
+        }
+
+        [Test]
+        public void TestLazyParse()
+        {
+            var model = LazyParse<PriceList>("simpleWithItemsList_template.xlsx", "simpleWithEnumerable_target.xlsx");
+
+            model.Type.Should().Be("Основной");
+            model.ItemsList.Should().BeEquivalentTo(new List<Item>(new[]
+                {
+                    new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ"},
+                    new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ"},
+                }));
+        }
+
+        [Test]
+        public void TestLazyParseMoreThan10kItems()
+        {
+            var model = LazyParse<PriceList>("simpleWithItemsList_template.xlsx", "simpleWith11kItemEnumerable.xlsx");
+
+            model.Type.Should().Be("Основной");
+            model.ItemsList.Count.Should().Be(11_000);
+        }
+
+        [Test]
+        public void TestLazyParseForArray()
+        {
+            var model = LazyParse<PriceList>("simpleWithEnumerable_template.xlsx", "simpleWithEnumerable_target.xlsx");
+
+            model.Type.Should().Be("Основной");
+            model.ItemsList.Should().BeNull();
         }
 
         [Test]
@@ -209,12 +241,14 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             model.Type.Should().Be("Значение 2");
         }
 
-        private (TData model, Dictionary<string, string> mappingForErrors) Parse<TData>(string templateFileName, string targetFileName) where TData : new()
+        private (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(string templateFileName, string targetFileName)
+            where TModel : new()
         {
-            return Parse<TData>(File.ReadAllBytes(GetFilePath(templateFileName)), File.ReadAllBytes(GetFilePath(targetFileName)));
+            return Parse<TModel>(File.ReadAllBytes(GetFilePath(templateFileName)), File.ReadAllBytes(GetFilePath(targetFileName)));
         }
 
-        private (TData model, Dictionary<string, string> mappingForErrors) Parse<TData>(byte[] templateBytes, byte[] targetBytes) where TData : new()
+        private (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(byte[] templateBytes, byte[] targetBytes)
+            where TModel : new()
         {
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(templateBytes, logger))
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes, logger))
@@ -225,7 +259,23 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableParser = new TableParser(target, tableNavigator);
-                return templateEngine.Parse<TData>(tableParser);
+                return templateEngine.Parse<TModel>(tableParser);
+            }
+        }
+        
+        private TModel LazyParse<TModel>(string templateFileName, string targetFileName)
+            where TModel : new()
+        {
+            var templateBytes = File.ReadAllBytes(GetFilePath(templateFileName));
+            var targetBytes = File.ReadAllBytes(GetFilePath(targetFileName));
+
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(templateBytes, logger))
+            {
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template, logger);
+
+                var lazyTableReader = new LazyTableReader(targetBytes);
+                return templateEngine.LazyParse<TModel>(lazyTableReader);
             }
         }
 
@@ -278,6 +328,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
     {
         public string Type { get; set; }
         public Item[] Items { get; set; }
+        public List<Item> ItemsList { get; set; }
         public bool TestFlag1 { get; set; }
         public bool TestFlag2 { get; set; }
         public Dictionary<string, string> StringStringDict { get; set; }
