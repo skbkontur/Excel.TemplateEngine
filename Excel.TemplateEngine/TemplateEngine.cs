@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection;
-using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
@@ -47,6 +47,11 @@ namespace SkbKontur.Excel.TemplateEngine
             return (model : parser.Parse<TModel>(tableParser, renderingTemplate, (name, value) => fieldsMappingForErrors.Add(name, value)), mappingForErrors : fieldsMappingForErrors);
         }
 
+        /// <summary>
+        /// Parse only separate cell values and List<> enumerations without and size limitations.
+        /// </summary>
+        /// <typeparam name="TModel">Class to parse.</typeparam>
+        /// <param name="lazyTableReader">LazyTableReader of target xlsx file.</param>
         public TModel LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader)
             where TModel : new()
         {

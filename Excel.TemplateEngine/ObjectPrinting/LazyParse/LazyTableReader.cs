@@ -11,8 +11,11 @@ using JetBrains.Annotations;
 
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Helpers;
 
-namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 {
+    /// <summary>
+    /// Reads current or following row. Can't read previous ones.
+    /// </summary>
     public class LazyTableReader
     {
         public LazyTableReader([NotNull] byte[] excelData)
@@ -45,7 +48,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
             var row = (Row)reader.LoadCurrentElement();
             return new LazyRowReader(row!, sharedStrings);
         }
-
+        
         [CanBeNull]
         public LazyRowReader TryReadRow(int rowIndex)
         {

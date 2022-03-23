@@ -9,8 +9,11 @@ using JetBrains.Annotations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
-namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 {
+    /// <summary>
+    /// Reads current or following cell. Can't read previous ones.
+    /// </summary>
     public class LazyRowReader
     {
         public LazyRowReader([NotNull] Row row, [NotNull] IReadOnlyList<string> sharedStrings)

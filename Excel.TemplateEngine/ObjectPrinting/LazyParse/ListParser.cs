@@ -8,10 +8,17 @@ using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
-namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 {
     internal static class ListParser
     {
+        /// <summary>
+        /// Parse tableReader from its current position for List<> until it meets empty row.
+        /// </summary>
+        /// <param name="tableReader"></param>
+        /// <param name="modelType">Base object type.</param>
+        /// <param name="templateListCells">Template cells with list items descriptions.</param>
+        /// <param name="addItem">Add item to list function.</param>
         public static void Parse([NotNull] LazyTableReader tableReader,
                                  [NotNull] Type modelType,
                                  [NotNull, ItemNotNull] ICell[] templateListCells,
@@ -40,7 +47,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
                     rowIsEmpty = false;
 
                     var propType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, prop.fullPropPath);
-                    CellTextParser.TryParse(cell.CellValue, propType, out var parsedValue);
+                    TextValueParser.TryParse(cell.CellValue, propType, out var parsedValue);
 
                     var relativeItemPropPath = prop.fullPropPath.SplitForEnumerableExpansion().relativePathToItem;
                     itemDict[relativeItemPropPath] = parsedValue;

@@ -1,9 +1,9 @@
 using System;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations;
-using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse;
 
 using Vostok.Logging.Abstractions;
 

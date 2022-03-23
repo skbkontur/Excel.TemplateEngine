@@ -19,7 +19,14 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             var action = childObjectSettersCache.GetOrAdd((model.GetType(), path), x => ExtractChildModelSetter(x.type, x.path.PartsWithIndexers));
             return x => action(model, x);
         }
-
+        /// <summary>
+        /// Generates function to add item to list by given path.
+        /// Generated function accepts new item in Dictionary<ExcelTemplatePath, object> format, where Kay is item property path and Value is object to set this property to.
+        /// </summary>
+        /// <param name="model">Base object.</param>
+        /// <param name="pathToList"></param>
+        /// <param name="relativeItemProps">List of paths to item properties to set.</param>
+        /// <returns></returns>
         [NotNull]
         public static Action<Dictionary<ExcelTemplatePath, object>> GenerateChildListItemAdder([NotNull] object model, [NotNull] ExcelTemplatePath pathToList, [NotNull] ExcelTemplatePath[] relativeItemProps)
         {
@@ -33,6 +40,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             var clearPathToList = pathToList.WithoutArrayAccess();
             var listType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, clearPathToList);
             var listConstructor = listType.GetConstructor(Array.Empty<Type>());
+            // valueToSetExpression param is never set
             var initListStatements = BuildChildSetter(modelType, typedModelParam, Expression.New(listConstructor!), pathToList.PartsWithIndexers);
 
             var itemType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, pathToList);

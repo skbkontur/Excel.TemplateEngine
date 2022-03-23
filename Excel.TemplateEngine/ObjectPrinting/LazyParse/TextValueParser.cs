@@ -3,9 +3,9 @@ using System.Globalization;
 
 using JetBrains.Annotations;
 
-namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 {
-    internal static class CellTextParser
+    internal static class TextValueParser
     {
         public static bool TryParse([CanBeNull] string cellText, [NotNull] Type itemType, out object result)
         {

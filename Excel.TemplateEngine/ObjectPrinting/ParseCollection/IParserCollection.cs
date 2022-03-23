@@ -1,7 +1,7 @@
 using System;
 
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
-using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse;
 
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection
 {

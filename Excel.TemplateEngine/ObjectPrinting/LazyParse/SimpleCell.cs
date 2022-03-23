@@ -2,7 +2,7 @@ using JetBrains.Annotations;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
-namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 {
     public class SimpleCell
     {

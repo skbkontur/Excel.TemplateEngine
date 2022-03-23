@@ -8,8 +8,12 @@ using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
 
 using Vostok.Logging.Abstractions;
 
-namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations.LazyParse
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 {
+    /// <summary>
+    /// Goes through first document sheet cell-by-cell from left to right from top to bottom without going back.
+    /// Can parse only separate cell values and List<> enumerations without and size limitations.
+    /// </summary>
     internal class LazyClassParser
     {
         public LazyClassParser(ILog logger)
@@ -17,6 +21,12 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Follows template and parse TModel from tableReader.
+        /// </summary>
+        /// <typeparam name="TModel">Class to parse.</typeparam>
+        /// <param name="tableReader">Target document LazyTableReader.</param>
+        /// <param name="template">template</param>
         [NotNull]
         public TModel Parse<TModel>([NotNull] LazyTableReader tableReader, [NotNull] RenderingTemplate template)
             where TModel : new()
@@ -65,7 +75,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
         }
 
         /// <summary>
-        ///     Read rows one by one. Parse only first met enumerable elements.
+        ///     Read rows one-by-one. Parse only first met enumerable.
         /// </summary>
         private void ParseList([NotNull] LazyTableReader tableReader,
                                [NotNull] object model,
@@ -96,7 +106,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
             var leafSetter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(model, leafPath);
             var leafModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), leafPath);
 
-            if (!CellTextParser.TryParse(cell.CellValue, leafModelType, out var parsedObject))
+            if (!TextValueParser.TryParse(cell.CellValue, leafModelType, out var parsedObject))
             {
                 logger.Error($"Failed to parse value {cell.CellValue} from {cell.CellPosition.CellReference} with type='{leafModelType}'");
                 return;
