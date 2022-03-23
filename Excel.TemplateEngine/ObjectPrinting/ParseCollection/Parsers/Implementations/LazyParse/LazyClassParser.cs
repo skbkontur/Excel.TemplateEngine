@@ -48,7 +48,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
                     {
                         var pathToEnumerable = path.SplitForEnumerableExpansion().pathToEnumerable;
                         var enumerableType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), pathToEnumerable.WithoutArrayAccess());
-                        if (!typeof(IList).IsAssignableFrom(enumerableType))
+                        if (!TypeCheckingHelper.IsList(enumerableType))
                             continue;
 
                         var templateListRow = templateRow.SkipWhile(x => x.CellPosition.CellReference != templateCell.CellPosition.CellReference)
