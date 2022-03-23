@@ -48,7 +48,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
 
                 if (rowIsEmpty)
                     break;
-                
+
                 addItem(itemDict);
 
                 row = tableReader.TryReadRow(row.RowIndex + 1);
