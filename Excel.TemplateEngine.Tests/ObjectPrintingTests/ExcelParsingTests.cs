@@ -72,8 +72,8 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             model.Type.Should().Be("Основной");
             model.ItemsList.Should().BeEquivalentTo(new List<Item>(new[]
                 {
-                    new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ"},
-                    new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ"},
+                    new Item {Index = 1, Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ"},
+                    new Item {Index = 2, Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ"},
                 }));
         }
 
@@ -262,7 +262,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                 return templateEngine.Parse<TModel>(tableParser);
             }
         }
-        
+
         private TModel LazyParse<TModel>(string templateFileName, string targetFileName)
             where TModel : new()
         {

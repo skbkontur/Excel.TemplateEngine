@@ -12,9 +12,9 @@ using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Impleme
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 {
     /// <summary>
-    /// Reads current or following cell. Can't read previous ones.
+    ///     Reads current or following cell. Can't read previous ones.
     /// </summary>
-    public class LazyRowReader
+    public class LazyRowReader : IDisposable
     {
         public LazyRowReader([NotNull] Row row, [NotNull] IReadOnlyList<string> sharedStrings)
         {
@@ -77,6 +77,11 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             }
 
             return new SimpleCell(cellIndex, cellString);
+        }
+
+        public void Dispose()
+        {
+            reader.Dispose();
         }
 
         public readonly int RowIndex;

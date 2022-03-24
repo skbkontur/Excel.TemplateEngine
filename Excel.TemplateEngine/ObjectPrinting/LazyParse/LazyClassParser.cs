@@ -11,8 +11,8 @@ using Vostok.Logging.Abstractions;
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 {
     /// <summary>
-    /// Goes through first document sheet cell-by-cell from left to right from top to bottom without going back.
-    /// Can parse only separate cell values and List<> enumerations without and size limitations.
+    ///     Goes through first document sheet cell-by-cell from left to right from top to bottom without going back.
+    ///     Can parse only separate cell values and List&lt;&gt; enumerations without and size limitations.
     /// </summary>
     internal class LazyClassParser
     {
@@ -22,11 +22,10 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         }
 
         /// <summary>
-        /// Follows template and parse TModel from tableReader.
+        ///     Follows template and parse TModel from tableReader.
         /// </summary>
         /// <typeparam name="TModel">Class to parse.</typeparam>
         /// <param name="tableReader">Target document LazyTableReader.</param>
-        /// <param name="template">template</param>
         [NotNull]
         public TModel Parse<TModel>([NotNull] LazyTableReader tableReader, [NotNull] RenderingTemplate template)
             where TModel : new()

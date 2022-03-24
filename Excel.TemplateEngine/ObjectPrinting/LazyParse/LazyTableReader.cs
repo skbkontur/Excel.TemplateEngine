@@ -14,15 +14,25 @@ using SkbKontur.Excel.TemplateEngine.FileGenerating.Helpers;
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 {
     /// <summary>
-    /// Reads current or following row. Can't read previous ones.
+    ///     Reads current or following row. Can't read previous ones.
     /// </summary>
-    public class LazyTableReader
+    public class LazyTableReader : IDisposable
     {
         public LazyTableReader([NotNull] byte[] excelData)
         {
-            var stream = new MemoryStream();
+            stream = new MemoryStream();
             stream.Write(excelData, 0, excelData.Length);
-            var spreadsheetDocument = SpreadsheetDocument.Open(stream, true);
+            InitializeReader(stream);
+        }
+
+        public LazyTableReader([NotNull] Stream stream)
+        {
+            InitializeReader(stream);
+        }
+
+        private void InitializeReader([NotNull] Stream stream)
+        {
+            spreadsheetDocument = SpreadsheetDocument.Open(stream, true);
 
             var sharedStringTable = spreadsheetDocument.GetOrCreateSpreadsheetSharedStrings();
             var sharedStringsArray = sharedStringTable.ChildElements
@@ -48,7 +58,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             var row = (Row)reader.LoadCurrentElement();
             return new LazyRowReader(row!, sharedStrings);
         }
-        
+
         [CanBeNull]
         public LazyRowReader TryReadRow(int rowIndex)
         {
@@ -81,13 +91,26 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             return null;
         }
 
-        [NotNull]
-        private readonly OpenXmlReader reader;
+        public void Dispose()
+        {
+            stream?.Dispose();
+            spreadsheetDocument.Dispose();
+            reader.Dispose();
+        }
 
         [NotNull]
-        private readonly IReadOnlyList<string> sharedStrings;
+        private OpenXmlReader reader;
+
+        [NotNull]
+        private IReadOnlyList<string> sharedStrings;
 
         [CanBeNull]
         private LazyRowReader currentRowReader;
+
+        [CanBeNull]
+        private MemoryStream stream;
+
+        [NotNull]
+        private SpreadsheetDocument spreadsheetDocument;
     }
 }

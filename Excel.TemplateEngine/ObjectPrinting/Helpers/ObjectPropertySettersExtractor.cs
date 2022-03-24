@@ -19,9 +19,10 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             var action = childObjectSettersCache.GetOrAdd((model.GetType(), path), x => ExtractChildModelSetter(x.type, x.path.PartsWithIndexers));
             return x => action(model, x);
         }
+
         /// <summary>
-        /// Generates function to add item to list by given path.
-        /// Generated function accepts new item in Dictionary<ExcelTemplatePath, object> format, where Kay is item property path and Value is object to set this property to.
+        ///     Generates function to add item to list by given path.
+        ///     Generated function accepts new item in Dictionary<ExcelTemplatePath, object> format, where Kay is item property path and Value is object to set this property to.
         /// </summary>
         /// <param name="model">Base object.</param>
         /// <param name="pathToList"></param>
@@ -72,7 +73,6 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             listExpression = clearPathToList.Skip(1).Aggregate(listExpression, Expression.Property);
 
             var addMethodInfo = listType.GetMethod("Add");
-            Action<IList, object> addInvokeAction = (list, item) => addMethodInfo!.Invoke(list, new[] {item});
             return Expression.Call(listExpression, addMethodInfo, newItem);
         }
 
@@ -173,12 +173,11 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
         [NotNull, ItemNotNull]
         private static List<Expression> BuildExpandingOfArrayPart([NotNull] Expression currNodeExpression, [NotNull] Type currNodeType, [NotNull] Expression valueToSetExpression, [NotNull, ItemNotNull] string[] pathParts)
         {
-            var statements = new List<Expression>();
+            var statements = new List<Expression>(2);
             var itemType = TypeCheckingHelper.GetEnumerableItemType(currNodeType);
 
-            var getLenExpression = Expression.Property(Expression.Convert(valueToSetExpression, typeof(ICollection)), "Count");
+            var getLenExpression = Expression.Property(Expression.Convert(valueToSetExpression, typeof(ICollection)), nameof(ICollection.Count));
             statements.Add(ExpressionPrimitives.CreateArrayInitStatement(currNodeExpression, itemType, getLenExpression));
-
             var expressionLoopVar = Expression.Variable(typeof(int));
 
             var elementExpression = Expression.ArrayAccess(currNodeExpression, expressionLoopVar);

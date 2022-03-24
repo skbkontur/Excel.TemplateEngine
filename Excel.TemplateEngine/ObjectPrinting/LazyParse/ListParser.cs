@@ -13,7 +13,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
     internal static class ListParser
     {
         /// <summary>
-        /// Parse tableReader from its current position for List<> until it meets empty row.
+        ///     Parse tableReader from its current position for List&lt;&gt; until it meets empty row.
         /// </summary>
         /// <param name="tableReader"></param>
         /// <param name="modelType">Base object type.</param>
@@ -24,8 +24,6 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                                  [NotNull, ItemNotNull] ICell[] templateListCells,
                                  [NotNull] Action<Dictionary<ExcelTemplatePath, object>> addItem)
         {
-            var parsedCount = 0;
-
             var itemPropFullPaths = templateListCells.Select(x => (cellPosition : x.CellPosition, fullPropPath : ExcelTemplatePath.FromRawExpression(x.StringValue)))
                                                      .OrderBy(x => x.cellPosition.ColumnIndex)
                                                      .ToArray();

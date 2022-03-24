@@ -48,7 +48,7 @@ namespace SkbKontur.Excel.TemplateEngine
         }
 
         /// <summary>
-        /// Parse only separate cell values and List<> enumerations without and size limitations.
+        ///     Parse only separate cell values and List<> enumerations without and size limitations.
         /// </summary>
         /// <typeparam name="TModel">Class to parse.</typeparam>
         /// <param name="lazyTableReader">LazyTableReader of target xlsx file.</param>
