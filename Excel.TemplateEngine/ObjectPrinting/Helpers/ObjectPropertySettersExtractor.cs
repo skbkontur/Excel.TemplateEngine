@@ -52,7 +52,10 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             var initNewItem = Expression.Assign(newItem, Expression.New(itemConstructor!));
 
             var dictIndexer = itemDictType.GetProperty("Item");
-            var setItemProps = new List<Expression>(new Expression[] {initNewItem});
+            var minListLength = relativeItemProps.Select(x => x.PartsWithIndexers.Length)
+                                                 .Sum();
+            var setItemProps = new List<Expression>(minListLength + 1);
+            setItemProps.Add(initNewItem);
             foreach (var prop in relativeItemProps)
             {
                 var setProp = BuildChildSetter(itemType, typedItem, Expression.MakeIndex(newItemDict, dictIndexer, new[] {Expression.Constant(prop)}), prop.PartsWithIndexers);
@@ -93,7 +96,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
         [NotNull, ItemNotNull]
         private static List<Expression> BuildChildSetter([NotNull] Type currNodeType, [NotNull] Expression currNodeExpression, [NotNull] Expression valueToSetExpression, [NotNull, ItemNotNull] string[] pathParts)
         {
-            var statements = new List<Expression>();
+            var statements = new List<Expression>(pathParts.Length);
 
             for (var partIndex = 0; partIndex < pathParts.Length; ++partIndex)
             {
