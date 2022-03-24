@@ -20,7 +20,6 @@ namespace Benchmark
     [MemoryDiagnoser]
     public class ParseVsLazyParse
     {
-
         private IExcelDocument GetTemplate()
         {
             var templateBytes = File.ReadAllBytes("ihclme_template.xlsx");
