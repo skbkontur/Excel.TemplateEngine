@@ -20,17 +20,17 @@ namespace Benchmark.IhclmeModel
 
         public DentalInformationExcelModel DentalInformation { get; set; }
         public string ReasonToExclude { get; set; }
-        public decimal ConfirmedQuantity { get; set; }
-        public decimal ProvidedQuantity { get; set; }
-        public decimal Price { get; set; }
+        public decimal? ConfirmedQuantity { get; set; }
+        public decimal? ProvidedQuantity { get; set; }
+        public decimal? Price { get; set; }
         public string AllowanceCode { get; set; }
-        public decimal TotalSumModifier { get; set; }
-        public decimal ContractDiscount { get; set; }
-        public decimal TotalWithoutDiscountCharge { get; set; }
-        public decimal Total { get; set; }
-        public decimal TotalInCurrency { get; set; }
-        public decimal TotalExcluded { get; set; }
-        public decimal TotalExcludedInCurrency { get; set; }
-        public decimal TotalPaidByCustomer { get; set; }
+        public decimal? TotalSumModifier { get; set; }
+        public decimal? ContractDiscount { get; set; }
+        public decimal? TotalWithoutDiscountCharge { get; set; }
+        public decimal? Total { get; set; }
+        public decimal? TotalInCurrency { get; set; }
+        public decimal? TotalExcluded { get; set; }
+        public decimal? TotalExcludedInCurrency { get; set; }
+        public decimal? TotalPaidByCustomer { get; set; }
     }
 }

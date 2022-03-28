@@ -28,14 +28,14 @@ namespace Benchmark.IhclmeModel
         public string ProvidedServicePaymentType { get; set; }
 
         public string CurrencyCode { get; set; }
-        public decimal CurrencyExchangeRate { get; set; }
+        public decimal? CurrencyExchangeRate { get; set; }
 
-        public decimal ClaimTotalSum { get; set; }
-        public decimal ClaimTotalVat { get; set; }
-        public decimal ClaimTotalSumWithVat { get; set; }
-        public decimal ClaimTotalWithoutDiscountCharge { get; set; }
-        public decimal ClaimTotalDiscount { get; set; }
-        public decimal ClaimTotalSumWithVatInCurrency { get; set; }
+        public decimal? ClaimTotalSum { get; set; }
+        public decimal? ClaimTotalVat { get; set; }
+        public decimal? ClaimTotalSumWithVat { get; set; }
+        public decimal? ClaimTotalWithoutDiscountCharge { get; set; }
+        public decimal? ClaimTotalDiscount { get; set; }
+        public decimal? ClaimTotalSumWithVatInCurrency { get; set; }
 
         public VATDetailsExcelModel VATDetailsWithoutVAT { get; set; }
         public VATDetailsExcelModel VATDetails20VAT { get; set; }

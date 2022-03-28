@@ -20,6 +20,6 @@ namespace Benchmark.IhclmeModel
 
         public string SupplementaryAgreementDate { get; set; }
 
-        public decimal Franchise { get; set; }
+        public decimal? Franchise { get; set; }
     }
 }

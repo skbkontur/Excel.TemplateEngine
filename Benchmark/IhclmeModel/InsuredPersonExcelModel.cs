@@ -2,7 +2,7 @@ namespace Benchmark.IhclmeModel
 {
     public class InsuredPersonExcelModel
     {
-        public int NumberInList { get; set; }
+        public int? NumberInList { get; set; }
 
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
