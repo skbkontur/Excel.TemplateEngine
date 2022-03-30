@@ -83,7 +83,11 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             var model = LazyParse<PriceList>("simpleWithItemsList_template.xlsx", "simpleWith11kItemEnumerable.xlsx");
 
             model.Type.Should().Be("Основной");
-            model.ItemsList.Count.Should().Be(11_000);
+            model.Items.Should().BeEquivalentTo(new[]
+                {
+                    new Item {Index = 1, Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ"},
+                    new Item {Index = 2, Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ"},
+                });
         }
 
         [Test]
@@ -269,12 +273,12 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             var templateBytes = File.ReadAllBytes(GetFilePath(templateFileName));
             var targetBytes = File.ReadAllBytes(GetFilePath(targetFileName));
 
+            using (var lazyTableReader = new LazyTableReader(targetBytes))
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(templateBytes, logger))
             {
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
                 var templateEngine = new TemplateEngine(template, logger);
 
-                var lazyTableReader = new LazyTableReader(targetBytes);
                 return templateEngine.LazyParse<TModel>(lazyTableReader);
             }
         }

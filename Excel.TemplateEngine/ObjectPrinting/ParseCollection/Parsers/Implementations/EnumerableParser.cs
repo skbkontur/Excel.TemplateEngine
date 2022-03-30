@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
 
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations
@@ -22,7 +23,6 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
             if (count > ParsingParameters.MaxEnumerableLength)
                 throw new InvalidOperationException($"Lists longer than {ParsingParameters.MaxEnumerableLength} are not supported");
 
-            var parser = parserCollection.GetAtomicValueParser();
             var result = new List<object>();
             for (var i = 0; i < count; i++)
             {
@@ -31,7 +31,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
 
                 tableParser.PushState();
 
-                if (!parser.TryParse(tableParser, modelType, out var item) || item == null)
+                if (!TextValueParser.TryParse(tableParser.GetCurrentCellText(), modelType, out var item) || item == null)
                     item = GetDefault(modelType);
 
                 addFieldMapping($"[{i}]", tableParser.CurrentState.Cursor.CellReference);

@@ -156,7 +156,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             => InitDict(dict, indexer, () => new TValue());
 
         [NotNull]
-        private static MethodInfo GetGenericMethod([NotNull] Type type, [NotNull] string name, [NotNull, ItemNotNull] params Type[] genericTypes)
+        public static MethodInfo GetGenericMethod([NotNull] Type type, [NotNull] string name, [NotNull, ItemNotNull] params Type[] genericTypes)
             => GetMethod(type, name).MakeGenericMethod(genericTypes);
 
         [NotNull]

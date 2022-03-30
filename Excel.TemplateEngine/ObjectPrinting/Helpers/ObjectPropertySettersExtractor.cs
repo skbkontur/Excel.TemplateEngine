@@ -20,63 +20,69 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             return x => action(model, x);
         }
 
-        /// <summary>
-        ///     Generates function to add item to list by given path.
-        ///     Generated function accepts new item in Dictionary<ExcelTemplatePath, object> format, where Kay is item property path and Value is object to set this property to.
-        /// </summary>
-        /// <param name="model">Base object.</param>
-        /// <param name="pathToList"></param>
-        /// <param name="relativeItemProps">List of paths to item properties to set.</param>
-        /// <returns></returns>
-        [NotNull]
-        public static Action<Dictionary<ExcelTemplatePath, object>> GenerateChildListItemAdder([NotNull] object model, [NotNull] ExcelTemplatePath pathToList, [NotNull] ExcelTemplatePath[] relativeItemProps)
+        public static void SetEnumerable([NotNull] object model,
+                                         [NotNull] ExcelTemplatePath pathToEnumerable,
+                                         [NotNull] Type enumerableType,
+                                         [NotNull] IEnumerable<object> listToSet,
+                                         [NotNull] Type listItemType)
         {
-            var modelType = model.GetType();
-            var itemDictType = typeof(Dictionary<ExcelTemplatePath, object>);
+            var setter = ExtractChildModelSetter(model.GetType(), pathToEnumerable.PartsWithIndexers);
 
-            var modelParam = Expression.Parameter(typeof(object));
-            var newItemDict = Expression.Parameter(itemDictType);
-            var typedModelParam = Expression.Convert(modelParam, modelType);
-
-            var clearPathToList = pathToList.WithoutArrayAccess();
-            var listType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, clearPathToList);
-            var listConstructor = listType.GetConstructor(Array.Empty<Type>());
-            // valueToSetExpression param is never set
-            var initListStatements = BuildChildSetter(modelType, typedModelParam, Expression.New(listConstructor!), pathToList.PartsWithIndexers);
-
-            var itemType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, pathToList);
-            var itemConstructor = itemType.GetConstructor(Array.Empty<Type>());
-
-            var newItem = Expression.Variable(typeof(object));
-            var typedItem = Expression.Convert(newItem, itemType);
-            var initNewItem = Expression.Assign(newItem, Expression.New(itemConstructor!));
-
-            var dictIndexer = itemDictType.GetProperty("Item");
-            var minListLength = relativeItemProps.Select(x => x.PartsWithIndexers.Length)
-                                                 .Sum();
-            var setItemProps = new List<Expression>(minListLength + 1);
-            setItemProps.Add(initNewItem);
-            foreach (var prop in relativeItemProps)
+            if (enumerableType.IsArray)
             {
-                var setProp = BuildChildSetter(itemType, typedItem, Expression.MakeIndex(newItemDict, dictIndexer, new[] {Expression.Constant(prop)}), prop.PartsWithIndexers);
-                setItemProps.AddRange(setProp);
+                var castToArray = ExpressionPrimitives.GetGenericMethod(typeof(ObjectPropertySettersExtractor), nameof(CastToArray), listItemType);
+                var array = castToArray.Invoke(null, new object[] {listToSet});
+                setter(model, array);
             }
-
-            var addItemToList = GenerateAddItemToList(typedModelParam, listType, clearPathToList.PartsWithIndexers, typedItem);
-
-            var block = Expression.Block(new[] {newItem}, initListStatements.Concat(setItemProps).Concat(new[] {addItemToList}));
-            var wholeAction = Expression.Lambda<Action<object, Dictionary<ExcelTemplatePath, object>>>(block, modelParam, newItemDict)
-                                        .Compile();
-            return x => wholeAction(model, x);
+            else if (TypeCheckingHelper.IsList(enumerableType))
+            {
+                var castToList = ExpressionPrimitives.GetGenericMethod(typeof(ObjectPropertySettersExtractor), nameof(CastToList), listItemType);
+                var list = castToList.Invoke(null, new object[] {listToSet});
+                setter(model, list);
+            }
+            else
+                throw new ArgumentException("Only Array and List is supported.");
         }
 
-        private static MethodCallExpression GenerateAddItemToList(Expression targetModel, Type listType, string[] clearPathToList, Expression newItem)
+        [NotNull]
+        private static T[] CastToArray<T>([NotNull] IEnumerable<object> list)
         {
-            var listExpression = Expression.Property(targetModel, clearPathToList.First());
-            listExpression = clearPathToList.Skip(1).Aggregate(listExpression, Expression.Property);
+            return list.Select(x => (T)x).ToArray();
+        }
 
-            var addMethodInfo = listType.GetMethod("Add");
-            return Expression.Call(listExpression, addMethodInfo, newItem);
+        [NotNull]
+        private static List<T> CastToList<T>([NotNull] IEnumerable<object> list)
+        {
+            return list.Select(x => (T)x).ToList();
+        }
+
+        [NotNull]
+        public static Func<Dictionary<ExcelTemplatePath, object>, object> GenerateDictToObjectFunc([NotNull] ExcelTemplatePath[] objectProps, [NotNull] Type objectType)
+        {
+            var dictType = typeof(Dictionary<ExcelTemplatePath, object>);
+            var objectDict = Expression.Parameter(dictType);
+
+            var newObject = Expression.Variable(typeof(object));
+            var typedObject = Expression.Convert(newObject, objectType);
+
+            var objectConstructor = objectType.GetConstructor(Array.Empty<Type>());
+            var initObject = Expression.Assign(newObject, Expression.New(objectConstructor!));
+
+            var minExpressionCount = objectProps.Length + 2;
+            var expressions = new List<Expression>(minExpressionCount) {initObject};
+
+            var dictIndexer = dictType.GetProperty("Item");
+            foreach (var prop in objectProps)
+            {
+                var setProp = BuildChildSetter(objectType, typedObject, Expression.MakeIndex(objectDict, dictIndexer, new[] {Expression.Constant(prop)}), prop.PartsWithIndexers);
+                expressions.AddRange(setProp);
+            }
+
+            expressions.Add(newObject);
+
+            var block = Expression.Block(new[] {newObject}, expressions);
+            return Expression.Lambda<Func<Dictionary<ExcelTemplatePath, object>, object>>(block, objectDict)
+                             .Compile();
         }
 
         [NotNull]

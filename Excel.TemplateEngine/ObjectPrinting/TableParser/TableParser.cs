@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 
 using JetBrains.Annotations;
@@ -15,70 +14,6 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser
         {
             this.target = target;
             this.navigator = navigator;
-        }
-
-        public bool TryParseAtomicValue(out string result)
-        {
-            result = target.GetCell(CurrentState.Cursor)?.StringValue;
-            return true;
-        }
-
-        public bool TryParseAtomicValue(out int result)
-        {
-            var cellValue = target.GetCell(CurrentState.Cursor)?.StringValue;
-            return int.TryParse(cellValue, out result);
-        }
-
-        public bool TryParseAtomicValue(out double result)
-        {
-            var cellValue = target.GetCell(CurrentState.Cursor)?.StringValue;
-            return double.TryParse(cellValue, out result);
-        }
-
-        public bool TryParseAtomicValue(out decimal result)
-        {
-            var cellValue = target.GetCell(CurrentState.Cursor)?.StringValue;
-            return decimal.TryParse(cellValue, numberStyles, russianCultureInfo, out result) || decimal.TryParse(cellValue, numberStyles, CultureInfo.InvariantCulture, out result);
-        }
-
-        public bool TryParseAtomicValue(out long result)
-        {
-            var cellValue = target.GetCell(CurrentState.Cursor)?.StringValue;
-            return long.TryParse(cellValue, out result);
-        }
-
-        public bool TryParseAtomicValue(out int? result)
-        {
-            return TryParseNullableAtomicValue(() => (TryParseAtomicValue(out int res), res), out result);
-        }
-
-        public bool TryParseAtomicValue(out double? result)
-        {
-            return TryParseNullableAtomicValue(() => (TryParseAtomicValue(out double res), res), out result);
-        }
-
-        public bool TryParseAtomicValue(out decimal? result)
-        {
-            return TryParseNullableAtomicValue(() => (TryParseAtomicValue(out decimal res), res), out result);
-        }
-
-        public bool TryParseAtomicValue(out long? result)
-        {
-            return TryParseNullableAtomicValue(() => (TryParseAtomicValue(out long res), res), out result);
-        }
-
-        private bool TryParseNullableAtomicValue<T>(Func<(bool succeed, T result)> parser, out T? result)
-            where T : struct
-        {
-            var cellValue = target.GetCell(CurrentState.Cursor)?.StringValue;
-            if (string.IsNullOrEmpty(cellValue))
-            {
-                result = null;
-                return true;
-            }
-            bool succeed;
-            (succeed, result) = parser();
-            return succeed;
         }
 
         public bool TryParseCheckBoxValue([NotNull] string name, out bool result)
@@ -105,34 +40,45 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser
             return true;
         }
 
+        [NotNull]
         public ITableParser PushState(ICellPosition newOrigin)
         {
             navigator.PushState(newOrigin);
             return this;
         }
 
+        [NotNull]
         public ITableParser PushState()
         {
             navigator.PushState();
             return this;
         }
 
+        [NotNull]
         public ITableParser PopState()
         {
             navigator.PopState();
             return this;
         }
 
+        [NotNull]
         public ITableParser MoveToNextLayer()
         {
             navigator.MoveToNextLayer();
             return this;
         }
 
+        [NotNull]
         public ITableParser MoveToNextColumn()
         {
             navigator.MoveToNextColumn();
             return this;
+        }
+
+        [CanBeNull]
+        public string GetCurrentCellText()
+        {
+            return target.GetCell(CurrentState.Cursor)?.StringValue;
         }
 
         public TableNavigatorState CurrentState => navigator.CurrentState;

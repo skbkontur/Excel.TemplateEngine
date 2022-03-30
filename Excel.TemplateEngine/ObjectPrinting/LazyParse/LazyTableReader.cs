@@ -20,11 +20,12 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
     {
         public LazyTableReader([NotNull] byte[] excelData)
         {
-            stream = new MemoryStream();
+            var stream = new MemoryStream();
             stream.Write(excelData, 0, excelData.Length);
             InitializeReader(stream);
         }
 
+        /// <param name="stream">Stream will be disposed with the reader.</param>
         public LazyTableReader([NotNull] Stream stream)
         {
             InitializeReader(stream);
@@ -32,7 +33,8 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 
         private void InitializeReader([NotNull] Stream stream)
         {
-            spreadsheetDocument = SpreadsheetDocument.Open(stream, true);
+            this.stream = stream;
+            spreadsheetDocument = SpreadsheetDocument.Open(stream, false);
 
             var sharedStringTable = spreadsheetDocument.GetOrCreateSpreadsheetSharedStrings();
             var sharedStringsArray = sharedStringTable.ChildElements
@@ -96,6 +98,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             stream?.Dispose();
             spreadsheetDocument.Dispose();
             reader.Dispose();
+            currentRowReader?.Dispose();
         }
 
         [NotNull]
@@ -108,7 +111,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         private LazyRowReader currentRowReader;
 
         [CanBeNull]
-        private MemoryStream stream;
+        private Stream stream;
 
         [NotNull]
         private SpreadsheetDocument spreadsheetDocument;

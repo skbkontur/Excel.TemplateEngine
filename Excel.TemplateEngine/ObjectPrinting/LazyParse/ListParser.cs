@@ -8,6 +8,8 @@ using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
+using Vostok.Logging.Abstractions;
+
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 {
     internal static class ListParser
@@ -17,23 +19,29 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         /// </summary>
         /// <param name="tableReader"></param>
         /// <param name="modelType">Base object type.</param>
+        /// <param name="itemType"></param>
         /// <param name="templateListCells">Template cells with list items descriptions.</param>
-        /// <param name="addItem">Add item to list function.</param>
-        public static void Parse([NotNull] LazyTableReader tableReader,
-                                 [NotNull] Type modelType,
-                                 [NotNull, ItemNotNull] ICell[] templateListCells,
-                                 [NotNull] Action<Dictionary<ExcelTemplatePath, object>> addItem)
+        /// <param name="logger"></param>
+        public static IReadOnlyList<object> Parse([NotNull] LazyTableReader tableReader,
+                                                  [NotNull] Type modelType,
+                                                  [NotNull] Type itemType,
+                                                  [NotNull] [ItemNotNull] ICell[] templateListCells,
+                                                  [NotNull] ILog logger)
         {
             var itemPropFullPaths = templateListCells.Select(x => (cellPosition : x.CellPosition, fullPropPath : ExcelTemplatePath.FromRawExpression(x.StringValue)))
                                                      .OrderBy(x => x.cellPosition.ColumnIndex)
                                                      .ToArray();
-            var firstListCellPosition = itemPropFullPaths.First().cellPosition;
+            var relativeItemPropsPaths = itemPropFullPaths.Select(x => x.fullPropPath.SplitForEnumerableExpansion().relativePathToItem)
+                                                          .ToArray();
+            var dictToObject = ObjectPropertySettersExtractor.GenerateDictToObjectFunc(relativeItemPropsPaths, itemType);
 
+            var result = new List<object>();
+
+            var firstListCellPosition = itemPropFullPaths.First().cellPosition;
             var row = tableReader.TryReadRow(firstListCellPosition.RowIndex);
             while (row != null)
             {
-                var itemDict = itemPropFullPaths.ToDictionary(x => x.fullPropPath.SplitForEnumerableExpansion().relativePathToItem,
-                                                              _ => (object)null);
+                var itemDict = relativeItemPropsPaths.ToDictionary(x => x, _ => (object)null);
                 var rowIsEmpty = true;
                 foreach (var prop in itemPropFullPaths)
                 {
@@ -45,19 +53,29 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                     rowIsEmpty = false;
 
                     var propType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, prop.fullPropPath);
-                    TextValueParser.TryParse(cell.CellValue, propType, out var parsedValue);
+                    if (!TextValueParser.TryParse(cell.CellValue, propType, out var parsedValue))
+                    {
+                        logger.Warn($"Failed to parse value {cell.CellValue} from {cell.CellPosition.CellReference} with type='{propType}'");
+                        continue;
+                    }
 
                     var relativeItemPropPath = prop.fullPropPath.SplitForEnumerableExpansion().relativePathToItem;
                     itemDict[relativeItemPropPath] = parsedValue;
                 }
 
                 if (rowIsEmpty)
+                {
+                    row.Dispose();
                     break;
+                }
 
-                addItem(itemDict);
+                result.Add(dictToObject(itemDict));
 
+                row.Dispose();
                 row = tableReader.TryReadRow(row.RowIndex + 1);
             }
+
+            return result;
         }
     }
 }

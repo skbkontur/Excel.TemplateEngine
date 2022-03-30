@@ -113,9 +113,8 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
 
         private void ParseSingleValue(ITableParser tableParser, Action<string, string> addFieldMapping, Action<object> leafSetter, ExcelTemplatePath childModelPath, Type childModelType)
         {
-            var parser = parserCollection.GetAtomicValueParser();
             addFieldMapping(childModelPath.RawPath, tableParser.CurrentState.Cursor.CellReference);
-            if (!parser.TryParse(tableParser, childModelType, out var parsedObject))
+            if (!TextValueParser.TryParse(tableParser.GetCurrentCellText(), childModelType, out var parsedObject))
             {
                 logger.Error($"Failed to parse value from '{tableParser.CurrentState.Cursor.CellReference}' with childModelType='{childModelType}' via AtomicValueParser");
                 return;
