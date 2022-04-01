@@ -242,8 +242,8 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         public void ExtractChildObjectSetterTest(string expression, Func<ComplexModel, object> getter, object valueToSet)
         {
             var modelToSet = new ComplexModel();
-            var s = ObjectPropertySettersExtractor.ExtractChildObjectSetter(modelToSet, ExcelTemplatePath.FromRawExpression(expression));
-            s(valueToSet);
+            var s = ObjectChildSetterFabric.GetChildObjectSetter(modelToSet.GetType(), ExcelTemplatePath.FromRawExpression(expression));
+            s(modelToSet, valueToSet);
             getter(modelToSet).Should().BeEquivalentTo(valueToSet);
         }
 
@@ -253,9 +253,9 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             (string expression, object valueToSet) = ("Value::IntProp", null);
 
             var modelToSet = new ComplexModel();
-            var setter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(modelToSet, ExcelTemplatePath.FromRawExpression(expression));
+            var setter = ObjectChildSetterFabric.GetChildObjectSetter(modelToSet.GetType(), ExcelTemplatePath.FromRawExpression(expression));
 
-            var setterAction = new Action(() => setter(valueToSet));
+            var setterAction = new Action(() => setter(modelToSet, valueToSet));
             setterAction.Should().Throw<ObjectPropertyExtractionException>();
         }
 

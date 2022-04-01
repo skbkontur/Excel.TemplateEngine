@@ -3,6 +3,7 @@ using System.IO;
 using Benchmark.IhclmeModel;
 
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 using SkbKontur.Excel.TemplateEngine;
 using SkbKontur.Excel.TemplateEngine.FileGenerating;
@@ -18,112 +19,60 @@ using Vostok.Logging.Abstractions;
 namespace Benchmark
 {
     [MemoryDiagnoser]
+    [SimpleJob(RuntimeMoniker.Net472)]
+    [SimpleJob(RuntimeMoniker.Net60)]
     public class ParseVsLazyParse
     {
-        private IExcelDocument GetTemplate()
+        [GlobalSetup]
+        public void GlobalSetup()
         {
             var templateBytes = File.ReadAllBytes("ihclme_template.xlsx");
-            return ExcelDocumentFactory.CreateFromTemplate(templateBytes, logger);
+            templateDocument = ExcelDocumentFactory.CreateFromTemplate(templateBytes, logger);
+            var template = new ExcelTable(templateDocument.GetWorksheet(0));
+            templateEngine = new TemplateEngine(template, logger);
+        }
+
+        [GlobalCleanup]
+        public void GlobalCleanup()
+        {
+            templateDocument.Dispose();
+        }
+
+        [IterationSetup]
+        public void IterationSetup()
+        {
+            targetFileContent = File.ReadAllBytes($"ihclmeWith{ItemsCount}List.xlsx");
         }
 
         [Benchmark]
-        public void Parse5k()
+        public void Parse()
         {
-            var targetBytes = File.ReadAllBytes("ihclmeWith5kList.xlsx");
-
-            using (var templateDocument = GetTemplate())
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes, logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetFileContent, logger))
             {
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
-
                 var target = new ExcelTable(targetDocument.GetWorksheet(0));
                 var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
                 var tableParser = new TableParser(target, tableNavigator);
+
                 templateEngine.Parse<IhclmeExcelModel>(tableParser);
             }
         }
 
         [Benchmark]
-        public void Parse10k()
+        public void LazyParse()
         {
-            var targetBytes = File.ReadAllBytes("ihclmeWith10kList.xlsx");
-
-            using (var templateDocument = GetTemplate())
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes, logger))
+            using (var lazyTableReader = new LazyTableReader(targetFileContent))
             {
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
-
-                var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
-                var tableParser = new TableParser(target, tableNavigator);
-                templateEngine.Parse<IhclmeExcelModel>(tableParser);
-            }
-        }
-
-        [Benchmark]
-        public void Parse500()
-        {
-            var targetBytes = File.ReadAllBytes("ihclmeWith500List.xlsx");
-
-            using (var templateDocument = GetTemplate())
-            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes, logger))
-            {
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
-
-                var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
-                var tableParser = new TableParser(target, tableNavigator);
-                templateEngine.Parse<IhclmeExcelModel>(tableParser);
-            }
-        }
-
-        [Benchmark]
-        public void LazyParse500()
-        {
-            using (var templateDocument = GetTemplate())
-            {
-                var targetBytes = File.ReadAllBytes("ihclmeWith500List.xlsx");
-
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
-
-                var lazyTableReader = new LazyTableReader(targetBytes);
                 templateEngine.LazyParse<IhclmeExcelModel>(lazyTableReader);
             }
         }
 
-        [Benchmark]
-        public void LazyParse5k()
-        {
-            using (var templateDocument = GetTemplate())
-            {
-                var targetBytes = File.ReadAllBytes("ihclmeWith5kList.xlsx");
+        private byte[] targetFileContent;
 
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
+        private IExcelDocument templateDocument;
+        private TemplateEngine templateEngine;
 
-                var lazyTableReader = new LazyTableReader(targetBytes);
-                templateEngine.LazyParse<IhclmeExcelModel>(lazyTableReader);
-            }
-        }
-
-        [Benchmark]
-        public void LazyParse10k()
-        {
-            using (var templateDocument = GetTemplate())
-            {
-                var targetBytes = File.ReadAllBytes("ihclmeWith10kList.xlsx");
-
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
-
-                var lazyTableReader = new LazyTableReader(targetBytes);
-                templateEngine.LazyParse<IhclmeExcelModel>(lazyTableReader);
-            }
-        }
+        [Params("500", "5k", "10k")]
+        public string ItemsCount;
 
         private readonly ILog logger = new SilentLog();
     }

@@ -83,11 +83,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             var model = LazyParse<PriceList>("simpleWithItemsList_template.xlsx", "simpleWith11kItemEnumerable.xlsx");
 
             model.Type.Should().Be("Основной");
-            model.Items.Should().BeEquivalentTo(new[]
-                {
-                    new Item {Index = 1, Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ"},
-                    new Item {Index = 2, Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ"},
-                });
+            model.ItemsList.Count.Should().Be(11_000);
         }
 
         [Test]
@@ -96,7 +92,11 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             var model = LazyParse<PriceList>("simpleWithEnumerable_template.xlsx", "simpleWithEnumerable_target.xlsx");
 
             model.Type.Should().Be("Основной");
-            model.ItemsList.Should().BeNull();
+            model.Items.Should().BeEquivalentTo(new[]
+                {
+                    new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ"},
+                    new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ"},
+                });
         }
 
         [Test]

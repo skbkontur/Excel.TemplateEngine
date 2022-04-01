@@ -33,7 +33,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                                                      .ToArray();
             var relativeItemPropsPaths = itemPropFullPaths.Select(x => x.fullPropPath.SplitForEnumerableExpansion().relativePathToItem)
                                                           .ToArray();
-            var dictToObject = ObjectPropertySettersExtractor.GenerateDictToObjectFunc(relativeItemPropsPaths, itemType);
+            var dictToObject = ObjectConversionGenerator.GetDictToObjectFunc(relativeItemPropsPaths, itemType);
 
             var result = new List<object>();
 

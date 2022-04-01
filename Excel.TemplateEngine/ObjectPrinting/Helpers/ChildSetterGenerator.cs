@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,96 +10,22 @@ using SkbKontur.Excel.TemplateEngine.Exceptions;
 
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
 {
-    internal static class ObjectPropertySettersExtractor
+    internal static class ChildSetterGenerator
     {
         [NotNull]
-        public static Action<object> ExtractChildObjectSetter([NotNull] object model, [NotNull] ExcelTemplatePath path)
+        public static Expression<Action<object, object>> BuildChildSetterLambda([NotNull] Type parentType, [NotNull] ExcelTemplatePath childPath)
         {
-            var action = childObjectSettersCache.GetOrAdd((model.GetType(), path), x => ExtractChildModelSetter(x.type, x.path.PartsWithIndexers));
-            return x => action(model, x);
-        }
+            var parent = Expression.Parameter(typeof(object));
+            var child = Expression.Parameter(typeof(object));
+            var currentModelNode = Expression.Convert(parent, parentType);
 
-        public static void SetEnumerable([NotNull] object model,
-                                         [NotNull] ExcelTemplatePath pathToEnumerable,
-                                         [NotNull] Type enumerableType,
-                                         [NotNull] IEnumerable<object> listToSet,
-                                         [NotNull] Type listItemType)
-        {
-            var setter = ExtractChildModelSetter(model.GetType(), pathToEnumerable.PartsWithIndexers);
-
-            if (enumerableType.IsArray)
-            {
-                var castToArray = ExpressionPrimitives.GetGenericMethod(typeof(ObjectPropertySettersExtractor), nameof(CastToArray), listItemType);
-                var array = castToArray.Invoke(null, new object[] {listToSet});
-                setter(model, array);
-            }
-            else if (TypeCheckingHelper.IsList(enumerableType))
-            {
-                var castToList = ExpressionPrimitives.GetGenericMethod(typeof(ObjectPropertySettersExtractor), nameof(CastToList), listItemType);
-                var list = castToList.Invoke(null, new object[] {listToSet});
-                setter(model, list);
-            }
-            else
-                throw new ArgumentException("Only Array and List is supported.");
-        }
-
-        [NotNull]
-        private static T[] CastToArray<T>([NotNull] IEnumerable<object> list)
-        {
-            return list.Select(x => (T)x).ToArray();
-        }
-
-        [NotNull]
-        private static List<T> CastToList<T>([NotNull] IEnumerable<object> list)
-        {
-            return list.Select(x => (T)x).ToList();
-        }
-
-        [NotNull]
-        public static Func<Dictionary<ExcelTemplatePath, object>, object> GenerateDictToObjectFunc([NotNull] ExcelTemplatePath[] objectProps, [NotNull] Type objectType)
-        {
-            var dictType = typeof(Dictionary<ExcelTemplatePath, object>);
-            var objectDict = Expression.Parameter(dictType);
-
-            var newObject = Expression.Variable(typeof(object));
-            var typedObject = Expression.Convert(newObject, objectType);
-
-            var objectConstructor = objectType.GetConstructor(Array.Empty<Type>());
-            var initObject = Expression.Assign(newObject, Expression.New(objectConstructor!));
-
-            var minExpressionCount = objectProps.Length + 2;
-            var expressions = new List<Expression>(minExpressionCount) {initObject};
-
-            var dictIndexer = dictType.GetProperty("Item");
-            foreach (var prop in objectProps)
-            {
-                var setProp = BuildChildSetter(objectType, typedObject, Expression.MakeIndex(objectDict, dictIndexer, new[] {Expression.Constant(prop)}), prop.PartsWithIndexers);
-                expressions.AddRange(setProp);
-            }
-
-            expressions.Add(newObject);
-
-            var block = Expression.Block(new[] {newObject}, expressions);
-            return Expression.Lambda<Func<Dictionary<ExcelTemplatePath, object>, object>>(block, objectDict)
-                             .Compile();
-        }
-
-        [NotNull]
-        private static Action<object, object> ExtractChildModelSetter([NotNull] Type modelType, [NotNull, ItemNotNull] string[] pathParts)
-        {
-            var targetModel = Expression.Variable(typeof(object));
-            var valueToSet = Expression.Parameter(typeof(object));
-            var currentModelNode = Expression.Convert(targetModel, modelType);
-
-            var statements = BuildChildSetter(modelType, currentModelNode, valueToSet, pathParts);
+            var statements = BuildChildSetter(parentType, currentModelNode, child, childPath.PartsWithIndexers);
             var block = Expression.Block(new ParameterExpression[0], statements);
-            var expression = Expression.Lambda<Action<object, object>>(block, targetModel, valueToSet);
-
-            return expression.Compile();
+            return Expression.Lambda<Action<object, object>>(block, parent, child);
         }
 
         [NotNull, ItemNotNull]
-        private static List<Expression> BuildChildSetter([NotNull] Type currNodeType, [NotNull] Expression currNodeExpression, [NotNull] Expression valueToSetExpression, [NotNull, ItemNotNull] string[] pathParts)
+        public static List<Expression> BuildChildSetter([NotNull] Type currNodeType, [NotNull] Expression currNodeExpression, [NotNull] Expression valueToSetExpression, [NotNull, ItemNotNull] string[] pathParts)
         {
             var statements = new List<Expression>(pathParts.Length);
 
@@ -200,8 +125,5 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             statements.Add(loopExpression);
             return statements;
         }
-
-        [NotNull]
-        private static readonly ConcurrentDictionary<(Type type, ExcelTemplatePath path), Action<object, object>> childObjectSettersCache = new ConcurrentDictionary<(Type, ExcelTemplatePath), Action<object, object>>();
     }
 }
