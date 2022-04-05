@@ -116,7 +116,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 
             if (!TextValueParser.TryParse(cell.CellValue, leafModelType, out var parsedObject))
             {
-                logger.Warn($"Failed to parse value {cell.CellValue} from {cell.CellPosition.CellReference} with type='{leafModelType}'");
+                logger.Warn("Failed to parse value {CellValue} from {CellReference} with type='{PropType}'", new {CellValue = cell.CellValue, CellReference = cell.CellPosition.CellReference, PropType = leafModelType});
                 return;
             }
 

@@ -33,7 +33,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                                                      .ToArray();
             var relativeItemPropsPaths = itemPropFullPaths.Select(x => x.fullPropPath.SplitForEnumerableExpansion().relativePathToItem)
                                                           .ToArray();
-            var dictToObject = ObjectConversionGenerator.GetDictToObjectFunc(relativeItemPropsPaths, itemType);
+            var dictToObject = ObjectConversionGenerator.BuildDictToObject(relativeItemPropsPaths, itemType);
 
             var result = new List<object>();
 
@@ -55,7 +55,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                     var propType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, prop.fullPropPath);
                     if (!TextValueParser.TryParse(cell.CellValue, propType, out var parsedValue))
                     {
-                        logger.Warn($"Failed to parse value {cell.CellValue} from {cell.CellPosition.CellReference} with type='{propType}'");
+                        logger.Warn("Failed to parse value {CellValue} from {CellReference} with type='{PropType}'", new {CellValue = cell.CellValue, CellReference = cell.CellPosition.CellReference, PropType = propType});
                         continue;
                     }
 
