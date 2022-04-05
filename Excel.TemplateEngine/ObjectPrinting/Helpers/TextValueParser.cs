@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
 {
-    internal static class TextValueParser
+    public static class TextValueParser
     {
         public static bool TryParse([CanBeNull] string cellText, [NotNull] Type itemType, out object result)
         {
