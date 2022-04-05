@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -37,8 +36,5 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             return Expression.Lambda<Func<Dictionary<ExcelTemplatePath, object>, object>>(block, objectDict)
                              .Compile();
         }
-
-        [NotNull]
-        private static readonly ConcurrentDictionary<Type, Func<Dictionary<ExcelTemplatePath, object>, object>> dictToObjectCache = new ConcurrentDictionary<Type, Func<Dictionary<ExcelTemplatePath, object>, object>>();
     }
 }
