@@ -103,7 +103,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
         private void ParseCellularValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ExcelTemplatePath path, Dictionary<ExcelTemplatePath, int> enumerablesLengths)
         {
             var modelType = model.GetType();
-            var leafSetter = ObjectChildSetterFabric.GetChildObjectSetter(modelType, path);
+            var leafSetter = ObjectChildSetterFactory.GetChildObjectSetter(modelType, path);
             var leafModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, path);
 
             if (path.HasArrayAccess)
@@ -144,7 +144,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
         private void ParseFormValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplatePath path)
         {
             var modelType = model.GetType();
-            var childSetter = ObjectChildSetterFabric.GetChildObjectSetter(modelType, path);
+            var childSetter = ObjectChildSetterFactory.GetChildObjectSetter(modelType, path);
             var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, path);
             var (childFormControlType, childFormControlName) = GetFormControlDescription(cell);
 

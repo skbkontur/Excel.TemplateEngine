@@ -20,7 +20,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             var currentModelNode = Expression.Convert(parent, parentType);
 
             var statements = BuildChildSetter(parentType, currentModelNode, child, childPath.PartsWithIndexers);
-            var block = Expression.Block(new ParameterExpression[0], statements);
+            var block = Expression.Block(statements);
             return Expression.Lambda<Action<object, object>>(block, parent, child);
         }
 
@@ -56,7 +56,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
                         statements.Add(ExpressionPrimitives.CreateListInitStatement(currNodeExpression, itemType));
                     }
                     else
-                        throw new ObjectPropertyExtractionException("Only array and list is supported as iterated collections");
+                        throw new ObjectPropertyExtractionException("Only array and list are supported as iterated collections");
                     return statements;
                 }
                 else if (!TypeCheckingHelper.IsNullable(currNodeType) && partIndex != pathParts.Length - 1)

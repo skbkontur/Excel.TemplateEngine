@@ -102,7 +102,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             var items = ListParser.Parse(tableReader, modelType, itemType, firstEnumerableTemplateCells, logger);
 
             var withoutArrayAccess = pathToEnumerable.WithoutArrayAccess();
-            var enumerableSetter = ObjectChildSetterFabric.GetEnumerableSetter(modelType, withoutArrayAccess, enumerableType, itemType);
+            var enumerableSetter = ObjectChildSetterFactory.GetEnumerableSetter(modelType, withoutArrayAccess, enumerableType, itemType);
 
             enumerableSetter(model, items);
         }
@@ -111,7 +111,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                                       [NotNull] object model,
                                       [NotNull] ExcelTemplatePath leafPath)
         {
-            var leafSetter = ObjectChildSetterFabric.GetChildObjectSetter(model.GetType(), leafPath);
+            var leafSetter = ObjectChildSetterFactory.GetChildObjectSetter(model.GetType(), leafPath);
             var leafModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), leafPath);
 
             if (!TextValueParser.TryParse(cell.CellValue, leafModelType, out var parsedObject))

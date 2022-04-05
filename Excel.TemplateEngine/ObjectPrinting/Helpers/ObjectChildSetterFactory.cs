@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
 {
-    internal static class ObjectChildSetterFabric
+    internal static class ObjectChildSetterFactory
     {
         [NotNull]
         public static Action<object, object> GetChildObjectSetter([NotNull] Type modelType, [NotNull] ExcelTemplatePath path)
@@ -35,9 +35,9 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
 
             MethodInfo castList;
             if (enumerableType.IsArray)
-                castList = ExpressionPrimitives.GetGenericMethod(typeof(ObjectChildSetterFabric), nameof(CastToArray), listItemType);
+                castList = ExpressionPrimitives.GetGenericMethod(typeof(ObjectChildSetterFactory), nameof(CastToArray), listItemType);
             else if (TypeCheckingHelper.IsList(enumerableType))
-                castList = ExpressionPrimitives.GetGenericMethod(typeof(ObjectChildSetterFabric), nameof(CastToList), listItemType);
+                castList = ExpressionPrimitives.GetGenericMethod(typeof(ObjectChildSetterFactory), nameof(CastToList), listItemType);
             else
                 throw new ArgumentException("Only Array and List is supported.");
 
@@ -52,13 +52,13 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
         [NotNull]
         private static T[] CastToArray<T>([NotNull] IEnumerable<object> list)
         {
-            return list.Select(x => (T)x).ToArray();
+            return list.Cast<T>().ToArray();
         }
 
         [NotNull]
         private static List<T> CastToList<T>([NotNull] IEnumerable<object> list)
         {
-            return list.Select(x => (T)x).ToList();
+            return list.Cast<T>().ToList();
         }
 
         [NotNull]

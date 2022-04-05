@@ -71,7 +71,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
                 result = null;
                 return true;
             }
-            
+
             return TryParse(cellText, parse, out result);
         }
 
