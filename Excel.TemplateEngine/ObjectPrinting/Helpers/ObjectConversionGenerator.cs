@@ -9,7 +9,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
     internal static class ObjectConversionGenerator
     {
         [NotNull]
-        public static Func<Dictionary<ExcelTemplatePath, object>, object> BuildDictToObject([NotNull] ExcelTemplatePath[] objectProps, [NotNull] Type objectType)
+        public static Func<Dictionary<ExcelTemplatePath, object>, object> BuildDictToObject([NotNull] IReadOnlyList<ExcelTemplatePath> objectProps, [NotNull] Type objectType)
         {
             var dictType = typeof(Dictionary<ExcelTemplatePath, object>);
             var objectDict = Expression.Parameter(dictType);
@@ -20,7 +20,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
             var objectConstructor = objectType.GetConstructor(Array.Empty<Type>());
             var initObject = Expression.Assign(newObject, Expression.New(objectConstructor!));
 
-            var minExpressionCount = objectProps.Length + 2;
+            var minExpressionCount = objectProps.Count + 2;
             var expressions = new List<Expression>(minExpressionCount) {initObject};
 
             var dictIndexer = dictType.GetProperty("Item");

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 
 using JetBrains.Annotations;
 
@@ -91,20 +92,26 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             var arrayAccessEnd = firstExpression.IndexOf(']');
             var enumerableExpression = firstExpression.Substring(0, arrayAccessEnd + 1);
 
-            var firstEnumerableTemplateCells = templateEnumerableRow.Where(x => !string.IsNullOrEmpty(x.StringValue) &&
-                                                                                x.StringValue.StartsWith(enumerableExpression))
+            var firstEnumerableTemplateCells = templateEnumerableRow.Where(x => !string.IsNullOrEmpty(x.StringValue) && x.StringValue.StartsWith(enumerableExpression))
+                                                                    .Select(x => new SimpleCell(x.CellPosition, x.StringValue))
                                                                     .ToArray();
 
             var modelType = model.GetType();
             var pathToEnumerable = ExcelTemplatePath.FromRawExpression(enumerableExpression);
             var itemType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, pathToEnumerable);
 
-            var items = ListParser.Parse(tableReader, modelType, itemType, firstEnumerableTemplateCells, logger);
+            var items = ParseList(tableReader, itemType, firstEnumerableTemplateCells, logger);
 
             var withoutArrayAccess = pathToEnumerable.WithoutArrayAccess();
             var enumerableSetter = ObjectChildSetterFactory.GetEnumerableSetter(modelType, withoutArrayAccess, enumerableType, itemType);
 
             enumerableSetter(model, items);
+        }
+
+        private object ParseList([NotNull] LazyTableReader tableReader, [NotNull] Type itemType, [NotNull, ItemNotNull] SimpleCell[] firstEnumerableTemplateCells, ILog log)
+        {
+            return parseList.MakeGenericMethod(itemType)
+                            .Invoke(null, new object[] {tableReader, firstEnumerableTemplateCells, logger});
         }
 
         private void ParseSingleValue([NotNull] SimpleCell cell,
@@ -124,5 +131,6 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         }
 
         private readonly ILog logger;
+        private readonly MethodInfo parseList = typeof(ListParser).GetMethod(nameof(ListParser.Parse));
     }
 }

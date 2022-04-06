@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 using JetBrains.Annotations;
 
-using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
@@ -12,38 +10,38 @@ using Vostok.Logging.Abstractions;
 
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 {
-    internal static class ListParser
+    public static class ListParser
     {
         /// <summary>
         ///     Parse tableReader from its current position for List&lt;&gt; until it meets empty row.
         /// </summary>
         /// <param name="tableReader"></param>
-        /// <param name="modelType">Base object type.</param>
-        /// <param name="itemType"></param>
+        /// <param name="parentType">Base object type.</param>
         /// <param name="templateListCells">Template cells with list items descriptions.</param>
         /// <param name="logger"></param>
-        public static IReadOnlyList<object> Parse([NotNull] LazyTableReader tableReader,
-                                                  [NotNull] Type modelType,
-                                                  [NotNull] Type itemType,
-                                                  [NotNull] [ItemNotNull] ICell[] templateListCells,
-                                                  [NotNull] ILog logger)
+        public static IReadOnlyList<TItem> Parse<TItem>([NotNull] LazyTableReader tableReader,
+                                                        [NotNull, ItemNotNull] SimpleCell[] templateListCells,
+                                                        [NotNull] ILog logger)
         {
-            var itemPropFullPaths = templateListCells.Select(x => (cellPosition : x.CellPosition, fullPropPath : ExcelTemplatePath.FromRawExpression(x.StringValue)))
-                                                     .OrderBy(x => x.cellPosition.ColumnIndex)
-                                                     .ToArray();
-            var relativeItemPropsPaths = itemPropFullPaths.Select(x => x.fullPropPath.SplitForEnumerableExpansion().relativePathToItem)
-                                                          .ToArray();
-            var dictToObject = ObjectConversionGenerator.BuildDictToObject(relativeItemPropsPaths, itemType);
+            var itemType = typeof(TItem);
 
-            var result = new List<object>();
+            var listTemplate = templateListCells.Select(x => (cellPosition : x.CellPosition, itemPropPath : ExcelTemplatePath.FromRawExpression(x.CellValue).SplitForEnumerableExpansion().relativePathToItem))
+                                                .OrderBy(x => x.cellPosition.ColumnIndex)
+                                                .ToArray();
 
-            var firstListCellPosition = itemPropFullPaths.First().cellPosition;
+            var itemPropPaths = listTemplate.Select(x => x.itemPropPath)
+                                            .ToArray();
+            var dictToObject = ObjectConversionGenerator.BuildDictToObject(itemPropPaths, itemType);
+
+            var result = new List<TItem>();
+
+            var firstListCellPosition = listTemplate.First().cellPosition;
             var row = tableReader.TryReadRow(firstListCellPosition.RowIndex);
             while (row != null)
             {
-                var itemDict = relativeItemPropsPaths.ToDictionary(x => x, _ => (object)null);
+                var itemDict = itemPropPaths.ToDictionary(x => x, _ => (object)null);
                 var rowIsEmpty = true;
-                foreach (var prop in itemPropFullPaths)
+                foreach (var prop in listTemplate)
                 {
                     var cellPosition = new CellPosition(row.RowIndex, prop.cellPosition.ColumnIndex);
                     var cell = row.TryReadCell(cellPosition);
@@ -52,15 +50,14 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 
                     rowIsEmpty = false;
 
-                    var propType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, prop.fullPropPath);
+                    var propType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(itemType, prop.itemPropPath);
                     if (!TextValueParser.TryParse(cell.CellValue, propType, out var parsedValue))
                     {
                         logger.Warn("Failed to parse value {CellValue} from {CellReference} with type='{PropType}'", new {CellValue = cell.CellValue, CellReference = cell.CellPosition.CellReference, PropType = propType});
                         continue;
                     }
 
-                    var relativeItemPropPath = prop.fullPropPath.SplitForEnumerableExpansion().relativePathToItem;
-                    itemDict[relativeItemPropPath] = parsedValue;
+                    itemDict[prop.itemPropPath] = parsedValue;
                 }
 
                 if (rowIsEmpty)
@@ -69,7 +66,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                     break;
                 }
 
-                result.Add(dictToObject(itemDict));
+                result.Add((TItem)dictToObject(itemDict));
 
                 row.Dispose();
                 row = tableReader.TryReadRow(row.RowIndex + 1);
