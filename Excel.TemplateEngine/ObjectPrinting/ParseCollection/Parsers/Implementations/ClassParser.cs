@@ -23,7 +23,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
         }
 
         [NotNull]
-        public TModel Parse<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template, Action<string, string> addFieldMapping)
+        public TModel Parse<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template, [NotNull] Action<string, string> addFieldMapping)
             where TModel : new()
         {
             var model = new TModel();
@@ -102,28 +102,28 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
 
         private void ParseCellularValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ExcelTemplatePath path, Dictionary<ExcelTemplatePath, int> enumerablesLengths)
         {
-            var leafSetter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(model, path);
-            var leafModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), path);
+            var modelType = model.GetType();
+            var leafSetter = ObjectChildSetterFactory.GetChildObjectSetter(modelType, path);
+            var leafModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, path);
 
             if (path.HasArrayAccess)
                 ParseEnumerableValue(tableParser, addFieldMapping, model, path, leafSetter, leafModelType, enumerablesLengths);
             else
-                ParseSingleValue(tableParser, addFieldMapping, leafSetter, path, leafModelType);
+                ParseSingleValue(tableParser, addFieldMapping, model, leafSetter, path, leafModelType);
         }
 
-        private void ParseSingleValue(ITableParser tableParser, Action<string, string> addFieldMapping, Action<object> leafSetter, ExcelTemplatePath childModelPath, Type childModelType)
+        private void ParseSingleValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, Action<object, object> leafSetter, ExcelTemplatePath childModelPath, Type childModelType)
         {
-            var parser = parserCollection.GetAtomicValueParser();
             addFieldMapping(childModelPath.RawPath, tableParser.CurrentState.Cursor.CellReference);
-            if (!parser.TryParse(tableParser, childModelType, out var parsedObject))
+            if (!TextValueParser.TryParse(tableParser.GetCurrentCellText(), childModelType, out var parsedObject))
             {
                 logger.Error($"Failed to parse value from '{tableParser.CurrentState.Cursor.CellReference}' with childModelType='{childModelType}' via AtomicValueParser");
                 return;
             }
-            leafSetter(parsedObject);
+            leafSetter(model, parsedObject);
         }
 
-        private void ParseEnumerableValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ExcelTemplatePath path, Action<object> leafSetter, Type leafModelType, Dictionary<ExcelTemplatePath, int> enumerablesLengths)
+        private void ParseEnumerableValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ExcelTemplatePath path, Action<object, object> leafSetter, Type leafModelType, Dictionary<ExcelTemplatePath, int> enumerablesLengths)
         {
             var (rawPathToEnumerable, childPath) = path.SplitForEnumerableExpansion();
 
@@ -138,13 +138,14 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
             var count = enumerablesLengths[cleanPathToEnumerable];
             var parsedList = parser.Parse(tableParser, leafModelType, count, (name, value) => addFieldMapping($"{cleanPathToEnumerable.RawPath}{name}.{childPath.RawPath}", value));
 
-            leafSetter(parsedList);
+            leafSetter(model, parsedList);
         }
 
         private void ParseFormValue(ITableParser tableParser, Action<string, string> addFieldMapping, object model, ICell cell, ExcelTemplatePath path)
         {
-            var childSetter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(model, path);
-            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(model.GetType(), path);
+            var modelType = model.GetType();
+            var childSetter = ObjectChildSetterFactory.GetChildObjectSetter(modelType, path);
+            var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, path);
             var (childFormControlType, childFormControlName) = GetFormControlDescription(cell);
 
             if (path.HasArrayAccess)
@@ -153,7 +154,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
             var parser = parserCollection.GetFormValueParser(childFormControlType, childModelType);
             var parsedObject = parser.ParseOrDefault(tableParser, childFormControlName, childModelType);
 
-            childSetter(parsedObject);
+            childSetter(model, parsedObject);
             addFieldMapping(path.RawPath, childFormControlName);
         }
 

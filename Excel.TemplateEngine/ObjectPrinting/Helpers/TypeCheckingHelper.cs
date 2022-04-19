@@ -17,6 +17,15 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
         public static bool IsIList(Type type)
             => type != typeof(string) && (IsIListDirectly(type) || type.GetInterfaces().Any(IsIListDirectly));
 
+        public static bool IsList(Type type)
+        {
+            if (!type.IsGenericType)
+                return false;
+
+            var genericTypeDefinition = type.GetGenericTypeDefinition();
+            return genericTypeDefinition == typeof(List<>);
+        }
+
         public static bool IsNullable(Type type)
             => Nullable.GetUnderlyingType(type) != null;
 

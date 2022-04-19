@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,33 +10,24 @@ using SkbKontur.Excel.TemplateEngine.Exceptions;
 
 namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
 {
-    internal static class ObjectPropertySettersExtractor
+    internal static class ChildSetterGenerator
     {
         [NotNull]
-        public static Action<object> ExtractChildObjectSetter([NotNull] object model, [NotNull] ExcelTemplatePath path)
+        public static Expression<Action<object, object>> BuildChildSetterLambda([NotNull] Type parentType, [NotNull] ExcelTemplatePath childPath)
         {
-            var action = childObjectSettersCache.GetOrAdd((model.GetType(), path), x => ExtractChildModelSetter(x.type, x.path.PartsWithIndexers));
-            return x => action(model, x);
-        }
+            var parent = Expression.Parameter(typeof(object));
+            var child = Expression.Parameter(typeof(object));
+            var currentModelNode = Expression.Convert(parent, parentType);
 
-        [NotNull]
-        private static Action<object, object> ExtractChildModelSetter([NotNull] Type modelType, [NotNull, ItemNotNull] string[] pathParts)
-        {
-            var targetModel = Expression.Variable(typeof(object));
-            var valueToSet = Expression.Parameter(typeof(object));
-            var currentModelNode = Expression.Convert(targetModel, modelType);
-
-            var statements = BuildExtractionOfChildModelSetter(modelType, currentModelNode, valueToSet, pathParts);
-            var block = Expression.Block(new ParameterExpression[0], statements);
-            var expression = Expression.Lambda<Action<object, object>>(block, targetModel, valueToSet);
-
-            return expression.Compile();
+            var statements = BuildChildSetter(parentType, currentModelNode, child, childPath.PartsWithIndexers);
+            var block = Expression.Block(statements);
+            return Expression.Lambda<Action<object, object>>(block, parent, child);
         }
 
         [NotNull, ItemNotNull]
-        private static List<Expression> BuildExtractionOfChildModelSetter([NotNull] Type currNodeType, [NotNull] Expression currNodeExpression, [NotNull] Expression valueToSetExpression, [NotNull, ItemNotNull] string[] pathParts)
+        public static List<Expression> BuildChildSetter([NotNull] Type currNodeType, [NotNull] Expression currNodeExpression, [NotNull] Expression valueToSetExpression, [NotNull, ItemNotNull] string[] pathParts)
         {
-            var statements = new List<Expression>();
+            var statements = new List<Expression>(pathParts.Length);
 
             for (var partIndex = 0; partIndex < pathParts.Length; ++partIndex)
             {
@@ -55,8 +45,18 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
                 }
                 else if (TemplateDescriptionHelper.IsArrayPathPart(pathParts[partIndex]))
                 {
-                    var statementsToAdd = BuildExpandingOfArrayPart(currNodeExpression, currNodeType, valueToSetExpression, pathParts.Skip(partIndex + 1).ToArray());
-                    statements.AddRange(statementsToAdd);
+                    if (currNodeType.IsArray)
+                    {
+                        var statementsToAdd = BuildExpandingOfArrayPart(currNodeExpression, currNodeType, valueToSetExpression, pathParts.Skip(partIndex + 1).ToArray());
+                        statements.AddRange(statementsToAdd);
+                    }
+                    else if (typeof(IList).IsAssignableFrom(currNodeType))
+                    {
+                        var itemType = TypeCheckingHelper.GetEnumerableItemType(currNodeType);
+                        statements.Add(ExpressionPrimitives.CreateListInitStatement(currNodeExpression, itemType));
+                    }
+                    else
+                        throw new ObjectPropertyExtractionException("Only array and list are supported as iterated collections");
                     return statements;
                 }
                 else if (!TypeCheckingHelper.IsNullable(currNodeType) && partIndex != pathParts.Length - 1)
@@ -107,31 +107,23 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers
         [NotNull, ItemNotNull]
         private static List<Expression> BuildExpandingOfArrayPart([NotNull] Expression currNodeExpression, [NotNull] Type currNodeType, [NotNull] Expression valueToSetExpression, [NotNull, ItemNotNull] string[] pathParts)
         {
-            var statements = new List<Expression>();
-            if (currNodeType.IsArray)
-            {
-                var itemType = TypeCheckingHelper.GetEnumerableItemType(currNodeType);
+            var statements = new List<Expression>(2);
+            var itemType = TypeCheckingHelper.GetEnumerableItemType(currNodeType);
 
-                var getLenExpression = Expression.Property(Expression.Convert(valueToSetExpression, typeof(ICollection)), "Count");
-                statements.Add(ExpressionPrimitives.CreateArrayInitStatement(currNodeExpression, itemType, getLenExpression));
+            var getLenExpression = Expression.Property(Expression.Convert(valueToSetExpression, typeof(ICollection)), nameof(ICollection.Count));
+            statements.Add(ExpressionPrimitives.CreateArrayInitStatement(currNodeExpression, itemType, getLenExpression));
+            var expressionLoopVar = Expression.Variable(typeof(int));
 
-                var expressionLoopVar = Expression.Variable(typeof(int));
+            var elementExpression = Expression.ArrayAccess(currNodeExpression, expressionLoopVar);
+            var elementInitStatement = ExpressionPrimitives.CreateValueInitStatement(elementExpression, itemType);
+            var setItemStatements = Expression.Block(BuildChildSetter(itemType, elementExpression, ExpressionPrimitives.GetIndexAccessExpression(valueToSetExpression, expressionLoopVar), pathParts));
 
-                var elementExpression = Expression.ArrayAccess(currNodeExpression, expressionLoopVar);
-                var elementInitStatement = ExpressionPrimitives.CreateValueInitStatement(elementExpression, itemType);
-                var setItemStatements = Expression.Block(BuildExtractionOfChildModelSetter(itemType, elementExpression, ExpressionPrimitives.GetIndexAccessExpression(valueToSetExpression, expressionLoopVar), pathParts));
+            var loopBodyExpression = Expression.Block(elementInitStatement, setItemStatements);
 
-                var loopBodyExpression = Expression.Block(elementInitStatement, setItemStatements);
+            var loopExpression = ExpressionPrimitives.ForFromTo(expressionLoopVar, Expression.Constant(0), getLenExpression, loopBodyExpression);
 
-                var loopExpression = ExpressionPrimitives.ForFromTo(expressionLoopVar, Expression.Constant(0), getLenExpression, loopBodyExpression);
-
-                statements.Add(loopExpression);
-                return statements;
-            }
-            throw new ObjectPropertyExtractionException("Only array is supported as iterated collection");
+            statements.Add(loopExpression);
+            return statements;
         }
-
-        [NotNull]
-        private static readonly ConcurrentDictionary<(Type type, ExcelTemplatePath path), Action<object, object>> childObjectSettersCache = new ConcurrentDictionary<(Type, ExcelTemplatePath), Action<object, object>>();
     }
 }

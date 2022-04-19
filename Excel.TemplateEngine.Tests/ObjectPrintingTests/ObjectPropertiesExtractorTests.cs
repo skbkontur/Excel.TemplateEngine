@@ -242,8 +242,8 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         public void ExtractChildObjectSetterTest(string expression, Func<ComplexModel, object> getter, object valueToSet)
         {
             var modelToSet = new ComplexModel();
-            var s = ObjectPropertySettersExtractor.ExtractChildObjectSetter(modelToSet, ExcelTemplatePath.FromRawExpression(expression));
-            s(valueToSet);
+            var s = ObjectChildSetterFactory.GetChildObjectSetter(modelToSet.GetType(), ExcelTemplatePath.FromRawExpression(expression));
+            s(modelToSet, valueToSet);
             getter(modelToSet).Should().BeEquivalentTo(valueToSet);
         }
 
@@ -253,9 +253,9 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             (string expression, object valueToSet) = ("Value::IntProp", null);
 
             var modelToSet = new ComplexModel();
-            var setter = ObjectPropertySettersExtractor.ExtractChildObjectSetter(modelToSet, ExcelTemplatePath.FromRawExpression(expression));
+            var setter = ObjectChildSetterFactory.GetChildObjectSetter(modelToSet.GetType(), ExcelTemplatePath.FromRawExpression(expression));
 
-            var setterAction = new Action(() => setter(valueToSet));
+            var setterAction = new Action(() => setter(modelToSet, valueToSet));
             setterAction.Should().Throw<ObjectPropertyExtractionException>();
         }
 
@@ -417,7 +417,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             {
                 if (ReferenceEquals(null, obj)) return false;
                 if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != this.GetType()) return false;
+                if (obj.GetType() != GetType()) return false;
                 return Equals((B)obj);
             }
 
@@ -440,7 +440,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             {
                 if (ReferenceEquals(null, obj)) return false;
                 if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != this.GetType()) return false;
+                if (obj.GetType() != GetType()) return false;
                 return Equals((C)obj);
             }
 

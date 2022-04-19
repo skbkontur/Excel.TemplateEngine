@@ -1,6 +1,9 @@
 using System;
 
+using JetBrains.Annotations;
+
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.Implementations;
 
@@ -15,11 +18,13 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection
             this.logger = logger;
         }
 
+        [NotNull]
         public IClassParser GetClassParser()
         {
             return new ClassParser(this, logger);
         }
 
+        [NotNull]
         public IEnumerableParser GetEnumerableParser(Type modelType)
         {
             if (TypeCheckingHelper.IsEnumerable(modelType))
@@ -27,11 +32,13 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection
             throw new InvalidOperationException($"{modelType} is not IEnumerable");
         }
 
-        public IAtomicValueParser GetAtomicValueParser()
+        [NotNull]
+        public LazyClassParser GetLazyClassParser()
         {
-            return new AtomicValueParser();
+            return new LazyClassParser(logger);
         }
 
+        [NotNull]
         public IFormValueParser GetFormValueParser(string formControlTypeName, Type valueType)
         {
             if (formControlTypeName == "CheckBox" && valueType == typeof(bool))
@@ -41,6 +48,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection
             throw new InvalidOperationException($"Unsupported pair of {nameof(formControlTypeName)} ({formControlTypeName}) and {nameof(valueType)} ({valueType}) for form controls");
         }
 
+        [NotNull]
         public IEnumerableMeasurer GetEnumerableMeasurer()
         {
             return new EnumerableMeasurer(this);

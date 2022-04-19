@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net472;net6.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ihclmeWith10kList.xlsx" />
+    <None Remove="ihclmeWith500List.xlsx" />
+    <None Remove="ihclmeWith5kList.xlsx" />
+    <None Remove="ihclme_template.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ihclmeWith10kList.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ihclmeWith500List.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ihclmeWith5kList.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ihclme_template.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Excel.TemplateEngine\Excel.TemplateEngine.csproj" />
+  </ItemGroup>
+
+</Project>

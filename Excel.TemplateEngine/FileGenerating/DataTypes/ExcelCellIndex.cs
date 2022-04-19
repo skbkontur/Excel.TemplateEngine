@@ -1,8 +1,6 @@
-using System.Text.RegularExpressions;
-
 namespace SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes
 {
-    public class ExcelCellIndex
+    public readonly struct ExcelCellIndex
     {
         public ExcelCellIndex(int row, int column)
         {
@@ -39,14 +37,27 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes
             => ToCellReference((int)rowIndex, columnIndex);
 
         private static int ToRowIndex(string cellReference)
-            => int.Parse(new Regex("[A-Z]+").Replace(cellReference, ""));
+        {
+            var result = 0;
+            var pow = 1;
+            for (var i = cellReference.Length - 1; i >= 0; i--)
+            {
+                if (char.IsDigit(cellReference[i]))
+                {
+                    result += (cellReference[i] - '0') * pow;
+                    pow *= 10;
+                }
+            }
+            return result;
+        }
 
         private static int ToColumnIndex(string cellReference)
         {
-            var prefix = new Regex("[0-9]+").Replace(cellReference, "");
             var result = 0;
-            foreach (var c in prefix)
+            foreach (var c in cellReference)
             {
+                if (char.IsDigit(c))
+                    break;
                 result *= 26;
                 result += c - 'A' + 1;
             }

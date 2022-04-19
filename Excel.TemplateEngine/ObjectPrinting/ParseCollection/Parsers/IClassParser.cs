@@ -10,7 +10,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
     internal interface IClassParser
     {
         [NotNull]
-        TModel Parse<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template, Action<string, string> addFieldMapping)
+        TModel Parse<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template, [NotNull] Action<string, string> addFieldMapping)
             where TModel : new();
     }
 }

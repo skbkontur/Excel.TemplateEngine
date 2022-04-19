@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Excel.TemplateEngine.Tests", "Excel.TemplateEngine.Tests\Excel.TemplateEngine.Tests.csproj", "{46D6CD74-56BA-4077-8683-3DF0F7A5A0A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Excel.TemplateEngine", "Excel.TemplateEngine\Excel.TemplateEngine.csproj", "{8FF6E9EF-08AB-4C34-A3E1-5C62F07512E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Excel.TemplateEngine", "Excel.TemplateEngine\Excel.TemplateEngine.csproj", "{8FF6E9EF-08AB-4C34-A3E1-5C62F07512E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Benchmark\Benchmark.csproj", "{C3E694E2-96FB-4D98-8F5E-A97D1AA07BD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{8FF6E9EF-08AB-4C34-A3E1-5C62F07512E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FF6E9EF-08AB-4C34-A3E1-5C62F07512E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FF6E9EF-08AB-4C34-A3E1-5C62F07512E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3E694E2-96FB-4D98-8F5E-A97D1AA07BD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3E694E2-96FB-4D98-8F5E-A97D1AA07BD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3E694E2-96FB-4D98-8F5E-A97D1AA07BD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3E694E2-96FB-4D98-8F5E-A97D1AA07BD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -18,25 +18,23 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers.
 
         public int GetLength(ITableParser tableParser, Type modelType, IEnumerable<ICell> primaryParts)
         {
-            var parserState = new List<(IAtomicValueParser parser, ICell cell, Type itemType)>();
+            var parserState = new List<(ICell cell, Type itemType)>();
 
             foreach (var primaryPart in primaryParts)
             {
                 var childModelPath = ExcelTemplatePath.FromRawExpression(primaryPart.StringValue);
                 var childModelType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, childModelPath);
 
-                var parser = parserCollection.GetAtomicValueParser();
-
-                parserState.Add((parser, primaryPart, childModelType));
+                parserState.Add((primaryPart, childModelType));
             }
 
             for (var i = 0; i <= ParsingParameters.MaxEnumerableLength; i++)
             {
                 var parsed = false;
-                foreach (var (parser, cell, type) in parserState)
+                foreach (var (cell, type) in parserState)
                 {
                     tableParser.PushState(cell.CellPosition.Add(new ObjectSize(0, i)));
-                    if (parser.TryParse(tableParser, type, out var result) && result != null)
+                    if (TextValueParser.TryParse(tableParser.GetCurrentCellText(), type, out var result) && result != null)
                         parsed = true;
                     tableParser.PopState();
                 }
