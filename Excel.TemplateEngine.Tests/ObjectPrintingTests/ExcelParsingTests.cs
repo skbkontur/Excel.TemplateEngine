@@ -100,6 +100,19 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         }
 
         [Test]
+        public void TestLazyParseWithBlanks()
+        {
+            var model = LazyParse<PriceList>("simpleWithEnumerable_templateWithBlanks.xlsx", "simpleWithEnumerable_target.xlsx");
+
+            model.Type.Should().Be("Основной");
+            model.Items.Should().BeEquivalentTo(new[]
+                {
+                    new Item {Index = 1, Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ", Articul = "123456"},
+                    new Item {Index = 2, Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ", Articul = "123457"},
+                });
+        }
+
+        [Test]
         public void TestEnumerableWithPrimaryKey()
         {
             var (model, mappingForErrors) = Parse<PriceList>("enumerableWithPrimaryKey_template.xlsx", "enumerableWithPrimaryKey_target.xlsx");

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -66,9 +67,9 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                             if (!(enumerableType.IsArray || TypeCheckingHelper.IsList(enumerableType)))
                                 continue;
 
-                            var templateEnumerableRow = templateRow.SkipWhile(x => x.CellPosition.CellReference != templateCell.CellPosition.CellReference)
-                                                                   .ToArray();
-                            ParseEnumerable(tableReader, model, templateEnumerableRow, enumerableType);
+                            var templateListCells = templateRow.SkipWhile(x => x.CellPosition.CellReference != templateCell.CellPosition.CellReference)
+                                                               .ToArray();
+                            ParseEnumerable(tableReader, model, templateListCells, enumerableType);
                             break;
                         }
 
@@ -85,33 +86,28 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         /// </summary>
         private void ParseEnumerable([NotNull] LazyTableReader tableReader,
                                      [NotNull] object model,
-                                     [NotNull] [ItemNotNull] ICell[] templateEnumerableRow,
+                                     [NotNull] [ItemNotNull] ICell[] templateListCells,
                                      [NotNull] Type enumerableType)
         {
-            var firstExpression = templateEnumerableRow.First().StringValue;
-            var arrayAccessEnd = firstExpression.IndexOf(']');
-            var enumerableExpression = firstExpression.Substring(0, arrayAccessEnd + 1);
-
-            var firstEnumerableTemplateCells = templateEnumerableRow.Where(x => !string.IsNullOrEmpty(x.StringValue) && x.StringValue.StartsWith(enumerableExpression))
-                                                                    .Select(x => new SimpleCell(x.CellPosition, x.StringValue))
-                                                                    .ToArray();
+            var firstEnumerablePath = ExcelTemplatePath.FromRawExpression(templateListCells.First().StringValue)
+                                                       .SplitForEnumerableExpansion()
+                                                       .pathToEnumerable;
 
             var modelType = model.GetType();
-            var pathToEnumerable = ExcelTemplatePath.FromRawExpression(enumerableExpression);
-            var itemType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, pathToEnumerable);
+            var itemType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, firstEnumerablePath);
 
-            var items = ParseList(tableReader, itemType, firstEnumerableTemplateCells, logger);
+            var items = ParseList(tableReader, itemType, templateListCells.Select(x => new SimpleCell(x.CellPosition, x.StringValue)));
 
-            var withoutArrayAccess = pathToEnumerable.WithoutArrayAccess();
+            var withoutArrayAccess = firstEnumerablePath.WithoutArrayAccess();
             var enumerableSetter = ObjectChildSetterFactory.GetEnumerableSetter(modelType, withoutArrayAccess, enumerableType, itemType);
 
             enumerableSetter(model, items);
         }
 
-        private object ParseList([NotNull] LazyTableReader tableReader, [NotNull] Type itemType, [NotNull, ItemNotNull] SimpleCell[] firstEnumerableTemplateCells, ILog log)
+        private object ParseList([NotNull] LazyTableReader tableReader, [NotNull] Type itemType, [NotNull, ItemNotNull] IEnumerable<SimpleCell> templateListCells)
         {
             return parseList.MakeGenericMethod(itemType)
-                            .Invoke(null, new object[] {tableReader, firstEnumerableTemplateCells, logger});
+                            .Invoke(null, new object[] {tableReader, templateListCells, true, logger});
         }
 
         private void ParseSingleValue([NotNull] SimpleCell cell,
