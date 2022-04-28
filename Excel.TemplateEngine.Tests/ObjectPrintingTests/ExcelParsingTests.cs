@@ -141,6 +141,25 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         }
 
         [Test]
+        public void TestLazyParseWithPrimaryKey()
+        {
+            var model = LazyParse<PriceList>("enumerableWithPrimaryKey_template.xlsx", "enumerableWithPrimaryKey_target.xlsx");
+            
+            model.Type.Should().Be("Основной");
+            model.Items.Should().BeEquivalentTo(new[]
+                    {
+                        new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ", BuyerProductId = "000074467", Articul = "123456"},
+                        new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ", BuyerProductId = "000074468", Articul = "123457"},
+                        new Item {Id = null, Name = "Товар 3"},
+                        new Item {Id = "123", Articul = "3123123"},
+                        new Item {Id = "111", Articul = "111111"},
+                        new Item {Name = "Товар 6"},
+                        new Item {Id = "222", Name = "Товар 7", Articul = "123"}
+                    }
+            );
+        }
+
+        [Test]
         public void TestCheckBoxes()
         {
             var (model, mappingForErrors) = Parse<PriceList>("сheckBoxes_template.xlsx", "сheckBoxes_target.xlsx");

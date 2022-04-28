@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 using JetBrains.Annotations;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 
 using Vostok.Logging.Abstractions;
@@ -26,42 +28,28 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         {
             var itemType = typeof(TItem);
 
-            var template = filterTemplateCells ? FilterTemplateCells(templateListCells) : templateListCells;
-            var listTemplate = template.Select(x => (CellPosition : x.CellPosition, ItemPropPath : ExcelTemplatePath.FromRawExpression(x.CellValue).SplitForEnumerableExpansion().relativePathToItem))
+            var template = (filterTemplateCells ? FilterTemplateCells(templateListCells) : templateListCells).Select(x => (CellPosition : x.CellPosition, Path : ExcelTemplatePath.FromRawExpression(x.CellValue)))
+                                                                                                             .ToArray();
+            var impotentItemProps = template.Where(x => x.Path.HasPrimaryKeyArrayAccess)
+                                            .Select(x => x.Path.SplitForEnumerableExpansion().relativePathToItem)
+                                            .ToArray();
+            var itemTemplate = template.Select(x => (CellPosition : x.CellPosition, ItemPropPath : x.Path.SplitForEnumerableExpansion().relativePathToItem))
                                        .ToArray();
 
-            var itemPropPaths = listTemplate.Select(x => x.ItemPropPath)
+            var itemPropPaths = itemTemplate.Select(x => x.ItemPropPath)
                                             .ToArray();
             var dictToObject = ObjectConversionGenerator.BuildDictToObject(itemPropPaths, itemType);
 
             var result = new List<TItem>();
 
-            var firstListCellPosition = listTemplate.First().CellPosition;
-            var row = tableReader.TryReadRow(firstListCellPosition.RowIndex);
+            var firstItemCellPosition = itemTemplate.First().CellPosition;
+            var row = tableReader.TryReadRow(firstItemCellPosition.RowIndex);
             while (row != null)
             {
                 var itemDict = itemPropPaths.ToDictionary(x => x, _ => (object)null);
-                var rowIsEmpty = true;
-                foreach (var prop in listTemplate)
-                {
-                    var cellPosition = new CellPosition(row.RowIndex, prop.CellPosition.ColumnIndex);
-                    var cell = row.TryReadCell(cellPosition);
-                    if (cell == null || string.IsNullOrEmpty(cell.CellValue))
-                        continue;
+                FillInItemDict(itemTemplate, row, itemType, itemDict, logger);
 
-                    rowIsEmpty = false;
-
-                    var propType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(itemType, prop.ItemPropPath);
-                    if (!TextValueParser.TryParse(cell.CellValue, propType, out var parsedValue))
-                    {
-                        logger.Warn("Failed to parse value {CellValue} from {CellReference} with type='{PropType}'", new {CellValue = cell.CellValue, CellReference = cell.CellPosition.CellReference, PropType = propType});
-                        continue;
-                    }
-
-                    itemDict[prop.ItemPropPath] = parsedValue;
-                }
-
-                if (rowIsEmpty)
+                if (IsRowEmpty(itemDict, impotentItemProps))
                 {
                     row.Dispose();
                     break;
@@ -76,12 +64,42 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             return result;
         }
 
+        private static void FillInItemDict((ICellPosition CellPosition, ExcelTemplatePath ItemPropPath)[] itemTemplate, LazyRowReader row, Type itemType, Dictionary<ExcelTemplatePath, object> itemDict, ILog logger)
+        {
+            foreach (var prop in itemTemplate)
+            {
+                var cellPosition = new CellPosition(row.RowIndex, prop.CellPosition.ColumnIndex);
+                var cell = row.TryReadCell(cellPosition);
+                if (cell == null || string.IsNullOrWhiteSpace(cell.CellValue))
+                    continue;
+
+                var propType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(itemType, prop.ItemPropPath);
+                if (!TextValueParser.TryParse(cell.CellValue, propType, out var parsedValue))
+                {
+                    logger.Warn("Failed to parse value {CellValue} from {CellReference} with type='{PropType}'", new {CellValue = cell.CellValue, CellReference = cell.CellPosition.CellReference, PropType = propType});
+                    continue;
+                }
+
+                itemDict[prop.ItemPropPath] = parsedValue;
+            }
+        }
+
+        private static bool IsRowEmpty(Dictionary<ExcelTemplatePath, object> itemDict, ExcelTemplatePath[] impotentItemProps)
+        {
+            if (impotentItemProps.Length < 1)
+                return itemDict.All(x => x.Value == null);
+
+            return itemDict.Where(x => impotentItemProps.Contains(x.Key))
+                           .All(x => x.Value == null);
+        }
+
         /// <summary>
         ///     Returns cells of the first met row and which value describes items of the first met enumerable. Cells is ordered by ColumnIndex.
         /// </summary>
         /// <param name="templateListCells">Template cells that forms list description.</param>
         /// <returns></returns>
-        public static IEnumerable<SimpleCell> FilterTemplateCells(IEnumerable<SimpleCell> templateListCells)
+        [UsedImplicitly]
+        public static IEnumerable<SimpleCell> FilterTemplateCells([NotNull, ItemNotNull] IEnumerable<SimpleCell> templateListCells)
         {
             var cellsWithPaths = templateListCells.Where(x => TemplateDescriptionHelper.IsCorrectValueDescription(x.CellValue))
                                                   .Select(x => (cell : x, path : ExcelTemplatePath.FromRawExpression(x.CellValue)))
@@ -92,7 +110,8 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             var firstTemplateItem = cellsWithPaths[0];
             var firstEnumerablePath = firstTemplateItem.path
                                                        .SplitForEnumerableExpansion()
-                                                       .pathToEnumerable;
+                                                       .pathToEnumerable
+                                                       .WithoutArrayAccess();
             return cellsWithPaths.Where(x => x.cell.CellPosition.RowIndex == firstTemplateItem.cell.CellPosition.RowIndex &&
                                              x.path.RawPath.StartsWith(firstEnumerablePath.RawPath))
                                  .Select(x => x.cell);
