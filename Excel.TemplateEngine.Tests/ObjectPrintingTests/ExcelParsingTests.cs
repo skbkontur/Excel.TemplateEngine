@@ -144,7 +144,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         public void TestLazyParseWithPrimaryKey()
         {
             var model = LazyParse<PriceList>("enumerableWithPrimaryKey_template.xlsx", "enumerableWithPrimaryKey_target.xlsx");
-            
+
             model.Type.Should().Be("Основной");
             model.Items.Should().BeEquivalentTo(new[]
                     {
