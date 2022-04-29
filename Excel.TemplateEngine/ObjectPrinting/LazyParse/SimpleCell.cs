@@ -6,7 +6,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 {
     public class SimpleCell
     {
-        public SimpleCell([NotNull] ICellPosition cellPosition, [NotNull] string cellValue)
+        public SimpleCell([NotNull] ICellPosition cellPosition, [CanBeNull] string cellValue)
         {
             CellPosition = cellPosition;
             CellValue = cellValue;
@@ -15,7 +15,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         [NotNull]
         public ICellPosition CellPosition { get; }
 
-        [NotNull]
+        [CanBeNull]
         public string CellValue { get; }
     }
 }

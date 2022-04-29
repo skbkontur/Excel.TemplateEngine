@@ -69,14 +69,14 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         private SimpleCell ToSimpleCell([NotNull] Cell cell)
         {
             var cellIndex = new CellPosition(cell.CellReference);
-            var cellString = cell.InnerText;
-            if (cell.DataType?.Value == CellValues.SharedString)
+            var cellValue = cell.CellValue?.InnerText;
+            if (cell.DataType?.Value == CellValues.SharedString && cellValue != null)
             {
-                var i = int.Parse(cell.InnerText);
-                cellString = sharedStrings[i];
+                var i = int.Parse(cellValue);
+                cellValue = sharedStrings[i];
             }
 
-            return new SimpleCell(cellIndex, cellString);
+            return new SimpleCell(cellIndex, cellValue);
         }
 
         public void Dispose()
