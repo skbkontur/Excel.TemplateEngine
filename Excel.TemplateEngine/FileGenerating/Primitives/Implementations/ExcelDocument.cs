@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
+using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -31,11 +32,24 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
             documentMemoryStream.Write(template, 0, template.Length);
             spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true);
 
-            documentStyle = new ExcelDocumentStyle(spreadsheetDocument.GetOrCreateSpreadsheetStyles(), spreadsheetDocument.WorkbookPart.ThemePart.Theme, this.logger);
+            var theme = GetEmptyTheme();
+            documentStyle = new ExcelDocumentStyle(spreadsheetDocument.GetOrCreateSpreadsheetStyles(), spreadsheetDocument.WorkbookPart?.ThemePart?.Theme ?? theme, this.logger);
             excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.GetOrCreateSpreadsheetSharedStrings());
             spreadsheetDisposed = false;
 
             SetDefaultCreatorAndEditor();
+        }
+
+        private static Theme GetEmptyTheme()
+        {
+            var theme = new Theme
+                {
+                    ThemeElements = new ThemeElements
+                        {
+                            ColorScheme = new ColorScheme()
+                        }
+                };
+            return theme;
         }
 
         private void ThrowIfSpreadsheetDisposed()
