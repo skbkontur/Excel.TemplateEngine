@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
 
 using Vostok.Logging.Abstractions;
@@ -31,7 +32,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         /// <param name="tableReader">Target document LazyTableReader.</param>
         /// <param name="template"></param>
         [NotNull]
-        public TModel Parse<TModel>([NotNull] LazyTableReader tableReader, [NotNull] RenderingTemplate template)
+        public TModel Parse<TModel>([NotNull] LazyTableReader tableReader, [NotNull] RenderingTemplate template, ObjectSize readerOffset)
             where TModel : new()
         {
             var model = new TModel();
@@ -42,7 +43,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                 if (firstCell == null)
                     continue;
 
-                var targetRowReader = tableReader.TryReadRow(firstCell.CellPosition.RowIndex);
+                var targetRowReader = tableReader.TryReadRow(firstCell.CellPosition.RowIndex + readerOffset.Height);
                 if (targetRowReader == null)
                     continue;
 
@@ -50,7 +51,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                 {
                     foreach (var templateCell in templateRow)
                     {
-                        var targetCell = targetRowReader.TryReadCell(templateCell.CellPosition);
+                        var targetCell = targetRowReader.TryReadCell(templateCell.CellPosition.Add(readerOffset));
                         if (targetCell == null)
                             continue;
 
