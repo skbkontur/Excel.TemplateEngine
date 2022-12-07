@@ -58,7 +58,7 @@ namespace SkbKontur.Excel.TemplateEngine
             where TModel : new()
         {
             readerOffset ??= new ObjectSize(0, 0);
-            
+
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName) ??
                                     throw new InvalidOperationException($"Template with name {rootTemplateName} not found in xlsx");
             var parser = parserCollection.GetLazyClassParser();
