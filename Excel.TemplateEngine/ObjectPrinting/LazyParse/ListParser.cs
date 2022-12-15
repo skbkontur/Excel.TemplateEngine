@@ -66,10 +66,10 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             return result;
         }
 
-        private static void FillInItemDict((ICellPosition CellPosition, ExcelTemplatePath ItemPropPath)[] itemTemplate, 
+        private static void FillInItemDict((ICellPosition CellPosition, ExcelTemplatePath ItemPropPath)[] itemTemplate,
                                            LazyRowReader row,
-                                           Type itemType, 
-                                           Dictionary<ExcelTemplatePath, object> itemDict, 
+                                           Type itemType,
+                                           Dictionary<ExcelTemplatePath, object> itemDict,
                                            ObjectSize readerOffset,
                                            ILog logger)
         {
