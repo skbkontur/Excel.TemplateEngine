@@ -78,6 +78,20 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         }
 
         [Test]
+        public void TestLazyParseWithOffset()
+        {
+            var offset = new ObjectSize(1, 1);
+            var model = LazyParse<PriceList>("simpleWithItemsList_template.xlsx", "simpleWithEnumerableAndOffset_target.xlsx", offset);
+
+            model.Type.Should().Be("Основной");
+            model.ItemsList.Should().BeEquivalentTo(new List<Item>(new[]
+                {
+                    new Item {Index = 1, Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ"},
+                    new Item {Index = 2, Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ"},
+                }));
+        }
+
+        [Test]
         public void TestLazyParseMoreThan10kItems()
         {
             var model = LazyParse<PriceList>("simpleWithItemsList_template.xlsx", "simpleWith11kItemEnumerable.xlsx");
@@ -299,7 +313,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             }
         }
 
-        private TModel LazyParse<TModel>(string templateFileName, string targetFileName)
+        private TModel LazyParse<TModel>(string templateFileName, string targetFileName, ObjectSize offset = null)
             where TModel : new()
         {
             var templateBytes = File.ReadAllBytes(GetFilePath(templateFileName));
@@ -311,7 +325,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
                 var templateEngine = new TemplateEngine(template, logger);
 
-                return templateEngine.LazyParse<TModel>(lazyTableReader);
+                return templateEngine.LazyParse<TModel>(lazyTableReader, offset);
             }
         }
 

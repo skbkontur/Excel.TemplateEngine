@@ -20,11 +20,13 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         /// <param name="tableReader">TableReader of target document which will be parsed.</param>
         /// <param name="templateListCells">Template cells with list items descriptions.</param>
         /// <param name="filterTemplateCells">Determines whether it's needed to filter templateListCells or not.</param>
+        /// <param name="readerOffset">Target file offset relative to a template.</param>
         /// <param name="logger"></param>
         public static IReadOnlyList<TItem> Parse<TItem>([NotNull] LazyTableReader tableReader,
                                                         [NotNull, ItemNotNull] IEnumerable<SimpleCell> templateListCells,
                                                         bool filterTemplateCells,
-                                                        [NotNull] ILog logger)
+                                                        [NotNull] ILog logger,
+                                                        [NotNull] ObjectSize readerOffset)
         {
             var itemType = typeof(TItem);
 
@@ -43,11 +45,11 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             var result = new List<TItem>();
 
             var firstItemCellPosition = itemTemplate.First().CellPosition;
-            var row = tableReader.TryReadRow(firstItemCellPosition.RowIndex);
+            var row = tableReader.TryReadRow(firstItemCellPosition.RowIndex + readerOffset.Height);
             while (row != null)
             {
                 var itemDict = itemPropPaths.ToDictionary(x => x, _ => (object)null);
-                FillInItemDict(itemTemplate, row, itemType, itemDict, logger);
+                FillInItemDict(itemTemplate, row, itemType, itemDict, readerOffset, logger);
 
                 if (IsRowEmpty(itemDict, impotentItemProps))
                 {
@@ -64,11 +66,16 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             return result;
         }
 
-        private static void FillInItemDict((ICellPosition CellPosition, ExcelTemplatePath ItemPropPath)[] itemTemplate, LazyRowReader row, Type itemType, Dictionary<ExcelTemplatePath, object> itemDict, ILog logger)
+        private static void FillInItemDict((ICellPosition CellPosition, ExcelTemplatePath ItemPropPath)[] itemTemplate, 
+                                           LazyRowReader row,
+                                           Type itemType, 
+                                           Dictionary<ExcelTemplatePath, object> itemDict, 
+                                           ObjectSize readerOffset,
+                                           ILog logger)
         {
             foreach (var prop in itemTemplate)
             {
-                var cellPosition = new CellPosition(row.RowIndex, prop.CellPosition.ColumnIndex);
+                var cellPosition = new CellPosition(row.RowIndex, prop.CellPosition.ColumnIndex + readerOffset.Width);
                 var cell = row.TryReadCell(cellPosition);
                 if (cell == null || string.IsNullOrWhiteSpace(cell.CellValue))
                     continue;
