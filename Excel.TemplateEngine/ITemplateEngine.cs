@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
 
@@ -15,7 +16,7 @@ namespace SkbKontur.Excel.TemplateEngine
         (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>([NotNull] ITableParser tableParser)
             where TModel : new();
 
-        public TModel LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader)
+        public TModel LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader, ObjectSize readerOffset = null)
             where TModel : new();
     }
 }

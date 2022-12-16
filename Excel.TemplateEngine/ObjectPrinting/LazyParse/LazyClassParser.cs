@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.Helpers;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
 
 using Vostok.Logging.Abstractions;
@@ -30,8 +31,9 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         /// <typeparam name="TModel">Class to parse.</typeparam>
         /// <param name="tableReader">Target document LazyTableReader.</param>
         /// <param name="template"></param>
+        /// <param name="readerOffset">Target file offset relative to a template.</param>
         [NotNull]
-        public TModel Parse<TModel>([NotNull] LazyTableReader tableReader, [NotNull] RenderingTemplate template)
+        public TModel Parse<TModel>([NotNull] LazyTableReader tableReader, [NotNull] RenderingTemplate template, ObjectSize readerOffset)
             where TModel : new()
         {
             var model = new TModel();
@@ -42,7 +44,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                 if (firstCell == null)
                     continue;
 
-                var targetRowReader = tableReader.TryReadRow(firstCell.CellPosition.RowIndex);
+                var targetRowReader = tableReader.TryReadRow(firstCell.CellPosition.RowIndex + readerOffset.Height);
                 if (targetRowReader == null)
                     continue;
 
@@ -50,7 +52,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                 {
                     foreach (var templateCell in templateRow)
                     {
-                        var targetCell = targetRowReader.TryReadCell(templateCell.CellPosition);
+                        var targetCell = targetRowReader.TryReadCell(templateCell.CellPosition.Add(readerOffset));
                         if (targetCell == null)
                             continue;
 
@@ -69,7 +71,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
 
                             var templateListCells = templateRow.SkipWhile(x => x.CellPosition.CellReference != templateCell.CellPosition.CellReference)
                                                                .ToArray();
-                            ParseEnumerable(tableReader, model, templateListCells, enumerableType);
+                            ParseEnumerable(tableReader, model, templateListCells, enumerableType, readerOffset);
                             break;
                         }
 
@@ -87,7 +89,8 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         private void ParseEnumerable([NotNull] LazyTableReader tableReader,
                                      [NotNull] object model,
                                      [NotNull] [ItemNotNull] ICell[] templateListCells,
-                                     [NotNull] Type enumerableType)
+                                     [NotNull] Type enumerableType,
+                                     [NotNull] ObjectSize readerOffset)
         {
             var firstEnumerablePath = ExcelTemplatePath.FromRawExpression(templateListCells.First().StringValue)
                                                        .SplitForEnumerableExpansion()
@@ -96,7 +99,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             var modelType = model.GetType();
             var itemType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, firstEnumerablePath);
 
-            var items = ParseList(tableReader, itemType, templateListCells.Select(x => new SimpleCell(x.CellPosition, x.StringValue)));
+            var items = ParseList(tableReader, itemType, templateListCells.Select(x => new SimpleCell(x.CellPosition, x.StringValue)), readerOffset);
 
             var withoutArrayAccess = firstEnumerablePath.WithoutArrayAccess();
             var enumerableSetter = ObjectChildSetterFactory.GetEnumerableSetter(modelType, withoutArrayAccess, enumerableType, itemType);
@@ -104,10 +107,10 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             enumerableSetter(model, items);
         }
 
-        private object ParseList([NotNull] LazyTableReader tableReader, [NotNull] Type itemType, [NotNull, ItemNotNull] IEnumerable<SimpleCell> templateListCells)
+        private object ParseList([NotNull] LazyTableReader tableReader, [NotNull] Type itemType, [NotNull, ItemNotNull] IEnumerable<SimpleCell> templateListCells, ObjectSize readerOffset)
         {
             return parseList.MakeGenericMethod(itemType)
-                            .Invoke(null, new object[] {tableReader, templateListCells, true, logger});
+                            .Invoke(null, new object[] {tableReader, templateListCells, true, logger, readerOffset});
         }
 
         private void ParseSingleValue([NotNull] SimpleCell cell,

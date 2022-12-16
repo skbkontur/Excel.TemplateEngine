@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse;
+using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderCollection;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
@@ -52,13 +53,16 @@ namespace SkbKontur.Excel.TemplateEngine
         /// </summary>
         /// <typeparam name="TModel">Class to parse.</typeparam>
         /// <param name="lazyTableReader">LazyTableReader of target xlsx file.</param>
-        public TModel LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader)
+        /// <param name="readerOffset">Target file offset relative to a template.</param>
+        public TModel LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader, ObjectSize readerOffset = null)
             where TModel : new()
         {
+            readerOffset ??= new ObjectSize(0, 0);
+
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName) ??
                                     throw new InvalidOperationException($"Template with name {rootTemplateName} not found in xlsx");
             var parser = parserCollection.GetLazyClassParser();
-            return parser.Parse<TModel>(lazyTableReader, renderingTemplate);
+            return parser.Parse<TModel>(lazyTableReader, renderingTemplate, readerOffset);
         }
 
         private const string rootTemplateName = "RootTemplate";
