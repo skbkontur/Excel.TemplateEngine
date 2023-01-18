@@ -10,8 +10,15 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentP
             CellPosition = position;
         }
 
-        public string StringValue { get; set; }
-        public CellType CellType { get; set; }
+        public string StringValue { get; private set; }
+        public CellType CellType { get; private set; }
+
+        public void SetValue(string stringValue, CellType cellType)
+        {
+            StringValue = stringValue;
+            CellType = cellType;
+        }
+
         public ICellPosition CellPosition { get; }
 
         public void CopyStyle(ICell templateCell)

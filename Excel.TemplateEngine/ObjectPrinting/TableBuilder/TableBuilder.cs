@@ -151,8 +151,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder
         private ITableBuilder RenderAtomicValue(string value, CellType cellType)
         {
             var cell = target.GetCell(navigator.CurrentState.Cursor) ?? target.InsertCell(navigator.CurrentState.Cursor);
-            cell.StringValue = value;
-            cell.CellType = cellType;
+            cell.SetValue(value, cellType);
             return this;
         }
 
