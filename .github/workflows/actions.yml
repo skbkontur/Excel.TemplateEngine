@@ -1,0 +1,88 @@
+on:
+  push:
+    paths-ignore:
+      - "**/*.md"
+    pull_request:
+env:
+  DOTNET_VERSION: 6.0.x
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install dependencies
+        run: dotnet restore ./Excel.TemplateEngine.sln --verbosity minimal && dotnet tool restore
+        
+      - name: Build
+        run: dotnet build --configuration Release ./Excel.TemplateEngine.sln
+        
+      - name: Check codestyle
+        run: dotnet jb cleanupcode Excel.TemplateEngine.sln --profile=CatalogueCleanup --verbosity=WARN && git diff --exit-code
+      
+      - name: Run tests
+        run: dotnet test --no-build --configuration Release ./Excel.TemplateEngine.Tests/Excel.TemplateEngine.Tests.csproj
+  publish:
+    runs-on: ubuntu-20.04
+    needs: test
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Build
+        run: dotnet build --configuration Release ./Excel.TemplateEngine.sln
+
+      - name: Check version
+        run: |
+          tagName="${{github.ref_name}}"
+          echo "Will publish nuget package for $tagName tag"
+          # tag name starts with 'vX.Y-release' (e.g. use 'v4.2-release.1' tag for the first patch for release v4.2)
+          if [[ $tagName =~ v([0-9]+\.[0-9]+)-release ]] ; then
+            releaseVersion=${BASH_REMATCH[1]}
+            echo "SHOULD_CREATE_RELEASE=true" >> $GITHUB_ENV
+          else
+            releaseVersion="${tagName:1}"
+          fi
+          echo "DEBUG_VERSION=$releaseVersion" >> $GITHUB_ENV
+          echo "Will create release $releaseVersion for $tagName tag"
+          if ! grep -Fq "\"version\": \"$releaseVersion\"" ./version.json ; then
+            echo "Version in tag ($releaseVersion) does not match version in version.json"
+            exit 1
+          fi
+
+      - name: Pack dotnet
+        run: dotnet pack --no-build --configuration Release --output out
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: "**/*.nupkg"
+          if-no-files-found: error
+
+      - name: Publish NuGet
+        run: dotnet nuget push "**/*.nupkg" --source https://api.nuget.org/v3/index.json --no-symbols --api-key $NUGET_API_KEY
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        if: ${{ env.SHOULD_CREATE_RELEASE == 'true' }}
+        with:
+          fail_on_unmatched_files: true
+          draft: false
+          prerelease: false
+          files: "**/*.nupkg"
