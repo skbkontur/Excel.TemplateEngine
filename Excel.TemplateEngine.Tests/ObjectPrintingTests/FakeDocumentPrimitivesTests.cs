@@ -25,7 +25,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             cell.Should().NotBeNull();
 
             const string testValue = "Test Value";
-            cell.StringValue = testValue;
+            cell.SetValue(testValue);
 
             cell = table.GetCell(position);
 
@@ -89,7 +89,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             for (var i = 0; i < positions.Count(); ++i)
             {
                 var cell = table.InsertCell(positions[i]);
-                cell.StringValue = stringValues[i];
+                cell.SetValue(stringValues[i]);
             }
 
             var cells = table.SearchCellByText("Test");
@@ -124,7 +124,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             for (var i = 0; i < positions.Count(); ++i)
             {
                 var cell = table.InsertCell(positions[i]);
-                cell.StringValue = stringValues[i];
+                cell.SetValue(stringValues[i]);
             }
 
             var tablePart = table.GetTablePart(new Rectangle(new CellPosition(9, 9), new CellPosition(40, 20)));

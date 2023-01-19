@@ -116,7 +116,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests.FakeDocumentP
                 for (var x = 0; x < width; ++x)
                 {
                     var cell = table.InsertCell(new CellPosition(y + 1, x + 1));
-                    cell.StringValue = template[y][x];
+                    cell.SetValue(template[y][x], CellType.String);
                 }
             }
             return table;

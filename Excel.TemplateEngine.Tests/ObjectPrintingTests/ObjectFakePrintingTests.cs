@@ -24,7 +24,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         {
             var template = new FakeTable(1, 1);
             var cell = template.InsertCell(new CellPosition(1, 1));
-            cell.StringValue = "Template:RootTemplate:A1:A1";
+            cell.SetValue("Template:RootTemplate:A1:A1");
 
             var templateEngine = new TemplateEngine(template, logger);
 
@@ -48,7 +48,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 
             var template = new FakeTable(1, 1);
             var cell = template.InsertCell(new CellPosition(1, 1));
-            cell.StringValue = "Template:RootTemplate:A1:A1";
+            cell.SetValue("Template:RootTemplate:A1:A1");
 
             var templateEngine = new TemplateEngine(template, logger);
 

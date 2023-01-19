@@ -11,23 +11,20 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.
             internalCell = excelCell;
         }
 
-        public string StringValue { get => internalCell.GetStringValue(); set => internalCell.SetStringValue(value); }
-
-        public CellType CellType
-        {
-            set
-            {
-                if (value == CellType.String)
-                    internalCell.SetStringValue(StringValue);
-                else
-                    internalCell.SetNumericValue(StringValue);
-            }
-        }
+        public string StringValue => internalCell.GetStringValue();
 
         public void CopyStyle(ICell templateCell)
         {
             var excelCell = ((ExcelCell)templateCell);
             internalCell.SetStyle(excelCell.internalCell.GetStyle());
+        }
+
+        public void SetValue(string stringValue, CellType cellType)
+        {
+            if (cellType == CellType.String)
+                internalCell.SetStringValue(stringValue);
+            else
+                internalCell.SetNumericValue(stringValue);
         }
 
         public ICellPosition CellPosition => new CellPosition(internalCell.GetCellIndex());
