@@ -3,6 +3,8 @@ version: '{build}'
 skip_commits:
   files:
     - '**/*.md'
+skip_tags: true
+skip_non_tags: true
 
 image: Visual Studio 2022
 
