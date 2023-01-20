@@ -20,6 +20,7 @@ using SkbKontur.Excel.TemplateEngine.FileGenerating.Helpers;
 using Vostok.Logging.Abstractions;
 
 using Tuple = System.Tuple;
+using NotNullAttribute = JetBrains.Annotations.NotNullAttribute;
 
 namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementations
 {
