@@ -2,7 +2,9 @@ on:
   push:
     paths-ignore:
       - "**/*.md"
-    pull_request:
+  pull_request:
+    paths-ignore:
+      - "**/*.md"
 env:
   DOTNET_VERSION: 6.0.x
 jobs:
