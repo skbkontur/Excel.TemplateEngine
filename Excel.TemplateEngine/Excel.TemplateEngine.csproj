@@ -12,12 +12,8 @@
     <PackageReference Include="C5" Version="2.5.3" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.19.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
-    <PackageReference Include="Vostok.Logging.Abstractions" Version="1.0.30" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)'=='net471'">
-    <!-- we need to reference System.IO.Packaging directly since net46-targeted DocumentFormat.OpenXml package does not depend on it anymore (see https://github.com/OfficeDev/Open-XML-SDK/pull/783) -->
     <PackageReference Include="System.IO.Packaging" Version="6.0.0" />
+    <PackageReference Include="Vostok.Logging.Abstractions" Version="1.0.30" />
   </ItemGroup>
 
   <ItemGroup>
