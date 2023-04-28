@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 using SkbKontur.Excel.TemplateEngine.Exceptions;
 using SkbKontur.Excel.TemplateEngine.FileGenerating;
+using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.ExcelDocumentPrimitives.Implementations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
@@ -289,6 +290,51 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             model.TestFlag1.Should().BeFalse();
             model.TestFlag2.Should().BeTrue();
             model.Type.Should().Be("Значение 2");
+        }
+
+        [TestCase("TemplateVersion", "1.9.text.$$%")]
+        [TestCase("another custom property", "another value")]
+        [TestCase("non-existent key", null)]
+        [TestCase(null, null)]
+        [TestCase("", null)]
+        public void TestGetCustomProperty(string key, string value)
+        {
+            var template = File.ReadAllBytes(GetFilePath("customProperties.xlsx"));
+            using (var templateModel = ExcelDocumentFactory.CreateFromTemplate(template, logger))
+            {
+                CheckCustomProperty(templateModel, key, value);
+                var printedDocument = templateModel.CloseAndGetDocumentBytes();
+                using (var printedDocumentModel = ExcelDocumentFactory.CreateFromTemplate(printedDocument, logger))
+                {
+                    CheckCustomProperty(printedDocumentModel, key, value);
+                }
+            }
+        }
+
+        [TestCase("customProperties.xlsx")]
+        [TestCase("empty.xlsx", Description = "template file without custom properties")]
+        public void TestSetCustomProperty(string fileName)
+        {
+            var addedKey = "NewKey";
+            var addedValue = "CertainValue";
+            var templateBytes = File.ReadAllBytes(GetFilePath(fileName));
+            using (var template = ExcelDocumentFactory.CreateFromTemplate(templateBytes, logger))
+            {
+                CheckCustomProperty(template, addedKey, null);
+                template.SetCustomProperty(addedKey, addedValue);
+                CheckCustomProperty(template, addedKey, addedValue);
+                var printedDocumentBytes = template.CloseAndGetDocumentBytes();
+                using (var printedDocument = ExcelDocumentFactory.CreateFromTemplate(printedDocumentBytes, logger))
+                {
+                    CheckCustomProperty(printedDocument, addedKey, addedValue);
+                }
+            }
+        }
+
+        private void CheckCustomProperty(IExcelDocument documentModel, string key, string value)
+        {
+            documentModel.TryGetCustomProperty(key, out var printedVersion).Should().Be(value != null);
+            printedVersion.Should().Be(value);
         }
 
         private (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(string templateFileName, string targetFileName)
