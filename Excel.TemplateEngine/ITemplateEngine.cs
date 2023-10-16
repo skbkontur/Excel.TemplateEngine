@@ -16,7 +16,7 @@ namespace SkbKontur.Excel.TemplateEngine
         (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>([NotNull] ITableParser tableParser)
             where TModel : new();
 
-        public TModel LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader, ObjectSize readerOffset = null)
+        public TModel LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader, ObjectSize readerOffset = null, IFormulaEvaluator formulaEvaluator = null)
             where TModel : new();
     }
 }

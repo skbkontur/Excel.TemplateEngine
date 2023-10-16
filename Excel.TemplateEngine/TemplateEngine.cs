@@ -54,7 +54,8 @@ namespace SkbKontur.Excel.TemplateEngine
         /// <typeparam name="TModel">Class to parse.</typeparam>
         /// <param name="lazyTableReader">LazyTableReader of target xlsx file.</param>
         /// <param name="readerOffset">Target file offset relative to a template.</param>
-        public TModel LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader, ObjectSize readerOffset = null)
+        /// <param name="formulaEvaluator">Target file formula evaluator.</param>
+        public TModel LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader, ObjectSize readerOffset = null, IFormulaEvaluator formulaEvaluator = null)
             where TModel : new()
         {
             readerOffset ??= new ObjectSize(0, 0);
@@ -62,7 +63,7 @@ namespace SkbKontur.Excel.TemplateEngine
             var renderingTemplate = templateCollection.GetTemplate(rootTemplateName) ??
                                     throw new InvalidOperationException($"Template with name {rootTemplateName} not found in xlsx");
             var parser = parserCollection.GetLazyClassParser();
-            return parser.Parse<TModel>(lazyTableReader, renderingTemplate, readerOffset);
+            return parser.Parse<TModel>(lazyTableReader, renderingTemplate, readerOffset, formulaEvaluator);
         }
 
         private const string rootTemplateName = "RootTemplate";
