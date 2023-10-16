@@ -54,6 +54,7 @@ namespace SkbKontur.Excel.TemplateEngine
         /// <typeparam name="TModel">Class to parse.</typeparam>
         /// <param name="lazyTableReader">LazyTableReader of target xlsx file.</param>
         /// <param name="readerOffset">Target file offset relative to a template.</param>
+        /// <param name="formulaEvaluator">Target file formula evaluator.</param>
         public TModel LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader, ObjectSize readerOffset = null, IFormulaEvaluator formulaEvaluator = null)
             where TModel : new()
         {
