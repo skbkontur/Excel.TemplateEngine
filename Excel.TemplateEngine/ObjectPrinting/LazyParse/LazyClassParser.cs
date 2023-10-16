@@ -35,7 +35,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         /// <param name="formulaEvaluator">Target document formula evaluator.</param>
         [NotNull]
         public TModel Parse<TModel>(
-            [NotNull] LazyTableReader tableReader, 
+            [NotNull] LazyTableReader tableReader,
             [NotNull] RenderingTemplate template,
             [NotNull] ObjectSize readerOffset,
             [CanBeNull] IFormulaEvaluator formulaEvaluator = null)
@@ -58,7 +58,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                     foreach (var templateCell in templateRow)
                     {
                         var targetCell = targetRowReader.TryReadCell(
-                            templateCell.CellPosition.Add(readerOffset), 
+                            templateCell.CellPosition.Add(readerOffset),
                             formulaEvaluator);
 
                         if (targetCell == null)
@@ -109,10 +109,10 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             var itemType = ObjectPropertiesExtractor.ExtractChildObjectTypeFromPath(modelType, firstEnumerablePath);
 
             var items = ParseList(
-                tableReader, 
-                itemType, 
-                templateListCells.Select(x => new SimpleCell(x.CellPosition, x.StringValue)), 
-                readerOffset, 
+                tableReader,
+                itemType,
+                templateListCells.Select(x => new SimpleCell(x.CellPosition, x.StringValue)),
+                readerOffset,
                 formulaEvaluator);
 
             var withoutArrayAccess = firstEnumerablePath.WithoutArrayAccess();
@@ -122,8 +122,8 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         }
 
         private object ParseList(
-            [NotNull] LazyTableReader tableReader, 
-            [NotNull] Type itemType, 
+            [NotNull] LazyTableReader tableReader,
+            [NotNull] Type itemType,
             [NotNull, ItemNotNull] IEnumerable<SimpleCell> templateListCells,
             [NotNull] ObjectSize readerOffset,
             [CanBeNull] IFormulaEvaluator formulaEvaluator)
