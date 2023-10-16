@@ -82,7 +82,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                 var i = int.Parse(cellValue);
                 cellValue = sharedStrings[i];
             }
-            else if(
+            else if (
                 cell.CellFormula != null &&
                 formulaEvaluator != null &&
                 string.IsNullOrEmpty(cellValue))
@@ -90,7 +90,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                 var formulaEvaluatedValue = formulaEvaluator.TryEvaluate(
                     cell);
 
-                if(!string.IsNullOrEmpty(formulaEvaluatedValue))
+                if (!string.IsNullOrEmpty(formulaEvaluatedValue))
                     cellValue = formulaEvaluatedValue;
             }
 

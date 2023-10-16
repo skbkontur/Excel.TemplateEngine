@@ -32,11 +32,12 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         /// <param name="tableReader">Target document LazyTableReader.</param>
         /// <param name="template"></param>
         /// <param name="readerOffset">Target file offset relative to a template.</param>
+        /// <param name="formulaEvaluator">Target document formula evaluator.</param>
         [NotNull]
         public TModel Parse<TModel>(
             [NotNull] LazyTableReader tableReader, 
-            [NotNull] RenderingTemplate template, 
-            ObjectSize readerOffset,
+            [NotNull] RenderingTemplate template,
+            [NotNull] ObjectSize readerOffset,
             [CanBeNull] IFormulaEvaluator formulaEvaluator = null)
             where TModel : new()
         {
