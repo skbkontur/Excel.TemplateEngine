@@ -26,7 +26,8 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                                                         [NotNull, ItemNotNull] IEnumerable<SimpleCell> templateListCells,
                                                         bool filterTemplateCells,
                                                         [NotNull] ILog logger,
-                                                        [NotNull] ObjectSize readerOffset)
+                                                        [NotNull] ObjectSize readerOffset,
+                                                        [CanBeNull] IFormulaEvaluator formulaEvaluator = null)
         {
             var itemType = typeof(TItem);
 
@@ -49,7 +50,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
             while (row != null)
             {
                 var itemDict = itemPropPaths.ToDictionary(x => x, _ => (object)null);
-                FillInItemDict(itemTemplate, row, itemType, itemDict, readerOffset, logger);
+                FillInItemDict(itemTemplate, row, itemType, itemDict, readerOffset, logger, formulaEvaluator);
 
                 if (IsRowEmpty(itemDict, impotentItemProps))
                 {
@@ -71,12 +72,13 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                                            Type itemType,
                                            Dictionary<ExcelTemplatePath, object> itemDict,
                                            ObjectSize readerOffset,
-                                           ILog logger)
+                                           ILog logger,
+                                           IFormulaEvaluator formulaEvaluator)
         {
             foreach (var prop in itemTemplate)
             {
                 var cellPosition = new CellPosition(row.RowIndex, prop.CellPosition.ColumnIndex + readerOffset.Width);
-                var cell = row.TryReadCell(cellPosition);
+                var cell = row.TryReadCell(cellPosition, formulaEvaluator);
                 if (cell == null || string.IsNullOrWhiteSpace(cell.CellValue))
                     continue;
 

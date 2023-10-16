@@ -24,14 +24,17 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         }
 
         [NotNull]
-        private SimpleCell LoadCurrentCell()
+        private SimpleCell LoadCurrentCell(
+            [CanBeNull] IFormulaEvaluator formulaEvaluator)
         {
             var cell = (Cell)reader.LoadCurrentElement();
-            return ToSimpleCell(cell!);
+            return ToSimpleCell(cell!, formulaEvaluator);
         }
 
         [CanBeNull]
-        public SimpleCell TryReadCell([NotNull] ICellPosition cellPosition)
+        public SimpleCell TryReadCell(
+            [NotNull] ICellPosition cellPosition,
+            [CanBeNull] IFormulaEvaluator formulaEvaluator = null)
         {
             if (cellPosition.RowIndex != RowIndex)
                 throw new ArgumentException($"Incorrect cell reference. Target cell reference: {cellPosition}. Current row index: {RowIndex}.");
@@ -50,7 +53,8 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
                 if (reader.ElementType != typeof(Cell))
                     continue;
 
-                currentCell = LoadCurrentCell();
+                currentCell = LoadCurrentCell(
+                    formulaEvaluator);
 
                 if (cellPosition.ColumnIndex > currentCell!.CellPosition.ColumnIndex)
                     continue;
@@ -66,14 +70,28 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         }
 
         [NotNull]
-        private SimpleCell ToSimpleCell([NotNull] Cell cell)
+        private SimpleCell ToSimpleCell(
+            [NotNull] Cell cell,
+            [CanBeNull] IFormulaEvaluator formulaEvaluator)
         {
             var cellIndex = new CellPosition(cell.CellReference);
+
             var cellValue = cell.CellValue?.InnerText;
             if (cell.DataType?.Value == CellValues.SharedString && cellValue != null)
             {
                 var i = int.Parse(cellValue);
                 cellValue = sharedStrings[i];
+            }
+            else if(
+                cell.CellFormula != null &&
+                formulaEvaluator != null &&
+                string.IsNullOrEmpty(cellValue))
+            {
+                var formulaEvaluatedValue = formulaEvaluator.TryEvaluate(
+                    cell);
+
+                if(!string.IsNullOrEmpty(formulaEvaluatedValue))
+                    cellValue = formulaEvaluatedValue;
             }
 
             return new SimpleCell(cellIndex, cellValue);
