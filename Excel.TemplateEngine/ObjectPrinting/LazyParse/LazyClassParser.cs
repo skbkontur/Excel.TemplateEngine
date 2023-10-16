@@ -20,7 +20,7 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
     /// </summary>
     internal class LazyClassParser
     {
-        public LazyClassParser(ILog logger)
+        public LazyClassParser([NotNull] ILog logger)
         {
             this.logger = logger;
         }
@@ -124,8 +124,8 @@ namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse
         private object ParseList(
             [NotNull] LazyTableReader tableReader, 
             [NotNull] Type itemType, 
-            [NotNull, ItemNotNull] IEnumerable<SimpleCell> templateListCells, 
-            ObjectSize readerOffset,
+            [NotNull, ItemNotNull] IEnumerable<SimpleCell> templateListCells,
+            [NotNull] ObjectSize readerOffset,
             [CanBeNull] IFormulaEvaluator formulaEvaluator)
         {
             return parseList.MakeGenericMethod(itemType)
