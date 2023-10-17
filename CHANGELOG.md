@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.3.11 2023.10.16
+- Add `IFormulaEvaluator` interface that provides custom excel formula evaluation (https://github.com/skbkontur/Excel.TemplateEngine/pull/16)  
+
 ## v1.3.2 - 2023.05.04
 - Add methods `TryGetCustomProperty` and `SetCustomProperty` to `IExcelDocument` (https://github.com/skbkontur/Excel.TemplateEngine/pull/15)
 
