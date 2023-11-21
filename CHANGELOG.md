@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.3.15 2023.11.21
+- Update `DocumentFormat.OpenXml` dependency (fixes invalid URIs handling https://github.com/skbkontur/Excel.TemplateEngine/pull/17)
+
 ## v1.3.11 2023.10.16
 - Add `IFormulaEvaluator` interface that provides custom excel formula evaluation (https://github.com/skbkontur/Excel.TemplateEngine/pull/16)  
 
