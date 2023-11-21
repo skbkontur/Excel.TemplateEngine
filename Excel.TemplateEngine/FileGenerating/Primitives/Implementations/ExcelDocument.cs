@@ -32,11 +32,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
 
             documentMemoryStream = new MemoryStream();
             documentMemoryStream.Write(template, 0, template.Length);
-            var settings = new OpenSettings
-                {
-                    RelationshipErrorHandlerFactory = RelationshipErrorHandler.CreateRewriterFactory((_, _, val) => " ")
-                };
-            spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true, settings);
+            spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true);
 
             var theme = GetEmptyTheme();
             documentStyle = new ExcelDocumentStyle(spreadsheetDocument.GetOrCreateSpreadsheetStyles(), spreadsheetDocument.WorkbookPart?.ThemePart?.Theme ?? theme, this.logger);
