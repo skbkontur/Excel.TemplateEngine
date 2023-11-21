@@ -32,18 +32,18 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
             // Not using theme.ThemeElements.ColorScheme.Elements<Color2Type>() here because of wrong order.
             colorSchemeElements = new List<Color2Type>
                 {
-                    theme.ThemeElements.ColorScheme.Light1Color,
-                    theme.ThemeElements.ColorScheme.Dark1Color,
-                    theme.ThemeElements.ColorScheme.Light2Color,
-                    theme.ThemeElements.ColorScheme.Dark2Color,
-                    theme.ThemeElements.ColorScheme.Accent1Color,
-                    theme.ThemeElements.ColorScheme.Accent2Color,
-                    theme.ThemeElements.ColorScheme.Accent3Color,
-                    theme.ThemeElements.ColorScheme.Accent4Color,
-                    theme.ThemeElements.ColorScheme.Accent5Color,
-                    theme.ThemeElements.ColorScheme.Accent6Color,
-                    theme.ThemeElements.ColorScheme.Hyperlink,
-                    theme.ThemeElements.ColorScheme.FollowedHyperlinkColor,
+                    theme.ThemeElements?.ColorScheme?.Light1Color,
+                    theme.ThemeElements?.ColorScheme?.Dark1Color,
+                    theme.ThemeElements?.ColorScheme?.Light2Color,
+                    theme.ThemeElements?.ColorScheme?.Dark2Color,
+                    theme.ThemeElements?.ColorScheme?.Accent1Color,
+                    theme.ThemeElements?.ColorScheme?.Accent2Color,
+                    theme.ThemeElements?.ColorScheme?.Accent3Color,
+                    theme.ThemeElements?.ColorScheme?.Accent4Color,
+                    theme.ThemeElements?.ColorScheme?.Accent5Color,
+                    theme.ThemeElements?.ColorScheme?.Accent6Color,
+                    theme.ThemeElements?.ColorScheme?.Hyperlink,
+                    theme.ThemeElements?.ColorScheme?.FollowedHyperlinkColor,
                 };
             cache = new Dictionary<CellStyleCacheItem, uint>();
             inverseCache = new Dictionary<uint, ExcelCellStyle>();
@@ -64,7 +64,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
                     NumberFormatId = numberFormatId,
                     Alignment = alignment
                 };
-            if (!cache.TryGetValue(cacheItem, out var result))
+            if (!cache.TryGetValue(cacheItem, out var result) && stylesheet.CellFormats != null)
             {
                 result = stylesheet.CellFormats.Count;
                 stylesheet.CellFormats.Count++;
@@ -79,7 +79,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
             if (inverseCache.TryGetValue((uint)styleIndex, out var result))
                 return result;
 
-            var cellFormat = stylesheet?.CellFormats?.ChildElements?.Count > styleIndex ? (CellFormat)stylesheet.CellFormats.ChildElements[styleIndex] : null;
+            var cellFormat = stylesheet?.CellFormats?.ChildElements.Count > styleIndex ? (CellFormat)stylesheet.CellFormats.ChildElements[styleIndex] : null;
             result = new ExcelCellStyle
                 {
                     FillStyle = cellFormat?.FillId == null ? null : GetCellFillStyle(cellFormat.FillId.Value),
@@ -105,37 +105,29 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
 
         private ExcelVerticalAlignment ToExcelVerticalAlignment(EnumValue<VerticalAlignmentValues> vertical)
         {
-            switch (vertical.Value)
-            {
-            case VerticalAlignmentValues.Bottom:
+            if (vertical.Value == VerticalAlignmentValues.Bottom)
                 return ExcelVerticalAlignment.Bottom;
-            case VerticalAlignmentValues.Center:
+            if (vertical.Value == VerticalAlignmentValues.Center)
                 return ExcelVerticalAlignment.Center;
-            case VerticalAlignmentValues.Top:
+            if (vertical.Value == VerticalAlignmentValues.Top)
                 return ExcelVerticalAlignment.Top;
-            default:
-                return ExcelVerticalAlignment.Default;
-            }
+            return ExcelVerticalAlignment.Default;
         }
 
         private ExcelHorizontalAlignment ToExcelHorizontalAlignment(EnumValue<HorizontalAlignmentValues> horizontal)
         {
-            switch (horizontal.Value)
-            {
-            case HorizontalAlignmentValues.Center:
+            if (horizontal.Value == HorizontalAlignmentValues.Center)
                 return ExcelHorizontalAlignment.Center;
-            case HorizontalAlignmentValues.Left:
+            if (horizontal.Value == HorizontalAlignmentValues.Left)
                 return ExcelHorizontalAlignment.Left;
-            case HorizontalAlignmentValues.Right:
+            if (horizontal.Value == HorizontalAlignmentValues.Right)
                 return ExcelHorizontalAlignment.Right;
-            default:
-                return ExcelHorizontalAlignment.Default;
-            }
+            return ExcelHorizontalAlignment.Default;
         }
 
         private ExcelCellBordersStyle GetCellBordersStyle(uint borderId)
         {
-            var bordersStyle = stylesheet?.Borders?.ChildElements?.Count > borderId ? (Border)stylesheet.Borders.ChildElements[(int)borderId] : null;
+            var bordersStyle = stylesheet?.Borders?.ChildElements.Count > borderId ? (Border)stylesheet.Borders.ChildElements[(int)borderId] : null;
             return new ExcelCellBordersStyle
                 {
                     LeftBorder = bordersStyle?.LeftBorder == null ? null : GetBorderStyle(bordersStyle.LeftBorder),
@@ -156,21 +148,17 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
 
         private static ExcelBorderType ToExcelBorderType(EnumValue<BorderStyleValues> borderStyle)
         {
-            switch (borderStyle.Value)
-            {
-            case BorderStyleValues.None:
+            if (borderStyle.Value == BorderStyleValues.None)
                 return ExcelBorderType.None;
-            case BorderStyleValues.Thin:
+            if (borderStyle.Value == BorderStyleValues.Thin)
                 return ExcelBorderType.Thin;
-            case BorderStyleValues.Medium:
+            if (borderStyle.Value == BorderStyleValues.Medium)
                 return ExcelBorderType.Single;
-            case BorderStyleValues.Thick:
+            if (borderStyle.Value == BorderStyleValues.Thick)
                 return ExcelBorderType.Bold;
-            case BorderStyleValues.Double:
+            if (borderStyle.Value == BorderStyleValues.Double)
                 return ExcelBorderType.Double;
-            default:
-                throw new InvalidOperationException($"Unknown border type: {borderStyle}");
-            }
+            throw new InvalidOperationException($"Unknown border type: {borderStyle}");
         }
 
         private ExcelCellNumberingFormat GetCellNumberingFormat(uint numberFormatId)
@@ -179,21 +167,21 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
                 return new ExcelCellNumberingFormat(numberFormatId);
 
             var numberFormat = (NumberingFormat)stylesheet?.NumberingFormats?.ChildElements
-                                                          ?.FirstOrDefault(ce => ((NumberingFormat)ce)?.NumberFormatId != null &&
-                                                                                 ((NumberingFormat)ce).NumberFormatId.Value == numberFormatId);
+                                                          .FirstOrDefault(ce => ((NumberingFormat)ce)?.NumberFormatId != null &&
+                                                                                ((NumberingFormat)ce).NumberFormatId!.Value == numberFormatId);
             if (numberFormat?.FormatCode?.Value == null)
                 return null;
 
-            return new ExcelCellNumberingFormat(numberFormat.NumberFormatId.Value, numberFormat.FormatCode.Value);
+            return new ExcelCellNumberingFormat(numberFormat.NumberFormatId!.Value, numberFormat.FormatCode.Value);
         }
 
         private ExcelCellFontStyle GetCellFontStyle(uint fontId)
         {
-            var internalFont = stylesheet?.Fonts?.ChildElements?.Count > fontId ? (Font)stylesheet.Fonts.ChildElements[(int)fontId] : null;
+            var internalFont = stylesheet?.Fonts?.ChildElements.Count > fontId ? (Font)stylesheet.Fonts.ChildElements[(int)fontId] : null;
             return new ExcelCellFontStyle
                 {
                     Bold = internalFont?.Bold != null,
-                    Size = internalFont?.FontSize == null ? (int?)null : Convert.ToInt32((object)internalFont.FontSize?.Val.Value),
+                    Size = internalFont?.FontSize == null ? (int?)null : Convert.ToInt32((object)internalFont.FontSize?.Val?.Value),
                     Underlined = internalFont?.Underline != null,
                     Color = ToExcelColor(internalFont?.Color)
                 };
@@ -201,7 +189,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
 
         private ExcelCellFillStyle GetCellFillStyle(uint fillId)
         {
-            var fill = stylesheet?.Fills?.ChildElements?.Count > fillId ? (Fill)stylesheet.Fills.ChildElements[(int)fillId] : null;
+            var fill = stylesheet?.Fills?.ChildElements.Count > fillId ? (Fill)stylesheet.Fills.ChildElements[(int)fillId] : null;
             var color = ToExcelColor(fill?.PatternFill?.ForegroundColor);
 
             if (color == null)
@@ -217,7 +205,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Caches.Implementations
                 return null;
             if (color.Rgb?.HasValue == true)
             {
-                return RgbStringToExcelColor(color.Rgb.Value);
+                return RgbStringToExcelColor(color.Rgb.Value!);
             }
             if (color.Theme?.HasValue == true)
             {
