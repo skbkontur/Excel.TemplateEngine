@@ -66,6 +66,25 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         }
 
         [Test]
+        public void TestInvalidUris()
+        {
+            var (model, mappingForErrors) = Parse<PriceList>("simpleWithEnumerable_template.xlsx", "simpleWithEnumerable_targetWithInvalidUri.xlsx");
+
+            mappingForErrors["Type"].Should().Be("C3");
+            mappingForErrors["Items[0].Id"].Should().Be("B13");
+            mappingForErrors["Items[0].Name"].Should().Be("C13");
+            mappingForErrors["Items[1].Id"].Should().Be("B14");
+            mappingForErrors["Items[1].Name"].Should().Be("C14");
+
+            model.Type.Should().Be("email@email.email>");
+            model.Items.Should().BeEquivalentTo(new[]
+                {
+                    new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ"},
+                    new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ"},
+                });
+        }
+
+        [Test]
         public void TestLazyParse()
         {
             var model = LazyParse<PriceList>("simpleWithItemsList_template.xlsx", "simpleWithEnumerable_target.xlsx");
