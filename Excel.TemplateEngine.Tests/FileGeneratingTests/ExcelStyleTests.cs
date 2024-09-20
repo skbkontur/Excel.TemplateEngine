@@ -109,15 +109,16 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.FileGeneratingTests
             style.BordersStyle.BottomBorder.Color.Blue.Should().Be(255);
         }
 
-        [Test]
-        public void CellAlignmentExtractionTest()
+        [TestCase(ExcelHorizontalAlignment.Left, "A1")]
+        [TestCase(ExcelHorizontalAlignment.Fill, "B1")]
+        public void CellAlignmentExtractionTest(ExcelHorizontalAlignment horizontalAlignment, string cellIndex)
         {
             var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("template.xlsx")), logger);
-            var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex("A1"));
+            var cell = templateDocument.GetWorksheet(0).GetCell(new ExcelCellIndex(cellIndex));
             var style = cell.GetStyle();
 
             style.Alignment.WrapText.Should().BeTrue();
-            style.Alignment.HorizontalAlignment.Should().Be(ExcelHorizontalAlignment.Left);
+            style.Alignment.HorizontalAlignment.Should().Be(horizontalAlignment);
         }
 
         [Test]

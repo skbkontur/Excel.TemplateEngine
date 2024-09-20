@@ -119,7 +119,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                         },
                     DeliveryParty = new Organization
                         {
-                            Address = "DeliveryPartyAddress",
+                            Address = "DeliveryPartyAddress,DeliveryPartyAddress,DeliveryPartyAddress",
                             Name = "DeliveryPartyName"
                         },
                     Vehicle = new VehicleInfo
