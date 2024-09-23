@@ -1,10 +1,10 @@
-﻿namespace SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes
+﻿namespace SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
+
+public enum ExcelHorizontalAlignment
 {
-    public enum ExcelHorizontalAlignment
-    {
-        Default,
-        Left,
-        Center,
-        Right
-    }
+    Default,
+    Left,
+    Center,
+    Right,
+    Fill,
 }
