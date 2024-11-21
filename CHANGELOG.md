@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.20 2024.11.21
+- Parse multiple worksheets into one model object (https://github.com/skbkontur/Excel.TemplateEngine/pull/19)
+
+## v1.3.18 2024.09.23
+- Add horizontal alignment "fill" to cell (https://github.com/skbkontur/Excel.TemplateEngine/pull/18)
+
 ## v1.3.15 2023.11.21
 - Update `DocumentFormat.OpenXml` dependency (fixes invalid URIs handling https://github.com/skbkontur/Excel.TemplateEngine/pull/17)
 
