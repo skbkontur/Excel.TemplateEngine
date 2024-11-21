@@ -1,22 +1,24 @@
+using System;
 using System.Collections.Generic;
-
-using JetBrains.Annotations;
 
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.LazyParse;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.NavigationPrimitives.Implementations;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableBuilder;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
 
-namespace SkbKontur.Excel.TemplateEngine
+#nullable enable
+namespace SkbKontur.Excel.TemplateEngine;
+
+public interface ITemplateEngine
 {
-    public interface ITemplateEngine
-    {
-        void Render<TModel>([NotNull] ITableBuilder tableBuilder, [NotNull] TModel model);
+    void Render<TModel>(ITableBuilder tableBuilder, TModel model) where TModel : notnull;
 
-        (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>([NotNull] ITableParser tableParser)
-            where TModel : new();
+    (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(ITableParser tableParser)
+        where TModel : new();
 
-        public TModel LazyParse<TModel>([NotNull] LazyTableReader lazyTableReader, ObjectSize readerOffset = null, IFormulaEvaluator formulaEvaluator = null)
-            where TModel : new();
-    }
+    void Parse<TModel>(ITableParser tableParser, Action<string, string> mappingForErrors, ref TModel model)
+        where TModel : new();
+
+    public TModel LazyParse<TModel>(LazyTableReader lazyTableReader, ObjectSize? readerOffset = null, IFormulaEvaluator? formulaEvaluator = null)
+        where TModel : new();
 }

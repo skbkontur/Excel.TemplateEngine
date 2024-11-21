@@ -85,6 +85,38 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         }
 
         [Test]
+        public void TestParseMultipleWorksheets()
+        {
+            var (model, mappingForErrors) = Parse<PriceList>(
+                "withMultipleWorksheets_template.xlsx",
+                "withMultipleWorksheets_target.xlsx",
+                workSheetNumber : 3);
+
+            mappingForErrors["Type"].Should().Be("C3");
+            mappingForErrors["Items[0].Id"].Should().Be("B13");
+            mappingForErrors["Items[0].Name"].Should().Be("C13");
+            mappingForErrors["Items[1].Id"].Should().Be("B14");
+            mappingForErrors["Items[1].Name"].Should().Be("C14");
+            mappingForErrors["FromSecondWorksheet[0].Id"].Should().Be("Лист2:A2");
+            mappingForErrors["FromSecondWorksheet[0].Name"].Should().Be("Лист2:B2");
+            mappingForErrors["FromThirdWorksheet"].Should().Be("Лист3:B1");
+
+            model.Type.Should().Be("Основной");
+            model.Items.Should().BeEquivalentTo(new[]
+                {
+                    new Item {Id = "2311129000009", Name = "СЫР ГОЛЛАНДСКИЙ МОЖГА 1КГ"},
+                    new Item {Id = "2311131000004", Name = "СЫР РОССИЙСКИЙ МОЖГА 1КГ"},
+                });
+            model.FromSecondWorksheet.Should().BeEquivalentTo(new[]
+                {
+                    new Item {Id = "2311129000009", Name = "FromSecondWorksheet1"},
+                    new Item {Id = "2311131000004", Name = "FromSecondWorksheet2"},
+                    new Item {Id = "2311131000004", Name = "FromSecondWorksheet3"},
+                });
+            model.FromThirdWorksheet.Should().Be("FromThirdWorksheet_Value");
+        }
+
+        [Test]
         public void TestLazyParse()
         {
             var model = LazyParse<PriceList>("simpleWithItemsList_template.xlsx", "simpleWithEnumerable_target.xlsx");
@@ -356,26 +388,42 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             printedVersion.Should().Be(value);
         }
 
-        private (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(string templateFileName, string targetFileName)
+        private (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(string templateFileName, string targetFileName, int workSheetNumber = 0)
             where TModel : new()
         {
-            return Parse<TModel>(File.ReadAllBytes(GetFilePath(templateFileName)), File.ReadAllBytes(GetFilePath(targetFileName)));
+            return Parse<TModel>(File.ReadAllBytes(GetFilePath(templateFileName)), File.ReadAllBytes(GetFilePath(targetFileName)), workSheetNumber);
         }
 
-        private (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(byte[] templateBytes, byte[] targetBytes)
+        private (TModel model, Dictionary<string, string> mappingForErrors) Parse<TModel>(byte[] templateBytes, byte[] targetBytes, int workSheetNumber = 0)
             where TModel : new()
         {
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(templateBytes, logger))
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(targetBytes, logger))
             {
-                var template = new ExcelTable(templateDocument.GetWorksheet(0));
-                var templateEngine = new TemplateEngine(template, logger);
-
-                var target = new ExcelTable(targetDocument.GetWorksheet(0));
-                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
-                var tableParser = new TableParser(target, tableNavigator);
-                return templateEngine.Parse<TModel>(tableParser);
+                var (baseTemplateEngine, baseTableParser) = GetEngineAndParserForWorksheet(templateDocument, targetDocument, 0);
+                var (model, mappingForErrors) = baseTemplateEngine.Parse<TModel>(baseTableParser);
+                for (var i = 1; i < workSheetNumber; i++)
+                {
+                    var (templateEngine, tableParser) = GetEngineAndParserForWorksheet(templateDocument, targetDocument, i);
+                    var worksheetName = targetDocument.GetWorksheetName(i);
+                    templateEngine.Parse(tableParser, (name, value) => mappingForErrors.Add(name, $"{worksheetName}:{value}"), ref model);
+                }
+                return (model, mappingForErrors);
             }
+        }
+
+        private (TemplateEngine templateEngine, TableParser tableParser) GetEngineAndParserForWorksheet(
+            IExcelDocument templateDocument,
+            IExcelDocument targetDocument,
+            int workSheetNumber)
+        {
+            var template = new ExcelTable(templateDocument.GetWorksheet(workSheetNumber));
+            var templateEngine = new TemplateEngine(template, logger);
+
+            var target = new ExcelTable(targetDocument.GetWorksheet(workSheetNumber));
+            var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
+            var tableParser = new TableParser(target, tableNavigator);
+            return (templateEngine, tableParser);
         }
 
         private TModel LazyParse<TModel>(string templateFileName, string targetFileName, ObjectSize offset = null)
@@ -451,6 +499,10 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         public Dictionary<int, bool> IntBoolDict { get; set; }
         public PriceList InnerPriceList { get; set; }
         public Dictionary<string, PriceList> PriceListsDict { get; set; }
+
+        public Item[] FromSecondWorksheet { get; set; }
+
+        public string FromThirdWorksheet { get; set; }
     }
 
     #endregion

@@ -1,16 +1,17 @@
 using System;
 
-using JetBrains.Annotations;
-
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.RenderingTemplates;
 using SkbKontur.Excel.TemplateEngine.ObjectPrinting.TableParser;
 
-namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers
+#nullable enable
+
+namespace SkbKontur.Excel.TemplateEngine.ObjectPrinting.ParseCollection.Parsers;
+
+internal interface IClassParser
 {
-    internal interface IClassParser
-    {
-        [NotNull]
-        TModel Parse<TModel>([NotNull] ITableParser tableParser, [NotNull] RenderingTemplate template, [NotNull] Action<string, string> addFieldMapping)
-            where TModel : new();
-    }
+    TModel Parse<TModel>(ITableParser tableParser, RenderingTemplate template, Action<string, string> addFieldMapping)
+        where TModel : new();
+
+    void Parse<TModel>(ITableParser tableParser, RenderingTemplate template, Action<string, string> addFieldMapping, ref TModel model)
+        where TModel : new();
 }
