@@ -11,10 +11,11 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.FileGeneratingTests
     [TestFixture]
     public class TemplateTests : FileBasedTestBase
     {
-        [Test]
-        public void TemplateWithoutThemeTest()
+        [TestCase("template_2.xlsx", TestName = "TemplateWithoutTheme")]
+        [TestCase("MyOffice_document.xlsx", TestName = "MyOfficeDocument")]
+        public void CreateFromTemplateTest(string filename)
         {
-            var content = File.ReadAllBytes(GetFilePath("template_2.xlsx"));
+            var content = File.ReadAllBytes(GetFilePath(filename));
             using (var template = ExcelDocumentFactory.TryCreateFromTemplate(content, new ConsoleLog()))
             {
                 Assert.IsNotNull(template);
