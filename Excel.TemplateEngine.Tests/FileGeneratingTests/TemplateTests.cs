@@ -13,6 +13,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.FileGeneratingTests
     {
         [TestCase("template_2.xlsx", TestName = "TemplateWithoutTheme")]
         [TestCase("MyOffice_document.xlsx", TestName = "MyOfficeDocument")]
+        [TestCase("excel2010.xlsx", TestName = "Excel2010")]
         public void CreateFromTemplateTest(string filename)
         {
             var content = File.ReadAllBytes(GetFilePath(filename));
