@@ -1,43 +1,37 @@
+#nullable enable
+
 using System;
 
 using JetBrains.Annotations;
 
-namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
+
+public interface IExcelDocument : IDisposable
 {
-    public interface IExcelDocument : IDisposable
-    {
-        [NotNull]
-        byte[] CloseAndGetDocumentBytes();
+    byte[] CloseAndGetDocumentBytes();
 
-        int GetWorksheetCount();
+    int GetWorksheetCount();
 
-        [CanBeNull]
-        IExcelWorksheet TryGetWorksheet(int index);
+    IExcelWorksheet? TryGetWorksheet(int index);
 
-        [NotNull]
-        IExcelWorksheet GetWorksheet(int index);
+    IExcelWorksheet GetWorksheet(int index);
 
-        void RenameWorksheet(int index, [NotNull] string name);
+    void RenameWorksheet(int index, string name);
 
-        [NotNull]
-        IExcelWorksheet AddWorksheet([NotNull] string worksheetName);
+    IExcelWorksheet AddWorksheet(string worksheetName);
 
-        [CanBeNull]
-        IExcelWorksheet FindWorksheet([NotNull] string name);
+    IExcelWorksheet? FindWorksheet(string name);
 
-        [NotNull]
-        string GetWorksheetName(int index);
+    string? GetWorksheetName(int index);
 
-        [CanBeNull]
-        string GetDescription();
+    string? GetDescription();
 
-        void AddDescription([NotNull] string text);
+    void AddDescription(string text);
 
-        void CopyVbaInfoFrom([NotNull] IExcelDocument excelDocument);
+    void CopyVbaInfoFrom(IExcelDocument excelDocument);
 
-        [ContractAnnotation("=> true, value:notnull; => false, value:null")]
-        bool TryGetCustomProperty([NotNull] string key, out string value);
+    [ContractAnnotation("=> true, value:notnull; => false, value:null")]
+    bool TryGetCustomProperty(string key, out string? value);
 
-        void SetCustomProperty([NotNull] string key, string value);
-    }
+    void SetCustomProperty(string key, string value);
 }
