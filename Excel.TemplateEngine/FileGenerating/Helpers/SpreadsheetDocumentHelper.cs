@@ -1,3 +1,5 @@
+using System;
+
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -16,9 +18,9 @@ internal static class SpreadsheetDocumentHelper
         {
             stylesheet = stylesPart.Stylesheet ?? (stylesPart.Stylesheet = new Stylesheet());
         }
-        catch
+        catch (Exception ex)
         {
-            logger.Warn("Can't parse styles of document");
+            logger.Warn(ex, "Can't parse styles of document");
             stylesheet = stylesPart.Stylesheet = new Stylesheet();
         }
         return stylesheet;

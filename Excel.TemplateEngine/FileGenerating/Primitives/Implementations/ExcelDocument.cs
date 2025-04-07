@@ -35,7 +35,10 @@ internal class ExcelDocument : IExcelDocument
         spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true, new OpenSettings {AutoSave = false});
 
         var theme = GetEmptyTheme();
-        documentStyle = new ExcelDocumentStyle(spreadsheetDocument.GetOrCreateSpreadsheetStyles(logger), spreadsheetDocument.WorkbookPart?.ThemePart?.Theme ?? theme, this.logger);
+        documentStyle = new ExcelDocumentStyle(
+            spreadsheetDocument.GetOrCreateSpreadsheetStyles(logger),
+            spreadsheetDocument.WorkbookPart?.ThemePart?.Theme ?? theme,
+            this.logger);
         excelSharedStrings = new ExcelSharedStrings(spreadsheetDocument.GetOrCreateSpreadsheetSharedStrings());
         spreadsheetDisposed = false;
 
