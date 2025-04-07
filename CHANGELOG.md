@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.28 2025.04.07
+- Get stylesheet safely. There are some old documents whose styles.xml cannot be parsed correctly by OpenXml (https://github.com/skbkontur/Excel.TemplateEngine/pull/21)
+
+## v1.3.25 2025.04.04
+- Turn off autosave mode of excel document. Save excel document only when document bytes are requested (https://github.com/skbkontur/Excel.TemplateEngine/pull/20)
+
 ## v1.3.20 2024.11.21
 - Parse multiple worksheets into one model object (https://github.com/skbkontur/Excel.TemplateEngine/pull/19)
 
