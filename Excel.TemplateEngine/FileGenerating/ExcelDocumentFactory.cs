@@ -1,57 +1,53 @@
+#nullable enable
+
 using System;
 using System.IO;
 using System.Linq;
-
-using JetBrains.Annotations;
 
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementations;
 
 using Vostok.Logging.Abstractions;
 
-namespace SkbKontur.Excel.TemplateEngine.FileGenerating
+namespace SkbKontur.Excel.TemplateEngine.FileGenerating;
+
+public static class ExcelDocumentFactory
 {
-    public static class ExcelDocumentFactory
+    public static IExcelDocument? TryCreateFromTemplate(byte[] template, ILog logger)
     {
-        [CanBeNull]
-        public static IExcelDocument TryCreateFromTemplate([NotNull] byte[] template, [NotNull] ILog logger)
+        var excelFileGeneratorLogger = logger.ForContext("ExcelFileGenerator");
+        try
         {
-            var excelFileGeneratorLogger = logger.ForContext("ExcelFileGenerator");
-            try
-            {
-                return new ExcelDocument(template, excelFileGeneratorLogger);
-            }
-            catch (Exception ex)
-            {
-                excelFileGeneratorLogger.Error($"An error occurred while creating of {nameof(ExcelDocument)}: {ex}");
-                return null;
-            }
+            return new ExcelDocument(template, excelFileGeneratorLogger);
         }
-
-        [NotNull]
-        public static IExcelDocument CreateFromTemplate([NotNull] byte[] template, [NotNull] ILog logger)
-            => TryCreateFromTemplate(template, logger)
-               ?? throw new InvalidOperationException($"An error occurred while creating of {nameof(ExcelDocument)}");
-
-        [NotNull]
-        public static IExcelDocument CreateEmpty(bool useXlsm, [NotNull] ILog logger)
+        catch (Exception ex)
         {
-            var resourceBytes = GetResourceBytes(useXlsm ? "empty.xlsm" : "empty.xlsx");
-            return CreateFromTemplate(resourceBytes, logger);
+            excelFileGeneratorLogger.Warn(ex, $"An error occurred while creating of {nameof(ExcelDocument)}");
+            return null;
         }
+    }
 
-        private static byte[] GetResourceBytes(string resourceName)
+    public static IExcelDocument CreateFromTemplate(byte[] template, ILog logger)
+        => TryCreateFromTemplate(template, logger)
+           ?? throw new InvalidOperationException($"An error occurred while creating of {nameof(ExcelDocument)}");
+
+    public static IExcelDocument CreateEmpty(bool useXlsm, ILog logger)
+    {
+        var resourceBytes = GetResourceBytes(useXlsm ? "empty.xlsm" : "empty.xlsx");
+        return CreateFromTemplate(resourceBytes, logger);
+    }
+
+    private static byte[] GetResourceBytes(string resourceName)
+    {
+        var assembly = typeof(ExcelDocumentFactory).Assembly;
+        var resourceFullName = assembly.GetManifestResourceNames().Single(name => name.EndsWith(resourceName));
+        using (var rs = assembly.GetManifestResourceStream(resourceFullName))
+        using (var ms = new MemoryStream())
         {
-            var assembly = typeof(ExcelDocumentFactory).Assembly;
-            var resourceFullName = assembly.GetManifestResourceNames().Single(name => name.EndsWith(resourceName));
-            using (var rs = assembly.GetManifestResourceStream(resourceFullName))
-            using (var ms = new MemoryStream())
-            {
-                if (rs == null)
-                    throw new InvalidOperationException($"Stream is null for resource: {resourceName}");
-                rs.CopyTo(ms);
-                return ms.ToArray();
-            }
+            if (rs == null)
+                throw new InvalidOperationException($"Stream is null for resource: {resourceName}");
+            rs.CopyTo(ms);
+            return ms.ToArray();
         }
     }
 }

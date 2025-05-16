@@ -105,7 +105,7 @@ internal class ExcelDocument : IExcelDocument
         }
         catch (Exception ex)
         {
-            logger.Error($"An error occurred while getting of an excel worksheet: {ex}");
+            logger.Warn(ex, "An error occurred while getting of an excel worksheet");
             return null;
         }
     }
