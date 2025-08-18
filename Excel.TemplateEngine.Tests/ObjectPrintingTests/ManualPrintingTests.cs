@@ -46,6 +46,22 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         }
 
         [Test]
+        public void TestCopyCustomCellNames_Manual()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("CustomCellNames.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsm")), logger))
+            {
+                targetDocument.CopyCustomCellNames(templateDocument);
+
+                var filename = "output.xlsm";
+                File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
+
+                var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
+                Assert.Fail($"Please manually open file '{path}' and check that clicking on the right checkbox leads to changes in both checkbox");
+            }
+        }
+
+        [Test]
         public void TestPrintingVbaMacros()
         {
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("printingVbaMacros.xlsm")), logger))

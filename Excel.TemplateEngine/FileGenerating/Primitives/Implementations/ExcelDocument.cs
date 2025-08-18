@@ -123,6 +123,25 @@ internal class ExcelDocument : IExcelDocument
         return spreadsheetDocument.WorkbookPart?.Workbook.GetFirstChild<Sheets>()?.Elements<Sheet>().ElementAt(index).Name;
     }
 
+    public void CopyCustomCellNames(IExcelDocument excelDocument)
+    {
+        var allCustomNames = ((ExcelDocument)excelDocument).spreadsheetDocument.WorkbookPart?.Workbook.DefinedNames;
+        if (allCustomNames is null)
+            return;
+
+        spreadsheetDocument.WorkbookPart!.Workbook.DefinedNames = new DefinedNames();
+
+        foreach (var customName in allCustomNames)
+        {
+            spreadsheetDocument.WorkbookPart!.Workbook.DefinedNames!.AppendChild(customName.CloneNode(true));
+        }
+    }
+
+    public DefinedNames GetDefinedNames()
+    {
+        return spreadsheetDocument.WorkbookPart?.Workbook.DefinedNames!;
+    }
+
     public void CopyVbaInfoFrom(IExcelDocument excelDocument)
     {
         ThrowIfSpreadsheetDisposed();

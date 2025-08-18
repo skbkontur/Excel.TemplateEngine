@@ -2,6 +2,8 @@
 
 using System;
 
+using DocumentFormat.OpenXml.Spreadsheet;
+
 using JetBrains.Annotations;
 
 namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
@@ -27,6 +29,10 @@ public interface IExcelDocument : IDisposable
     string? GetDescription();
 
     void AddDescription(string text);
+
+    void CopyCustomCellNames(IExcelDocument excelDocument);
+
+    public DefinedNames GetDefinedNames();
 
     void CopyVbaInfoFrom(IExcelDocument excelDocument);
 
