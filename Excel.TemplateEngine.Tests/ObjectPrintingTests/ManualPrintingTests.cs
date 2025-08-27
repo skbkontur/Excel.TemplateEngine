@@ -46,7 +46,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         }
 
         [Test]
-        public void TestCopyCustomCellNames_Manual()
+        public void TestCopyCustomCellNames()
         {
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("CustomCellNames.xlsx")), logger))
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsm")), logger))
@@ -57,7 +57,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
 
                 var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
-                Assert.Fail($"Please manually open file '{path}' and check that clicking on the right checkbox leads to changes in both checkbox");
+                Assert.Fail($"Please manually open file '{path}' and check that cells B2 and D4 have names 'Custom_Name'");
             }
         }
 

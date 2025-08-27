@@ -32,7 +32,7 @@ public interface IExcelDocument : IDisposable
 
     void CopyCustomCellNames(IExcelDocument excelDocument);
 
-    public DefinedNames GetDefinedNames();
+    DefinedNames GetDefinedNames();
 
     void CopyVbaInfoFrom(IExcelDocument excelDocument);
 
