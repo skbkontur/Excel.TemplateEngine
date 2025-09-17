@@ -30,7 +30,7 @@ public interface IExcelDocument : IDisposable
 
     void AddDescription(string text);
 
-    void CopyCustomCellNames(IExcelDocument excelDocument);
+    void CopyCustomCellNamesFrom(IExcelDocument sourceExcelDocument);
 
     DefinedNames GetDefinedNames();
 

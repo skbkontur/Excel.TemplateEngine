@@ -20,10 +20,10 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
         [Test]
         public void TestCopyCustomCellNames()
         {
-            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("CustomCellNames.xlsx")), logger))
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("customCellNames.xlsx")), logger))
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsm")), logger))
             {
-                targetDocument.CopyCustomCellNames(templateDocument);
+                targetDocument.CopyCustomCellNamesFrom(templateDocument);
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
                 var templateEngine = new TemplateEngine(template, logger);
@@ -33,7 +33,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                 var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
                 templateEngine.Render(tableBuilder, new {Test = "b"});
 
-                var expectedData = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("CustomCellNamesResult.xlsm")), logger);
+                var expectedData = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("customCellNamesResult.xlsm")), logger);
                 var actualData = ExcelDocumentFactory.CreateFromTemplate(targetDocument.CloseAndGetDocumentBytes(), logger);
 
                 var expectedDefinedNames = expectedData.GetDefinedNames().InnerXml;

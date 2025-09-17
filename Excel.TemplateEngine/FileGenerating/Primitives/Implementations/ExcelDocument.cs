@@ -123,9 +123,9 @@ internal class ExcelDocument : IExcelDocument
         return spreadsheetDocument.WorkbookPart?.Workbook.GetFirstChild<Sheets>()?.Elements<Sheet>().ElementAt(index).Name;
     }
 
-    public void CopyCustomCellNames(IExcelDocument excelDocument)
+    public void CopyCustomCellNamesFrom(IExcelDocument sourceExcelDocument)
     {
-        var allCustomNames = ((ExcelDocument)excelDocument).spreadsheetDocument.WorkbookPart?.Workbook.DefinedNames;
+        var allCustomNames = ((ExcelDocument)sourceExcelDocument).spreadsheetDocument.WorkbookPart?.Workbook.DefinedNames;
         if (allCustomNames is null)
             return;
 
