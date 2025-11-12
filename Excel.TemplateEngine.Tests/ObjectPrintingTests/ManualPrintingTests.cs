@@ -51,7 +51,7 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("customCellNames_manual.xlsx")), logger))
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsm")), logger))
             {
-                targetDocument.CopyCustomCellNamesFrom(templateDocument);
+                targetDocument.CopyDefinedNamesFrom(templateDocument);
 
                 var filename = "output.xlsm";
                 File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());

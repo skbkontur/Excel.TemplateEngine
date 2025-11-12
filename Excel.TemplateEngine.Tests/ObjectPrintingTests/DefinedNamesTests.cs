@@ -15,15 +15,15 @@ using Vostok.Logging.Console;
 
 namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
 {
-    public class CustomCellNamingTests : FileBasedTestBase
+    public class DefinedNamesTests : FileBasedTestBase
     {
         [Test]
-        public void TestCopyCustomCellNames()
+        public void TestCopyDefinedNames()
         {
             using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("customCellNames.xlsx")), logger))
             using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsm")), logger))
             {
-                targetDocument.CopyCustomCellNamesFrom(templateDocument);
+                targetDocument.CopyDefinedNamesFrom(templateDocument);
 
                 var template = new ExcelTable(templateDocument.GetWorksheet(0));
                 var templateEngine = new TemplateEngine(template, logger);
@@ -48,6 +48,38 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
                 var actualBytes = Encoding.Default.GetBytes(actualString);
 
                 actualBytes.Should().Equal(expectedBytes);
+            }
+        }
+
+        /// <summary>
+        ///     Проверка корректности элементов DefinedNames после переименования листа
+        /// </summary>
+        [Test]
+        public void TestDefinedNamesUpdatedAfterSheetRename()
+        {
+            using (var document = ExcelDocumentFactory
+                       .CreateFromTemplate(File.ReadAllBytes(GetFilePath("definedNamesUpdatedAfterSheetRename.xlsx")),
+                                           logger))
+            {
+                document.RenameWorksheet(0, "НазваниеБезПробелов", true);
+                document.RenameWorksheet(1, "НазваниеС Пробелом", true);
+                document.RenameWorksheet(2, "НазваниеСо_Спецсимволом", true);
+                document.RenameWorksheet(3, "НазваниеСо+Спецсимволом", true);
+                document.RenameWorksheet(4, "1НазваниеСЦифройВначале", true);
+                document.RenameWorksheet(5, "НазваниеС'ОдинарнойКовычкой", true);
+                document.RenameWorksheet(6, "AN1", true);
+
+                var expectedData = ExcelDocumentFactory.CreateFromTemplate(
+                    File.ReadAllBytes(GetFilePath("definedNamesUpdatedAfterSheetRenameResult.xlsx")),
+                    logger);
+                var actualData = ExcelDocumentFactory.CreateFromTemplate(
+                    document.CloseAndGetDocumentBytes(),
+                    logger);
+
+                var expectedDefinedNames = expectedData.GetDefinedNames().InnerXml;
+                var actualDefinedNames = actualData.GetDefinedNames().InnerXml;
+
+                expectedDefinedNames.Should().Match(actualDefinedNames);
             }
         }
 
