@@ -18,7 +18,7 @@ public interface IExcelDocument : IDisposable
 
     IExcelWorksheet GetWorksheet(int index);
 
-    void RenameWorksheet(int index, string name);
+    void RenameWorksheet(int index, string name, bool updateDefinedNames = false);
 
     IExcelWorksheet AddWorksheet(string worksheetName);
 
@@ -30,7 +30,7 @@ public interface IExcelDocument : IDisposable
 
     void AddDescription(string text);
 
-    void CopyCustomCellNamesFrom(IExcelDocument sourceExcelDocument);
+    void CopyDefinedNamesFrom(IExcelDocument sourceExcelDocument);
 
     DefinedNames GetDefinedNames();
 
