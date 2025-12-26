@@ -2,6 +2,8 @@
 
 using System;
 
+using DocumentFormat.OpenXml.Spreadsheet;
+
 using JetBrains.Annotations;
 
 namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives;
@@ -16,7 +18,7 @@ public interface IExcelDocument : IDisposable
 
     IExcelWorksheet GetWorksheet(int index);
 
-    void RenameWorksheet(int index, string name);
+    void RenameWorksheet(int index, string name, bool updateDefinedNames = false);
 
     IExcelWorksheet AddWorksheet(string worksheetName);
 
@@ -27,6 +29,10 @@ public interface IExcelDocument : IDisposable
     string? GetDescription();
 
     void AddDescription(string text);
+
+    void CopyDefinedNamesFrom(IExcelDocument sourceExcelDocument);
+
+    DefinedNames GetDefinedNames();
 
     void CopyVbaInfoFrom(IExcelDocument excelDocument);
 

@@ -32,7 +32,7 @@ internal class ExcelDocument : IExcelDocument
 
         documentMemoryStream = new MemoryStream();
         documentMemoryStream.Write(template, 0, template.Length);
-        spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, true, new OpenSettings {AutoSave = false});
+        spreadsheetDocument = SpreadsheetDocument.Open(documentMemoryStream, isEditable : true, new OpenSettings {AutoSave = false});
 
         var theme = GetEmptyTheme();
         documentStyle = new ExcelDocumentStyle(
@@ -123,6 +123,25 @@ internal class ExcelDocument : IExcelDocument
         return spreadsheetDocument.WorkbookPart?.Workbook.GetFirstChild<Sheets>()?.Elements<Sheet>().ElementAt(index).Name;
     }
 
+    public void CopyDefinedNamesFrom(IExcelDocument sourceExcelDocument)
+    {
+        var allDefinedNames = ((ExcelDocument)sourceExcelDocument).spreadsheetDocument.WorkbookPart?.Workbook.DefinedNames;
+        if (allDefinedNames is null)
+            return;
+
+        spreadsheetDocument.WorkbookPart!.Workbook.DefinedNames = new DefinedNames();
+
+        foreach (var definedName in allDefinedNames)
+        {
+            spreadsheetDocument.WorkbookPart!.Workbook.DefinedNames!.AppendChild(definedName.CloneNode(deep : true));
+        }
+    }
+
+    public DefinedNames GetDefinedNames()
+    {
+        return spreadsheetDocument.WorkbookPart?.Workbook.DefinedNames!;
+    }
+
     public void CopyVbaInfoFrom(IExcelDocument excelDocument)
     {
         ThrowIfSpreadsheetDisposed();
@@ -162,12 +181,33 @@ internal class ExcelDocument : IExcelDocument
         return new ExcelWorksheet(this, worksheetPart, documentStyle, excelSharedStrings, logger);
     }
 
-    public void RenameWorksheet(int index, string name)
+    public void RenameWorksheet(int index, string name, bool updateDefinedNames = false)
     {
         ThrowIfSpreadsheetDisposed();
         AssertWorksheetNameValid(name);
         AssertWorksheetExists(index);
+
+        var sheetBeforeRenaming = (Sheet)spreadsheetDocument.WorkbookPart!.Workbook.Sheets!
+                                                            .Elements<Sheet>().ElementAt(index).CloneNode(deep : true);
         spreadsheetDocument.WorkbookPart!.Workbook.Sheets!.Elements<Sheet>().ElementAt(index).Name = name;
+
+        if (updateDefinedNames)
+            UpdateDefinedNamesAfterRenamingSheet(sheetBeforeRenaming, name);
+    }
+
+    private void UpdateDefinedNamesAfterRenamingSheet(Sheet sheetBeforeRenaming, string newSheetName)
+    {
+        var definedNames = spreadsheetDocument.WorkbookPart!.Workbook.DefinedNames;
+        if (definedNames == null)
+            return;
+
+        var updatedDefinedNames = definedNames.UpdateAfterRenamingSheet(sheetBeforeRenaming, newSheetName);
+
+        spreadsheetDocument.WorkbookPart!.Workbook.DefinedNames = new DefinedNames();
+        foreach (var definedName in updatedDefinedNames)
+        {
+            spreadsheetDocument.WorkbookPart!.Workbook.DefinedNames!.AppendChild(definedName.CloneNode(deep : true));
+        }
     }
 
     public bool TryGetCustomProperty(string key, out string? value)
