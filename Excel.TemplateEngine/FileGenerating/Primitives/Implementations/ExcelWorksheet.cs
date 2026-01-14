@@ -11,6 +11,7 @@ using JetBrains.Annotations;
 
 using MoreLinq;
 
+using SkbKontur.Excel.TemplateEngine.Extensions;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Caches;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Helpers;
@@ -95,7 +96,8 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
 
         public IEnumerable<IExcelCell> GetSortedCellsInRange(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
         {
-            return RangeFromTo((uint)upperLeft.RowIndex, (uint)lowerRight.RowIndex + 1)
+            return rowsCache
+                   .RangeFromTo((uint)upperLeft.RowIndex, (uint)lowerRight.RowIndex + 1)
                    .Select(x => x.Value)
                    .SelectMany(row => row.Elements<Cell>()
                                          .Where(cell =>
@@ -342,7 +344,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
                 {
                     RowIndex = new UInt32Value((uint)rowIndex),
                 };
-            if (TryWeakSuccessor(unsignedRowIndex, out var successor))
+            if (rowsCache.TryWeakSuccessor(unsignedRowIndex, out var successor))
             {
                 if (successor.Key == unsignedRowIndex)
                     return new ExcelRow(successor.Value, documentStyle, excelSharedStrings);
@@ -359,30 +361,6 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
         }
 
         public IExcelDocument ExcelDocument { get; }
-
-        private IEnumerable<KeyValuePair<uint, Row>> RangeFromTo(uint fromInclusive, uint toExclusive)
-        {
-            foreach (var kv in rowsCache)
-            {
-                if (kv.Key < fromInclusive) continue;
-                if (kv.Key >= toExclusive) yield break;
-                yield return kv;
-            }
-        }
-
-        private bool TryWeakSuccessor(uint lookup, out KeyValuePair<uint, Row> successor)
-        {
-            foreach (var kv in rowsCache)
-            {
-                if (kv.Key >= lookup)
-                {
-                    successor = kv;
-                    return true;
-                }
-            }
-            successor = default;
-            return false;
-        }
 
         private readonly IExcelDocumentStyle documentStyle;
         private readonly IExcelSharedStrings excelSharedStrings;
