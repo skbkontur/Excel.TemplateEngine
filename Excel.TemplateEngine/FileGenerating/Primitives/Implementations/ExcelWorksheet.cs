@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-using C5;
-
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -13,6 +11,7 @@ using JetBrains.Annotations;
 
 using MoreLinq;
 
+using SkbKontur.Excel.TemplateEngine.Extensions;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Caches;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.DataTypes;
 using SkbKontur.Excel.TemplateEngine.FileGenerating.Helpers;
@@ -33,10 +32,17 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
             this.documentStyle = documentStyle;
             this.excelSharedStrings = excelSharedStrings;
             this.logger = logger;
-            rowsCache = new TreeDictionary<uint, Row>();
+            rowsCache = new SortedDictionary<uint, Row>();
             var sheetData = worksheet.GetFirstChild<SheetData>();
             if (sheetData != null)
-                rowsCache.AddAll(sheetData.Elements<Row>().Select(x => new C5.KeyValuePair<uint, Row>(x.RowIndex, x)));
+            {
+                foreach (var r in sheetData.Elements<Row>())
+                {
+                    var key = (uint)r.RowIndex;
+                    if (!rowsCache.ContainsKey(key))
+                        rowsCache.Add(key, r);
+                }
+            }
         }
 
         public void SetPrinterSettings(ExcelPrinterSettings excelPrinterSettings)
@@ -90,20 +96,21 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
 
         public IEnumerable<IExcelCell> GetSortedCellsInRange(ExcelCellIndex upperLeft, ExcelCellIndex lowerRight)
         {
-            return rowsCache.RangeFromTo((uint)upperLeft.RowIndex, (uint)lowerRight.RowIndex + 1)
-                            .Select(x => x.Value)
-                            .SelectMany(row => row.Elements<Cell>()
-                                                  .Where(cell =>
-                                                      {
-                                                          var columnIndex = new ExcelCellIndex(cell.CellReference).ColumnIndex;
-                                                          return columnIndex >= upperLeft.ColumnIndex && columnIndex <= lowerRight.ColumnIndex;
-                                                      }))
-                            .OrderBy(cell =>
-                                {
-                                    var cellIndex = new ExcelCellIndex(cell.CellReference);
-                                    return (cellIndex.RowIndex - upperLeft.RowIndex) * (lowerRight.ColumnIndex - upperLeft.ColumnIndex) + cellIndex.ColumnIndex;
-                                })
-                            .Select(cell => new ExcelCell(cell, documentStyle, excelSharedStrings));
+            return rowsCache
+                   .RangeFromTo((uint)upperLeft.RowIndex, (uint)lowerRight.RowIndex + 1)
+                   .Select(x => x.Value)
+                   .SelectMany(row => row.Elements<Cell>()
+                                         .Where(cell =>
+                                             {
+                                                 var columnIndex = new ExcelCellIndex(cell.CellReference).ColumnIndex;
+                                                 return columnIndex >= upperLeft.ColumnIndex && columnIndex <= lowerRight.ColumnIndex;
+                                             }))
+                   .OrderBy(cell =>
+                       {
+                           var cellIndex = new ExcelCellIndex(cell.CellReference);
+                           return (cellIndex.RowIndex - upperLeft.RowIndex) * (lowerRight.ColumnIndex - upperLeft.ColumnIndex) + cellIndex.ColumnIndex;
+                       })
+                   .Select(cell => new ExcelCell(cell, documentStyle, excelSharedStrings));
         }
 
         public IExcelCell GetCell(ExcelCellIndex position)
@@ -359,6 +366,7 @@ namespace SkbKontur.Excel.TemplateEngine.FileGenerating.Primitives.Implementatio
         private readonly IExcelSharedStrings excelSharedStrings;
         private readonly ILog logger;
         private readonly Worksheet worksheet;
-        private readonly TreeDictionary<uint, Row> rowsCache;
+
+        private readonly SortedDictionary<uint, Row> rowsCache;
     }
 }
