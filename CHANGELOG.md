@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.5.3 2026.05.08
+## v1.5.2 2026.05.08
 - Optimize getting cells from a worksheet
 
 ## v1.3.28 2025.04.07
