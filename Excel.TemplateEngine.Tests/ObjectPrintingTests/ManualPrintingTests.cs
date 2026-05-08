@@ -272,6 +272,48 @@ namespace SkbKontur.Excel.TemplateEngine.Tests.ObjectPrintingTests
             }
         }
 
+        [Test]
+        public void TestPrintingHugeDocument()
+        {
+            using (var templateDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("VseInstrumentiPriceList.xlsx")), logger))
+            using (var targetDocument = ExcelDocumentFactory.CreateFromTemplate(File.ReadAllBytes(GetFilePath("empty.xlsx")), logger))
+            {
+                targetDocument.CopyVbaInfoFrom(templateDocument);
+
+                var template = new ExcelTable(templateDocument.GetWorksheet(0));
+                var templateEngine = new TemplateEngine(template, logger);
+
+                var target = new ExcelTable(targetDocument.GetWorksheet(0));
+                var tableNavigator = new TableNavigator(new CellPosition("A1"), logger);
+                var tableBuilder = new TableBuilder(target, tableNavigator, new Style(template.GetCell(new CellPosition("A1"))));
+                var model = CreateModel(40000);
+                templateEngine.Render(tableBuilder, model);
+
+                var filename = "output.xlsx";
+                File.WriteAllBytes(filename, targetDocument.CloseAndGetDocumentBytes());
+
+                var path = "file:///" + Path.GetFullPath(filename).Replace("\\", "/");
+                Assert.Fail($"Please manually open file '{path}' and check that clicking on the right checkbox leads to changes in both checkbox");
+            }
+        }
+
+        private static object CreateModel(int tradeItemsCount)
+        {
+            var tradeItemModel = new
+                {
+                    Gtin = "3333333",
+                    Name = "name",
+                    Price = 100,
+                    Color = "blue",
+                };
+            return new
+                {
+                    Number = "123",
+                    Date = "11.12.1995",
+                    TradeItems = Enumerable.Repeat(tradeItemModel, tradeItemsCount).ToArray(),
+                };
+        }
+
         private void CopySecondaryWorksheets(IExcelDocument templateDocument, IExcelDocument targetDocument)
         {
             foreach (var index in Enumerable.Range(1, templateDocument.GetWorksheetCount() - 1))

@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.5.1 2026.05.08
+- Optimize getting cells from a worksheet
+
 ## v1.3.28 2025.04.07
 - Get stylesheet safely. There are some old documents whose styles.xml cannot be parsed correctly by OpenXml (https://github.com/skbkontur/Excel.TemplateEngine/pull/21)
 
